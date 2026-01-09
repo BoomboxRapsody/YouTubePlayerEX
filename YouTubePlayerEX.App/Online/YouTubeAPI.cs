@@ -23,7 +23,7 @@ namespace YouTubePlayerEX.App.Online
             var part = "statistics,snippet,brandingSettings,id";
             var request = youtubeService.Channels.List(part);
 
-            request.ForHandle = channelId;
+            request.Id = channelId;
 
             var response = request.Execute();
 

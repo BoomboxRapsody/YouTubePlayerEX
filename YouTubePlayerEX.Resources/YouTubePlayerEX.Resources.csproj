@@ -8,4 +8,17 @@
     <EmbeddedResource Include="Textures\**\*" />
     <EmbeddedResource Include="Tracks\**\*" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Localisation\YTPlayerEX.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>YTPlayerEX.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Localisation\YTPlayerEX.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>YTPlayerEX.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

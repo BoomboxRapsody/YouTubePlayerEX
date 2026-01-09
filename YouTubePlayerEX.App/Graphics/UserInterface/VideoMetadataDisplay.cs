@@ -1,17 +1,26 @@
-﻿using Google.Apis.YouTube.v3.Data;
+﻿using System;
+using System.Threading.Tasks;
+using Google.Apis.YouTube.v3.Data;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
-using osu.Framework.Graphics.Sprites;
 using osuTK.Graphics;
+using YouTubePlayerEX.App.Extensions;
+using YouTubePlayerEX.App.Graphics.Sprites;
+using YouTubePlayerEX.App.Localisation;
+using YouTubePlayerEX.App.Online;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
     public partial class VideoMetadataDisplay : CompositeDrawable
     {
         private ProfileImage profileImage;
-        private SpriteText videoName;
+        private TruncatingSpriteText videoName;
+        private TruncatingSpriteText desc;
+
+        [Resolved]
+        private YouTubeAPI api { get; set; }
 
         [BackgroundDependencyLoader]
         private void load()
@@ -31,23 +40,45 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     Padding = new MarginPadding(7),
                     Children = new Drawable[]
                     {
-                        profileImage = new ProfileImage(45)
+                        profileImage = new ProfileImage(45),
+                        new Container
                         {
-
-                        },
-                        videoName = new SpriteText
-                        {
-                            Text = "test test test 123 테스트"
+                            RelativeSizeAxes = Axes.Both,
+                            Padding = new MarginPadding
+                            {
+                                Vertical = 5,
+                                Left = 50,
+                            },
+                            Children = new Drawable[]
+                            {
+                                videoName = new TruncatingSpriteText
+                                {
+                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 20, weight: "Bold"),
+                                    Text = "please enter a video id!",
+                                },
+                                desc = new TruncatingSpriteText
+                                {
+                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"),
+                                    Colour = Color4.Gray,
+                                    Text = "[no metadata available]",
+                                    Position = new osuTK.Vector2(0, 20),
+                                }
+                            }
                         }
                     }
                 }
             };
         }
 
-        public void UpdateVideo(Video videoData)
+        public void UpdateVideo(string videoId)
         {
-            videoName.Text = videoData.Snippet.Title;
-            profileImage.UpdateProfileImage(videoData.Snippet.ChannelId);
+            Task.Run(async () =>
+            {
+                Video videoData = api.GetVideo(videoId);
+                videoName.Text = videoData.Snippet.Title;
+                desc.Text = YTPlayerEXStrings.VideoMetadataDesc(videoData.Snippet.ChannelTitle, Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0));
+                profileImage.UpdateProfileImage(videoData.Snippet.ChannelId);
+            });
         }
     }
 }

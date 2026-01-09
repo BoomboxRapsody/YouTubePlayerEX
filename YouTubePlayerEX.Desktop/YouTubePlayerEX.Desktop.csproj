@@ -11,7 +11,4 @@
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\YouTubePlayerEX.App\YouTubePlayerEX.App.csproj" />
   </ItemGroup>
-  <ItemGroup Label="Resources">
-    <EmbeddedResource Include="game.ico" />
-  </ItemGroup>
 </Project>

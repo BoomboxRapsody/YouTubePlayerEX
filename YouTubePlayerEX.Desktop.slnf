@@ -4,6 +4,8 @@
     "projects": [
       "YouTubePlayerEX.Desktop\\YouTubePlayerEX.Desktop.csproj",
       "YouTubePlayerEX.App\\YouTubePlayerEX.App.csproj",
+	  "YouTubePlayerEX-framework\\osu.Framework\\osu.Framework.csproj",
+	  "YouTubePlayerEX-framework\\osu.Framework.NativeLibs\\osu.Framework.NativeLibs.csproj",
       "YouTubePlayerEX.App.Tests\\YouTubePlayerEX.App.Tests.csproj",
       "YouTubePlayerEX.Resources\\YouTubePlayerEX.Resources.csproj"
     ]

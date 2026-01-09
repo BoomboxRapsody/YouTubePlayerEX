@@ -1,4 +1,5 @@
-﻿using Google.Apis.YouTube.v3.Data;
+﻿using System.Threading.Tasks;
+using Google.Apis.YouTube.v3.Data;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -41,8 +42,11 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         public void UpdateProfileImage(string channelId)
         {
-            Channel channel = api.GetChannel(channelId);
-            profileImage.Texture = textureStore.Get(channel.Snippet.Thumbnails.High.Url);
+            Task.Run(async () =>
+            {
+                Channel channel = api.GetChannel(channelId);
+                profileImage.Texture = textureStore.Get(channel.Snippet.Thumbnails.High.Url);
+            });
         }
     }
 }

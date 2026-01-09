@@ -8,7 +8,12 @@ namespace YouTubePlayerEX.Desktop
     {
         public static void Main()
         {
-            using (GameHost host = Host.GetSuitableDesktopHost(@"YouTubePlayerEX"))
+            HostOptions hostOptions = new HostOptions
+            {
+                FriendlyGameName = "YouTube Player EX"
+            };
+
+            using (GameHost host = Host.GetSuitableDesktopHost(@"YouTubePlayerEX", hostOptions))
             using (osu.Framework.Game game = new YouTubePlayerEXApp())
                 host.Run(game);
         }

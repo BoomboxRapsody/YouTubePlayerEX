@@ -1,0 +1,26 @@
+﻿using osu.Framework.Graphics.Cursor;
+using osu.Framework.Graphics.Sprites;
+using osu.Framework.Localisation;
+
+namespace YouTubePlayerEX.App.Graphics.Sprites
+{
+    /// <summary>
+    /// A derived version of <see cref="AdaptiveSpriteText"/> which automatically shows non-truncated text in tooltip when required.
+    /// </summary>
+    public sealed partial class TruncatingSpriteText : AdaptiveSpriteText, IHasTooltip
+    {
+        /// <summary>
+        /// Whether a tooltip should be shown with non-truncated text on hover.
+        /// </summary>
+        public bool ShowTooltip { get; init; } = true;
+
+        public LocalisableString TooltipText => Text;
+
+        public override bool HandlePositionalInput => IsTruncated && ShowTooltip;
+
+        public TruncatingSpriteText()
+        {
+            ((SpriteText)this).Truncate = true;
+        }
+    }
+}
