@@ -1,0 +1,11 @@
+﻿{
+  "solution": {
+    "path": "YouTubePlayerEX.sln",
+    "projects": [
+      "YouTubePlayerEX.Desktop\\YouTubePlayerEX.Desktop.csproj",
+      "YouTubePlayerEX.App\\YouTubePlayerEX.App.csproj",
+      "YouTubePlayerEX.App.Tests\\YouTubePlayerEX.App.Tests.csproj",
+      "YouTubePlayerEX.Resources\\YouTubePlayerEX.Resources.csproj"
+    ]
+  }
+}

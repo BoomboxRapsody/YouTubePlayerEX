@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YouTubePlayerEX.Resources\YouTubePlayerEX.Resources.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.73.0.4022" />
+    <PackageReference Include="ppy.osu.Framework" Version="2026.108.0" />
+    <PackageReference Include="YoutubeExplode" Version="6.5.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Overlays\" />
+  </ItemGroup>
+</Project>
