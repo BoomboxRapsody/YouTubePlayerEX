@@ -117,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="error_noVideoId" xml:space="preserve">
+    <value>Video ID must not be empty!</value>
+  </data>
   <data name="load_from_video_id" xml:space="preserve">
     <value>Load from video ID</value>
+  </data>
+  <data name="load_video" xml:space="preserve">
+    <value>Load Video</value>
   </data>
   <data name="videoMetadata_desc" xml:space="preserve">
     <value>{0} • {1} views</value>

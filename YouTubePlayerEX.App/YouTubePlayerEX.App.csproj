@@ -13,5 +13,9 @@
     <PackageReference Include="Humanizer" Version="3.0.1" />
     <PackageReference Include="YoutubeExplode" Version="6.5.6" />
     <PackageReference Include="YoutubeExplode.Converter" Version="6.5.6" />
+    <PackageReference Include="ppy.LocalisationAnalyser" Version="2025.1208.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 </Project>

@@ -61,11 +61,29 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Video ID must not be empty!과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string error_noVideoId {
+            get {
+                return ResourceManager.GetString("error_noVideoId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Load from video ID과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string load_from_video_id {
             get {
                 return ResourceManager.GetString("load_from_video_id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Load Video과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string load_video {
+            get {
+                return ResourceManager.GetString("load_video", resourceCulture);
             }
         }
         
