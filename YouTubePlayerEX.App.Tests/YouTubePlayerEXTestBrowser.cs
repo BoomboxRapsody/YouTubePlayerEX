@@ -39,7 +39,6 @@ namespace YouTubePlayerEX.App.Tests
             AddRange(new Drawable[]
             {
                 new TestBrowser("YouTubePlayerEX"),
-                new CursorContainer()
             });
         }
 

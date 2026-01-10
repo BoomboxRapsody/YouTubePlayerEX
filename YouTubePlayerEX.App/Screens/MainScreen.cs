@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using osu.Framework.Audio.Sample;
 using osu.Framework.Bindables;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
@@ -23,6 +25,7 @@ using YouTubePlayerEX.App.Input;
 using YouTubePlayerEX.App.Input.Binding;
 using YouTubePlayerEX.App.Localisation;
 using Container = osu.Framework.Graphics.Containers.Container;
+using OverlayContainer = YouTubePlayerEX.App.Graphics.Containers.OverlayContainer;
 
 namespace YouTubePlayerEX.App.Screens
 {
@@ -36,7 +39,8 @@ namespace YouTubePlayerEX.App.Screens
         private AdaptiveAlertContainer alert;
         private IdleTracker idleTracker;
         private Container uiContainer;
-        private Container loadVideoContainer;
+        private Container uiGradientContainer;
+        private OverlayContainer loadVideoContainer, settingsContainer;
         private AdaptiveButton loadBtnOverlayShow;
         private VideoMetadataDisplay videoMetadataDisplay;
 
@@ -54,6 +58,8 @@ namespace YouTubePlayerEX.App.Screens
             overlayShowSample.Dispose();
             overlayHideSample.Dispose();
         }
+
+        private AdaptiveSpriteText videoLoadingProgress;
 
         private BindableNumber<double> videoProgress = new BindableNumber<double>()
         {
@@ -79,10 +85,44 @@ namespace YouTubePlayerEX.App.Screens
                     Origin = Anchor.Centre,
                     Margin = new MarginPadding(40),
                 },
-                uiContainer = new Container {
+                videoLoadingProgress = new AdaptiveSpriteText
+                {
+                    Anchor = Anchor.BottomCentre,
+                    Origin = Anchor.BottomCentre,
+                    Margin = new MarginPadding
+                    {
+                        Bottom = 110,
+                    },
+                },
+                uiGradientContainer = new Container
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Children = new Drawable[]
+                    {
+                        new Box
+                        {
+                            Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0.5f), Color4.Black.Opacity(0)),
+                            Origin = Anchor.TopLeft,
+                            Anchor = Anchor.TopLeft,
+                            RelativeSizeAxes = Axes.X,
+                            Height = 150,
+                        },
+                        new Box
+                        {
+                            Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0), Color4.Black.Opacity(0.5f)),
+                            Origin = Anchor.BottomLeft,
+                            Anchor = Anchor.BottomLeft,
+                            RelativeSizeAxes = Axes.X,
+                            Height = 150,
+                        },
+                    }
+                },
+                uiContainer = new Container
+                {
                     RelativeSizeAxes = Axes.Both,
                     Padding = new MarginPadding(8),
-                    Children = new Drawable[] {
+                    Children = new Drawable[]
+                    {
                         videoMetadataDisplay = new VideoMetadataDisplay
                         {
                             Width = 400,
@@ -92,6 +132,7 @@ namespace YouTubePlayerEX.App.Screens
                         },
                         loadBtnOverlayShow = new IconButton
                         {
+                            Enabled = { Value = true },
                             Origin = Anchor.TopRight,
                             Anchor = Anchor.TopRight,
                             Size = new Vector2(40, 40),
@@ -128,7 +169,8 @@ namespace YouTubePlayerEX.App.Screens
                                         {
                                             RelativeSizeAxes = Axes.X,
                                             PlaySamplesOnAdjust = false,
-                                            Current = videoProgress,
+                                            Current = { BindTarget = videoProgress },
+                                            TransferValueOnCommit = true,
                                         },
                                         new Container
                                         {
@@ -154,18 +196,44 @@ namespace YouTubePlayerEX.App.Screens
                                             RelativeSizeAxes = Axes.X,
                                             AutoSizeAxes = Axes.Y,
                                             Spacing = new Vector2(8, 0),
-                                            Children = new Drawable[] {
+                                            Children = new Drawable[]
+                                            {
                                                 new IconButton
                                                 {
+                                                    Enabled = { Value = true },
                                                     Icon = FontAwesome.Solid.FastBackward,
                                                 },
-                                                new IconButton
+                                                playPause = new IconButton
                                                 {
+                                                    Enabled = { Value = true },
                                                     Icon = FontAwesome.Solid.Play,
+                                                    ClickAction = _ =>
+                                                    {
+                                                        if (currentVideoSource != null)
+                                                        {
+                                                            if (currentVideoSource.IsPlaying())
+                                                                currentVideoSource.Pause();
+                                                            else
+                                                                currentVideoSource.Play();
+                                                        }
+                                                    }
                                                 },
                                                 new IconButton
                                                 {
+                                                    Enabled = { Value = true },
                                                     Icon = FontAwesome.Solid.FastForward,
+                                                },
+                                                new RoundedSliderBar<double>
+                                                {
+                                                    Width = 200,
+                                                    Margin = new MarginPadding
+                                                    {
+                                                        Top = 8,
+                                                    },
+                                                    KeyboardStep = 0.25f,
+                                                    PlaySamplesOnAdjust = true,
+                                                    Current = { BindTarget = playbackSpeed },
+                                                    DisplayAsPercentage = true,
                                                 },
                                             }
                                         }
@@ -180,14 +248,16 @@ namespace YouTubePlayerEX.App.Screens
                     RelativeSizeAxes = Axes.Both,
                     Colour = Color4.Black,
                 },
-                loadVideoContainer = new Container {
+                loadVideoContainer = new OverlayContainer
+                {
                     Width = 400,
                     Height = 200,
                     CornerRadius = 12,
                     Masking = true,
                     Origin = Anchor.Centre,
                     Anchor = Anchor.Centre,
-                    Children = new Drawable[] {
+                    Children = new Drawable[]
+                    {
                         new Box
                         {
                             RelativeSizeAxes = Axes.Both,
@@ -203,6 +273,50 @@ namespace YouTubePlayerEX.App.Screens
                         },
                         loadBtn = new AdaptiveButton
                         {
+                            Enabled = { Value = true },
+                            Origin = Anchor.BottomRight,
+                            Anchor = Anchor.BottomRight,
+                            Text = YTPlayerEXStrings.LoadVideo,
+                            Size = new Vector2(200, 60),
+                            Margin = new MarginPadding(8),
+                        },
+                        videoIdBox = new AdaptiveTextBox
+                        {
+                            Origin = Anchor.CentreRight,
+                            Anchor = Anchor.CentreRight,
+                            Text = "",
+                            FontSize = 30,
+                            Size = new Vector2(385, 60),
+                            Margin = new MarginPadding(8),
+                        },
+                    }
+                },
+                settingsContainer = new OverlayContainer
+                {
+                    Width = 400,
+                    Height = 200,
+                    CornerRadius = 12,
+                    Masking = true,
+                    Origin = Anchor.Centre,
+                    Anchor = Anchor.Centre,
+                    Children = new Drawable[]
+                    {
+                        new Box
+                        {
+                            RelativeSizeAxes = Axes.Both,
+                            Colour = Color4Extensions.FromHex("#1a1a1a"),
+                        },
+                        new AdaptiveSpriteText
+                        {
+                            Origin = Anchor.TopLeft,
+                            Anchor = Anchor.TopLeft,
+                            Text = YTPlayerEXStrings.LoadFromVideoId,
+                            Margin = new MarginPadding(16),
+                            Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
+                        },
+                        loadBtn = new AdaptiveButton
+                        {
+                            Enabled = { Value = true },
                             Origin = Anchor.BottomRight,
                             Anchor = Anchor.BottomRight,
                             Text = YTPlayerEXStrings.LoadVideo,
@@ -230,12 +344,20 @@ namespace YouTubePlayerEX.App.Screens
                 if (idle.NewValue == true)
                 {
                     uiContainer.FadeOutFromOne(250);
+                    uiGradientContainer.FadeOutFromOne(250);
                 } else
                 {
                     uiContainer.FadeInFromZero(125);
+                    uiGradientContainer.FadeInFromZero(125);
                 }
             }, true);
         }
+
+        private BindableNumber<double> playbackSpeed = new BindableNumber<double>(1)
+        {
+            MinValue = 0.5,
+            MaxValue = 2,
+        };
 
         private void showLoadVideoContainer()
         {
@@ -243,7 +365,7 @@ namespace YouTubePlayerEX.App.Screens
             overlayFadeContainer.FadeTo(0.5f, 250, Easing.OutQuart);
             loadVideoContainer.Show();
             loadVideoContainer.ScaleTo(0.8f);
-            loadVideoContainer.ScaleTo(1f, 500, Easing.OutElastic);
+            loadVideoContainer.ScaleTo(1f, 750, Easing.OutElastic);
             loadVideoContainer.FadeInFromZero(250, Easing.OutQuart);
             overlayShowSample.Play();
         }
@@ -283,7 +405,10 @@ namespace YouTubePlayerEX.App.Screens
             switch (e.Action)
             {
                 case GlobalAction.Back:
-                    hideLoadVideoContainer();
+                    if (isLoadVideoContainerVisible)
+                    {
+                        hideLoadVideoContainer();
+                    }
                     return true;
 
                 case GlobalAction.Select:
@@ -292,24 +417,77 @@ namespace YouTubePlayerEX.App.Screens
                         SetVideoSource(videoIdBox.Text);
                     }
                     return true;
+
+                case GlobalAction.FastForward_10sec:
+                    currentVideoSource?.FastForward10Sec();
+                    return true;
+
+                case GlobalAction.FastRewind_10sec:
+                    currentVideoSource?.FastRewind10Sec();
+                    return true;
+
+                case GlobalAction.PlayPause:
+                    if (currentVideoSource != null)
+                    {
+                        if (currentVideoSource.IsPlaying())
+                            currentVideoSource.Pause();
+                        else
+                            currentVideoSource.Play();
+                    }
+                    return true;
             }
 
             return false;
         }
 
+        protected override void Update()
+        {
+            base.Update();
+
+            if (currentVideoSource != null)
+            {
+                playPause.Icon = (currentVideoSource.IsPlaying() ? FontAwesome.Solid.Pause : FontAwesome.Solid.Play);
+                videoProgress.MaxValue = currentVideoSource.VideoProgress.MaxValue;
+
+                if (currentVideoSource.IsPlaying())
+                {
+                    videoProgress.Value = currentVideoSource.VideoProgress.Value;
+                }
+            }
+        }
+
+        private IconButton playPause;
+
         private void updateVideoMetadata(string videoId)
         {
             videoMetadataDisplay.UpdateVideo(videoId);
+            videoLoadingProgress.Text = "";
         }
 
         private void addVideoToScreen()
         {
             videoContainer.Add(currentVideoSource);
+
+            videoProgress.BindValueChanged(seek =>
+            {
+                if (currentVideoSource != null && currentVideoSource.IsPlaying() == false)
+                    seekTo(seek.NewValue * 1000);
+            });
+
+            playbackSpeed.BindValueChanged(speed =>
+            {
+                setPlaybackSpeed(speed.NewValue);
+            }, true);
         }
 
-        private void seekTo(float pos)
+        private void seekTo(double pos)
         {
             currentVideoSource?.SeekTo(pos);
+        }
+
+        private void setPlaybackSpeed(double speed)
+        {
+            currentVideoSource?.SetPlaybackSpeed(speed);
         }
 
         private void playVideo()
@@ -324,38 +502,63 @@ namespace YouTubePlayerEX.App.Screens
             {
                 Task.Run(async () =>
                 {
+                    IProgress<double> audioDownloadProgress = new Progress<double>((percent) => videoLoadingProgress.Text = $"Downloading audio cache: {(percent * 100):N0}%");
+                    IProgress<double> videoDownloadProgress = new Progress<double>((percent) => videoLoadingProgress.Text = $"Downloading video cache: {(percent * 100):N0}%");
+
                     spinnerShow = Scheduler.AddDelayed(spinner.Show, 0);
 
+                    videoProgress.MaxValue = 1;
                     currentVideoSource?.Expire();
                     var videoUrl = $"https://youtube.com/watch?v={videoId}";
 
-                    Directory.CreateDirectory(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}"));
+                    if (!File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3") && !File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4"))
+                    {
+                        Directory.CreateDirectory(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}"));
 
-                    var streamManifest = await app.YouTubeClient.Videos.Streams.GetManifestAsync(videoUrl);
+                        var streamManifest = await app.YouTubeClient.Videos.Streams.GetManifestAsync(videoUrl);
 
-                    // Select best audio stream (highest bitrate)
-                    var audioStreamInfo = streamManifest
-                        .GetAudioOnlyStreams()
-                        .GetWithHighestBitrate();
+                        // Select best audio stream (highest bitrate)
+                        var audioStreamInfo = streamManifest
+                            .GetAudioOnlyStreams()
+                            .GetWithHighestBitrate();
 
-                    // Select best video stream (1080p60 in this example)
-                    var videoStreamInfo = streamManifest
-                        .GetVideoOnlyStreams()
-                        .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.WebM)
-                        .GetWithHighestVideoQuality();
+                        // Select best video stream (1080p60 in this example)
+                        var videoStreamInfo = streamManifest
+                            .GetVideoOnlyStreams()
+                            .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.WebM)
+                            .GetWithHighestVideoQuality();
 
-                    await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3").Build());
-                    await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4").Build());
+                        await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3").Build(), audioDownloadProgress);
+                        await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4").Build(), videoDownloadProgress);
 
-                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3");
+                        currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3")
+                        {
+                            RelativeSizeAxes = Axes.Both
+                        };
 
-                    spinnerShow = Scheduler.AddDelayed(spinner.Hide, 0);
+                        spinnerShow = Scheduler.AddDelayed(spinner.Hide, 0);
 
-                    spinnerShow = Scheduler.AddDelayed(addVideoToScreen, 0);
+                        spinnerShow = Scheduler.AddDelayed(addVideoToScreen, 0);
 
-                    spinnerShow = Scheduler.AddDelayed(() => updateVideoMetadata(videoId), 0);
+                        spinnerShow = Scheduler.AddDelayed(() => updateVideoMetadata(videoId), 0);
 
-                    spinnerShow = Scheduler.AddDelayed(() => playVideo(), 1000);
+                        spinnerShow = Scheduler.AddDelayed(() => playVideo(), 1000);
+                    }
+                    else
+                    {
+                        currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3")
+                        {
+                            RelativeSizeAxes = Axes.Both
+                        };
+
+                        spinnerShow = Scheduler.AddDelayed(spinner.Hide, 0);
+
+                        spinnerShow = Scheduler.AddDelayed(addVideoToScreen, 0);
+
+                        spinnerShow = Scheduler.AddDelayed(() => updateVideoMetadata(videoId), 0);
+
+                        spinnerShow = Scheduler.AddDelayed(() => playVideo(), 1000);
+                    }
                 });
             }
             else

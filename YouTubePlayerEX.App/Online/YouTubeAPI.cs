@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Globalization;
+using System.Linq;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
@@ -20,7 +22,7 @@ namespace YouTubePlayerEX.App.Online
 
         public Channel GetChannel(string channelId)
         {
-            var part = "statistics,snippet,brandingSettings,id";
+            var part = "statistics,snippet,brandingSettings,id,localizations";
             var request = youtubeService.Channels.List(part);
 
             request.Id = channelId;
@@ -32,9 +34,39 @@ namespace YouTubePlayerEX.App.Online
             return result;
         }
 
+        public string GetLocalizedChannelTitle(Channel channel)
+        {
+            if (channel == null)
+                return string.Empty;
+
+            try
+            {
+                return channel.Localizations[CultureInfo.CurrentCulture.Name.Replace("-", "_")].Title;
+            }
+            catch (Exception e)
+            {
+                return channel.Snippet.Title;
+            }
+        }
+
+        public string GetLocalizedVideoTitle(Video video)
+        {
+            if (video == null)
+                return string.Empty;
+
+            try
+            {
+                return video.Localizations[CultureInfo.CurrentCulture.TwoLetterISOLanguageName].Title;
+            }
+            catch (Exception e)
+            {
+                return video.Snippet.Title;
+            }
+        }
+
         public Video GetVideo(string videoId)
         {
-            var part = "statistics,snippet";
+            var part = "statistics,snippet,localizations";
             var request = youtubeService.Videos.List(part);
 
             request.Id = videoId;

@@ -10,6 +10,7 @@ using osuTK;
 using YoutubeExplode;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics;
+using YouTubePlayerEX.App.Graphics.Cursor;
 using YouTubePlayerEX.App.Input.Binding;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
@@ -17,14 +18,16 @@ using YouTubePlayerEX.Resources;
 
 namespace YouTubePlayerEX.App
 {
-    [Cached]
+    [Cached(typeof(YouTubePlayerEXAppBase))]
     public partial class YouTubePlayerEXAppBase : osu.Framework.Game
     {
         // Anything in this class is shared between the test browser and the game implementation.
         // It allows for caching global dependencies that should be accessible to tests, or changing
         // the screen scaling for all components including the test browser and framework overlays.
 
-        protected override Container<Drawable> Content { get; }
+        protected override Container<Drawable> Content => content;
+
+        private Container content;
 
         [Cached]
         public readonly YoutubeClient YouTubeClient = new YoutubeClient();
@@ -41,19 +44,10 @@ namespace YouTubePlayerEX.App
 
         private IBindable<LocalisationParameters> localisationParameters = null!;
 
+        protected GlobalCursorDisplay GlobalCursorDisplay { get; private set; }
+
         protected YouTubePlayerEXAppBase()
         {
-            GlobalActionContainer globalBindings;
-
-            // Ensure game and tests scale with window size and screen DPI.
-            base.Content.Add(globalBindings = new GlobalActionContainer(this)
-            {
-                Child = Content = new DrawSizePreservingFillContainer
-                {
-                    // You may want to change TargetDrawSize to your "default" resolution, which will decide how things scale and position when using absolute coordinates.
-                    TargetDrawSize = new Vector2(1366, 768)
-                }
-            });
         }
 
         [BackgroundDependencyLoader]
@@ -71,7 +65,34 @@ namespace YouTubePlayerEX.App
             CurrentLanguage.BindValueChanged(val => frameworkLocale.Value = val.NewValue.ToCultureCode());
 
             InitialiseFonts();
+
+            GlobalActionContainer globalBindings;
+
+            // Ensure game and tests scale with window size and screen DPI.
+            base.Content.Add(globalBindings = new GlobalActionContainer(this)
+            {
+                Child = new DrawSizePreservingFillContainer
+                {
+                    // You may want to change TargetDrawSize to your "default" resolution, which will decide how things scale and position when using absolute coordinates.
+                    TargetDrawSize = new Vector2(1366, 768),
+                    Children = new Drawable[]
+                    {
+                        (GlobalCursorDisplay = new GlobalCursorDisplay
+                        {
+                            RelativeSizeAxes = Axes.Both
+                        }).WithChild(content = new AdaptiveTooltipContainer(GlobalCursorDisplay.MenuCursor)
+                        {
+                            RelativeSizeAxes = Axes.Both
+                        }),
+                    }
+                }
+            });
         }
+
+        private DependencyContainer dependencies;
+
+        protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
+            dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
 
         private void updateLanguage() => CurrentLanguage.Value = LanguageExtensions.GetLanguageFor(frameworkLocale.Value, localisationParameters.Value);
 

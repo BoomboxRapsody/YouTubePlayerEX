@@ -13,6 +13,7 @@ using YouTubePlayerEX.App.Screens;
 
 namespace YouTubePlayerEX.App
 {
+    [Cached(typeof(YouTubePlayerEXApp))]
     public partial class YouTubePlayerEXApp : YouTubePlayerEXAppBase
     {
         private ScreenStack screenStack;
@@ -56,7 +57,7 @@ namespace YouTubePlayerEX.App
         {
             base.LoadComplete();
 
-            screenStack.Push(new MainScreen());
+            screenStack.Push(new Loader());
         }
     }
 }

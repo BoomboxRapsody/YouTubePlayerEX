@@ -33,12 +33,15 @@ namespace YouTubePlayerEX.App.Input.Binding
 
         private static IEnumerable<KeyBinding> globalKeyBindings => new[]
         {
-            new KeyBinding(InputKey.Space, GlobalAction.Select),
             new KeyBinding(InputKey.Enter, GlobalAction.Select),
             new KeyBinding(InputKey.KeypadEnter, GlobalAction.Select),
 
             new KeyBinding(InputKey.Escape, GlobalAction.Back),
             new KeyBinding(InputKey.ExtraMouseButton1, GlobalAction.Back),
+
+            new KeyBinding(InputKey.Space, GlobalAction.PlayPause),
+            new KeyBinding(InputKey.Right, GlobalAction.FastForward_10sec),
+            new KeyBinding(InputKey.Left, GlobalAction.FastRewind_10sec),
         };
     }
 
@@ -50,5 +53,8 @@ namespace YouTubePlayerEX.App.Input.Binding
     {
         Back,
         Select,
+        PlayPause,
+        FastForward_10sec,
+        FastRewind_10sec
     }
 }

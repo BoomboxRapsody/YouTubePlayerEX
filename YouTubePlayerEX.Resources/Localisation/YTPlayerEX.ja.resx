@@ -120,11 +120,23 @@
   <data name="error_noVideoId" xml:space="preserve">
     <value>ビデオIDは空白のままにしてはいけません！</value>
   </data>
+  <data name="frame_limiter" xml:space="preserve">
+    <value>フレーム リミッタ</value>
+  </data>
   <data name="load_from_video_id" xml:space="preserve">
     <value>ビデオ ID からロードします</value>
   </data>
   <data name="load_video" xml:space="preserve">
     <value>ビデオロード</value>
+  </data>
+  <data name="profile_image_tooltip" xml:space="preserve">
+    <value>{0} • {1}ユーザ • 外部 Web ブラウザを介してチャネルを表示するには、クリックします。</value>
+  </data>
+  <data name="screen_resolution" xml:space="preserve">
+    <value>画面解像度</value>
+  </data>
+  <data name="settings" xml:space="preserve">
+    <value>設定</value>
   </data>
   <data name="videoMetadata_desc" xml:space="preserve">
     <value>{0} • {1}ビュー</value>

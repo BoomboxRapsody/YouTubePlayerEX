@@ -9,7 +9,7 @@ namespace YouTubePlayerEX.App.Localisation
         /// <summary>
         /// "{0} • {1} views"
         /// </summary>
-        public static LocalisableString VideoMetadataDesc(string username, string views) => new TranslatableString(getKey(@"todays_daily_challenge_has_concluded"), "{0} • {1} views", username, views);
+        public static LocalisableString VideoMetadataDesc(string username, string views) => new TranslatableString(getKey(@"videoMetadata_desc"), "{0} • {1} views", username, views);
 
         /// <summary>
         /// "Load from video ID"
@@ -25,6 +25,11 @@ namespace YouTubePlayerEX.App.Localisation
         /// "Video ID must not be empty!"
         /// </summary>
         public static LocalisableString NoVideoIdError => new TranslatableString(getKey(@"error_noVideoId"), "Video ID must not be empty!");
+
+        /// <summary>
+        /// "{0} • {1} subscribers • Click to view channel via external web browser."
+        /// </summary>
+        public static LocalisableString ProfileImageTooltip(string username, string subs) => new TranslatableString(getKey(@"profile_image_tooltip"), "{0} • {1} subscribers • Click to view channel via external web browser.", username, subs);
 
         private static string getKey(string key) => $@"{prefix}:{key}";
     }

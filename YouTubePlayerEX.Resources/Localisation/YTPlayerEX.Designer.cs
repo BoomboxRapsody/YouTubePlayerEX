@@ -70,6 +70,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Frame limiter과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string frame_limiter {
+            get {
+                return ResourceManager.GetString("frame_limiter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Load from video ID과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string load_from_video_id {
@@ -84,6 +93,33 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string load_video {
             get {
                 return ResourceManager.GetString("load_video", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   {0} • {1} subscribers • Click to view channel via external web browser.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string profile_image_tooltip {
+            get {
+                return ResourceManager.GetString("profile_image_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Screen resolution과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string screen_resolution {
+            get {
+                return ResourceManager.GetString("screen_resolution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Settings과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string settings {
+            get {
+                return ResourceManager.GetString("settings", resourceCulture);
             }
         }
         

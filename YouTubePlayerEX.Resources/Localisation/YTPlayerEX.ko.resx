@@ -120,11 +120,23 @@
   <data name="error_noVideoId" xml:space="preserve">
     <value>비디오 ID는 비어있지 않아야 합니다.</value>
   </data>
+  <data name="frame_limiter" xml:space="preserve">
+    <value>프레임 제한</value>
+  </data>
   <data name="load_from_video_id" xml:space="preserve">
     <value>동영상 ID로 불러오기</value>
   </data>
   <data name="load_video" xml:space="preserve">
     <value>동영상 불러오기</value>
+  </data>
+  <data name="profile_image_tooltip" xml:space="preserve">
+    <value>{0} • 구독자 {1}명 • 여기를 클릭하여 외부 브라우저에서 채널 링크를 엽니다.</value>
+  </data>
+  <data name="screen_resolution" xml:space="preserve">
+    <value>화면 해상도</value>
+  </data>
+  <data name="settings" xml:space="preserve">
+    <value>설정</value>
   </data>
   <data name="videoMetadata_desc" xml:space="preserve">
     <value>{0} • 조회수 {1}회</value>

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Google.Apis.YouTube.v3.Data;
 using osu.Framework.Allocation;
@@ -54,11 +56,13 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                 videoName = new TruncatingSpriteText
                                 {
                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 20, weight: "Bold"),
+                                    RelativeSizeAxes = Axes.X,
                                     Text = "please enter a video id!",
                                 },
                                 desc = new TruncatingSpriteText
                                 {
                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"),
+                                    RelativeSizeAxes = Axes.X,
                                     Colour = Color4.Gray,
                                     Text = "[no metadata available]",
                                     Position = new osuTK.Vector2(0, 20),
@@ -75,8 +79,9 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             Task.Run(async () =>
             {
                 Video videoData = api.GetVideo(videoId);
-                videoName.Text = videoData.Snippet.Title;
-                desc.Text = YTPlayerEXStrings.VideoMetadataDesc(videoData.Snippet.ChannelTitle, Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0));
+                Channel channelData = api.GetChannel(videoData.Snippet.ChannelId);
+                videoName.Text = api.GetLocalizedVideoTitle(videoData);
+                desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0));
                 profileImage.UpdateProfileImage(videoData.Snippet.ChannelId);
             });
         }

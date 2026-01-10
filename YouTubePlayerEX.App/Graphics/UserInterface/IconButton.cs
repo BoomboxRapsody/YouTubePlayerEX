@@ -64,6 +64,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             {
                 Origin = Anchor.Centre,
                 Anchor = Anchor.Centre,
+                Colour = iconColour ?? Color4.White,
                 Size = new Vector2(18),
             });
         }
