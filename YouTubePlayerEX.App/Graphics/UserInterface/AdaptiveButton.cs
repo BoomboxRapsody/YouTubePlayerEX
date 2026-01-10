@@ -15,9 +15,8 @@ using osu.Framework.Graphics.Effects;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
-    public partial class AdaptiveButton : Button
+    public partial class AdaptiveButton : AdaptiveClickableContainer
     {
-        private Sample clickAudio;
         public Action<AdaptiveButton>? ClickAction { get; set; }
 
         public LocalisableString Text
@@ -90,7 +89,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         protected SpriteText SpriteText;
         private readonly Container content;
 
-        public AdaptiveButton()
+        public AdaptiveButton(HoverSampleSet hoverSampleSet = HoverSampleSet.Default)
+            : base(hoverSampleSet)
         {
             base.Content.Add(content = new Container
             {
@@ -127,17 +127,6 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             });
 
             Enabled.BindValueChanged(enabledChanged, true);
-        }
-
-        [BackgroundDependencyLoader]
-        private void load(ISampleStore tracks)
-        {
-            clickAudio = tracks.Get("button-select.wav");
-        }
-
-        public void PlayClickAudio()
-        {
-            clickAudio.Play();
         }
 
         protected virtual SpriteText CreateText() => new SpriteText
@@ -192,7 +181,6 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
             Hover.FlashColour(FlashColour, 800, Easing.OutQuint);
             trigger();
-            PlayClickAudio();
 
             return base.OnClick(e);
         }

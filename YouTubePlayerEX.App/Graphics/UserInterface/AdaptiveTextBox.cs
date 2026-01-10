@@ -1,179 +1,334 @@
-﻿using osu.Framework.Extensions.Color4Extensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using osu.Framework.Allocation;
+using osu.Framework.Audio;
+using osu.Framework.Audio.Sample;
+using osu.Framework.Audio.Track;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Effects;
-using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.UserInterface;
-using osu.Framework.Input.Events;
-using osu.Framework.Text;
-using osuTK;
 using osuTK.Graphics;
+using osu.Framework.Extensions.Color4Extensions;
+using osu.Framework.Graphics.Shapes;
+using osu.Framework.Input.Events;
+using osu.Framework.Utils;
+using osuTK;
+using YouTubePlayerEX.App.Graphics.Sprites;
+using osu.Framework.Text;
+using osu.Framework.Graphics.Containers;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
-    public partial class AdaptiveTextBox : TextBox
+    public partial class AdaptiveTextBox : BasicTextBox
     {
-        protected virtual float CaretWidth => 2;
+        /// <summary>
+        /// Whether to allow playing a different samples based on the type of character.
+        /// If set to false, the same sample will be used for all characters.
+        /// </summary>
+        protected virtual bool AllowUniqueCharacterSamples => true;
 
-        private const float caret_move_time = 60;
+        protected override float LeftRightPadding => 10;
 
-        protected virtual Color4 SelectionColour => FrameworkColour.YellowGreen;
+        protected override float CaretWidth => 3;
 
-        protected Color4 BackgroundCommit { get; set; } = FrameworkColour.Green;
-
-        private Color4 backgroundFocused = new Color4(100, 100, 100, 255);
-        private Color4 backgroundUnfocused = new Color4(100, 100, 100, 120);
-
-        private readonly Box background;
-
-        private readonly Container content;
-
-        protected Color4 BackgroundFocused
+        protected override SpriteText CreatePlaceholder() => new AdaptiveSpriteText
         {
-            get => backgroundFocused;
-            set
-            {
-                backgroundFocused = value;
-                if (HasFocus)
-                    background.Colour = value;
-            }
+            Font = YouTubePlayerEXApp.DefaultFont.With(italics: true),
+            Margin = new MarginPadding { Left = 2 },
+        };
+
+        private OsuCaret? caret;
+
+        private bool selectionStarted;
+        private double sampleLastPlaybackTime;
+
+        protected enum FeedbackSampleType
+        {
+            TextAdd,
+            TextAddCaps,
+            TextRemove,
+            TextConfirm,
+            TextInvalid,
+            CaretMove,
+            SelectCharacter,
+            SelectWord,
+            SelectAll,
+            Deselect
         }
 
-        protected Color4 BackgroundUnfocused
-        {
-            get => backgroundUnfocused;
-            set
-            {
-                backgroundUnfocused = value;
-                if (!HasFocus)
-                    background.Colour = value;
-            }
-        }
+        private Dictionary<FeedbackSampleType, Sample?[]> sampleMap = new Dictionary<FeedbackSampleType, Sample?[]>();
 
-        protected virtual Color4 InputErrorColour => Color4.Red;
+        /// <summary>
+        /// Whether all text should be selected when the <see cref="OsuTextBox"/> gains focus.
+        /// </summary>
+        public bool SelectAllOnFocus { get; set; }
 
         public AdaptiveTextBox()
         {
+            Height = 40;
+            TextContainer.Height = 0.5f;
+            CornerRadius = 5;
+            LengthLimit = 1000;
 
-            base.Content.Add(content = new Container
-            {
-                Origin = Anchor.Centre,
-                Anchor = Anchor.Centre,
-                RelativeSizeAxes = Axes.Both,
-                CornerRadius = 5,
-                Masking = true,
-                EdgeEffect = new EdgeEffectParameters
-                {
-                    Colour = Color4.White.Opacity(0.1f),
-                    Type = EdgeEffectType.Shadow,
-                    Radius = 5,
-                },
-                Children = new Drawable[]
-                {
-                    background = new Box
-                    {
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        RelativeSizeAxes = Axes.Both,
-                        Colour = Color4.Transparent,
-                        Alpha = 0,
-                    },
-                }
-            });
-
-            BackgroundFocused = FrameworkColour.BlueGreen;
-            BackgroundUnfocused = FrameworkColour.BlueGreenDark;
-            TextContainer.Height = 0.75f;
+            Current.DisabledChanged += disabled => { Alpha = disabled ? 0.3f : 1; };
         }
 
-        protected override void NotifyInputError() => background.FlashColour(InputErrorColour, 200);
+        [BackgroundDependencyLoader(true)]
+        private void load(AudioManager audio)
+        {
+            BackgroundUnfocused = Color4Extensions.FromHex(@"22252a");
+            BackgroundFocused = Color4Extensions.FromHex(@"2e3238");
+            BackgroundCommit = BorderColour = Color4Extensions.FromHex(@"66a3ff");
+            selectionColour = Color4Extensions.FromHex(@"5c6470");
+
+            if (caret != null)
+                caret.SelectionColour = selectionColour;
+
+            Placeholder.Colour = new Color4(180, 180, 180, 255);
+
+            // Note that `KeyBindingRow` uses similar logic for input feedback, so remember to update there if changing here.
+            var textAddedSamples = new Sample?[4];
+            for (int i = 0; i < textAddedSamples.Length; i++)
+                textAddedSamples[i] = audio.Samples.Get($@"Keyboard/key-press-{1 + i}");
+
+            sampleMap = new Dictionary<FeedbackSampleType, Sample?[]>
+            {
+                { FeedbackSampleType.TextAdd, textAddedSamples },
+                { FeedbackSampleType.TextAddCaps, new[] { audio.Samples.Get(@"Keyboard/key-caps") } },
+                { FeedbackSampleType.TextRemove, new[] { audio.Samples.Get(@"Keyboard/key-delete") } },
+                { FeedbackSampleType.TextConfirm, new[] { audio.Samples.Get(@"Keyboard/key-confirm") } },
+                { FeedbackSampleType.TextInvalid, new[] { audio.Samples.Get(@"Keyboard/key-invalid") } },
+                { FeedbackSampleType.CaretMove, new[] { audio.Samples.Get(@"Keyboard/key-movement") } },
+                { FeedbackSampleType.SelectCharacter, new[] { audio.Samples.Get(@"Keyboard/select-char") } },
+                { FeedbackSampleType.SelectWord, new[] { audio.Samples.Get(@"Keyboard/select-word") } },
+                { FeedbackSampleType.SelectAll, new[] { audio.Samples.Get(@"Keyboard/select-all") } },
+                { FeedbackSampleType.Deselect, new[] { audio.Samples.Get(@"Keyboard/deselect") } }
+            };
+        }
+
+        private Color4 selectionColour;
+
+        protected override Color4 SelectionColour => selectionColour;
+
+        protected override void OnUserTextAdded(string added)
+        {
+            base.OnUserTextAdded(added);
+
+            if (!added.Any(CanAddCharacter))
+                return;
+
+            if (added.Any(char.IsUpper) && AllowUniqueCharacterSamples)
+                PlayFeedbackSample(FeedbackSampleType.TextAddCaps);
+            else
+                PlayFeedbackSample(FeedbackSampleType.TextAdd);
+        }
+
+        protected override void OnUserTextRemoved(string removed)
+        {
+            base.OnUserTextRemoved(removed);
+
+            PlayFeedbackSample(FeedbackSampleType.TextRemove);
+        }
+
+        protected override void NotifyInputError()
+        {
+            base.NotifyInputError();
+
+            PlayFeedbackSample(FeedbackSampleType.TextInvalid);
+        }
 
         protected override void OnTextCommitted(bool textChanged)
         {
             base.OnTextCommitted(textChanged);
 
-            background.Colour = ReleaseFocusOnCommit ? BackgroundUnfocused : BackgroundFocused;
-            background.ClearTransforms();
-            background.FlashColour(BackgroundCommit, 400);
+            PlayFeedbackSample(FeedbackSampleType.TextConfirm);
         }
 
-        protected override void OnFocusLost(FocusLostEvent e)
+        protected override void OnCaretMoved(bool selecting)
         {
-            base.OnFocusLost(e);
+            base.OnCaretMoved(selecting);
 
-            background.ClearTransforms();
-            background.Colour = BackgroundFocused;
-            background.FadeColour(BackgroundUnfocused, 200, Easing.OutExpo);
+            if (!selecting)
+                PlayFeedbackSample(FeedbackSampleType.CaretMove);
+        }
+
+        protected override void OnTextSelectionChanged(TextSelectionType selectionType)
+        {
+            base.OnTextSelectionChanged(selectionType);
+
+            switch (selectionType)
+            {
+                case TextSelectionType.Character:
+                    PlayFeedbackSample(FeedbackSampleType.SelectCharacter);
+                    break;
+
+                case TextSelectionType.Word:
+                    PlayFeedbackSample(selectionStarted ? FeedbackSampleType.SelectCharacter : FeedbackSampleType.SelectWord);
+                    break;
+
+                case TextSelectionType.All:
+                    PlayFeedbackSample(FeedbackSampleType.SelectAll);
+                    break;
+            }
+
+            selectionStarted = true;
+        }
+
+        protected override void OnTextDeselected()
+        {
+            base.OnTextDeselected();
+
+            if (!selectionStarted) return;
+
+            PlayFeedbackSample(FeedbackSampleType.Deselect);
+
+            selectionStarted = false;
+        }
+
+        protected override void OnImeComposition(string newComposition, int removedTextLength, int addedTextLength, bool caretMoved)
+        {
+            base.OnImeComposition(newComposition, removedTextLength, addedTextLength, caretMoved);
+
+            if (string.IsNullOrEmpty(newComposition))
+            {
+                switch (removedTextLength)
+                {
+                    case 0:
+                        // empty composition event, composition wasn't changed, don't play anything.
+                        return;
+
+                    case 1:
+                        // composition probably ended by pressing backspace, or was cancelled.
+                        PlayFeedbackSample(FeedbackSampleType.TextRemove);
+                        return;
+
+                    default:
+                        // longer text removed, composition ended because it was cancelled.
+                        // could be a different sample if desired.
+                        PlayFeedbackSample(FeedbackSampleType.TextRemove);
+                        return;
+                }
+            }
+
+            if (addedTextLength > 0)
+            {
+                // some text was added, probably due to typing new text or by changing the candidate.
+                PlayFeedbackSample(FeedbackSampleType.TextAdd);
+                return;
+            }
+
+            if (removedTextLength > 0)
+            {
+                // text was probably removed by backspacing.
+                // it's also possible that a candidate that only removed text was changed to.
+                PlayFeedbackSample(FeedbackSampleType.TextRemove);
+                return;
+            }
+
+            if (caretMoved)
+            {
+                // only the caret/selection was moved.
+                PlayFeedbackSample(FeedbackSampleType.CaretMove);
+            }
+        }
+
+        protected override void OnImeResult(string result, bool successful)
+        {
+            base.OnImeResult(result, successful);
+
+            if (successful)
+            {
+                // composition was successfully completed, usually by pressing the enter key.
+                PlayFeedbackSample(FeedbackSampleType.TextConfirm);
+            }
+            else
+            {
+                // composition was prematurely ended, eg. by clicking inside the textbox.
+                // could be a different sample if desired.
+                PlayFeedbackSample(FeedbackSampleType.TextConfirm);
+            }
         }
 
         protected override void OnFocus(FocusEvent e)
         {
+            if (Masking)
+                BorderThickness = 3;
+
             base.OnFocus(e);
 
-            background.ClearTransforms();
-            background.Colour = BackgroundUnfocused;
-            background.FadeColour(BackgroundFocused, 200, Easing.Out);
+            // we may become focused from an ongoing drag operation, we don't want to overwrite selection in that case.
+            if (SelectAllOnFocus && string.IsNullOrEmpty(SelectedText))
+                SelectAll();
+        }
+
+        protected override void OnFocusLost(FocusLostEvent e)
+        {
+            if (Masking)
+                BorderThickness = 0;
+
+            base.OnFocusLost(e);
         }
 
         protected override Drawable GetDrawableCharacter(Grapheme c) => new FallingDownContainer
         {
             AutoSizeAxes = Axes.Both,
-            Child = new SpriteText { Text = c.ToString(), Font = YouTubePlayerEXApp.DefaultFont }
+            Child = new AdaptiveSpriteText { Text = c.ToString(), Font = YouTubePlayerEXApp.DefaultFont.With(size: FontSize) },
         };
 
-        protected override SpriteText CreatePlaceholder() => new FadingPlaceholderText
-        {
-            Colour = FrameworkColour.YellowGreen,
-            Font = YouTubePlayerEXApp.DefaultFont,
-            Anchor = Anchor.CentreLeft,
-            Origin = Anchor.CentreLeft,
-            X = CaretWidth,
-        };
-
-        public partial class FallingDownContainer : Container
-        {
-            public override void Show()
-            {
-                var col = (Color4)Colour;
-                this.FadeColour(col.Opacity(0)).FadeColour(col, caret_move_time * 2, Easing.Out);
-            }
-
-            public override void Hide()
-            {
-                this.FadeOut(200);
-                this.MoveToY(DrawSize.Y, 200, Easing.InOutSine);
-            }
-        }
-
-        public partial class FadingPlaceholderText : SpriteText
-        {
-            public override void Show() => this.FadeIn(200);
-
-            public override void Hide() => this.FadeOut(200);
-        }
-
-        protected override Caret CreateCaret() => new BasicCaret
+        protected override Caret CreateCaret() => caret = new OsuCaret
         {
             CaretWidth = CaretWidth,
             SelectionColour = SelectionColour,
         };
 
-        public partial class BasicCaret : Caret
+        private SampleChannel? getSampleChannel(FeedbackSampleType feedbackSampleType)
         {
-            public BasicCaret()
+            var samples = sampleMap[feedbackSampleType];
+
+            if (samples.Length == 0)
+                return null;
+
+            return samples[RNG.Next(0, samples.Length)]?.GetChannel();
+        }
+
+        protected void PlayFeedbackSample(FeedbackSampleType feedbackSample) => Schedule(() =>
+        {
+            if (Time.Current < sampleLastPlaybackTime + 15) return;
+
+            SampleChannel? channel = getSampleChannel(feedbackSample);
+
+            if (channel == null) return;
+
+            double pitch = 0.98 + RNG.NextDouble(0.04);
+
+            if (feedbackSample == FeedbackSampleType.SelectCharacter)
+                pitch += ((double)SelectedText.Length / Math.Max(1, Text.Length)) * 0.15f;
+
+            channel.Frequency.Value = pitch;
+            channel.Play();
+
+            sampleLastPlaybackTime = Time.Current;
+        });
+
+        private partial class OsuCaret : Caret
+        {
+            private const float caret_move_time = 60;
+
+            private readonly CaretContainer beatSync;
+
+            public OsuCaret()
             {
                 Colour = Color4.Transparent;
 
-                InternalChild = new Container
+                InternalChild = beatSync = new CaretContainer
                 {
                     Anchor = Anchor.CentreLeft,
                     Origin = Anchor.CentreLeft,
+                    Masking = true,
+                    CornerRadius = 1f,
                     RelativeSizeAxes = Axes.Both,
                     Height = 0.9f,
-                    CornerRadius = 1f,
-                    Masking = true,
-                    Child = new Box { RelativeSizeAxes = Axes.Both },
                 };
             }
 
@@ -185,21 +340,44 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
             public override void DisplayAt(Vector2 position, float? selectionWidth)
             {
+                beatSync.HasSelection = selectionWidth != null;
+
                 if (selectionWidth != null)
                 {
                     this.MoveTo(new Vector2(position.X, position.Y), 60, Easing.Out);
                     this.ResizeWidthTo(selectionWidth.Value + CaretWidth / 2, caret_move_time, Easing.Out);
-                    this
-                        .FadeTo(0.5f, 200, Easing.Out)
-                        .FadeColour(SelectionColour, 200, Easing.Out);
+                    this.FadeColour(SelectionColour, 200, Easing.Out);
                 }
                 else
                 {
                     this.MoveTo(new Vector2(position.X - CaretWidth / 2, position.Y), 60, Easing.Out);
                     this.ResizeWidthTo(CaretWidth, caret_move_time, Easing.Out);
-                    this
-                        .FadeColour(Color4.White, 200, Easing.Out)
-                        .Loop(c => c.FadeTo(0.7f).FadeTo(0.4f, 500, Easing.InOutSine));
+                    this.FadeColour(Color4.White, 200, Easing.Out);
+                }
+            }
+
+            private partial class CaretContainer : Container
+            {
+                private bool hasSelection;
+
+                public bool HasSelection
+                {
+                    set
+                    {
+                        hasSelection = value;
+                        if (value)
+
+                            this.FadeTo(0.5f, 200, Easing.Out);
+                    }
+                }
+
+                public CaretContainer()
+                {
+                    InternalChild = new Box
+                    {
+                        RelativeSizeAxes = Axes.Both,
+                        Colour = Color4.White,
+                    };
                 }
             }
         }

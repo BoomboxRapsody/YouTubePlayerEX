@@ -61,6 +61,33 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Disabled과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string caption_disabled {
+            get {
+                return ResourceManager.GetString("caption_disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Closed caption language (only available)과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string caption_language {
+            get {
+                return ResourceManager.GetString("caption_language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Display과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string display {
+            get {
+                return ResourceManager.GetString("display", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Video ID must not be empty!과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string error_noVideoId {
@@ -75,6 +102,33 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string frame_limiter {
             get {
                 return ResourceManager.GetString("frame_limiter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   General과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string general {
+            get {
+                return ResourceManager.GetString("general", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Graphics과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string graphics {
+            get {
+                return ResourceManager.GetString("graphics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Language과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string language {
+            get {
+                return ResourceManager.GetString("language", resourceCulture);
             }
         }
         
@@ -102,6 +156,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string profile_image_tooltip {
             get {
                 return ResourceManager.GetString("profile_image_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Screen mode과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string screen_mode {
+            get {
+                return ResourceManager.GetString("screen_mode", resourceCulture);
             }
         }
         

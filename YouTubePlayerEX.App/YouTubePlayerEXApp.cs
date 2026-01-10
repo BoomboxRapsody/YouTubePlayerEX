@@ -19,6 +19,7 @@ namespace YouTubePlayerEX.App
         private ScreenStack screenStack;
 
         public static FontUsage DefaultFont = FontUsage.Default.With("Pretendard", 16, "Regular");
+        public static FontUsage DefaultFontSDF = FontUsage.Default.With("Pretendard", 16, "Regular");
 
         [BackgroundDependencyLoader]
         private void load()

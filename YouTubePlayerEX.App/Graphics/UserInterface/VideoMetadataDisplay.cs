@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Google.Apis.YouTube.v3.Data;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
+using osu.Framework.Configuration;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
@@ -24,9 +26,16 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         [Resolved]
         private YouTubeAPI api { get; set; }
 
+        [Resolved]
+        private FrameworkConfigManager frameworkConfig { get; set; }
+
+        private Bindable<string> localeBindable = new Bindable<string>();
+
         [BackgroundDependencyLoader]
         private void load()
         {
+            localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
+
             CornerRadius = 12;
             Masking = true;
             InternalChildren = new Drawable[]
@@ -83,6 +92,11 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 videoName.Text = api.GetLocalizedVideoTitle(videoData);
                 desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0));
                 profileImage.UpdateProfileImage(videoData.Snippet.ChannelId);
+
+                localeBindable.BindValueChanged(locale =>
+                {
+                    videoName.Text = api.GetLocalizedVideoTitle(videoData);
+                }, true);
             });
         }
     }

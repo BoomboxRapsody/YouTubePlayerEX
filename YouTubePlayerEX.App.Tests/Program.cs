@@ -7,7 +7,7 @@ namespace YouTubePlayerEX.App.Tests
     {
         public static void Main()
         {
-            using (GameHost host = Host.GetSuitableDesktopHost("visual-tests"))
+            using (GameHost host = Host.GetSuitableDesktopHost("YouTubePlayerEX-VisualTests"))
             using (var game = new YouTubePlayerEXTestBrowser())
                 host.Run(game);
         }

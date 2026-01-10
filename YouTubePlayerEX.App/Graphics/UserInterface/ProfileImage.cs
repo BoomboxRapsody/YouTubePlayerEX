@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using Google.Apis.YouTube.v3.Data;
 using osu.Framework.Allocation;
+using osu.Framework.Audio.Sample;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Cursor;
@@ -54,8 +55,22 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             };
         }
 
+        private Sample clickAudio;
+
+        [BackgroundDependencyLoader]
+        private void load(ISampleStore tracks)
+        {
+            clickAudio = tracks.Get("button-select.wav");
+        }
+
+        public void PlayClickAudio()
+        {
+            clickAudio.Play();
+        }
+
         protected override bool OnClick(ClickEvent e)
         {
+            PlayClickAudio();
             if (channel != null)
                 app.Host.OpenUrlExternally($"https://www.youtube.com/channel/{channel.Id}");
 

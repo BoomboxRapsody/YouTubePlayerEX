@@ -4,6 +4,7 @@ using System.Linq;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
+using osu.Framework.Configuration;
 
 namespace YouTubePlayerEX.App.Online
 {
@@ -11,8 +12,11 @@ namespace YouTubePlayerEX.App.Online
     {
         private YouTubeService youtubeService;
 
-        public YouTubeAPI()
+        private FrameworkConfigManager frameworkConfig;
+
+        public YouTubeAPI(FrameworkConfigManager frameworkConfig)
         {
+            this.frameworkConfig = frameworkConfig;
             youtubeService = new YouTubeService(new BaseClientService.Initializer()
             {
                 ApiKey = "AIzaSyDGpklqOVqNLzOuChi5hHKswhZIC9ocEIQ",
@@ -39,14 +43,7 @@ namespace YouTubePlayerEX.App.Online
             if (channel == null)
                 return string.Empty;
 
-            try
-            {
-                return channel.Localizations[CultureInfo.CurrentCulture.Name.Replace("-", "_")].Title;
-            }
-            catch (Exception e)
-            {
-                return channel.Snippet.Title;
-            }
+            return channel.Snippet.Title;
         }
 
         public string GetLocalizedVideoTitle(Video video)
@@ -54,9 +51,36 @@ namespace YouTubePlayerEX.App.Online
             if (video == null)
                 return string.Empty;
 
+            string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
+            string languageParsed = string.Empty;
+
+            switch (language)
+            {
+                case "en":
+                {
+                    languageParsed = "en-US";
+                    break;
+                }
+                case "ja":
+                {
+                    languageParsed = "ja-JP";
+                    break;
+                }
+                case "ko":
+                {
+                    languageParsed = "ko-KR";
+                    break;
+                }
+                default:
+                {
+                    languageParsed = "en-US";
+                    break;
+                }
+            }
+
             try
             {
-                return video.Localizations[CultureInfo.CurrentCulture.TwoLetterISOLanguageName].Title;
+                return video.Localizations[languageParsed].Title;
             }
             catch (Exception e)
             {

@@ -1,16 +1,23 @@
+using System;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.IO.Stores;
-using osu.Framework.Localisation;
+using osu.Framework.Localisation;   
 using osu.Framework.Logging;
+using osu.Framework.Platform;
 using osuTK;
 using YoutubeExplode;
+using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics;
 using YouTubePlayerEX.App.Graphics.Cursor;
+using YouTubePlayerEX.App.Graphics.UserInterface;
 using YouTubePlayerEX.App.Input.Binding;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
@@ -32,8 +39,7 @@ namespace YouTubePlayerEX.App
         [Cached]
         public readonly YoutubeClient YouTubeClient = new YoutubeClient();
 
-        [Cached]
-        protected readonly YouTubeAPI YouTubeService = new YouTubeAPI();
+        protected YouTubeAPI YouTubeService { get; set; }
 
         /// <summary>
         /// The language in which the app is currently displayed in.
@@ -44,15 +50,66 @@ namespace YouTubePlayerEX.App
 
         private IBindable<LocalisationParameters> localisationParameters = null!;
 
+        protected YTPlayerEXConfigManager LocalConfig { get; private set; }
+
         protected GlobalCursorDisplay GlobalCursorDisplay { get; private set; }
 
         protected YouTubePlayerEXAppBase()
         {
         }
 
+        protected Storage Storage { get; set; }
+
+        private int allowableExceptions;
+
+        /// <summary>
+        /// Allows a maximum of one unhandled exception, per second of execution.
+        /// </summary>
+        /// <returns>Whether to ignore the exception and continue running.</returns>
+        private bool onExceptionThrown(Exception ex)
+        {
+            if (Interlocked.Decrement(ref allowableExceptions) < 0)
+            {
+                Logger.Log("Too many unhandled exceptions, crashing out.");
+                return false;
+            }
+
+            Logger.Log($"Unhandled exception has been allowed with {allowableExceptions} more allowable exceptions.");
+            // restore the stock of allowable exceptions after a short delay.
+            Task.Delay(1000).ContinueWith(_ => Interlocked.Increment(ref allowableExceptions));
+
+            return true;
+        }
+
+        public override void SetHost(GameHost host)
+        {
+            base.SetHost(host);
+
+            // may be non-null for certain tests
+            Storage ??= host.Storage;
+
+            LocalConfig ??= new YTPlayerEXConfigManager(Storage);
+
+            host.ExceptionThrown += onExceptionThrown;
+        }
+
+        protected override void Dispose(bool isDisposing)
+        {
+            base.Dispose(isDisposing);
+
+            LocalConfig?.Dispose();
+
+            if (Host != null)
+                Host.ExceptionThrown -= onExceptionThrown;
+        }
+
+        protected SessionStatics SessionStatics { get; private set; }
+
         [BackgroundDependencyLoader]
         private void load(FrameworkConfigManager frameworkConfig)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             //Logger.Log(Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath("videoId") + @"\video.mp4");
             Resources.AddStore(new DllResourceStore(typeof(YouTubePlayerEXResources).Assembly));
 
@@ -66,7 +123,15 @@ namespace YouTubePlayerEX.App
 
             InitialiseFonts();
 
+            dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig));
+
+            dependencies.Cache(SessionStatics = new SessionStatics());
+
             GlobalActionContainer globalBindings;
+
+            AdaptiveMenuSamples menuSamples;
+            dependencies.Cache(menuSamples = new AdaptiveMenuSamples());
+            base.Content.Add(menuSamples);
 
             // Ensure game and tests scale with window size and screen DPI.
             base.Content.Add(globalBindings = new GlobalActionContainer(this)
@@ -98,38 +163,38 @@ namespace YouTubePlayerEX.App
 
         protected virtual void InitialiseFonts()
         {
-            AddFont(Resources, @"Fonts/Pretendard/Pretendard-Regular");
-            AddFont(Resources, @"Fonts/Pretendard/Pretendard-RegularItalic");
-            AddFont(Resources, @"Fonts/Pretendard/Pretendard-Medium");
-            AddFont(Resources, @"Fonts/Pretendard/Pretendard-MediumItalic");
-            AddFont(Resources, @"Fonts/Pretendard/Pretendard-Light");
-            AddFont(Resources, @"Fonts/Pretendard/Pretendard-LightItalic");
-            AddFont(Resources, @"Fonts/Pretendard/Pretendard-SemiBold");
-            AddFont(Resources, @"Fonts/Pretendard/Pretendard-SemiBoldItalic");
-            AddFont(Resources, @"Fonts/Pretendard/Pretendard-Bold");
-            AddFont(Resources, @"Fonts/Pretendard/Pretendard-BoldItalic");
-            AddFont(Resources, @"Fonts/Pretendard/Pretendard-Black");
-            AddFont(Resources, @"Fonts/Pretendard/Pretendard-BlackItalic");
+            AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-Regular");
+            AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-RegularItalic");
+            AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-Medium");
+            AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-MediumItalic");
+            AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-Light");
+            AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-LightItalic");
+            AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-SemiBold");
+            AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-SemiBoldItalic");
+            AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-Bold");
+            AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-BoldItalic");
+            AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-Black");
+            AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-BlackItalic");
 
-            AddFont(Resources, @"Fonts/NotoSansKR/NotoSansKR-Regular");
-            AddFont(Resources, @"Fonts/NotoSansKR/NotoSansKR-RegularItalic");
-            AddFont(Resources, @"Fonts/NotoSansKR/NotoSansKR-Medium");
-            AddFont(Resources, @"Fonts/NotoSansKR/NotoSansKR-MediumItalic");
-            AddFont(Resources, @"Fonts/NotoSansKR/NotoSansKR-Light");
-            AddFont(Resources, @"Fonts/NotoSansKR/NotoSansKR-LightItalic");
-            AddFont(Resources, @"Fonts/NotoSansKR/NotoSansKR-SemiBold");
-            AddFont(Resources, @"Fonts/NotoSansKR/NotoSansKR-SemiBoldItalic");
-            AddFont(Resources, @"Fonts/NotoSansKR/NotoSansKR-Bold");
-            AddFont(Resources, @"Fonts/NotoSansKR/NotoSansKR-BoldItalic");
-            AddFont(Resources, @"Fonts/NotoSansKR/NotoSansKR-Black");
-            AddFont(Resources, @"Fonts/NotoSansKR/NotoSansKR-BlackItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Regular");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-RegularItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Medium");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-MediumItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Light");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-LightItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-SemiBold");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-SemiBoldItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Bold");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-BoldItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Black");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-BlackItalic");
 
-            AddFont(Resources, @"Fonts/Noto/Noto-Basic");
-            AddFont(Resources, @"Fonts/Noto/Noto-Bopomofo");
-            AddFont(Resources, @"Fonts/Noto/Noto-CJK-Basic");
-            AddFont(Resources, @"Fonts/Noto/Noto-CJK-Compatibility");
-            AddFont(Resources, @"Fonts/Noto/Noto-Hangul");
-            AddFont(Resources, @"Fonts/Noto/Noto-Thai");
+            AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Basic");
+            AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Bopomofo");
+            AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-CJK-Basic");
+            AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-CJK-Compatibility");
+            AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Hangul");
+            AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Thai");
 
             Fonts.AddStore(new EmojiStore(Host.Renderer, Resources));
         }

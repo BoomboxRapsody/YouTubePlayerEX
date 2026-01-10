@@ -8,6 +8,9 @@ using osu.Framework.Graphics.Audio;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Video;
 using osu.Framework.Timing;
+using YoutubeExplode.Videos.ClosedCaptions;
+using YouTubePlayerEX.App.Graphics.Caption;
+using YouTubePlayerEX.App.Online;
 
 namespace YouTubePlayerEX.App.Graphics.Videos
 {
@@ -18,16 +21,18 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         private DrawableTrack drawableTrack;
 
         private string fileName_Video, fileName_Audio;
+        private ClosedCaptionTrack captionTrack;
 
         private StopwatchClock rateAdjustClock;
         private FramedClock framedClock;
 
         private Bindable<double> playbackSpeed;
 
-        public YouTubeVideoPlayer(string fileName_Video, string fileName_Audio)
+        public YouTubeVideoPlayer(string fileName_Video, string fileName_Audio, ClosedCaptionTrack captionTrack)
         {
             this.fileName_Video = fileName_Video;
             this.fileName_Audio = fileName_Audio;
+            this.captionTrack = captionTrack;
         }
 
         public BindableNumber<double> VideoProgress = new BindableNumber<double>()
@@ -60,7 +65,8 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                 keyBindingAnimations = new KeyBindingAnimations
                 {
                     RelativeSizeAxes = Axes.Both,
-                }
+                },
+                new ClosedCaptionContainer(this, captionTrack)
             });
 
             rateAdjustClock.Rate = playbackSpeed.Value;

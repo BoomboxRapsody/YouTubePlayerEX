@@ -117,11 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="caption_disabled" xml:space="preserve">
+    <value>사용 안함</value>
+  </data>
+  <data name="caption_language" xml:space="preserve">
+    <value>자막 언어 (가능한 경우)</value>
+  </data>
+  <data name="display" xml:space="preserve">
+    <value>디스플레이</value>
+  </data>
   <data name="error_noVideoId" xml:space="preserve">
     <value>비디오 ID는 비어있지 않아야 합니다.</value>
   </data>
   <data name="frame_limiter" xml:space="preserve">
     <value>프레임 제한</value>
+  </data>
+  <data name="general" xml:space="preserve">
+    <value>일반</value>
+  </data>
+  <data name="graphics" xml:space="preserve">
+    <value>그래픽</value>
+  </data>
+  <data name="language" xml:space="preserve">
+    <value>언어</value>
   </data>
   <data name="load_from_video_id" xml:space="preserve">
     <value>동영상 ID로 불러오기</value>
@@ -131,6 +149,9 @@
   </data>
   <data name="profile_image_tooltip" xml:space="preserve">
     <value>{0} • 구독자 {1}명 • 여기를 클릭하여 외부 브라우저에서 채널 링크를 엽니다.</value>
+  </data>
+  <data name="screen_mode" xml:space="preserve">
+    <value>화면 모드</value>
   </data>
   <data name="screen_resolution" xml:space="preserve">
     <value>화면 해상도</value>

@@ -117,11 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="caption_disabled" xml:space="preserve">
+    <value>無効</value>
+  </data>
+  <data name="caption_language" xml:space="preserve">
+    <value>クローズドキャプション言語（使用可能）</value>
+  </data>
+  <data name="display" xml:space="preserve">
+    <value>ディスプレイ</value>
+  </data>
   <data name="error_noVideoId" xml:space="preserve">
     <value>ビデオIDは空白のままにしてはいけません！</value>
   </data>
   <data name="frame_limiter" xml:space="preserve">
     <value>フレーム リミッタ</value>
+  </data>
+  <data name="general" xml:space="preserve">
+    <value>全般</value>
+  </data>
+  <data name="graphics" xml:space="preserve">
+    <value>グラフィックス</value>
+  </data>
+  <data name="language" xml:space="preserve">
+    <value>言語</value>
   </data>
   <data name="load_from_video_id" xml:space="preserve">
     <value>ビデオ ID からロードします</value>
@@ -131,6 +149,9 @@
   </data>
   <data name="profile_image_tooltip" xml:space="preserve">
     <value>{0} • {1}ユーザ • 外部 Web ブラウザを介してチャネルを表示するには、クリックします。</value>
+  </data>
+  <data name="screen_mode" xml:space="preserve">
+    <value>画面モード</value>
   </data>
   <data name="screen_resolution" xml:space="preserve">
     <value>画面解像度</value>

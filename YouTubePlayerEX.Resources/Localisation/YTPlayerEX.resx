@@ -117,11 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="caption_disabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="caption_language" xml:space="preserve">
+    <value>Closed caption language (only available)</value>
+  </data>
+  <data name="display" xml:space="preserve">
+    <value>Display</value>
+  </data>
   <data name="error_noVideoId" xml:space="preserve">
     <value>Video ID must not be empty!</value>
   </data>
   <data name="frame_limiter" xml:space="preserve">
     <value>Frame limiter</value>
+  </data>
+  <data name="general" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="graphics" xml:space="preserve">
+    <value>Graphics</value>
+  </data>
+  <data name="language" xml:space="preserve">
+    <value>Language</value>
   </data>
   <data name="load_from_video_id" xml:space="preserve">
     <value>Load from video ID</value>
@@ -131,6 +149,9 @@
   </data>
   <data name="profile_image_tooltip" xml:space="preserve">
     <value>{0} • {1} subscribers • Click to view channel via external web browser.</value>
+  </data>
+  <data name="screen_mode" xml:space="preserve">
+    <value>Screen mode</value>
   </data>
   <data name="screen_resolution" xml:space="preserve">
     <value>Screen resolution</value>

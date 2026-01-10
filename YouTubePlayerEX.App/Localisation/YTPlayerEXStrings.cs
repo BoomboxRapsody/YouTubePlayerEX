@@ -31,6 +31,46 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString ProfileImageTooltip(string username, string subs) => new TranslatableString(getKey(@"profile_image_tooltip"), "{0} • {1} subscribers • Click to view channel via external web browser.", username, subs);
 
+        /// <summary>
+        /// "Settings"
+        /// </summary>
+        public static LocalisableString Settings => new TranslatableString(getKey(@"settings"), "Settings");
+
+        /// <summary>
+        /// "Screen resolution"
+        /// </summary>
+        public static LocalisableString ScreenResolution => new TranslatableString(getKey(@"screen_resolution"), "Screen resolution");
+
+        /// <summary>
+        /// "Disabled"
+        /// </summary>
+        public static LocalisableString CaptionDisabled => new TranslatableString(getKey(@"caption_disabled"), "Disabled");
+
+        /// <summary>
+        /// "General"
+        /// </summary>
+        public static LocalisableString General => new TranslatableString(getKey(@"general"), "General");
+
+        /// <summary>
+        /// "Graphics"
+        /// </summary>
+        public static LocalisableString Graphics => new TranslatableString(getKey(@"graphics"), "Graphics");
+
+        /// <summary>
+        /// "Language"
+        /// </summary>
+        public static LocalisableString Language => new TranslatableString(getKey(@"language"), "Language");
+
+        /// <summary>
+        /// "Display"
+        /// </summary>
+        public static LocalisableString Display => new TranslatableString(getKey(@"display"), "Display");
+
+        /// <summary>
+        /// "Screen mode"
+        /// </summary>
+        public static LocalisableString ScreenMode => new TranslatableString(getKey(@"screen_mode"), "Screen mode");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }
