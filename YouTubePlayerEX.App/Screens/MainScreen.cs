@@ -220,7 +220,7 @@ namespace YouTubePlayerEX.App.Screens
                                     Padding = new MarginPadding(16),
                                     Spacing = new Vector2(0, 8),
                                     Children = new Drawable[] {
-                                        new RoundedSliderBar<double>
+                                        new RoundedSliderBarWithoutTooltip
                                         {
                                             RelativeSizeAxes = Axes.X,
                                             PlaySamplesOnAdjust = false,
@@ -286,7 +286,7 @@ namespace YouTubePlayerEX.App.Screens
                                                     {
                                                         Top = 8,
                                                     },
-                                                    KeyboardStep = 0.01f,
+                                                    KeyboardStep = 0.1f,
                                                     PlaySamplesOnAdjust = true,
                                                     Current = { BindTarget = playbackSpeed },
                                                     DisplayAsPercentage = true,
@@ -489,6 +489,11 @@ namespace YouTubePlayerEX.App.Screens
         private IWindow? window;
 
         private SettingsItemV2 windowModeDropdownSettings;
+
+        private partial class RoundedSliderBarWithoutTooltip : RoundedSliderBar<double>
+        {
+            public override LocalisableString TooltipText => "";
+        }
 
         private void updateDisplaySettingsVisibility()
         {
@@ -785,12 +790,13 @@ namespace YouTubePlayerEX.App.Screens
         private void updateVideoMetadata(string videoId)
         {
             videoMetadataDisplay.UpdateVideo(videoId);
-            videoLoadingProgress.Text = "";
         }
 
         private void addVideoToScreen()
         {
             videoContainer.Add(currentVideoSource);
+
+            videoLoadingProgress.Text = "";
 
             videoProgress.BindValueChanged(seek =>
             {

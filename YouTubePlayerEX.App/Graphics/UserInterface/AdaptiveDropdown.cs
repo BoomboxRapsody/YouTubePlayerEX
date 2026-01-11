@@ -266,7 +266,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     [BackgroundDependencyLoader(true)]
                     private void load()
                     {
-                        Chevron.Colour = Color4.Black;
+                        Chevron.Colour = Color4.White;
                     }
 
                     private bool hovering;

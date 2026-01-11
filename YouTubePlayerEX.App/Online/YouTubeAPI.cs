@@ -54,33 +54,9 @@ namespace YouTubePlayerEX.App.Online
             string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
             string languageParsed = string.Empty;
 
-            switch (language)
-            {
-                case "en":
-                {
-                    languageParsed = "en-US";
-                    break;
-                }
-                case "ja":
-                {
-                    languageParsed = "ja-JP";
-                    break;
-                }
-                case "ko":
-                {
-                    languageParsed = "ko-KR";
-                    break;
-                }
-                default:
-                {
-                    languageParsed = "en-US";
-                    break;
-                }
-            }
-
             try
             {
-                return video.Localizations[languageParsed].Title;
+                return video.Localizations[language].Title;
             }
             catch (Exception e)
             {
