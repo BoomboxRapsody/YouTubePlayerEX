@@ -6,18 +6,23 @@ using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using osu.Framework.Configuration;
 using YouTubePlayerEX.App.Config;
+using YouTubePlayerEX.App.Localisation;
 
 namespace YouTubePlayerEX.App.Online
 {
     public partial class YouTubeAPI
     {
         private YouTubeService youtubeService;
+        private GoogleTranslate translateApi;
 
         private FrameworkConfigManager frameworkConfig;
+        private YTPlayerEXConfigManager appConfig;
 
-        public YouTubeAPI(FrameworkConfigManager frameworkConfig)
+        public YouTubeAPI(FrameworkConfigManager frameworkConfig, GoogleTranslate translateApi, YTPlayerEXConfigManager appConfig)
         {
             this.frameworkConfig = frameworkConfig;
+            this.translateApi = translateApi;
+            this.appConfig = appConfig;
             youtubeService = new YouTubeService(new BaseClientService.Initializer()
             {
                 ApiKey = "AIzaSyDGpklqOVqNLzOuChi5hHKswhZIC9ocEIQ",
@@ -44,7 +49,31 @@ namespace YouTubePlayerEX.App.Online
             if (channel == null)
                 return string.Empty;
 
-            return channel.Snippet.Title;
+            if (appConfig.Get<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource) == VideoMetadataTranslateSource.YouTube)
+            {
+                string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
+                try
+                {
+                    return channel.Localizations[language].Title;
+                }
+                catch (Exception e)
+                {
+                    return channel.Snippet.Title;
+                }
+            }
+            else
+            {
+                try
+                {
+                    string originalTitle = channel.Snippet.Title;
+                    string translatedTitle = translateApi.Translate(originalTitle, GoogleTranslateLanguage.auto);
+                    return translatedTitle;
+                }
+                catch (Exception e)
+                {
+                    return channel.Snippet.Title;
+                }
+            }
         }
 
         public string ParseCaptionLanguage(ClosedCaptionLanguage captionLanguage)
@@ -75,6 +104,20 @@ namespace YouTubePlayerEX.App.Online
         {
             if (video == null)
                 return string.Empty;
+
+            if (appConfig.Get<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource) == VideoMetadataTranslateSource.GoogleTranslate)
+            {
+                try
+                {
+                    string originalTitle = video.Snippet.Title;
+                    string translatedTitle = translateApi.Translate(originalTitle, GoogleTranslateLanguage.auto);
+                    return translatedTitle;
+                }
+                catch (Exception e)
+                {
+                    return video.Snippet.Title;
+                }
+            }
 
             string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
             string languageParsed = string.Empty;

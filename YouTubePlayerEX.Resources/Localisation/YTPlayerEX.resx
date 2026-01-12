@@ -147,6 +147,9 @@
   <data name="general" xml:space="preserve">
     <value>General</value>
   </data>
+  <data name="google_translate" xml:space="preserve">
+    <value>Google Translate</value>
+  </data>
   <data name="graphics" xml:space="preserve">
     <value>Graphics</value>
   </data>
@@ -185,6 +188,9 @@
   </data>
   <data name="videoMetadata_desc" xml:space="preserve">
     <value>{0} • {1} views</value>
+  </data>
+  <data name="video_metadata_translate_source" xml:space="preserve">
+    <value>Video metadata translate source</value>
   </data>
   <data name="video_volume" xml:space="preserve">
     <value>Video volume</value>

@@ -10,6 +10,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osuTK.Graphics;
+using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics.Sprites;
 using YouTubePlayerEX.App.Localisation;
@@ -29,12 +30,17 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         [Resolved]
         private FrameworkConfigManager frameworkConfig { get; set; }
 
+        [Resolved]
+        private YTPlayerEXConfigManager appConfig { get; set; }
+
         private Bindable<string> localeBindable = new Bindable<string>();
+        private Bindable<VideoMetadataTranslateSource> translationSource = new Bindable<VideoMetadataTranslateSource>();
 
         [BackgroundDependencyLoader]
         private void load()
         {
             localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
+            translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource);
 
             CornerRadius = 12;
             Masking = true;
@@ -83,11 +89,13 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             };
         }
 
+        private Video videoData;
+
         public void UpdateVideo(string videoId)
         {
             Task.Run(async () =>
             {
-                Video videoData = api.GetVideo(videoId);
+                videoData = api.GetVideo(videoId);
                 Channel channelData = api.GetChannel(videoData.Snippet.ChannelId);
                 videoName.Text = api.GetLocalizedVideoTitle(videoData);
                 desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0));
@@ -95,7 +103,20 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
                 localeBindable.BindValueChanged(locale =>
                 {
-                    videoName.Text = api.GetLocalizedVideoTitle(videoData);
+                    Task.Run(async () =>
+                    {
+                        videoName.Text = api.GetLocalizedVideoTitle(videoData);
+                        desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0));
+                    });
+                }, true);
+
+                translationSource.BindValueChanged(locale =>
+                {
+                    Task.Run(async () =>
+                    {
+                        videoName.Text = api.GetLocalizedVideoTitle(videoData);
+                        desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0));
+                    });
                 }, true);
             });
         }

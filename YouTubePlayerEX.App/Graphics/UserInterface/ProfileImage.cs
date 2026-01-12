@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Globalization;
 using System.Threading.Tasks;
-using Google.Apis.YouTube.v3.Data;
 using osu.Framework.Allocation;
 using osu.Framework.Audio.Sample;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Cursor;
@@ -13,6 +12,7 @@ using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Events;
 using osu.Framework.Localisation;
 using osuTK.Graphics;
+using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
@@ -23,7 +23,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
     {
         private Sprite profileImage;
 
-        private Channel channel;
+        private Google.Apis.YouTube.v3.Data.Channel channel;
 
         [Resolved]
         private TextureStore textureStore { get; set; }
@@ -35,6 +35,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         [Resolved]
         private YouTubePlayerEXAppBase app { get; set; }
+
+        private Bindable<VideoMetadataTranslateSource> translationSource = new Bindable<VideoMetadataTranslateSource>();
 
         public ProfileImage(float size = 30)
         {
@@ -68,6 +70,9 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             clickAudio.Play();
         }
 
+        [Resolved]
+        private YTPlayerEXConfigManager appConfig { get; set; }
+
         protected override bool OnClick(ClickEvent e)
         {
             PlayClickAudio();
@@ -84,6 +89,14 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 channel = api.GetChannel(channelId);
                 profileImage.Texture = textureStore.Get(channel.Snippet.Thumbnails.High.Url);
                 TooltipText = YTPlayerEXStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel), Convert.ToInt32(channel.Statistics.SubscriberCount).ToStandardFormattedString(0));
+
+                translationSource.BindValueChanged(locale =>
+                {
+                    Task.Run(async () =>
+                    {
+                        TooltipText = YTPlayerEXStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel), Convert.ToInt32(channel.Statistics.SubscriberCount).ToStandardFormattedString(0));
+                    });
+                }, true);
             });
         }
     }

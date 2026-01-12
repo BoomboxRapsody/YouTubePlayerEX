@@ -422,6 +422,11 @@ namespace YouTubePlayerEX.App.Screens
                                                     Caption = YTPlayerEXStrings.CaptionLanguage,
                                                     Current = captionLanguage,
                                                 }),
+                                                new SettingsItemV2(new FormEnumDropdown<VideoMetadataTranslateSource>
+                                                {
+                                                    Caption = YTPlayerEXStrings.VideoMetadataTranslateSource,
+                                                    Current = appConfig.GetBindable<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource),
+                                                }),
                                                 new AdaptiveSpriteText
                                                 {
                                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),

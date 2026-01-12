@@ -147,6 +147,9 @@
   <data name="general" xml:space="preserve">
     <value>全般</value>
   </data>
+  <data name="google_translate" xml:space="preserve">
+    <value>Google翻訳</value>
+  </data>
   <data name="graphics" xml:space="preserve">
     <value>グラフィックス</value>
   </data>
@@ -185,6 +188,9 @@
   </data>
   <data name="videoMetadata_desc" xml:space="preserve">
     <value>{0} • {1} 回視聴</value>
+  </data>
+  <data name="video_metadata_translate_source" xml:space="preserve">
+    <value>ビデオメタデータ変換ソース</value>
   </data>
   <data name="video_volume" xml:space="preserve">
     <value>ビデオボリューム</value>

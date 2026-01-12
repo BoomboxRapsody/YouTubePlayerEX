@@ -151,6 +151,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Google Translate과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string google_translate {
+            get {
+                return ResourceManager.GetString("google_translate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Graphics과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string graphics {
@@ -255,6 +264,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string sfx_volume {
             get {
                 return ResourceManager.GetString("sfx_volume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Video metadata translate source과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string video_metadata_translate_source {
+            get {
+                return ResourceManager.GetString("video_metadata_translate_source", resourceCulture);
             }
         }
         

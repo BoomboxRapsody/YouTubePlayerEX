@@ -147,6 +147,9 @@
   <data name="general" xml:space="preserve">
     <value>일반</value>
   </data>
+  <data name="google_translate" xml:space="preserve">
+    <value>Google 번역</value>
+  </data>
   <data name="graphics" xml:space="preserve">
     <value>그래픽</value>
   </data>
@@ -185,6 +188,9 @@
   </data>
   <data name="videoMetadata_desc" xml:space="preserve">
     <value>{0} • 조회수 {1}회</value>
+  </data>
+  <data name="video_metadata_translate_source" xml:space="preserve">
+    <value>동영상 메타데이터 번역 소스</value>
   </data>
   <data name="video_volume" xml:space="preserve">
     <value>동영상 음량</value>

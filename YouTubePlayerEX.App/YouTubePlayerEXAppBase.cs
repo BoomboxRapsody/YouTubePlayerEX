@@ -41,6 +41,8 @@ namespace YouTubePlayerEX.App
 
         protected YouTubeAPI YouTubeService { get; set; }
 
+        protected GoogleTranslate TranslateAPI { get; set; }
+
         /// <summary>
         /// The language in which the app is currently displayed in.
         /// </summary>
@@ -125,7 +127,8 @@ namespace YouTubePlayerEX.App
 
             dependencies.Cache(LocalConfig);
 
-            dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig));
+            dependencies.Cache(TranslateAPI = new GoogleTranslate(frameworkConfig));
+            dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig, TranslateAPI, LocalConfig));
 
             dependencies.Cache(SessionStatics = new SessionStatics());
 

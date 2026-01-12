@@ -122,6 +122,16 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString AspectRatioMethod => new TranslatableString(getKey(@"aspect_ratio_method"), "Aspect ratio method");
 
+        /// <summary>
+        /// "Video metadata translate source"
+        /// </summary>
+        public static LocalisableString VideoMetadataTranslateSource => new TranslatableString(getKey(@"video_metadata_translate_source"), "Video metadata translate source");
+
+        /// <summary>
+        /// "Google Translate"
+        /// </summary>
+        public static LocalisableString GoogleTranslate => new TranslatableString(getKey(@"google_translate"), "Google Translate");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }
