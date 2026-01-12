@@ -1,4 +1,5 @@
 ﻿using osu.Framework.Localisation;
+using static osuTK.Graphics.OpenGL.GL;
 
 namespace YouTubePlayerEX.App.Localisation
 {
@@ -70,6 +71,56 @@ namespace YouTubePlayerEX.App.Localisation
         /// "Screen mode"
         /// </summary>
         public static LocalisableString ScreenMode => new TranslatableString(getKey(@"screen_mode"), "Screen mode");
+
+        /// <summary>
+        /// "Closed caption language (only available)"
+        /// </summary>
+        public static LocalisableString CaptionLanguage => new TranslatableString(getKey(@"caption_language"), "Closed caption language (only available)");
+
+        /// <summary>
+        /// "Press F11 to exit the full screen."
+        /// </summary>
+        public static LocalisableString FullscreenEntered => new TranslatableString(getKey(@"fullscreen_entered"), "Press F11 to exit the full screen.");
+
+        /// <summary>
+        /// "Audio"
+        /// </summary>
+        public static LocalisableString Audio => new TranslatableString(getKey(@"audio"), "Audio");
+
+        /// <summary>
+        /// "Video volume"
+        /// </summary>
+        public static LocalisableString VideoVolume => new TranslatableString(getKey(@"video_volume"), "Video volume");
+
+        /// <summary>
+        /// "SFX volume"
+        /// </summary>
+        public static LocalisableString SFXVolume => new TranslatableString(getKey(@"sfx_volume"), "SFX volume");
+
+        /// <summary>
+        /// "Selected caption: {0}"
+        /// </summary>
+        public static LocalisableString SelectedCaption(LocalisableString language) => new TranslatableString(getKey(@"selected_caption"), "Selected caption: {0}", language);
+
+        /// <summary>
+        /// "Selected caption: {0} (auto-generated)"
+        /// </summary>
+        public static LocalisableString SelectedCaptionAutoGen(LocalisableString language) => new TranslatableString(getKey(@"selected_caption_auto_gen"), "Selected caption: {0} (auto-generated)", language);
+
+        /// <summary>
+        /// "Fill"
+        /// </summary>
+        public static LocalisableString Fill => new TranslatableString(getKey(@"fill"), "Fill");
+
+        /// <summary>
+        /// "Letterbox"
+        /// </summary>
+        public static LocalisableString Letterbox => new TranslatableString(getKey(@"letterbox"), "Letterbox");
+
+        /// <summary>
+        /// "Aspect ratio method"
+        /// </summary>
+        public static LocalisableString AspectRatioMethod => new TranslatableString(getKey(@"aspect_ratio_method"), "Aspect ratio method");
 
         private static string getKey(string key) => $@"{prefix}:{key}";
     }

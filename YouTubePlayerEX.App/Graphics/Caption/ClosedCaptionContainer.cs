@@ -7,6 +7,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osuTK.Graphics;
 using YoutubeExplode.Videos.ClosedCaptions;
+using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Graphics.Sprites;
 using YouTubePlayerEX.App.Graphics.Videos;
 
@@ -19,11 +20,14 @@ namespace YouTubePlayerEX.App.Graphics.Caption
         private AdaptiveSpriteText spriteText;
         private YouTubeVideoPlayer videoPlayer;
         private ClosedCaptionTrack captionTrack;
+        private ClosedCaptionLanguage captionLanguage;
+        private Container captionContainer;
 
-        public ClosedCaptionContainer(YouTubeVideoPlayer videoPlayer, ClosedCaptionTrack captionTrack)
+        public ClosedCaptionContainer(YouTubeVideoPlayer videoPlayer, ClosedCaptionTrack captionTrack, ClosedCaptionLanguage captionLanguage)
         {
             this.videoPlayer = videoPlayer;
             this.captionTrack = captionTrack;
+            this.captionLanguage = captionLanguage;
             Padding = new MarginPadding(32);
             RelativeSizeAxes = Axes.Both;
             Anchor = Anchor.BottomCentre;
@@ -31,14 +35,26 @@ namespace YouTubePlayerEX.App.Graphics.Caption
             AlwaysPresent = true;
         }
 
+        public void UpdateCaptionTrack(ClosedCaptionLanguage captionLanguage, ClosedCaptionTrack captionTrack)
+        {
+            this.captionLanguage = captionLanguage;
+            if (captionTrack != null)
+                this.captionTrack = captionTrack;
+            else
+                this.captionTrack = null;
+        }
+
         [BackgroundDependencyLoader]
         private void load()
         {
-            Add(new Container
+            Add(captionContainer = new Container
             {
                 AutoSizeAxes = Axes.Both,
                 Anchor = Anchor.BottomCentre,
                 Origin = Anchor.BottomCentre,
+                AutoSizeDuration = 350,
+                AutoSizeEasing = Easing.OutQuart,
+                Masking = true,
                 Children = new Drawable[]
                 {
                     new Box
@@ -47,17 +63,32 @@ namespace YouTubePlayerEX.App.Graphics.Caption
                         Colour = Color4.Black,
                         Alpha = 0.5f
                     },
-                    spriteText = new AdaptiveSpriteText
+                    spriteText = new AdaptiveSpriteText(false)
                     {
                         Font = YouTubePlayerEXApp.DefaultFont.With(size: 24),
+                        Margin = new MarginPadding(4),
                     }
                 }
             });
         }
 
+        public void UpdateControlsVisibleState(bool state)
+        {
+            captionContainer.Padding = new MarginPadding
+            {
+                Bottom = state ? 90 : 0
+            };
+        }
+
         protected override void Update()
         {
             base.Update();
+
+            if (captionTrack == null)
+                Hide();
+            else
+                Show();
+
             if (captionTrack != null)
             {
                 try
@@ -67,16 +98,16 @@ namespace YouTubePlayerEX.App.Graphics.Caption
                     {
                         var text = caption.Text; // "collection acts as the parent collection"
                         spriteText.Text = text;
-                        Show();
+                        captionContainer.FadeIn(150, Easing.OutQuart);
                     }
                     else
                     {
-                        Hide();
+                        captionContainer.FadeOut(150, Easing.OutQuart);
                     }
                 }
                 catch
                 {
-                    Hide();
+                    captionContainer.FadeOut(150, Easing.OutQuart);
                 }
             }
         }

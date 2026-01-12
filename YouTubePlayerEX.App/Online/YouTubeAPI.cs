@@ -5,6 +5,7 @@ using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using osu.Framework.Configuration;
+using YouTubePlayerEX.App.Config;
 
 namespace YouTubePlayerEX.App.Online
 {
@@ -44,6 +45,30 @@ namespace YouTubePlayerEX.App.Online
                 return string.Empty;
 
             return channel.Snippet.Title;
+        }
+
+        public string ParseCaptionLanguage(ClosedCaptionLanguage captionLanguage)
+        {
+            switch (captionLanguage)
+            {
+                case ClosedCaptionLanguage.Disabled:
+                {
+                    return string.Empty;
+                }
+                case ClosedCaptionLanguage.English:
+                {
+                    return "en";
+                }
+                case ClosedCaptionLanguage.Korean:
+                {
+                    return "ko";
+                }
+                case ClosedCaptionLanguage.Japanese:
+                {
+                    return "ja";
+                } 
+            }
+            return string.Empty;
         }
 
         public string GetLocalizedVideoTitle(Video video)

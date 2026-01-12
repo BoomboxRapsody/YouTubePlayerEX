@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="aspect_ratio_method" xml:space="preserve">
+    <value>アスペクト比法</value>
+  </data>
+  <data name="audio" xml:space="preserve">
+    <value>オーディオ</value>
+  </data>
   <data name="caption_disabled" xml:space="preserve">
     <value>無効</value>
   </data>
@@ -129,8 +135,14 @@
   <data name="error_noVideoId" xml:space="preserve">
     <value>ビデオIDは空白のままにしてはいけません！</value>
   </data>
+  <data name="fill" xml:space="preserve">
+    <value>フィル</value>
+  </data>
   <data name="frame_limiter" xml:space="preserve">
     <value>フレーム リミッタ</value>
+  </data>
+  <data name="fullscreen_entered" xml:space="preserve">
+    <value>全画面を終了するには、F11キーを押します。</value>
   </data>
   <data name="general" xml:space="preserve">
     <value>全般</value>
@@ -141,6 +153,9 @@
   <data name="language" xml:space="preserve">
     <value>言語</value>
   </data>
+  <data name="letterbox" xml:space="preserve">
+    <value>レターボックス</value>
+  </data>
   <data name="load_from_video_id" xml:space="preserve">
     <value>ビデオ ID からロードします</value>
   </data>
@@ -148,7 +163,7 @@
     <value>ビデオロード</value>
   </data>
   <data name="profile_image_tooltip" xml:space="preserve">
-    <value>{0} • {1}ユーザ • 外部 Web ブラウザを介してチャネルを表示するには、クリックします。</value>
+    <value>{0} • チャンネル登録者数 {1}人 • 外部 Web ブラウザを介してチャネルを表示するには、クリックします。</value>
   </data>
   <data name="screen_mode" xml:space="preserve">
     <value>画面モード</value>
@@ -156,10 +171,22 @@
   <data name="screen_resolution" xml:space="preserve">
     <value>画面解像度</value>
   </data>
+  <data name="selected_caption" xml:space="preserve">
+    <value>選択されたキャプション:{0}</value>
+  </data>
+  <data name="selected_caption_auto_gen" xml:space="preserve">
+    <value>選択されたキャプション:{0}（自動生成）</value>
+  </data>
   <data name="settings" xml:space="preserve">
     <value>設定</value>
   </data>
+  <data name="sfx_volume" xml:space="preserve">
+    <value>音響効果ボリューム</value>
+  </data>
   <data name="videoMetadata_desc" xml:space="preserve">
-    <value>{0} • {1}ビュー</value>
+    <value>{0} • {1} 回視聴</value>
+  </data>
+  <data name="video_volume" xml:space="preserve">
+    <value>ビデオボリューム</value>
   </data>
 </root>

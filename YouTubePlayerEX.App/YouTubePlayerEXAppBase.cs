@@ -123,6 +123,8 @@ namespace YouTubePlayerEX.App
 
             InitialiseFonts();
 
+            dependencies.Cache(LocalConfig);
+
             dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig));
 
             dependencies.Cache(SessionStatics = new SessionStatics());

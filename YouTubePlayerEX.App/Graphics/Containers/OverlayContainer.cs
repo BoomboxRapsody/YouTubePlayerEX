@@ -16,6 +16,8 @@ namespace YouTubePlayerEX.App.Graphics.Containers
         /// </summary>
         protected virtual bool BlockPositionalInput => true;
 
+        public bool IsVisible = false;
+
         /// <summary>
         /// Scroll events are sometimes required to be handled differently to general positional input.
         /// This covers whether scroll events that occur within this overlay's bounds are blocked or not.

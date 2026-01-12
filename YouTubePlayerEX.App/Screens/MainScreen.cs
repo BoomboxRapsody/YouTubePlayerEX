@@ -9,7 +9,9 @@ using osu.Framework.Allocation;
 using osu.Framework.Audio.Sample;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
+using osu.Framework.Extensions;
 using osu.Framework.Extensions.Color4Extensions;
+using osu.Framework.Extensions.LocalisationExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
@@ -26,6 +28,7 @@ using osuTK.Graphics;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Videos.ClosedCaptions;
 using YoutubeExplode.Videos.Streams;
+using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Graphics.Containers;
 using YouTubePlayerEX.App.Graphics.Sprites;
 using YouTubePlayerEX.App.Graphics.UserInterface;
@@ -34,6 +37,7 @@ using YouTubePlayerEX.App.Graphics.Videos;
 using YouTubePlayerEX.App.Input;
 using YouTubePlayerEX.App.Input.Binding;
 using YouTubePlayerEX.App.Localisation;
+using YouTubePlayerEX.App.Online;
 using Container = osu.Framework.Graphics.Containers.Container;
 using Language = YouTubePlayerEX.App.Localisation.Language;
 using OverlayContainer = YouTubePlayerEX.App.Graphics.Containers.OverlayContainer;
@@ -80,6 +84,10 @@ namespace YouTubePlayerEX.App.Screens
 
         private Bindable<double> windowedPositionX = null!;
         private Bindable<double> windowedPositionY = null!;
+        private Bindable<WindowMode> windowMode = null!;
+
+        private Bindable<ClosedCaptionLanguage> captionLanguage = null!;
+        private bool isControlVisible = true;
 
         private void onDisplaysChanged(IEnumerable<Display> displays)
         {
@@ -92,10 +100,13 @@ namespace YouTubePlayerEX.App.Screens
         }
 
         [BackgroundDependencyLoader]
-        private void load(ISampleStore sampleStore, FrameworkConfigManager config, GameHost host)
+        private void load(ISampleStore sampleStore, FrameworkConfigManager config, YTPlayerEXConfigManager appConfig, GameHost host)
         {
             window = host.Window;
 
+            cursorInWindow = host.Window?.CursorInWindow.GetBoundCopy();
+            windowMode = config.GetBindable<WindowMode>(FrameworkSetting.WindowMode);
+            captionLanguage = appConfig.GetBindable<ClosedCaptionLanguage>(YTPlayerEXSetting.ClosedCaptionLanguage);
             sizeFullscreen = config.GetBindable<Size>(FrameworkSetting.SizeFullscreen);
             sizeWindowed = config.GetBindable<Size>(FrameworkSetting.WindowedSize);
             windowedPositionX = config.GetBindable<double>(FrameworkSetting.WindowedPositionX);
@@ -147,7 +158,7 @@ namespace YouTubePlayerEX.App.Screens
                             Origin = Anchor.TopLeft,
                             Anchor = Anchor.TopLeft,
                             RelativeSizeAxes = Axes.X,
-                            Height = 150,
+                            Height = 300,
                         },
                         new Box
                         {
@@ -155,7 +166,7 @@ namespace YouTubePlayerEX.App.Screens
                             Origin = Anchor.BottomLeft,
                             Anchor = Anchor.BottomLeft,
                             RelativeSizeAxes = Axes.X,
-                            Height = 150,
+                            Height = 300,
                         },
                     }
                 },
@@ -286,7 +297,7 @@ namespace YouTubePlayerEX.App.Screens
                                                     {
                                                         Top = 8,
                                                     },
-                                                    KeyboardStep = 0.1f,
+                                                    KeyboardStep = 0.05f,
                                                     PlaySamplesOnAdjust = true,
                                                     Current = { BindTarget = playbackSpeed },
                                                     DisplayAsPercentage = true,
@@ -403,19 +414,30 @@ namespace YouTubePlayerEX.App.Screens
                                                     Current = game.CurrentLanguage,
                                                 })
                                                 {
+                                                    ShowRevertToDefaultButton = false,
                                                     CanBeShown = { BindTarget = displayDropdownCanBeShown }
                                                 },
+                                                new SettingsItemV2(new FormEnumDropdown<ClosedCaptionLanguage>
+                                                {
+                                                    Caption = YTPlayerEXStrings.CaptionLanguage,
+                                                    Current = captionLanguage,
+                                                }),
                                                 new AdaptiveSpriteText
                                                 {
                                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
                                                     Text = YTPlayerEXStrings.Graphics,
                                                     Padding = new MarginPadding { Horizontal = 30, Vertical = 12 }
                                                 },
+                                                new SettingsItemV2(new FormEnumDropdown<AspectRatioMethod>
+                                                {
+                                                    Caption = YTPlayerEXStrings.AspectRatioMethod,
+                                                    Current = appConfig.GetBindable<AspectRatioMethod>(YTPlayerEXSetting.AspectRatioMethod),
+                                                }),
                                                 windowModeDropdownSettings = new SettingsItemV2(windowModeDropdown = new FormDropdown<WindowMode>
                                                 {
                                                     Caption = YTPlayerEXStrings.ScreenMode,
                                                     Items = window?.SupportedWindowModes,
-                                                    Current = config.GetBindable<WindowMode>(FrameworkSetting.WindowMode),
+                                                    Current = windowMode,
                                                 })
                                                 {
                                                     CanBeShown = { Value = window?.SupportedWindowModes.Count() > 1 },
@@ -449,6 +471,24 @@ namespace YouTubePlayerEX.App.Screens
                                                     ShowRevertToDefaultButton = false,
                                                     CanBeShown = { BindTarget = resolutionWindowedCanBeShown }
                                                 },
+                                                new AdaptiveSpriteText
+                                                {
+                                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
+                                                    Text = YTPlayerEXStrings.Audio,
+                                                    Padding = new MarginPadding { Horizontal = 30, Vertical = 12 }
+                                                },
+                                                new SettingsItemV2(new FormSliderBar<double>
+                                                {
+                                                    Caption = YTPlayerEXStrings.VideoVolume,
+                                                    Current = config.GetBindable<double>(FrameworkSetting.VolumeMusic),
+                                                    DisplayAsPercentage = true,
+                                                }),
+                                                new SettingsItemV2(new FormSliderBar<double>
+                                                {
+                                                    Caption = YTPlayerEXStrings.SFXVolume,
+                                                    Current = config.GetBindable<double>(FrameworkSetting.VolumeEffect),
+                                                    DisplayAsPercentage = true,
+                                                }),
                                             }
                                         }
                                     }
@@ -463,17 +503,47 @@ namespace YouTubePlayerEX.App.Screens
             overlayFadeContainer.Hide();
             settingsContainer.Hide();
 
+            OverlayContainers.Add(loadVideoContainer);
+            OverlayContainers.Add(settingsContainer);
+
+            captionLanguage.BindValueChanged(lang =>
+            {
+                if (currentVideoSource != null)
+                {
+                    Task.Run(async () =>
+                    {
+                        var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
+
+                        var trackInfo = trackManifest.TryGetByLanguage(api.ParseCaptionLanguage(lang.NewValue));
+
+                        ClosedCaptionTrack captionTrack = null;
+
+                        if (trackInfo != null)
+                        {
+                            Schedule(() =>
+                            {
+                                alert.Text = lang.NewValue != ClosedCaptionLanguage.Disabled ? (trackInfo.IsAutoGenerated ? YTPlayerEXStrings.SelectedCaptionAutoGen(lang.NewValue.GetLocalisableDescription()) : YTPlayerEXStrings.SelectedCaption(lang.NewValue.GetLocalisableDescription())) : YTPlayerEXStrings.SelectedCaption(lang.NewValue.GetLocalisableDescription());
+                                alert.Show();
+                                spinnerShow = Scheduler.AddDelayed(alert.Hide, 3000);
+                            });
+
+                            captionTrack = await game.YouTubeClient.Videos.ClosedCaptions.GetAsync(trackInfo);
+                        }
+
+                        currentVideoSource.UpdateCaptionTrack(lang.NewValue, captionTrack);
+                    });
+                }
+            });
+
             idleTracker.IsIdle.BindValueChanged(idle =>
             {
                 if (idle.NewValue == true)
                 {
-                    uiContainer.FadeOutFromOne(250);
-                    uiGradientContainer.FadeOutFromOne(250);
+                    HideControls();
                 }
                 else
                 {
-                    uiContainer.FadeInFromZero(125);
-                    uiGradientContainer.FadeInFromZero(125);
+                    ShowControls();
                 }
             }, true);
 
@@ -486,6 +556,29 @@ namespace YouTubePlayerEX.App.Screens
             }
         }
 
+        private void HideControls()
+        {
+            if (isControlVisible == true)
+            {
+                isControlVisible = false;
+                uiContainer.FadeOutFromOne(250);
+                uiGradientContainer.FadeOutFromOne(250);
+                currentVideoSource?.UpdateControlsVisibleState(false);
+            }
+        }
+
+        private void ShowControls()
+        {
+            if (isControlVisible == false)
+            {
+                isControlVisible = true;
+                uiContainer.FadeInFromZero(125);
+                uiGradientContainer.FadeInFromZero(125);
+                currentVideoSource?.UpdateControlsVisibleState(true);
+            }
+        }
+
+        private IBindable<bool> cursorInWindow;
         private IWindow? window;
 
         private SettingsItemV2 windowModeDropdownSettings;
@@ -506,13 +599,13 @@ namespace YouTubePlayerEX.App.Screens
                 resolutionFullscreenDropdown.Hide();
             }
 
-            if (windowModeDropdown.Current.Value == WindowMode.Fullscreen && resolutionsFullscreen.Count > 1)
+            if (windowModeDropdown.Current.Value == WindowMode.Windowed && resolutionsFullscreen.Count > 1)
             {
-                resolutionFullscreenDropdown.Show();
+                resolutionWindowedDropdown.Show();
             }
             else
             {
-                resolutionFullscreenDropdown.Hide();
+                resolutionWindowedDropdown.Hide();
             }
 
             if (displayDropdown.Items.Count() > 1)
@@ -577,51 +670,27 @@ namespace YouTubePlayerEX.App.Screens
             }
         }
 
-        private void showLoadVideoContainer()
+        private void showOverlayContainer(OverlayContainer overlayContent)
         {
-            isLoadVideoContainerVisible = true;
+            overlayContent.IsVisible = true;
             overlayFadeContainer.FadeTo(0.5f, 250, Easing.OutQuart);
-            loadVideoContainer.Show();
-            loadVideoContainer.ScaleTo(0.8f);
-            loadVideoContainer.ScaleTo(1f, 750, Easing.OutElastic);
-            loadVideoContainer.FadeInFromZero(250, Easing.OutQuart);
+            overlayContent.Show();
+            overlayContent.ScaleTo(0.8f);
+            overlayContent.ScaleTo(1f, 750, Easing.OutElastic);
+            overlayContent.FadeInFromZero(250, Easing.OutQuart);
             overlayShowSample.Play();
         }
 
-        private void hideLoadVideoContainer()
+        private void hideOverlayContainer(OverlayContainer overlayContent)
         {
-            isLoadVideoContainerVisible = false;
+            overlayContent.IsVisible = false;
             overlayHideSample.Play();
             overlayFadeContainer.FadeTo(0.0f, 250, Easing.OutQuart);
-            loadVideoContainer.ScaleTo(0.8f, 250, Easing.OutQuart);
-            loadVideoContainer.FadeOutFromOne(250, Easing.OutQuart).OnComplete(_ =>
+            overlayContent.ScaleTo(0.8f, 250, Easing.OutQuart);
+            overlayContent.FadeOutFromOne(250, Easing.OutQuart).OnComplete(_ =>
             {
                 overlayFadeContainer.Hide();
-                loadVideoContainer.Hide();
-            });
-        }
-
-        private void showSettingsContainer()
-        {
-            isSettingsContainerVisible = true;
-            overlayFadeContainer.FadeTo(0.5f, 250, Easing.OutQuart);
-            settingsContainer.Show();
-            settingsContainer.ScaleTo(0.8f);
-            settingsContainer.ScaleTo(1f, 750, Easing.OutElastic);
-            settingsContainer.FadeInFromZero(250, Easing.OutQuart);
-            overlayShowSample.Play();
-        }
-
-        private void hideSettingsContainer()
-        {
-            isSettingsContainerVisible = false;
-            overlayHideSample.Play();
-            overlayFadeContainer.FadeTo(0.0f, 250, Easing.OutQuart);
-            settingsContainer.ScaleTo(0.8f, 250, Easing.OutQuart);
-            settingsContainer.FadeOutFromOne(250, Easing.OutQuart).OnComplete(_ =>
-            {
-                overlayFadeContainer.Hide();
-                settingsContainer.Hide();
+                overlayContent.Hide();
             });
         }
 
@@ -637,16 +706,37 @@ namespace YouTubePlayerEX.App.Screens
         [Resolved]
         private GameHost host { get; set; } = null!;
 
+        [Resolved]
+        private YouTubeAPI api { get; set; }
+
         protected override void LoadComplete()
         {
             base.LoadComplete();
-            loadBtn.ClickAction = _ => SetVideoSource(videoIdBox.Text);
-            loadBtnOverlayShow.ClickAction = _ => showLoadVideoContainer();
-            settingsOverlayShowBtn.ClickAction = _ => showSettingsContainer();
 
-            windowModeDropdown.Current.BindValueChanged(_ =>
+            cursorInWindow?.BindValueChanged(active =>
+            {
+                if (active.NewValue == false)
+                {
+                    Schedule(() => HideControls());
+                } else
+                {
+                    Schedule(() => ShowControls());
+                }
+            });
+
+            loadBtn.ClickAction = _ => SetVideoSource(videoIdBox.Text);
+            loadBtnOverlayShow.ClickAction = _ => showOverlayContainer(loadVideoContainer);
+            settingsOverlayShowBtn.ClickAction = _ => showOverlayContainer(settingsContainer);
+
+            windowModeDropdown.Current.BindValueChanged(wndMode =>
             {
                 updateDisplaySettingsVisibility();
+                if (wndMode.NewValue == WindowMode.Fullscreen)
+                {
+                    alert.Text = YTPlayerEXStrings.FullscreenEntered;
+                    alert.Show();
+                    spinnerShow = Scheduler.AddDelayed(alert.Hide, 3000);
+                }
             }, true);
 
             currentDisplay.BindValueChanged(display => Schedule(() =>
@@ -718,19 +808,31 @@ namespace YouTubePlayerEX.App.Screens
 
         private void hideOverlays()
         {
-            if (isLoadVideoContainerVisible)
+            foreach (var item in OverlayContainers)
             {
-                hideLoadVideoContainer();
-            }
-
-            if (isSettingsContainerVisible)
-            {
-                hideSettingsContainer();
+                if (item.IsVisible == true)
+                {
+                    hideOverlayContainer(item);
+                }
             }
         }
 
+        private List<OverlayContainer> OverlayContainers = new List<OverlayContainer>();
+
         public bool OnPressed(KeyBindingPressEvent<GlobalAction> e)
         {
+            switch (e.Action)
+            {
+                case GlobalAction.FastForward_10sec:
+                    currentVideoSource?.FastForward10Sec();
+                    return true;
+
+                case GlobalAction.FastRewind_10sec:
+                    currentVideoSource?.FastRewind10Sec();
+                    return true;
+            }
+
+
             if (e.Repeat)
                 return false;
 
@@ -745,14 +847,6 @@ namespace YouTubePlayerEX.App.Screens
                     {
                         SetVideoSource(videoIdBox.Text);
                     }
-                    return true;
-
-                case GlobalAction.FastForward_10sec:
-                    currentVideoSource?.FastForward10Sec();
-                    return true;
-
-                case GlobalAction.FastRewind_10sec:
-                    currentVideoSource?.FastRewind10Sec();
                     return true;
 
                 case GlobalAction.PlayPause:
@@ -825,9 +919,12 @@ namespace YouTubePlayerEX.App.Screens
             currentVideoSource.Play();
         }
 
+        private string videoUrl = string.Empty;
+
         public void SetVideoSource(string videoId)
         {
-            hideLoadVideoContainer();
+            hideOverlayContainer(loadVideoContainer);
+            videoIdBox.Text = string.Empty;
             if (videoId.Length != 0)
             {
                 Task.Run(async () =>
@@ -839,7 +936,7 @@ namespace YouTubePlayerEX.App.Screens
 
                     videoProgress.MaxValue = 1;
                     currentVideoSource?.Expire();
-                    var videoUrl = $"https://youtube.com/watch?v={videoId}";
+                    videoUrl = $"https://youtube.com/watch?v={videoId}";
 
                     spinnerShow = Scheduler.AddDelayed(() => updateVideoMetadata(videoId), 0);
 
@@ -862,19 +959,29 @@ namespace YouTubePlayerEX.App.Screens
 
                         var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
 
-                        var trackInfo = trackManifest.TryGetByLanguage("en");
+                        var trackInfo = trackManifest.TryGetByLanguage(api.ParseCaptionLanguage(captionLanguage.Value));
 
                         ClosedCaptionTrack captionTrack = null;
 
                         if (trackInfo != null)
                         {
+                            if (captionLanguage.Value != ClosedCaptionLanguage.Disabled)
+                            {
+                                Schedule(() =>
+                                {
+                                    alert.Text = captionLanguage.Value != ClosedCaptionLanguage.Disabled ? (trackInfo.IsAutoGenerated ? YTPlayerEXStrings.SelectedCaptionAutoGen(captionLanguage.Value.GetLocalisableDescription()) : YTPlayerEXStrings.SelectedCaption(captionLanguage.Value.GetLocalisableDescription())) : YTPlayerEXStrings.SelectedCaption(captionLanguage.Value.GetLocalisableDescription());
+                                    alert.Show();
+                                    spinnerShow = Scheduler.AddDelayed(alert.Hide, 3000);
+                                });
+                            }
+
                             captionTrack = await game.YouTubeClient.Videos.ClosedCaptions.GetAsync(trackInfo);
                         }
 
                         await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3").Build(), audioDownloadProgress);
                         await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4").Build(), videoDownloadProgress);
 
-                        currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3", captionTrack)
+                        currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3", captionTrack, captionLanguage.Value)
                         {
                             RelativeSizeAxes = Axes.Both
                         };
@@ -889,16 +996,26 @@ namespace YouTubePlayerEX.App.Screens
                     {
                         var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
 
-                        var trackInfo = trackManifest.TryGetByLanguage("en");
+                        var trackInfo = trackManifest.TryGetByLanguage(api.ParseCaptionLanguage(captionLanguage.Value));
 
                         ClosedCaptionTrack captionTrack = null;
 
                         if (trackInfo != null)
                         {
+                            if (captionLanguage.Value != ClosedCaptionLanguage.Disabled)
+                            {
+                                Schedule(() =>
+                                {
+                                    alert.Text = captionLanguage.Value != ClosedCaptionLanguage.Disabled ? (trackInfo.IsAutoGenerated ? YTPlayerEXStrings.SelectedCaptionAutoGen(captionLanguage.Value.GetLocalisableDescription()) : YTPlayerEXStrings.SelectedCaption(captionLanguage.Value.GetLocalisableDescription())) : YTPlayerEXStrings.SelectedCaption(captionLanguage.Value.GetLocalisableDescription());
+                                    alert.Show();
+                                    spinnerShow = Scheduler.AddDelayed(alert.Hide, 3000);
+                                });
+                            }
+
                             captionTrack = await game.YouTubeClient.Videos.ClosedCaptions.GetAsync(trackInfo);
                         }
 
-                        currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3", captionTrack)
+                        currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3", captionTrack, captionLanguage.Value)
                         {
                             RelativeSizeAxes = Axes.Both
                         };

@@ -61,6 +61,24 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Aspect ratio method과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string aspect_ratio_method {
+            get {
+                return ResourceManager.GetString("aspect_ratio_method", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Audio과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string audio {
+            get {
+                return ResourceManager.GetString("audio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Disabled과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string caption_disabled {
@@ -97,11 +115,29 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Fill과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string fill {
+            get {
+                return ResourceManager.GetString("fill", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Frame limiter과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string frame_limiter {
             get {
                 return ResourceManager.GetString("frame_limiter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Press F11 to exit the full screen.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string fullscreen_entered {
+            get {
+                return ResourceManager.GetString("fullscreen_entered", resourceCulture);
             }
         }
         
@@ -129,6 +165,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string language {
             get {
                 return ResourceManager.GetString("language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Letterbox과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string letterbox {
+            get {
+                return ResourceManager.GetString("letterbox", resourceCulture);
             }
         }
         
@@ -178,11 +223,47 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Selected caption: {0}과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string selected_caption {
+            get {
+                return ResourceManager.GetString("selected_caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Selected caption: {0} (auto-generated)과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string selected_caption_auto_gen {
+            get {
+                return ResourceManager.GetString("selected_caption_auto_gen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Settings과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string settings {
             get {
                 return ResourceManager.GetString("settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   SFX volume과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string sfx_volume {
+            get {
+                return ResourceManager.GetString("sfx_volume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Video volume과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string video_volume {
+            get {
+                return ResourceManager.GetString("video_volume", resourceCulture);
             }
         }
         

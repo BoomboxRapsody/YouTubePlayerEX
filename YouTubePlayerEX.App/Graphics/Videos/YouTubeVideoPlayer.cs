@@ -9,6 +9,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Video;
 using osu.Framework.Timing;
 using YoutubeExplode.Videos.ClosedCaptions;
+using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Graphics.Caption;
 using YouTubePlayerEX.App.Online;
 
@@ -22,17 +23,25 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
         private string fileName_Video, fileName_Audio;
         private ClosedCaptionTrack captionTrack;
+        private ClosedCaptionLanguage captionLanguage;
 
         private StopwatchClock rateAdjustClock;
         private FramedClock framedClock;
 
         private Bindable<double> playbackSpeed;
 
-        public YouTubeVideoPlayer(string fileName_Video, string fileName_Audio, ClosedCaptionTrack captionTrack)
+        public YouTubeVideoPlayer(string fileName_Video, string fileName_Audio, ClosedCaptionTrack captionTrack, ClosedCaptionLanguage captionLanguage)
         {
             this.fileName_Video = fileName_Video;
             this.fileName_Audio = fileName_Audio;
             this.captionTrack = captionTrack;
+            this.captionLanguage = captionLanguage;
+        }
+
+        public void UpdateCaptionTrack(ClosedCaptionLanguage captionLanguage, ClosedCaptionTrack captionTrack)
+        {
+            this.captionTrack = captionTrack;
+            closedCaption.UpdateCaptionTrack(captionLanguage, captionTrack);
         }
 
         public BindableNumber<double> VideoProgress = new BindableNumber<double>()
@@ -42,10 +51,13 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         };
 
         private KeyBindingAnimations keyBindingAnimations;
+        private ClosedCaptionContainer closedCaption;
+        private Bindable<AspectRatioMethod> aspectRatioMethod = null!;
 
         [BackgroundDependencyLoader]
-        private void load(ITrackStore tracks)
+        private void load(ITrackStore tracks, YTPlayerEXConfigManager config)
         {
+            aspectRatioMethod = config.GetBindable<AspectRatioMethod>(YTPlayerEXSetting.AspectRatioMethod);
             track = tracks.GetFromStream(File.OpenRead(fileName_Audio), fileName_Audio);
             playbackSpeed = new Bindable<double>(1);
 
@@ -66,7 +78,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                 {
                     RelativeSizeAxes = Axes.Both,
                 },
-                new ClosedCaptionContainer(this, captionTrack)
+                closedCaption = new ClosedCaptionContainer(this, captionTrack, captionLanguage)
             });
 
             rateAdjustClock.Rate = playbackSpeed.Value;
@@ -81,6 +93,16 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             drawableTrack.Completed += trackCompleted;
 
             Play();
+
+            aspectRatioMethod.BindValueChanged(value =>
+            {
+                video.FillMode = value.NewValue == AspectRatioMethod.Letterbox ? FillMode.Fit : FillMode.Stretch;
+            }, true);
+        }
+
+        public void UpdateControlsVisibleState(bool state)
+        {
+            closedCaption.UpdateControlsVisibleState(state);
         }
 
         private void trackCompleted()

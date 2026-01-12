@@ -18,6 +18,8 @@ namespace YouTubePlayerEX.App.Config
         {
             SetDefault(YTPlayerEXSetting.PreferDisplayHandle, true);
             SetDefault(YTPlayerEXSetting.ClosedCaptionLanguage, ClosedCaptionLanguage.Disabled);
+            SetDefault(YTPlayerEXSetting.CaptionEnabled, false);
+            SetDefault(YTPlayerEXSetting.AspectRatioMethod, AspectRatioMethod.Letterbox);
         }
 
         public YTPlayerEXConfigManager(Storage storage, IDictionary<YTPlayerEXSetting, object> defaultOverrides = null) : base(storage, defaultOverrides)
@@ -29,5 +31,7 @@ namespace YouTubePlayerEX.App.Config
     {
         PreferDisplayHandle,
         ClosedCaptionLanguage,
+        CaptionEnabled,
+        AspectRatioMethod,
     }
 }

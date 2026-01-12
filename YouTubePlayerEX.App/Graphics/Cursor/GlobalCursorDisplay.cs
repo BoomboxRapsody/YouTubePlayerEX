@@ -7,7 +7,7 @@ using osu.Framework.Input.StateChanges;
 namespace YouTubePlayerEX.App.Graphics.Cursor
 {
     /// <summary>
-    /// A container which provides the main <see cref="MenuCursorContainer"/>.
+    /// A container which provides the main <see cref="AppCursorContainer"/>.
     /// Also handles cases where a more localised cursor is provided by another component (via <see cref="IProvideCursor"/>).
     /// </summary>
     public partial class GlobalCursorDisplay : Container, IProvideCursor

@@ -60,7 +60,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private Dictionary<FeedbackSampleType, Sample?[]> sampleMap = new Dictionary<FeedbackSampleType, Sample?[]>();
 
         /// <summary>
-        /// Whether all text should be selected when the <see cref="OsuTextBox"/> gains focus.
+        /// Whether all text should be selected when the <see cref="AdaptiveTextBox"/> gains focus.
         /// </summary>
         public bool SelectAllOnFocus { get; set; }
 

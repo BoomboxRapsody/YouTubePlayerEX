@@ -11,10 +11,10 @@ namespace YouTubePlayerEX.App.Graphics.Sprites
             set => throw new InvalidOperationException($"Use {nameof(TruncatingSpriteText)} instead.");
         }
 
-        public AdaptiveSpriteText()
+        public AdaptiveSpriteText(bool enableShadow = true)
         {
             Font = YouTubePlayerEXApp.DefaultFont;
-            Shadow = true;
+            Shadow = enableShadow;
         }
     }
 }

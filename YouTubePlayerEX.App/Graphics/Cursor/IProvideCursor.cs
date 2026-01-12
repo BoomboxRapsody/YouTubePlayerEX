@@ -3,7 +3,7 @@ using osu.Framework.Graphics.Cursor;
 
 namespace YouTubePlayerEX.App.Graphics.Cursor
 {
-    // <summary>
+    /// <summary>
     /// Interface for <see cref="IDrawable"/>s that display cursors which can replace the user's cursor.
     /// </summary>
     public interface IProvideCursor : IDrawable

@@ -38,7 +38,7 @@ namespace YouTubePlayerEX.App.Graphics.Containers
             return base.BuildNonPositionalInputQueue(queue, allowBlocking);
         }
 
-        public override bool DragBlocksClick => false;
+        public override bool DragBlocksClick => true;
 
         public Action<OverlayFadeContainer>? ClickAction { get; set; }
 
