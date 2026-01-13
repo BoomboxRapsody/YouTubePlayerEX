@@ -93,7 +93,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                 rateAdjustClock.Rate = v.NewValue;
             });
 
-            drawableTrack?.AddAdjustment(AdjustableProperty.Frequency, playbackSpeed);
+            UpdatePreservePitch(config.Get<bool>(YTPlayerEXSetting.AdjustPitchOnSpeedChange));
 
             drawableTrack.Completed += trackCompleted;
 
@@ -113,6 +113,17 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         private void trackCompleted()
         {
             Pause();
+        }
+
+        public void UpdatePreservePitch(bool value)
+        {
+            drawableTrack?.RemoveAllAdjustments(AdjustableProperty.Tempo);
+            drawableTrack?.RemoveAllAdjustments(AdjustableProperty.Frequency);
+
+            if (value == true)
+                drawableTrack?.AddAdjustment(AdjustableProperty.Frequency, playbackSpeed);
+            else
+                drawableTrack?.AddAdjustment(AdjustableProperty.Tempo, playbackSpeed);
         }
 
         protected override void Dispose(bool isDisposing)

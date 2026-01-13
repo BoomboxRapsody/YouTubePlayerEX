@@ -123,6 +123,9 @@
   <data name="audio" xml:space="preserve">
     <value>オーディオ</value>
   </data>
+  <data name="audio_language" xml:space="preserve">
+    <value>オーディオトラック</value>
+  </data>
   <data name="auto" xml:space="preserve">
     <value>自動</value>
   </data>
@@ -182,6 +185,9 @@
   </data>
   <data name="prefer_high_quality" xml:space="preserve">
     <value>高品質を優先します</value>
+  </data>
+  <data name="adjust_pitch_on_speed_change" xml:space="preserve">
+    <value>変速時ピッチ調整</value>
   </data>
   <data name="profile_image_tooltip" xml:space="preserve">
     <value>{0} • チャンネル登録者数 {1}人 • 外部 Web ブラウザを介してチャネルを表示するには、クリックします。</value>

@@ -101,13 +101,17 @@ namespace YouTubePlayerEX.App.Screens
 
         private Bindable<Config.VideoQuality> videoQuality;
         private Bindable<HardwareVideoDecoder> hardwareVideoDecoder;
+        private Bindable<Localisation.Language> audioLanguage;
+        private Bindable<bool> adjustPitch;
 
         [BackgroundDependencyLoader]
         private void load(ISampleStore sampleStore, FrameworkConfigManager config, YTPlayerEXConfigManager appConfig, GameHost host)
         {
             window = host.Window;
 
+            adjustPitch = appConfig.GetBindable<bool>(YTPlayerEXSetting.AdjustPitchOnSpeedChange);
             videoQuality = appConfig.GetBindable<Config.VideoQuality>(YTPlayerEXSetting.VideoQuality);
+            audioLanguage = appConfig.GetBindable<Localisation.Language>(YTPlayerEXSetting.AudioLanguage);
             hardwareVideoDecoder = config.GetBindable<HardwareVideoDecoder>(FrameworkSetting.HardwareVideoDecoder);
             cursorInWindow = host.Window?.CursorInWindow.GetBoundCopy();
             windowMode = config.GetBindable<WindowMode>(FrameworkSetting.WindowMode);
@@ -510,12 +514,25 @@ namespace YouTubePlayerEX.App.Screens
                                                     Caption = YTPlayerEXStrings.VideoQuality,
                                                     Current = videoQuality,
                                                 }),
+                                                new SettingsItemV2(new FormEnumDropdown<Localisation.Language>
+                                                {
+                                                    Caption = YTPlayerEXStrings.AudioLanguage,
+                                                    Current = audioLanguage,
+                                                })
+                                                {
+                                                    ShowRevertToDefaultButton = false,
+                                                },
                                                 new AdaptiveSpriteText
                                                 {
                                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
                                                     Text = YTPlayerEXStrings.Audio,
                                                     Padding = new MarginPadding { Horizontal = 30, Vertical = 12 }
                                                 },
+                                                new SettingsItemV2(new FormCheckBox
+                                                {
+                                                    Caption = YTPlayerEXStrings.AdjustPitchOnSpeedChange,
+                                                    Current = adjustPitch,
+                                                }),
                                                 new SettingsItemV2(new FormSliderBar<double>
                                                 {
                                                     Caption = YTPlayerEXStrings.MasterVolume,
@@ -586,7 +603,29 @@ namespace YouTubePlayerEX.App.Screens
             OverlayContainers.Add(settingsContainer);
             OverlayContainers.Add(videoDescriptionContainer);
 
-            videoQuality.BindValueChanged(quality =>
+            videoQuality.BindValueChanged(_ =>
+            {
+                if (currentVideoSource != null)
+                {
+                    Task.Run(async () => {
+                        try
+                        {
+                            await SetVideoSource(videoId, true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"예외 발생: {ex.Message}");
+                        }
+                    });
+                }
+            });
+
+            adjustPitch.BindValueChanged(value =>
+            {
+                currentVideoSource?.UpdatePreservePitch(value.NewValue);
+            });
+
+            audioLanguage.BindValueChanged(_ =>
             {
                 if (currentVideoSource != null)
                 {
@@ -1062,6 +1101,9 @@ namespace YouTubePlayerEX.App.Screens
         private string videoId = string.Empty;
         private double pausedTime = 0;
 
+        [Resolved]
+        private YTPlayerEXConfigManager appGlobalConfig { get; set; }
+
         public async Task SetVideoSource(string videoId, bool clearCache = false)
         {
             this.videoId = videoId;
@@ -1095,18 +1137,30 @@ namespace YouTubePlayerEX.App.Screens
 
                 spinnerShow = Scheduler.AddDelayed(() => updateVideoMetadata(videoId), 0);
 
-                if (!File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3") && !File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4"))
+                if (!File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3") || !File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4"))
                 {
-                    videoQuality.Disabled = true;
+                    videoQuality.Disabled = audioLanguage.Disabled = true;
 
                     Directory.CreateDirectory(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}"));
 
                     var streamManifest = await app.YouTubeClient.Videos.Streams.GetManifestAsync(videoUrl);
 
-                    // Select best audio stream (highest bitrate)
-                    var audioStreamInfo = streamManifest
-                        .GetAudioOnlyStreams()
-                        .GetWithHighestBitrate();
+                    IStreamInfo audioStreamInfo;
+
+                    try
+                    {
+                        // Select best audio stream (highest bitrate)
+                        audioStreamInfo = streamManifest
+                            .GetAudioOnlyStreams()
+                            .Where(s => s.AudioLanguage.Value.Code == appGlobalConfig.Get<Language>(YTPlayerEXSetting.AudioLanguage).ToString()) //Fix black screen on some videos
+                            .GetWithHighestBitrate();
+                    } catch (Exception e)
+                    {
+                        // Select best audio stream (highest bitrate)
+                        audioStreamInfo = streamManifest
+                            .GetAudioOnlyStreams()
+                            .GetWithHighestBitrate();
+                    }
 
                     IVideoStreamInfo videoStreamInfo;
 
@@ -1126,7 +1180,7 @@ namespace YouTubePlayerEX.App.Screens
                             .GetVideoOnlyStreams()
                             .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
                             .Where(s => s.VideoCodec.Contains("avc1")) //Fix black screen on some videos
-                            .Where(s => s.VideoResolution.Height == app.ParseVideoQuality())
+                            .Where(s => s.VideoQuality.Label.Contains(app.ParseVideoQuality()))
                             .GetWithHighestVideoQuality();
                     }
 
@@ -1165,7 +1219,7 @@ namespace YouTubePlayerEX.App.Screens
 
                     spinnerShow = Scheduler.AddDelayed(() => playVideo(), 1000);
 
-                    videoQuality.Disabled = false;
+                    videoQuality.Disabled = audioLanguage.Disabled = false;
                 }
                 else
                 {

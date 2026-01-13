@@ -182,6 +182,16 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString UIScaling => new TranslatableString(getKey(@"ui_scaling"), @"UI scaling");
 
+        /// <summary>
+        /// "Audio tracks"
+        /// </summary>
+        public static LocalisableString AudioLanguage => new TranslatableString(getKey(@"audio_language"), @"Audio tracks");
+
+        /// <summary>
+        /// "Adjust pitch on speed change"
+        /// </summary>
+        public static LocalisableString AdjustPitchOnSpeedChange => new TranslatableString(getKey(@"adjust_pitch_on_speed_change"), @"Adjust pitch on speed change");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

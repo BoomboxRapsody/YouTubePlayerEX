@@ -100,31 +100,31 @@ namespace YouTubePlayerEX.App
             host.ExceptionThrown += onExceptionThrown;
         }
 
-        public int ParseVideoQuality()
+        public string ParseVideoQuality()
         {
             VideoQuality videoQuality = LocalConfig.Get<VideoQuality>(YTPlayerEXSetting.VideoQuality);
 
             switch (videoQuality)
             {
                 case VideoQuality.Quality_4K:
-                    return 2160;
+                    return "2160p";
                 case VideoQuality.Quality_1440p:
-                    return 1440;
+                    return "1440p";
                 case VideoQuality.Quality_1080p:
-                    return 1080;
+                    return "1080p";
                 case VideoQuality.Quality_720p:
-                    return 720;
+                    return "720p";
                 case VideoQuality.Quality_480p:
-                    return 480;
+                    return "480p";
                 case VideoQuality.Quality_360p:
-                    return 360;
+                    return "360p";
                 case VideoQuality.Quality_240p:
-                    return 240;
+                    return "240p";
                 case VideoQuality.Quality_144p:
-                    return 144;
+                    return "144p";
             }
 
-            return 0;
+            return string.Empty;
         }
 
         protected override void Dispose(bool isDisposing)
@@ -225,6 +225,58 @@ namespace YouTubePlayerEX.App
             AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-BoldItalic");
             AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Black");
             AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-BlackItalic");
+
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSyriac/NotoSansSyriac-Regular");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSyriac/NotoSansSyriac-RegularItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSyriac/NotoSansSyriac-Medium");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSyriac/NotoSansSyriac-MediumItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSyriac/NotoSansSyriac-Light");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSyriac/NotoSansSyriac-LightItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSyriac/NotoSansSyriac-SemiBold");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSyriac/NotoSansSyriac-SemiBoldItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSyriac/NotoSansSyriac-Bold");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSyriac/NotoSansSyriac-BoldItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSyriac/NotoSansSyriac-Black");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSyriac/NotoSansSyriac-BlackItalic");
+
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansOriya/NotoSansOriya-Regular");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansOriya/NotoSansOriya-RegularItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansOriya/NotoSansOriya-Medium");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansOriya/NotoSansOriya-MediumItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansOriya/NotoSansOriya-Light");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansOriya/NotoSansOriya-LightItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansOriya/NotoSansOriya-SemiBold");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansOriya/NotoSansOriya-SemiBoldItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansOriya/NotoSansOriya-Bold");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansOriya/NotoSansOriya-BoldItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansOriya/NotoSansOriya-Black");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansOriya/NotoSansOriya-BlackItalic");
+
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSymbols/NotoSansSymbols-Regular");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSymbols/NotoSansSymbols-RegularItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSymbols/NotoSansSymbols-Medium");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSymbols/NotoSansSymbols-MediumItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSymbols/NotoSansSymbols-Light");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSymbols/NotoSansSymbols-LightItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSymbols/NotoSansSymbols-SemiBold");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSymbols/NotoSansSymbols-SemiBoldItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSymbols/NotoSansSymbols-Bold");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSymbols/NotoSansSymbols-BoldItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSymbols/NotoSansSymbols-Black");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansSymbols/NotoSansSymbols-BlackItalic");
+
+            AddFont(Resources, @"Fonts/UIFonts/NotoSans/NotoSans-Regular");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSans/NotoSans-RegularItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSans/NotoSans-Medium");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSans/NotoSans-MediumItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSans/NotoSans-Light");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSans/NotoSans-LightItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSans/NotoSans-SemiBold");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSans/NotoSans-SemiBoldItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSans/NotoSans-Bold");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSans/NotoSans-BoldItalic");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSans/NotoSans-Black");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSans/NotoSans-BlackItalic");
 
             AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Basic");
             AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Bopomofo");

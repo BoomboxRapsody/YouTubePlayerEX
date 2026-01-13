@@ -61,6 +61,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Adjust pitch on speed change과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string adjust_pitch_on_speed_change {
+            get {
+                return ResourceManager.GetString("adjust_pitch_on_speed_change", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Aspect ratio method과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string aspect_ratio_method {
@@ -75,6 +84,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string audio {
             get {
                 return ResourceManager.GetString("audio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Audio tracks과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string audio_language {
+            get {
+                return ResourceManager.GetString("audio_language", resourceCulture);
             }
         }
         

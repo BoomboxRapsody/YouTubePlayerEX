@@ -123,6 +123,9 @@
   <data name="audio" xml:space="preserve">
     <value>오디오</value>
   </data>
+  <data name="audio_language" xml:space="preserve">
+    <value>오디오 트랙</value>
+  </data>
   <data name="auto" xml:space="preserve">
     <value>자동</value>
   </data>
@@ -182,6 +185,9 @@
   </data>
   <data name="prefer_high_quality" xml:space="preserve">
     <value>사용 가능한 최고 화질</value>
+  </data>
+  <data name="adjust_pitch_on_speed_change" xml:space="preserve">
+    <value>속도를 조정할 때 음정도 같이 조절</value>
   </data>
   <data name="profile_image_tooltip" xml:space="preserve">
     <value>{0} • 구독자 {1}명 • 여기를 클릭하여 외부 브라우저에서 채널 링크를 엽니다.</value>

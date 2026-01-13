@@ -123,6 +123,9 @@
   <data name="audio" xml:space="preserve">
     <value>Audio</value>
   </data>
+  <data name="audio_language" xml:space="preserve">
+    <value>Audio tracks</value>
+  </data>
   <data name="auto" xml:space="preserve">
     <value>Auto</value>
   </data>
@@ -182,6 +185,9 @@
   </data>
   <data name="prefer_high_quality" xml:space="preserve">
     <value>Prefer high quality</value>
+  </data>
+  <data name="adjust_pitch_on_speed_change" xml:space="preserve">
+    <value>Adjust pitch on speed change</value>
   </data>
   <data name="profile_image_tooltip" xml:space="preserve">
     <value>{0} • {1} subscribers • Click to view channel via external web browser.</value>

@@ -62,6 +62,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         [BackgroundDependencyLoader]
         private void load(ISampleStore tracks)
         {
+            translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource);
             clickAudio = tracks.Get("button-select.wav");
         }
 
