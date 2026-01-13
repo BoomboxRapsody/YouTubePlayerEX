@@ -79,6 +79,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Auto과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string auto {
+            get {
+                return ResourceManager.GetString("auto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Disabled과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string caption_disabled {
@@ -97,11 +106,29 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Disabled과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string disabled {
+            get {
+                return ResourceManager.GetString("disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Display과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string display {
             get {
                 return ResourceManager.GetString("display", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Enabled과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string enabled {
+            get {
+                return ResourceManager.GetString("enabled", resourceCulture);
             }
         }
         
@@ -205,6 +232,33 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Master volume과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string master_volume {
+            get {
+                return ResourceManager.GetString("master_volume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Minimise video player when switching to another app과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string minimise_on_focus_loss {
+            get {
+                return ResourceManager.GetString("minimise_on_focus_loss", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Prefer high quality과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string prefer_high_quality {
+            get {
+                return ResourceManager.GetString("prefer_high_quality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   {0} • {1} subscribers • Click to view channel via external web browser.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string profile_image_tooltip {
@@ -268,11 +322,47 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   UI scaling과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string ui_scaling {
+            get {
+                return ResourceManager.GetString("ui_scaling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Use hardware acceleration과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string use_hardware_acceleration {
+            get {
+                return ResourceManager.GetString("use_hardware_acceleration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Video과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string video {
+            get {
+                return ResourceManager.GetString("video", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Video metadata translate source과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string video_metadata_translate_source {
             get {
                 return ResourceManager.GetString("video_metadata_translate_source", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Video quality과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string video_quality {
+            get {
+                return ResourceManager.GetString("video_quality", resourceCulture);
             }
         }
         

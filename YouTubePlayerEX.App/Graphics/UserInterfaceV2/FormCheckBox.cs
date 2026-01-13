@@ -16,6 +16,7 @@ using osu.Framework.Localisation;
 using osuTK;
 using osuTK.Graphics;
 using YouTubePlayerEX.App.Graphics.Sprites;
+using YouTubePlayerEX.App.Localisation;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 {
@@ -155,7 +156,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             caption.Colour = Current.Disabled ? Color4Extensions.FromHex(@"5c6470") : Color4Extensions.FromHex(@"dbe3f0");
             text.Colour = Current.Disabled ? Color4Extensions.FromHex(@"5c6470") : Color4.White;
 
-            text.Text = Current.Value ? "Enabled" : "Disabled";
+            text.Text = Current.Value ? YTPlayerEXStrings.Enabled : YTPlayerEXStrings.Disabled;
 
             // use FadeColour to override any existing colour transform (i.e. FlashColour on click).
             background.FadeColour(IsHovered

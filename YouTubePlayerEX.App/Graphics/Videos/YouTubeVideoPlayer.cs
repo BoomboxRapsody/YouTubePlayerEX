@@ -26,16 +26,18 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         private ClosedCaptionLanguage captionLanguage;
 
         private StopwatchClock rateAdjustClock;
-        private FramedClock framedClock;
+        private DecouplingFramedClock framedClock;
 
         private Bindable<double> playbackSpeed;
+        private double resumeFromTime;
 
-        public YouTubeVideoPlayer(string fileName_Video, string fileName_Audio, ClosedCaptionTrack captionTrack, ClosedCaptionLanguage captionLanguage)
+        public YouTubeVideoPlayer(string fileName_Video, string fileName_Audio, ClosedCaptionTrack captionTrack, ClosedCaptionLanguage captionLanguage, double resumeFromTime)
         {
             this.fileName_Video = fileName_Video;
             this.fileName_Audio = fileName_Audio;
             this.captionTrack = captionTrack;
             this.captionLanguage = captionLanguage;
+            this.resumeFromTime = resumeFromTime;
         }
 
         public void UpdateCaptionTrack(ClosedCaptionLanguage captionLanguage, ClosedCaptionTrack captionTrack)
@@ -62,10 +64,13 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             playbackSpeed = new Bindable<double>(1);
 
             rateAdjustClock = new StopwatchClock(true);
-            framedClock = new FramedClock(rateAdjustClock);
+            framedClock = new DecouplingFramedClock(rateAdjustClock);
 
             AddRange(new Drawable[] {
-                drawableTrack = new DrawableTrack(track),
+                drawableTrack = new DrawableTrack(track)
+                {
+                    Clock = framedClock,
+                },
                 video = new Video(fileName_Video, false)
                 {
                     RelativeSizeAxes = osu.Framework.Graphics.Axes.Both,
@@ -131,6 +136,9 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         protected override void LoadComplete()
         {
             base.LoadComplete();
+
+            if (resumeFromTime != 0)
+                SeekTo(resumeFromTime);
         }
 
         protected override void Update()
@@ -146,8 +154,8 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
         public void SeekTo(double pos)
         {
-            video?.Seek(pos);
             drawableTrack?.Seek(pos);
+            video?.Seek(drawableTrack.CurrentTime);
         }
 
         public void FastForward10Sec()
@@ -167,13 +175,13 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         public void Pause()
         {
             drawableTrack?.Stop();
-            rateAdjustClock.Stop();
+            framedClock.Stop();
         }
 
         public void Play()
         {
             drawableTrack?.Start();
-            rateAdjustClock.Start();
+            framedClock.Start();
         }
 
         public void SetPlaybackSpeed(double speed)

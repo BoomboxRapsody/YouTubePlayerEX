@@ -123,14 +123,23 @@
   <data name="audio" xml:space="preserve">
     <value>Audio</value>
   </data>
+  <data name="auto" xml:space="preserve">
+    <value>Auto</value>
+  </data>
   <data name="caption_disabled" xml:space="preserve">
     <value>Disabled</value>
   </data>
   <data name="caption_language" xml:space="preserve">
     <value>Closed caption language (only available)</value>
   </data>
+  <data name="disabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
   <data name="display" xml:space="preserve">
     <value>Display</value>
+  </data>
+  <data name="enabled" xml:space="preserve">
+    <value>Enabled</value>
   </data>
   <data name="error_noVideoId" xml:space="preserve">
     <value>Video ID must not be empty!</value>
@@ -165,6 +174,15 @@
   <data name="load_video" xml:space="preserve">
     <value>Load Video</value>
   </data>
+  <data name="master_volume" xml:space="preserve">
+    <value>Master volume</value>
+  </data>
+  <data name="minimise_on_focus_loss" xml:space="preserve">
+    <value>Minimise video player when switching to another app</value>
+  </data>
+  <data name="prefer_high_quality" xml:space="preserve">
+    <value>Prefer high quality</value>
+  </data>
   <data name="profile_image_tooltip" xml:space="preserve">
     <value>{0} • {1} subscribers • Click to view channel via external web browser.</value>
   </data>
@@ -186,11 +204,23 @@
   <data name="sfx_volume" xml:space="preserve">
     <value>SFX volume</value>
   </data>
+  <data name="ui_scaling" xml:space="preserve">
+    <value>UI scaling</value>
+  </data>
+  <data name="use_hardware_acceleration" xml:space="preserve">
+    <value>Use hardware acceleration</value>
+  </data>
+  <data name="video" xml:space="preserve">
+    <value>Video</value>
+  </data>
   <data name="videoMetadata_desc" xml:space="preserve">
     <value>{0} • {1} views</value>
   </data>
   <data name="video_metadata_translate_source" xml:space="preserve">
     <value>Video metadata translate source</value>
+  </data>
+  <data name="video_quality" xml:space="preserve">
+    <value>Video quality</value>
   </data>
   <data name="video_volume" xml:space="preserve">
     <value>Video volume</value>

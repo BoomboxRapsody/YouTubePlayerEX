@@ -90,9 +90,41 @@ namespace YouTubePlayerEX.App
             // may be non-null for certain tests
             Storage ??= host.Storage;
 
+            if (host.Window != null)
+            {
+                host.Window.CursorState |= CursorState.Hidden;
+            }
+
             LocalConfig ??= new YTPlayerEXConfigManager(Storage);
 
             host.ExceptionThrown += onExceptionThrown;
+        }
+
+        public int ParseVideoQuality()
+        {
+            VideoQuality videoQuality = LocalConfig.Get<VideoQuality>(YTPlayerEXSetting.VideoQuality);
+
+            switch (videoQuality)
+            {
+                case VideoQuality.Quality_4K:
+                    return 2160;
+                case VideoQuality.Quality_1440p:
+                    return 1440;
+                case VideoQuality.Quality_1080p:
+                    return 1080;
+                case VideoQuality.Quality_720p:
+                    return 720;
+                case VideoQuality.Quality_480p:
+                    return 480;
+                case VideoQuality.Quality_360p:
+                    return 360;
+                case VideoQuality.Quality_240p:
+                    return 240;
+                case VideoQuality.Quality_144p:
+                    return 144;
+            }
+
+            return 0;
         }
 
         protected override void Dispose(bool isDisposing)

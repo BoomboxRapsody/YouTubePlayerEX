@@ -74,7 +74,7 @@ namespace YouTubePlayerEX.App.Graphics.Caption
 
         public void UpdateControlsVisibleState(bool state)
         {
-            captionContainer.Padding = new MarginPadding
+            captionContainer.Margin = new MarginPadding
             {
                 Bottom = state ? 90 : 0
             };

@@ -132,6 +132,56 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString GoogleTranslate => new TranslatableString(getKey(@"google_translate"), "Google Translate");
 
+        /// <summary>
+        /// "Auto"
+        /// </summary>
+        public static LocalisableString Auto => new TranslatableString(getKey(@"auto"), "Auto");
+
+        /// <summary>
+        /// "Video"
+        /// </summary>
+        public static LocalisableString Video => new TranslatableString(getKey(@"video"), "Video");
+
+        /// <summary>
+        /// "Use hardware acceleration"
+        /// </summary>
+        public static LocalisableString UseHardwareAcceleration => new TranslatableString(getKey(@"use_hardware_acceleration"), @"Use hardware acceleration");
+
+        /// <summary>
+        /// "Minimise video player when switching to another app"
+        /// </summary>
+        public static LocalisableString MinimiseOnFocusLoss => new TranslatableString(getKey(@"minimise_on_focus_loss"), @"Minimise video player when switching to another app");
+
+        /// <summary>
+        /// "Prefer high quality"
+        /// </summary>
+        public static LocalisableString PreferHighQuality => new TranslatableString(getKey(@"prefer_high_quality"), "Prefer high quality");
+
+        /// <summary>
+        /// "Video quality"
+        /// </summary>
+        public static LocalisableString VideoQuality => new TranslatableString(getKey(@"video_quality"), "Video quality");
+
+        /// <summary>
+        /// "Master volume"
+        /// </summary>
+        public static LocalisableString MasterVolume => new TranslatableString(getKey(@"master_volume"), "Master volume");
+
+        /// <summary>
+        /// "Enabled"
+        /// </summary>
+        public static LocalisableString Enabled => new TranslatableString(getKey(@"enabled"), "Enabled");
+
+        /// <summary>
+        /// "Disabled"
+        /// </summary>
+        public static LocalisableString Disabled => new TranslatableString(getKey(@"disabled"), "Disabled");
+
+        /// <summary>
+        /// "UI scaling"
+        /// </summary>
+        public static LocalisableString UIScaling => new TranslatableString(getKey(@"ui_scaling"), @"UI scaling");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

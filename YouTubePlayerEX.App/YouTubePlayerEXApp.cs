@@ -8,6 +8,7 @@ using osu.Framework.Localisation;
 using osu.Framework.Logging;
 using osu.Framework.Screens;
 using YouTubePlayerEX.App.Extensions;
+using YouTubePlayerEX.App.Graphics.Containers;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Screens;
 
@@ -46,10 +47,13 @@ namespace YouTubePlayerEX.App
             // A screen stack and sample screen has been provided for convenience, but you can replace it if you don't want to use screens.
             AddRange(new Drawable[]
             {
-                screenStack = new ScreenStack
+                new ScalingContainer
                 {
-                    RelativeSizeAxes = Axes.Both
-                },
+                    Child = screenStack = new ScreenStack
+                    {
+                        RelativeSizeAxes = Axes.Both
+                    },
+                }
             });
         }
 
