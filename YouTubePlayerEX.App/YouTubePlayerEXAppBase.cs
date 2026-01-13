@@ -159,7 +159,7 @@ namespace YouTubePlayerEX.App
 
             dependencies.Cache(LocalConfig);
 
-            dependencies.Cache(TranslateAPI = new GoogleTranslate(frameworkConfig));
+            dependencies.Cache(TranslateAPI = new GoogleTranslate(this, frameworkConfig));
             dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig, TranslateAPI, LocalConfig));
 
             dependencies.Cache(SessionStatics = new SessionStatics());

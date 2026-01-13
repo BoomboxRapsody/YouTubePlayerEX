@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Globalization;
+using System.Collections.Generic;
 using System.Linq;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
@@ -36,6 +36,37 @@ namespace YouTubePlayerEX.App.Online
             var request = youtubeService.Channels.List(part);
 
             request.Id = channelId;
+
+            var response = request.Execute();
+
+            var result = response.Items.First();
+
+            return result;
+
+        }
+
+        public IList<CommentThread> GetCommentThread(string videoId, CommentThreadsResource.ListRequest.OrderEnum orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Time)
+        {
+            var part = "snippet,replies";
+            var request = youtubeService.CommentThreads.List(part);
+
+            request.MaxResults = 250; // hell
+            request.VideoId = videoId;
+            request.Order = orderEnum;
+
+            var response = request.Execute();
+
+            var result = response.Items;
+
+            return result;
+        }
+
+        public Comment GetComment(string commentId)
+        {
+            var part = "snippet";
+            var request = youtubeService.Comments.List(part);
+
+            request.Id = commentId;
 
             var response = request.Execute();
 
@@ -132,9 +163,41 @@ namespace YouTubePlayerEX.App.Online
             }
         }
 
+        public string GetLocalizedVideoDescription(Video video)
+        {
+            if (video == null)
+                return string.Empty;
+
+            if (appConfig.Get<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource) == VideoMetadataTranslateSource.GoogleTranslate)
+            {
+                try
+                {
+                    string originalDescription = video.Snippet.Description;
+                    string translatedDescription = translateApi.Translate(originalDescription, GoogleTranslateLanguage.auto);
+                    return translatedDescription;
+                }
+                catch (Exception e)
+                {
+                    return video.Snippet.Description;
+                }
+            }
+
+            string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
+            string languageParsed = string.Empty;
+
+            try
+            {
+                return video.Localizations[language].Description;
+            }
+            catch (Exception e)
+            {
+                return video.Snippet.Description;
+            }
+        }
+
         public Video GetVideo(string videoId)
         {
-            var part = "statistics,snippet,localizations";
+            var part = "statistics,snippet,localizations,contentDetails";
             var request = youtubeService.Videos.List(part);
 
             request.Id = videoId;

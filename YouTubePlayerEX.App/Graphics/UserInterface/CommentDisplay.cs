@@ -1,0 +1,273 @@
+﻿using System;
+using System.Threading.Tasks;
+using Google.Apis.YouTube.v3.Data;
+using Humanizer;
+using osu.Framework.Allocation;
+using osu.Framework.Bindables;
+using osu.Framework.Configuration;
+using osu.Framework.Extensions;
+using osu.Framework.Graphics;
+using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Shapes;
+using osu.Framework.Graphics.Sprites;
+using osuTK;
+using osuTK.Graphics;
+using YouTubePlayerEX.App.Config;
+using YouTubePlayerEX.App.Extensions;
+using YouTubePlayerEX.App.Graphics.Sprites;
+using YouTubePlayerEX.App.Localisation;
+using YouTubePlayerEX.App.Online;
+
+namespace YouTubePlayerEX.App.Graphics.UserInterface
+{
+    public partial class CommentDisplay : CompositeDrawable
+    {
+        private ProfileImage profileImage;
+        private TruncatingSpriteText channelName;
+        private TruncatingSpriteText commentText;
+        public Action<VideoMetadataDisplay> ClickEvent;
+        private AdaptiveSpriteText likeCount, translateToText;
+        private RoundedButtonContainer translateButton;
+
+        private Box bgLayer;
+
+        [Resolved]
+        private YouTubeAPI api { get; set; }
+
+        [Resolved]
+        private YouTubePlayerEXAppBase app { get; set; }
+
+        [Resolved]
+        private FrameworkConfigManager frameworkConfig { get; set; }
+
+        [Resolved]
+        private YTPlayerEXConfigManager appConfig { get; set; }
+
+        private Bindable<string> localeBindable = new Bindable<string>();
+        private Bindable<VideoMetadataTranslateSource> translationSource = new Bindable<VideoMetadataTranslateSource>();
+
+        public CommentDisplay(Comment comment, Comment replyReference = null)
+        {
+            this.replyReference = replyReference;
+            commentData = comment;
+            Height = 110;
+            Task.Run(async () =>
+            {
+                UpdateData();
+            });
+        }
+
+        [BackgroundDependencyLoader]
+        private void load()
+        {
+            localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
+            translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource);
+
+            CornerRadius = 12;
+            Masking = true;
+            InternalChildren = new Drawable[]
+            {
+                samples,
+                bgLayer = new Box
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Colour = Color4.White,
+                    Alpha = 0.1f,
+                },
+                new Container {
+                    RelativeSizeAxes = Axes.Both,
+                    Padding = new MarginPadding(7),
+                    Children = new Drawable[]
+                    {
+                        profileImage = new ProfileImage(35),
+                        new Container
+                        {
+                            RelativeSizeAxes = Axes.Both,
+                            Padding = new MarginPadding
+                            {
+                                Vertical = 5,
+                                Left = 42,
+                                Right = 5,
+                            },
+                            Children = new Drawable[]
+                            {
+                                channelName = new TruncatingSpriteText
+                                {
+                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"),
+                                    RelativeSizeAxes = Axes.X,
+                                    Colour = Color4.Gray,
+                                    Text = "[channel name]",
+                                },
+                                commentText = new TruncatingSpriteText
+                                {
+                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 17, weight: "SemiBold"),
+                                    RelativeSizeAxes = Axes.X,
+                                    Position = new osuTK.Vector2(0, 13),
+                                    Text = "[text]",
+                                },
+                                translateButton = new RoundedButtonContainer
+                                {
+                                    AutoSizeAxes = Axes.X,
+                                    Height = 27,
+                                    CornerRadius = 12,
+                                    Masking = true,
+                                    AlwaysPresent = true,
+                                    Position = new osuTK.Vector2(0, 35),
+                                    ClickAction = f => translateComment(),
+                                    Children = new Drawable[]
+                                    {
+                                        new Container
+                                        {
+                                            RelativeSizeAxes = Axes.Both,
+                                            CornerRadius = 12,
+                                            Child = new Box
+                                            {
+                                                RelativeSizeAxes = Axes.Both,
+                                                Colour = Color4.White,
+                                                Alpha = 0.1f,
+                                            },
+                                        },
+                                        new FillFlowContainer
+                                        {
+                                            AutoSizeAxes = Axes.X,
+                                            RelativeSizeAxes = Axes.Y,
+                                            Direction = FillDirection.Horizontal,
+                                            Spacing = new Vector2(4, 0),
+                                            Padding = new MarginPadding(8),
+                                            Children = new Drawable[]
+                                            {
+                                                translateToText = new AdaptiveSpriteText
+                                                {
+                                                    Text = "[no metadata]",
+                                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 12.5f, weight: "Regular"),
+                                                },
+                                            }
+                                        }
+                                    }
+                                },
+                                new FillFlowContainer
+                                {
+                                    RelativeSizeAxes = Axes.X,
+                                    AutoSizeAxes = Axes.Y,
+                                    Position = new osuTK.Vector2(0, 65),
+                                    Direction = FillDirection.Horizontal,
+                                    Spacing = new Vector2(4, 0),
+                                    Children = new Drawable[]
+                                    {
+                                        new Container
+                                        {
+                                            AutoSizeAxes = Axes.X,
+                                            Height = 27,
+                                            CornerRadius = 12,
+                                            Masking = true,
+                                            AlwaysPresent = true,
+                                            Children = new Drawable[]
+                                            {
+                                                new Container
+                                                {
+                                                    RelativeSizeAxes = Axes.Both,
+                                                    CornerRadius = 12,
+                                                    Child = new Box
+                                                    {
+                                                        RelativeSizeAxes = Axes.Both,
+                                                        Colour = Color4.White,
+                                                        Alpha = 0.1f,
+                                                    },
+                                                },
+                                                new FillFlowContainer
+                                                {
+                                                    AutoSizeAxes = Axes.X,
+                                                    RelativeSizeAxes = Axes.Y,
+                                                    Direction = FillDirection.Horizontal,
+                                                    Spacing = new Vector2(4, 0),
+                                                    Padding = new MarginPadding(8),
+                                                    Children = new Drawable[]
+                                                    {
+                                                        new SpriteIcon
+                                                        {
+                                                            Width = 12,
+                                                            Height = 12,
+                                                            Icon = FontAwesome.Solid.ThumbsUp,
+                                                        },
+                                                        likeCount = new AdaptiveSpriteText
+                                                        {
+                                                            Text = "[no metadata]",
+                                                            Font = YouTubePlayerEXApp.DefaultFont.With(size: 12.5f, weight: "Regular"),
+                                                        },
+                                                    }
+                                                }
+                                            }
+                                        },
+                                    }
+                                },
+                            }
+                        }
+                    }
+                }
+            };
+        }
+
+        private bool translated;
+
+        private Comment commentData, replyReference;
+
+        private HoverSounds samples = new HoverClickSounds(HoverSampleSet.Default);
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+            (samples as HoverClickSounds).Enabled.Value = (ClickEvent != null);
+        }
+
+        private void translateComment()
+        {
+            if (translated == false)
+            {
+                Task.Run(async () => commentText.Text = translate.Translate(commentData.Snippet.TextOriginal, GoogleTranslateLanguage.auto));
+                translateToText.Text = YTPlayerEXStrings.TranslateViewOriginal;
+                translated = true;
+            }
+            else
+            {
+                commentText.Text = commentData.Snippet.TextOriginal;
+                translateToText.Text = YTPlayerEXStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
+                translated = false;
+            }
+        }
+
+        [Resolved]
+        private GoogleTranslate translate { get; set; }
+
+        public void UpdateData()
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    DateTimeOffset? dateTime = commentData.Snippet.PublishedAtDateTimeOffset;
+                    DateTimeOffset now = DateTime.Now;
+                    Channel channelData = api.GetChannel(commentData.Snippet.AuthorChannelId.Value);
+                    Channel channelData2 = null;
+
+                    if (replyReference != null)
+                        channelData2 = api.GetChannel(replyReference.Snippet.AuthorChannelId.Value);
+
+                    channelName.Text = (channelData2 == null) ? api.GetLocalizedChannelTitle(channelData) : YTPlayerEXStrings.CommentReply(api.GetLocalizedChannelTitle(channelData), api.GetLocalizedChannelTitle(channelData2));
+                    commentText.Text = commentData.Snippet.TextOriginal;
+                    likeCount.Text = Convert.ToInt32(commentData.Snippet.LikeCount).ToStandardFormattedString(0);
+                    translateToText.Text = YTPlayerEXStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
+                    profileImage.UpdateProfileImage(commentData.Snippet.AuthorChannelId.Value);
+
+                    localeBindable.BindValueChanged(locale =>
+                    {
+                        translateToText.Text = YTPlayerEXStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
+                    }, true);
+                }
+                catch (Exception e)
+                {
+                    Hide();
+                }
+            });
+        }
+    }
+}

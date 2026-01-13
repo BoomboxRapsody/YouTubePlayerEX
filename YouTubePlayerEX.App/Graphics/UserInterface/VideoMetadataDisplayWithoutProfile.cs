@@ -18,12 +18,11 @@ using YouTubePlayerEX.App.Online;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
-    public partial class VideoMetadataDisplay : CompositeDrawable
+    public partial class VideoMetadataDisplayWithoutProfile : CompositeDrawable
     {
-        private ProfileImage profileImage;
         private TruncatingSpriteText videoName;
         private TruncatingSpriteText desc;
-        public Action<VideoMetadataDisplay> ClickEvent;
+        public Action<VideoMetadataDisplayWithoutProfile> ClickEvent;
 
         private Box bgLayer;
 
@@ -60,16 +59,14 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     RelativeSizeAxes = Axes.Both,
                     Padding = new MarginPadding(7),
                     Children = new Drawable[]
-                    {
-                        profileImage = new ProfileImage(45),
+                    {   
                         new Container
                         {
                             RelativeSizeAxes = Axes.Both,
                             Padding = new MarginPadding
                             {
                                 Vertical = 5,
-                                Left = 50,
-                                Right = 5,
+                                Horizontal = 5,
                             },
                             Children = new Drawable[]
                             {
@@ -133,11 +130,10 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             {
                 videoData = api.GetVideo(videoId);
                 DateTimeOffset? dateTime = videoData.Snippet.PublishedAtDateTimeOffset;
-                DateTimeOffset now = DateTime.Now;
+                DateTimeOffset now = DateTimeOffset.Now;
                 Channel channelData = api.GetChannel(videoData.Snippet.ChannelId);
                 videoName.Text = api.GetLocalizedVideoTitle(videoData);
                 desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
-                profileImage.UpdateProfileImage(videoData.Snippet.ChannelId);
 
                 localeBindable.BindValueChanged(locale =>
                 {

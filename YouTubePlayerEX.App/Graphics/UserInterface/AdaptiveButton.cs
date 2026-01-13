@@ -12,6 +12,7 @@ using osu.Framework.Localisation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics.Effects;
+using YouTubePlayerEX.App.Graphics.Sprites;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
@@ -129,7 +130,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             Enabled.BindValueChanged(enabledChanged, true);
         }
 
-        protected virtual SpriteText CreateText() => new SpriteText
+        protected virtual SpriteText CreateText() => new AdaptiveSpriteText
         {
             Depth = -1,
             Origin = Anchor.Centre,

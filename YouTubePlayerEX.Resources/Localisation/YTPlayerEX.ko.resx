@@ -124,7 +124,7 @@
     <value>오디오</value>
   </data>
   <data name="audio_language" xml:space="preserve">
-    <value>오디오 트랙</value>
+    <value>오디오 트랙 (가능한 경우)</value>
   </data>
   <data name="auto" xml:space="preserve">
     <value>자동</value>
@@ -219,8 +219,11 @@
   <data name="video" xml:space="preserve">
     <value>동영상</value>
   </data>
-  <data name="videoMetadata_desc" xml:space="preserve">
-    <value>{0} • 조회수 {1}회</value>
+  <data name="video_metadata_desc" xml:space="preserve">
+    <value>{0} • 조회수 {1}회 • {2}</value>
+  </data>
+  <data name="video_metadata_desc_without_channel_name" xml:space="preserve">
+    <value>조회수 {0}회  {1}</value>
   </data>
   <data name="video_metadata_translate_source" xml:space="preserve">
     <value>동영상 메타데이터 번역 소스</value>
@@ -230,5 +233,20 @@
   </data>
   <data name="video_volume" xml:space="preserve">
     <value>동영상 음량</value>
+  </data>
+  <data name="comments" xml:space="preserve">
+    <value>댓글 ({0})</value>
+  </data>
+  <data name="dim" xml:space="preserve">
+    <value>동영상의 어두운 정도</value>
+  </data>
+  <data name="translate_to" xml:space="preserve">
+    <value>{0}로 번역</value>
+  </data>
+  <data name="translate_view_original" xml:space="preserve">
+    <value>원본 보기(Google 번역 제공)</value>
+  </data>
+  <data name="comment_reply" xml:space="preserve">
+    <value>{0} ({1}의 댓글에 답장함)</value>
   </data>
 </root>

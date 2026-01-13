@@ -21,9 +21,11 @@ namespace YouTubePlayerEX.App.Online
     public class GoogleTranslate
     {
         private FrameworkConfigManager frameworkConfig;
-        public GoogleTranslate(FrameworkConfigManager frameworkConfig)
+        private YouTubePlayerEXAppBase app;
+        public GoogleTranslate(YouTubePlayerEXAppBase app, FrameworkConfigManager frameworkConfig)
         {
             this.frameworkConfig = frameworkConfig;
+            this.app = app;
         }
 
         public string Translate(string text, GoogleTranslateLanguage translateLanguageFrom = GoogleTranslateLanguage.auto)
@@ -32,7 +34,7 @@ namespace YouTubePlayerEX.App.Online
 
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + translateLanguageFrom.ToString() + "&tl=" + frameworkConfig.Get<string>(FrameworkSetting.Locale) + "&dt=t&q=" + HttpUtility.HtmlEncode(text));
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://translate.googleapis.com/translate_a/single?client=gtx&sl=" + translateLanguageFrom.ToString() + "&tl=" + app.CurrentLanguage.Value + "&dt=t&q=" + HttpUtility.HtmlEncode(text));
                 request.Method = "GET";
                 request.UserAgent = "Mozilla/5.0";
 

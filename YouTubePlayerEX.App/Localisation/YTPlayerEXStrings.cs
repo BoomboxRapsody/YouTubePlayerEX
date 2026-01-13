@@ -8,9 +8,9 @@ namespace YouTubePlayerEX.App.Localisation
         private const string prefix = @"YouTubePlayerEX.Resources.Localisation.YTPlayerEX";
 
         /// <summary>
-        /// "{0} • {1} views"
+        /// "{0} • {1} views • {2}"
         /// </summary>
-        public static LocalisableString VideoMetadataDesc(string username, string views) => new TranslatableString(getKey(@"videoMetadata_desc"), "{0} • {1} views", username, views);
+        public static LocalisableString VideoMetadataDesc(string username, string views, string daysAgo) => new TranslatableString(getKey(@"video_metadata_desc"), "{0} • {1} views • {2}", username, views, daysAgo);
 
         /// <summary>
         /// "Load from video ID"
@@ -191,6 +191,36 @@ namespace YouTubePlayerEX.App.Localisation
         /// "Adjust pitch on speed change"
         /// </summary>
         public static LocalisableString AdjustPitchOnSpeedChange => new TranslatableString(getKey(@"adjust_pitch_on_speed_change"), @"Adjust pitch on speed change");
+
+        /// <summary>
+        /// "{0} views  {1}"
+        /// </summary>
+        public static LocalisableString VideoMetadataDescWithoutChannelName(string views, string daysAgo) => new TranslatableString(getKey(@"video_metadata_desc_without_channel_name"), "{0} views  {1}", views, daysAgo);
+
+        /// <summary>
+        /// "Comments ({0})"
+        /// </summary>
+        public static LocalisableString Comments(int count) => new TranslatableString(getKey(@"comments"), "Comments ({0})", count);
+
+        /// <summary>
+        /// "Video dim level"
+        /// </summary>
+        public static LocalisableString VideoDimLevel => new TranslatableString(getKey(@"dim"), "Video dim level");
+
+        /// <summary>
+        /// "Translate to {0}"
+        /// </summary>
+        public static LocalisableString TranslateTo(LocalisableString targetLang) => new TranslatableString(getKey(@"translate_to"), "Translate to {0}", targetLang);
+
+        /// <summary>
+        /// "See original (Translated by Google)"
+        /// </summary>
+        public static LocalisableString TranslateViewOriginal => new TranslatableString(getKey(@"translate_view_original"), "See original (Translated by Google)");
+
+        /// <summary>
+        /// "{0} (Reply to {1})"
+        /// </summary>
+        public static LocalisableString CommentReply(string from, string to) => new TranslatableString(getKey(@"comment_reply"), "{0} (Reply to {1})", from, to);
 
         private static string getKey(string key) => $@"{prefix}:{key}";
     }

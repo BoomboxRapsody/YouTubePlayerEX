@@ -24,6 +24,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osu.Framework.NativeLibs", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "osu.Framework.Tests", "YouTubePlayerEX-framework\osu.Framework.Tests\osu.Framework.Tests.csproj", "{6DC508DC-8D1A-4644-963F-9C7D6D4D68EA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeAnalysis", "CodeAnalysis", "{FB156649-D457-4D1A-969C-D3A23FD31513}"
+	ProjectSection(SolutionItems) = preProject
+		CodeAnalysis\BannedSymbols.txt = CodeAnalysis\BannedSymbols.txt
+		CodeAnalysis\YouTubePlayerEX.globalconfig = CodeAnalysis\YouTubePlayerEX.globalconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

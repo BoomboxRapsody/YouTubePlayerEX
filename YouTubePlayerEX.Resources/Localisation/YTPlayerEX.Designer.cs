@@ -88,7 +88,7 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
-        ///   Audio tracks과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Audio tracks (only available)과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string audio_language {
             get {
@@ -120,6 +120,33 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string caption_language {
             get {
                 return ResourceManager.GetString("caption_language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   {0} (Reply to {1})과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string comment_reply {
+            get {
+                return ResourceManager.GetString("comment_reply", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Comments ({0})과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string comments {
+            get {
+                return ResourceManager.GetString("comments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Video dim level과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string dim {
+            get {
+                return ResourceManager.GetString("dim", resourceCulture);
             }
         }
         
@@ -340,6 +367,24 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Translate to {0}과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string translate_to {
+            get {
+                return ResourceManager.GetString("translate_to", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   See original (Translated by Google)과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string translate_view_original {
+            get {
+                return ResourceManager.GetString("translate_view_original", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   UI scaling과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string ui_scaling {
@@ -367,6 +412,24 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   {0} • {1} views • {2}과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string video_metadata_desc {
+            get {
+                return ResourceManager.GetString("video_metadata_desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   {0} views  {1}과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string video_metadata_desc_without_channel_name {
+            get {
+                return ResourceManager.GetString("video_metadata_desc_without_channel_name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Video metadata translate source과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string video_metadata_translate_source {
@@ -390,15 +453,6 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string video_volume {
             get {
                 return ResourceManager.GetString("video_volume", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   {0} • {1} views과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        internal static string videoMetadata_desc {
-            get {
-                return ResourceManager.GetString("videoMetadata_desc", resourceCulture);
             }
         }
     }

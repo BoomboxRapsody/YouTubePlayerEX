@@ -124,7 +124,7 @@
     <value>オーディオ</value>
   </data>
   <data name="audio_language" xml:space="preserve">
-    <value>オーディオトラック</value>
+    <value>オーディオトラック（使用可能）</value>
   </data>
   <data name="auto" xml:space="preserve">
     <value>自動</value>
@@ -219,8 +219,11 @@
   <data name="video" xml:space="preserve">
     <value>ビデオ</value>
   </data>
-  <data name="videoMetadata_desc" xml:space="preserve">
-    <value>{0} • {1} 回視聴</value>
+  <data name="video_metadata_desc" xml:space="preserve">
+    <value>{0} • {1} 回視聴 • {2}</value>
+  </data>
+  <data name="video_metadata_desc_without_channel_name" xml:space="preserve">
+    <value>{0} 回視聴  {1}</value>
   </data>
   <data name="video_metadata_translate_source" xml:space="preserve">
     <value>ビデオメタデータ変換ソース</value>
@@ -230,5 +233,20 @@
   </data>
   <data name="video_volume" xml:space="preserve">
     <value>ビデオボリューム</value>
+  </data>
+  <data name="comments" xml:space="preserve">
+    <value>コメント ({0})</value>
+  </data>
+  <data name="dim" xml:space="preserve">
+    <value>ビデオ暗いレベル</value>
+  </data>
+  <data name="translate_to" xml:space="preserve">
+    <value>{0}に変換します</value>
+  </data>
+  <data name="translate_view_original" xml:space="preserve">
+    <value>原文を見る（Google による翻訳）</value>
+  </data>
+  <data name="comment_reply" xml:space="preserve">
+    <value>{0} （返信先:{1}）</value>
   </data>
 </root>
