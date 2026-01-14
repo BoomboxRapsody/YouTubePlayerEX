@@ -1340,17 +1340,6 @@ namespace YouTubePlayerEX.App.Screens
                                 RelativeSizeAxes = Axes.X,
                             });
                         });
-
-                        foreach (Comment item2 in item.Replies.Comments)
-                        {
-                            Schedule(() =>
-                            {
-                                commentContainer.Add(new CommentDisplay(item2, api.GetComment(item.Id))
-                                {
-                                    RelativeSizeAxes = Axes.X,
-                                });
-                            });
-                        }
                     }
                 }
 
