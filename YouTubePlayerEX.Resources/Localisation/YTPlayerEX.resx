@@ -249,7 +249,7 @@
   <data name="comment_reply" xml:space="preserve">
     <value>{0} (Reply to {1})</value>
   </data>
-  <data name="lastest_version" xml:space="preserve">
+  <data name="running_latest_release" xml:space="preserve">
     <value>You are running the latest release ({0})</value>
   </data>
   <data name="updating" xml:space="preserve">

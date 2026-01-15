@@ -286,15 +286,6 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
-        ///   You are running the latest release ({0})과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        internal static string lastest_version {
-            get {
-                return ResourceManager.GetString("lastest_version", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Letterbox과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string letterbox {
@@ -372,6 +363,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string restart_required {
             get {
                 return ResourceManager.GetString("restart_required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   You are running the latest release ({0})과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string running_latest_release {
+            get {
+                return ResourceManager.GetString("running_latest_release", resourceCulture);
             }
         }
         

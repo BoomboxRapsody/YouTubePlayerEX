@@ -249,7 +249,7 @@
   <data name="comment_reply" xml:space="preserve">
     <value>{0} ({1}의 댓글에 답장함)</value>
   </data>
-  <data name="lastest_version" xml:space="preserve">
+  <data name="running_latest_release" xml:space="preserve">
     <value>현재 최신 버전을 실행 중이에요. ({0})</value>
   </data>
   <data name="updating" xml:space="preserve">
