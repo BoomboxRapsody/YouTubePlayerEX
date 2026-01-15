@@ -276,4 +276,13 @@
   <data name="dislike_counter_credits" xml:space="preserve">
     <value>低評価数データはReturn YouTube Dislike APIによって提供されています。</value>
   </data>
+  <data name="common_default" xml:space="preserve">
+    <value>デフォルト</value>
+  </data>
+  <data name="show_fps" xml:space="preserve">
+    <value>FPSを表示</value>
+  </data>
+  <data name="cannot_play_private_videos" xml:space="preserve">
+    <value>プライベートビデオを再生できません。</value>
+  </data>
 </root>

@@ -42,6 +42,7 @@ namespace YouTubePlayerEX.App.Input.Binding
             new KeyBinding(InputKey.Space, GlobalAction.PlayPause),
             new KeyBinding(InputKey.Right, GlobalAction.FastForward_10sec),
             new KeyBinding(InputKey.Left, GlobalAction.FastRewind_10sec),
+            new KeyBinding(new[] { InputKey.Control, InputKey.O }, GlobalAction.OpenSettings),
         };
     }
 
@@ -55,6 +56,7 @@ namespace YouTubePlayerEX.App.Input.Binding
         Select,
         PlayPause,
         FastForward_10sec,
-        FastRewind_10sec
+        FastRewind_10sec,
+        OpenSettings,
     }
 }

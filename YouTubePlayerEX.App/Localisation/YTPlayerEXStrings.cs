@@ -272,6 +272,21 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString DislikeCounterCredits => new TranslatableString(getKey(@"dislike_counter_credits"), @"Dislike count data is provided by the Return YouTube Dislike API.");
 
+        /// <summary>
+        /// "Default"
+        /// </summary>
+        public static LocalisableString Default => new TranslatableString(getKey(@"common_default"), "Default");
+
+        /// <summary>
+        /// "Show FPS"
+        /// </summary>
+        public static LocalisableString ShowFPS => new TranslatableString(getKey(@"show_fps"), "Show FPS");
+
+        /// <summary>
+        /// "Cannot play private videos."
+        /// </summary>
+        public static LocalisableString CannotPlayPrivateVideos => new TranslatableString(getKey(@"cannot_play_private_videos"), "Cannot play private videos.");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

@@ -76,6 +76,7 @@ namespace YouTubePlayerEX.Desktop.Updater
         private void downloadUpdate(Velopack.UpdateManager updateManager, UpdateInfo update, CancellationToken cancellationToken) => Task.Run(async () =>
         {
             log($"Beginning download of update {update.TargetFullRelease.Version}...");
+            game.UpdateButtonEnabled.Value = false;
 
             try
             {
@@ -83,11 +84,13 @@ namespace YouTubePlayerEX.Desktop.Updater
                 game.UpdateManagerVersionText.Value = YTPlayerEXStrings.RestartRequired;
                 game.RestartRequired.Value = true;
                 game.RestartAction = () => restartToApplyUpdate(updateManager, update);
+                game.UpdateButtonEnabled.Value = true;
             }
             catch (Exception e)
             {
                 // In the case of an error, a separate notification will be displayed.
                 game.UpdateManagerVersionText.Value = YTPlayerEXStrings.UpdateFailed;
+                game.UpdateButtonEnabled.Value = true;
                 Logger.Error(e, @"Update failed!");
             }
 

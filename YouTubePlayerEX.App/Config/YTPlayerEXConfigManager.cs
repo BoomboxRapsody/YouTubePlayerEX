@@ -27,6 +27,7 @@ namespace YouTubePlayerEX.App.Config
             SetDefault(YTPlayerEXSetting.AudioLanguage, Language.en);
             SetDefault(YTPlayerEXSetting.AdjustPitchOnSpeedChange, false);
             SetDefault(YTPlayerEXSetting.VideoDimLevel, 0, 0, .8, 0.01);
+            SetDefault(YTPlayerEXSetting.ShowFpsDisplay, false);
 
             if (RuntimeInfo.IsMobile)
                 SetDefault(YTPlayerEXSetting.UIScale, 1f, 0.8f, 1.1f, 0.01f);
@@ -51,5 +52,6 @@ namespace YouTubePlayerEX.App.Config
         AudioLanguage,
         AdjustPitchOnSpeedChange,
         VideoDimLevel,
+        ShowFpsDisplay,
     }
 }

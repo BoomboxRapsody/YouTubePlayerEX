@@ -175,6 +175,7 @@ namespace YouTubePlayerEX.App
         }
 
         public Action RestartAction;
+        public Bindable<bool> UpdateButtonEnabled = new Bindable<bool>();
 
         [BackgroundDependencyLoader]
         private void load(FrameworkConfigManager frameworkConfig)

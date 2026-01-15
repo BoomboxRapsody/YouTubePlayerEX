@@ -198,7 +198,7 @@ namespace YouTubePlayerEX.App.Online
 
         public Video GetVideo(string videoId)
         {
-            var part = "statistics,snippet,localizations,contentDetails";
+            var part = "statistics,snippet,localizations,contentDetails,status";
             var request = youtubeService.Videos.List(part);
 
             request.Id = videoId;

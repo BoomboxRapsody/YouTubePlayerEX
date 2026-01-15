@@ -106,6 +106,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Cannot play private videos.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string cannot_play_private_videos {
+            get {
+                return ResourceManager.GetString("cannot_play_private_videos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Disabled과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string caption_disabled {
@@ -156,6 +165,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string comments {
             get {
                 return ResourceManager.GetString("comments", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Default과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string common_default {
+            get {
+                return ResourceManager.GetString("common_default", resourceCulture);
             }
         }
         
@@ -426,6 +444,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string sfx_volume {
             get {
                 return ResourceManager.GetString("sfx_volume", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Show FPS과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string show_fps {
+            get {
+                return ResourceManager.GetString("show_fps", resourceCulture);
             }
         }
         

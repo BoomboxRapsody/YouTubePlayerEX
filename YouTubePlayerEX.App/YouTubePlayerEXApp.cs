@@ -16,6 +16,7 @@ using osu.Framework.Threading;
 using YouTubePlayerEX.App.Audio.Effects;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics.Containers;
+using YouTubePlayerEX.App.Graphics.UserInterface;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Screens;
 using YouTubePlayerEX.App.Updater;
@@ -30,6 +31,8 @@ namespace YouTubePlayerEX.App
         public static FontUsage DefaultFont = FontUsage.Default.With("Pretendard", 16, "Regular");
 
         private BindableNumber<double> sampleVolume = null!;
+        private FPSCounter fpsCounter;
+        private Container topMostOverlayContent;
 
         [BackgroundDependencyLoader]
         private void load()
@@ -66,8 +69,16 @@ namespace YouTubePlayerEX.App
                     {
                         RelativeSizeAxes = Axes.Both
                     },
-                }
+                },
+                topMostOverlayContent = new Container { RelativeSizeAxes = Axes.Both },
             });
+
+            loadComponentSingleFile(fpsCounter = new FPSCounter
+            {
+                Anchor = Anchor.BottomRight,
+                Origin = Anchor.BottomRight,
+                Margin = new MarginPadding(5),
+            }, topMostOverlayContent.Add);
         }
 
         private Task asyncLoadStream;

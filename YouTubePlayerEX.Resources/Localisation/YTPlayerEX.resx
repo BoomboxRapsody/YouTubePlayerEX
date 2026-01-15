@@ -276,4 +276,13 @@
   <data name="dislike_counter_credits" xml:space="preserve">
     <value>Dislike count data is provided by the Return YouTube Dislike API.</value>
   </data>
+  <data name="common_default" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="show_fps" xml:space="preserve">
+    <value>Show FPS</value>
+  </data>
+  <data name="cannot_play_private_videos" xml:space="preserve">
+    <value>Cannot play private videos.</value>
+  </data>
 </root>
