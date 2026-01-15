@@ -12,6 +12,7 @@ using osu.Framework.Timing;
 using YoutubeExplode.Videos.ClosedCaptions;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Graphics.Caption;
+using YouTubePlayerEX.App.Graphics.Containers;
 using YouTubePlayerEX.App.Online;
 
 namespace YouTubePlayerEX.App.Graphics.Videos
@@ -73,13 +74,17 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                 {
                     Clock = framedClock,
                 },
-                video = new Video(fileName_Video, false)
+                new DimmableContainer
                 {
-                    RelativeSizeAxes = osu.Framework.Graphics.Axes.Both,
-                    FillMode = FillMode.Fit,
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
-                    Clock = framedClock,
+                    RelativeSizeAxes = Axes.Both,
+                    Child = video = new Video(fileName_Video, false)
+                    {
+                        RelativeSizeAxes = Axes.Both,
+                        FillMode = FillMode.Fit,
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                        Clock = framedClock,
+                    },
                 },
                 keyBindingAnimations = new KeyBindingAnimations
                 {

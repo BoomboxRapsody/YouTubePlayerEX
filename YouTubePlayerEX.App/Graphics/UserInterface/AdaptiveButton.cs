@@ -1,17 +1,12 @@
-﻿using osu.Framework.Allocation;
-using osu.Framework.Audio.Sample;
-using osu.Framework.Graphics;
+﻿using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
-using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Input.Events;
 using osuTK.Graphics;
 using System;
 using osu.Framework.Localisation;
-using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Bindables;
-using osu.Framework.Graphics.Effects;
 using YouTubePlayerEX.App.Graphics.Sprites;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
@@ -98,14 +93,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 Origin = Anchor.Centre,
                 Anchor = Anchor.Centre,
                 RelativeSizeAxes = Axes.Both,
-                CornerRadius = 5,
+                CornerRadius = 12,
                 Masking = true,
-                EdgeEffect = new EdgeEffectParameters
-                {
-                    Colour = Color4.White.Opacity(0.1f),
-                    Type = EdgeEffectType.Shadow,
-                    Radius = 5,
-                },
                 Children = new Drawable[]
                 {
                     Background = new Box
@@ -113,8 +102,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
                         RelativeSizeAxes = Axes.Both,
-                        Colour = Color4.Transparent,
-                        Alpha = 0,
+                        Colour = Color4.White,
+                        Alpha = 0.1f,
                     },
                     Hover = new Box
                     {

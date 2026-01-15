@@ -53,7 +53,7 @@ namespace YouTubePlayerEX.App.Screens
 {
     public partial class MainAppView : YouTubePlayerEXScreen, IKeyBindingHandler<GlobalAction>
     {
-        private DimmableContainer videoContainer;
+        private Container videoContainer;
         private AdaptiveButton loadBtn;
         private AdaptiveTextBox videoIdBox;
         private LoadingSpinner spinner;
@@ -171,7 +171,7 @@ namespace YouTubePlayerEX.App.Screens
                         },
                     },
                 },
-                videoContainer = new DimmableContainer
+                videoContainer = new Container
                 {
                     RelativeSizeAxes = Axes.Both,
                 },

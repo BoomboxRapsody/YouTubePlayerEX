@@ -9,6 +9,7 @@ using osu.Framework.Input.Events;
 using osu.Framework.Localisation;
 using osuTK;
 using osuTK.Graphics;
+using YouTubePlayerEX.App.Graphics.Sprites;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
@@ -72,7 +73,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 Masking = true,
                 EdgeEffect = new EdgeEffectParameters
                 {
-                    Colour = Color4.White.Opacity(0.1f),
+                    Colour = Color4.Black.Opacity(0.2f),
                     Type = EdgeEffectType.Shadow,
                     Radius = 5,
                 },
@@ -94,12 +95,11 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             BackgroundUnfocused = FrameworkColour.BlueGreenDark;
         }
 
-        protected virtual SpriteText CreateText() => new SpriteText
+        protected virtual SpriteText CreateText() => new AdaptiveSpriteText
         {
             Depth = -1,
             Origin = Anchor.Centre,
             Anchor = Anchor.Centre,
-            Font = YouTubePlayerEXApp.DefaultFont,
             Colour = FrameworkColour.Yellow
         };
 
