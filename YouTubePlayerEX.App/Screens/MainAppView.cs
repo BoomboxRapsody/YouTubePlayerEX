@@ -1534,11 +1534,11 @@ namespace YouTubePlayerEX.App.Screens
                 // metadata area
                 Google.Apis.YouTube.v3.Data.Video videoData = api.GetVideo(videoId);
 
-                Schedule(() => commentOpenButton.Enabled.Value = ((videoData.Statistics.CommentCount != null) || (videoData.Status.MadeForKids == false)));
+                Schedule(() => commentOpenButton.Enabled.Value = videoData.Statistics.CommentCount != null);
 
-                commentsDisabled = ((videoData.Statistics.CommentCount != null) || (videoData.Status.MadeForKids == false));
+                commentsDisabled = videoData.Statistics.CommentCount != null;
 
-                if (((videoData.Statistics.CommentCount != null) || (videoData.Status.MadeForKids == false)))
+                if (videoData.Statistics.CommentCount != null)
                     Schedule(() => commentOpenButtonDetails.Show());
                 else
                     Schedule(() => commentOpenButtonDetails.Hide());
