@@ -41,7 +41,9 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
                     return;
 
                 textValue = value;
-                text.Text = value;
+
+                if (text != null)
+                    text.Text = value;
             }
         }
 
