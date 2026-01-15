@@ -1247,7 +1247,7 @@ namespace YouTubePlayerEX.App.Screens
         [Resolved]
         private YouTubePlayerEXAppBase app { get; set; }
 
-        [Resolved(canBeNull: true)]
+        [Resolved]
         private UpdateManager updateManager { get; set; }
 
         private YouTubeVideoPlayer currentVideoSource;
