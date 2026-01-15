@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Google.Apis.Requests;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
@@ -50,7 +51,7 @@ namespace YouTubePlayerEX.App.Online
             var part = "snippet,replies";
             var request = youtubeService.CommentThreads.List(part);
 
-            request.MaxResults = 250; // hell
+            request.MaxResults = 25; // hell
             request.VideoId = videoId;
             request.Order = orderEnum;
 

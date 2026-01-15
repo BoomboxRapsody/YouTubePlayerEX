@@ -1,6 +1,7 @@
 ﻿using osu.Framework.Platform;
 using osu.Framework;
 using YouTubePlayerEX.App;
+using Velopack;
 
 namespace YouTubePlayerEX.Desktop
 {
@@ -8,14 +9,17 @@ namespace YouTubePlayerEX.Desktop
     {
         public static void Main()
         {
+            VelopackApp.Build().Run();
+
             HostOptions hostOptions = new HostOptions
             {
                 FriendlyGameName = "YouTube Player EX"
             };
 
             using (GameHost host = Host.GetSuitableDesktopHost(@"YouTubePlayerEX", hostOptions))
-            using (osu.Framework.Game game = new YouTubePlayerEXApp())
-                host.Run(game);
+            {
+                host.Run(new YouTubePlayerEXAppDesktop());
+            }
         }
     }
 }

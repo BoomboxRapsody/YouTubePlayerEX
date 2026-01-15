@@ -249,4 +249,31 @@
   <data name="comment_reply" xml:space="preserve">
     <value>{0} ({1}의 댓글에 답장함)</value>
   </data>
+  <data name="lastest_version" xml:space="preserve">
+    <value>현재 최신 버전을 실행 중이에요. ({0})</value>
+  </data>
+  <data name="updating" xml:space="preserve">
+    <value>업데이트를 다운로드하는 중... {0}%</value>
+  </data>
+  <data name="restart_required" xml:space="preserve">
+    <value>업데이트를 적용하려면 앱을 다시 시작하세요.</value>
+  </data>
+  <data name="update_failed" xml:space="preserve">
+    <value>업데이트 실패!</value>
+  </data>
+  <data name="checking_update" xml:space="preserve">
+    <value>업데이트 확인 중...</value>
+  </data>
+  <data name="check_update" xml:space="preserve">
+    <value>업데이트 확인</value>
+  </data>
+  <data name="like_count_hidden" xml:space="preserve">
+    <value>업로더가 좋아요 수를 숨김</value>
+  </data>
+  <data name="disabled_by_uploader" xml:space="preserve">
+    <value>업로더가 비활성화함</value>
+  </data>
+  <data name="dislike_counter_credits" xml:space="preserve">
+    <value>싫어요 수의 데이터는 Return YouTube Dislike API에 의해 제공됩니다.</value>
+  </data>
 </root>

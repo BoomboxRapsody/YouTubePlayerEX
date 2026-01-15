@@ -200,7 +200,7 @@ namespace YouTubePlayerEX.App.Localisation
         /// <summary>
         /// "Comments ({0})"
         /// </summary>
-        public static LocalisableString Comments(int count) => new TranslatableString(getKey(@"comments"), "Comments ({0})", count);
+        public static LocalisableString Comments(LocalisableString count) => new TranslatableString(getKey(@"comments"), "Comments ({0})", count);
 
         /// <summary>
         /// "Video dim level"
@@ -221,6 +221,56 @@ namespace YouTubePlayerEX.App.Localisation
         /// "{0} (Reply to {1})"
         /// </summary>
         public static LocalisableString CommentReply(string from, string to) => new TranslatableString(getKey(@"comment_reply"), "{0} (Reply to {1})", from, to);
+
+        /// <summary>
+        /// "You are running the latest release ({0})"
+        /// </summary>
+        public static LocalisableString RunningLatestRelease(string version) => new TranslatableString(getKey(@"running_latest_release"), @"You are running the latest release ({0})", version);
+
+        /// <summary>
+        /// "Downloading update... {0}%"
+        /// </summary>
+        public static LocalisableString DownloadingUpdate(string percentage) => new TranslatableString(getKey(@"updating"), @"Downloading update... {0}%", percentage);
+
+        /// <summary>
+        /// "To apply updates, please restart the app."
+        /// </summary>
+        public static LocalisableString RestartRequired => new TranslatableString(getKey(@"restart_required"), "To apply updates, please restart the app.");
+
+        /// <summary>
+        /// "Update failed!"
+        /// </summary>
+        public static LocalisableString UpdateFailed => new TranslatableString(getKey(@"update_failed"), "Update failed!");
+
+        /// <summary>
+        /// "Checking for update..."
+        /// </summary>
+        public static LocalisableString CheckingUpdate => new TranslatableString(getKey(@"checking_update"), "Checking for update...");
+
+        /// <summary>
+        /// "Check for updates"
+        /// </summary>
+        public static LocalisableString CheckUpdate => new TranslatableString(getKey(@"check_update"), "Check for updates");
+
+        /// <summary>
+        /// "Frame limiter"
+        /// </summary>
+        public static LocalisableString FrameLimiter => new TranslatableString(getKey(@"frame_limiter"), "Frame limiter");
+
+        /// <summary>
+        /// "Like count hidden by uploader"
+        /// </summary>
+        public static LocalisableString LikeCountHidden => new TranslatableString(getKey(@"like_count_hidden"), "Like count hidden by uploader");
+
+        /// <summary>
+        /// "Disabled by uploader"
+        /// </summary>
+        public static LocalisableString DisabledByUploader => new TranslatableString(getKey(@"disabled_by_uploader"), "Disabled by uploader");
+
+        /// <summary>
+        /// "Dislike count data is provided by the Return YouTube Dislike API."
+        /// </summary>
+        public static LocalisableString DislikeCounterCredits => new TranslatableString(getKey(@"dislike_counter_credits"), @"Dislike count data is provided by the Return YouTube Dislike API.");
 
         private static string getKey(string key) => $@"{prefix}:{key}";
     }

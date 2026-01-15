@@ -8,6 +8,9 @@
     <Version>0.0.0</Version>
     <FileVersion>0.0.0</FileVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Velopack" Version="0.0.1298" />
+  </ItemGroup>
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\YouTubePlayerEX.App\YouTubePlayerEX.App.csproj" />
   </ItemGroup>

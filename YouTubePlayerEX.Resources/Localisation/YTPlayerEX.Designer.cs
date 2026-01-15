@@ -124,6 +124,24 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Check for updates과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string check_update {
+            get {
+                return ResourceManager.GetString("check_update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Checking for update...과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string checking_update {
+            get {
+                return ResourceManager.GetString("checking_update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   {0} (Reply to {1})과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string comment_reply {
@@ -156,6 +174,24 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string disabled {
             get {
                 return ResourceManager.GetString("disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Disabled by uploader과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string disabled_by_uploader {
+            get {
+                return ResourceManager.GetString("disabled_by_uploader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Dislike count data is provided by the Return YouTube Dislike API.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string dislike_counter_credits {
+            get {
+                return ResourceManager.GetString("dislike_counter_credits", resourceCulture);
             }
         }
         
@@ -250,11 +286,29 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   You are running the latest release ({0})과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string lastest_version {
+            get {
+                return ResourceManager.GetString("lastest_version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Letterbox과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string letterbox {
             get {
                 return ResourceManager.GetString("letterbox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Like count hidden by uploader과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string like_count_hidden {
+            get {
+                return ResourceManager.GetString("like_count_hidden", resourceCulture);
             }
         }
         
@@ -309,6 +363,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string profile_image_tooltip {
             get {
                 return ResourceManager.GetString("profile_image_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   To apply updates, please restart the app.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string restart_required {
+            get {
+                return ResourceManager.GetString("restart_required", resourceCulture);
             }
         }
         
@@ -390,6 +453,24 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string ui_scaling {
             get {
                 return ResourceManager.GetString("ui_scaling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Update failed!과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string update_failed {
+            get {
+                return ResourceManager.GetString("update_failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Downloading update... {0}%과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string updating {
+            get {
+                return ResourceManager.GetString("updating", resourceCulture);
             }
         }
         

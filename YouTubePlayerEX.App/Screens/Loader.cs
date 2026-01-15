@@ -25,7 +25,7 @@ namespace YouTubePlayerEX.App.Screens
         private LoadingSpinner spinner;
         private ScheduledDelegate spinnerShow;
 
-        protected virtual YouTubePlayerEXScreen CreateLoadableScreen() => new MainScreen();
+        protected virtual YouTubePlayerEXScreen CreateLoadableScreen() => new MainAppView();
 
         protected virtual ShaderPrecompiler CreateShaderPrecompiler() => new ShaderPrecompiler();
 
@@ -85,6 +85,8 @@ namespace YouTubePlayerEX.App.Screens
                 loadTargets.Add(manager.Load(VertexShaderDescriptor.TEXTURE_2, FragmentShaderDescriptor.TEXTURE));
                 loadTargets.Add(manager.Load(VertexShaderDescriptor.TEXTURE_2, FragmentShaderDescriptor.BLUR));
                 loadTargets.Add(manager.Load(VertexShaderDescriptor.TEXTURE_3, FragmentShaderDescriptor.TEXTURE));
+
+                loadTargets.Add(manager.Load(VertexShaderDescriptor.TEXTURE_2, @"TriangleBorder"));
             }
 
             protected virtual bool AllLoaded => loadTargets.All(s => s.IsLoaded);

@@ -249,4 +249,31 @@
   <data name="comment_reply" xml:space="preserve">
     <value>{0} （返信先:{1}）</value>
   </data>
+  <data name="lastest_version" xml:space="preserve">
+    <value>既に最新版を実行中です ({0})</value>
+  </data>
+  <data name="updating" xml:space="preserve">
+    <value>アップデートをダウンロードしています··· {0}%</value>
+  </data>
+  <data name="restart_required" xml:space="preserve">
+    <value>アップデートを適用するには、アプリを再起動します。</value>
+  </data>
+  <data name="update_failed" xml:space="preserve">
+    <value>更新に失敗しました！</value>
+  </data>
+  <data name="checking_update" xml:space="preserve">
+    <value>アップデートを確認しています···</value>
+  </data>
+  <data name="check_update" xml:space="preserve">
+    <value>アップデートを確認します</value>
+  </data>
+  <data name="like_count_hidden" xml:space="preserve">
+    <value>アップロード者によって非表示のような数です</value>
+  </data>
+  <data name="disabled_by_uploader" xml:space="preserve">
+    <value>アップロード者によって無効になっています</value>
+  </data>
+  <data name="dislike_counter_credits" xml:space="preserve">
+    <value>低評価数データはReturn YouTube Dislike APIによって提供されています。</value>
+  </data>
 </root>

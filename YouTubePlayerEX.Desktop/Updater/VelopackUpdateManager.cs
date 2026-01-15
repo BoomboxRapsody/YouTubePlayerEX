@@ -1,0 +1,105 @@
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using osu.Framework;
+using osu.Framework.Allocation;
+using osu.Framework.Logging;
+using osu.Framework.Threading;
+using Velopack;
+using Velopack.Sources;
+using YouTubePlayerEX.App;
+using YouTubePlayerEX.App.Localisation;
+using UpdateManager = YouTubePlayerEX.App.Updater.UpdateManager;
+
+namespace YouTubePlayerEX.Desktop.Updater
+{
+    public partial class VelopackUpdateManager : UpdateManager
+    {
+        [Resolved]
+        private YouTubePlayerEXAppBase game { get; set; } = null!;
+
+        private ScheduledDelegate? scheduledBackgroundCheck;
+
+        private void scheduleNextUpdateCheck()
+        {
+            scheduledBackgroundCheck?.Cancel();
+            scheduledBackgroundCheck = Scheduler.AddDelayed(() =>
+            {
+                log("Running scheduled background update check...");
+                CheckForUpdate();
+            }, 60000 * 30);
+        }
+
+        protected override async Task<bool> PerformUpdateCheck(CancellationToken cancellationToken)
+        {
+            scheduledBackgroundCheck?.Cancel();
+
+            try
+            {
+                IUpdateSource updateSource = new GithubSource(@"https://github.com/BoomboxRapsody/YouTubePlayerEX", null, false);
+                Velopack.UpdateManager updateManager = new Velopack.UpdateManager(updateSource, new UpdateOptions
+                {
+                    AllowVersionDowngrade = true
+                });
+
+                UpdateInfo? update = await updateManager.CheckForUpdatesAsync().ConfigureAwait(false);
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    log("Update check cancelled");
+                    scheduleNextUpdateCheck();
+                    return true;
+                }
+
+                if (update == null)
+                {
+                    // No update is available.
+                    log("No update found");
+                    scheduleNextUpdateCheck();
+                    return false;
+                }
+
+                // Download update in the background while notifying awaiters of the update being available.
+                log($"New update available: {update.TargetFullRelease.Version}");
+                downloadUpdate(updateManager, update, cancellationToken);
+                return true;
+            }
+            catch (Exception e)
+            {
+                log($"Update check failed with error ({e.Message})");
+
+                // we shouldn't crash on a web failure. or any failure for the matter.
+                scheduleNextUpdateCheck();
+                return true;
+            }
+        }
+
+        private void downloadUpdate(Velopack.UpdateManager updateManager, UpdateInfo update, CancellationToken cancellationToken) => Task.Run(async () =>
+        {
+            log($"Beginning download of update {update.TargetFullRelease.Version}...");
+
+            try
+            {
+                await updateManager.DownloadUpdatesAsync(update, p => game.UpdateManagerVersionText.Value = YTPlayerEXStrings.DownloadingUpdate($"{ (p / 100f):N0}"), cancellationToken).ConfigureAwait(false);
+                game.UpdateManagerVersionText.Value = YTPlayerEXStrings.RestartRequired;
+                game.RestartRequired.Value = true;
+            }
+            catch (Exception e)
+            {
+                // In the case of an error, a separate notification will be displayed.
+                game.UpdateManagerVersionText.Value = YTPlayerEXStrings.UpdateFailed;
+                Logger.Error(e, @"Update failed!");
+            }
+
+            return true;
+        }, cancellationToken);
+
+        private void restartToApplyUpdate(Velopack.UpdateManager updateManager, UpdateInfo update) => Task.Run(async () =>
+        {
+            await updateManager.WaitExitThenApplyUpdatesAsync(update.TargetFullRelease).ConfigureAwait(false);
+            Schedule(() => game.Exit());
+        });
+
+        private static void log(string text) => Logger.Log($"VelopackUpdateManager: {text}");
+    }
+}

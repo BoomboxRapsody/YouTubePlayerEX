@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Google.Apis.YouTube.v3.Data;
 using Humanizer;
-using NUnit.Framework;
 using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio.Sample;
@@ -29,7 +29,6 @@ using osu.Framework.Platform.Windows;
 using osu.Framework.Threading;
 using osuTK;
 using osuTK.Graphics;
-using SharpFNT;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Videos.ClosedCaptions;
 using YoutubeExplode.Videos.Streams;
@@ -44,13 +43,15 @@ using YouTubePlayerEX.App.Input;
 using YouTubePlayerEX.App.Input.Binding;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
+using YouTubePlayerEX.App.Updater;
+using static YouTubePlayerEX.App.YouTubePlayerEXApp;
 using Container = osu.Framework.Graphics.Containers.Container;
 using Language = YouTubePlayerEX.App.Localisation.Language;
 using OverlayContainer = YouTubePlayerEX.App.Graphics.Containers.OverlayContainer;
 
 namespace YouTubePlayerEX.App.Screens
 {
-    public partial class MainScreen : YouTubePlayerEXScreen, IKeyBindingHandler<GlobalAction>
+    public partial class MainAppView : YouTubePlayerEXScreen, IKeyBindingHandler<GlobalAction>
     {
         private DimmableContainer videoContainer;
         private AdaptiveButton loadBtn;
@@ -65,6 +66,7 @@ namespace YouTubePlayerEX.App.Screens
         private AdaptiveButton loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton;
         private VideoMetadataDisplayWithoutProfile videoMetadataDisplay;
         private VideoMetadataDisplay videoMetadataDisplayDetails;
+        private RoundedButtonContainer commentOpenButtonDetails;
 
         private Sample overlayShowSample;
         private Sample overlayHideSample;
@@ -81,7 +83,7 @@ namespace YouTubePlayerEX.App.Screens
             overlayHideSample.Dispose();
         }
 
-        private AdaptiveSpriteText videoLoadingProgress, videoInfoDetails, likeCount, commentCount, commentsContainerTitle, currentTime, totalTime;
+        private AdaptiveSpriteText videoLoadingProgress, videoInfoDetails, likeCount, dislikeCount, commentCount, commentsContainerTitle, currentTime, totalTime;
         private TextFlowContainer videoDescription;
         private FillFlowContainer commentContainer;
 
@@ -113,6 +115,9 @@ namespace YouTubePlayerEX.App.Screens
         private Bindable<Localisation.Language> audioLanguage;
         private Bindable<bool> adjustPitch;
         private Bindable<string> localeBindable = new Bindable<string>();
+        private FormCheckUpdateButton checkForUpdatesButton;
+        private ThumbnailContainer thumbnailContainer;
+        private AdaptiveSliderBar<double> seekbar;
 
         [BackgroundDependencyLoader]
         private void load(ISampleStore sampleStore, FrameworkConfigManager config, YTPlayerEXConfigManager appConfig, GameHost host)
@@ -148,6 +153,22 @@ namespace YouTubePlayerEX.App.Screens
             InternalChildren = new Drawable[]
             {
                 idleTracker = new AppIdleTracker(3000),
+                new ParallaxContainer
+                {
+                    Children = new Drawable[]
+                    {
+                        thumbnailContainer = new ThumbnailContainer
+                        {
+                            RelativeSizeAxes = Axes.Both,
+                        },
+                        new Box
+                        {
+                            RelativeSizeAxes = Axes.Both,
+                            Colour = Color4.Black,
+                            Alpha = .5f,
+                        },
+                    },
+                },
                 videoContainer = new DimmableContainer
                 {
                     RelativeSizeAxes = Axes.Both,
@@ -239,12 +260,6 @@ namespace YouTubePlayerEX.App.Screens
                             Icon = FontAwesome.Regular.CommentAlt,
                             IconScale = new Vector2(1.2f),
                         },
-                        alert = new AdaptiveAlertContainer
-                        {
-                            Origin = Anchor.TopCentre,
-                            Anchor = Anchor.TopCentre,
-                            Size = new Vector2(600, 60),
-                        },
                         new Container {
                             Anchor = Anchor.BottomCentre,
                             Origin = Anchor.BottomCentre,
@@ -265,13 +280,12 @@ namespace YouTubePlayerEX.App.Screens
                                     Padding = new MarginPadding(16),
                                     Spacing = new Vector2(0, 8),
                                     Children = new Drawable[] {
-                                        new RoundedSliderBarWithoutTooltip
+                                        seekbar = new RoundedSliderBarWithoutTooltip
                                         {
                                             RelativeSizeAxes = Axes.X,
                                             PlaySamplesOnAdjust = false,
                                             DisplayAsPercentage = true,
                                             Current = { BindTarget = videoProgress },
-                                            TransferValueOnCommit = true,
                                         },
                                         new Container
                                         {
@@ -462,6 +476,12 @@ namespace YouTubePlayerEX.App.Screens
                                                     Caption = YTPlayerEXStrings.VideoMetadataTranslateSource,
                                                     Current = appConfig.GetBindable<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource),
                                                 }),
+                                                checkForUpdatesButtonCore = new SettingsItemV2(checkForUpdatesButton = new FormCheckUpdateButton
+                                                {
+                                                    Caption = YTPlayerEXStrings.CheckUpdate,
+                                                    Text = app.Version,
+                                                    Action = () => checkForUpdates().FireAndForget(),
+                                                }),
                                                 new AdaptiveSpriteText
                                                 {
                                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
@@ -486,6 +506,11 @@ namespace YouTubePlayerEX.App.Screens
                                                     Current = appConfig.GetBindable<float>(YTPlayerEXSetting.UIScale),
                                                     KeyboardStep = 0.01f,
                                                     LabelFormat = v => $@"{v:0.##}x",
+                                                }),
+                                                new SettingsItemV2(new FormEnumDropdown<FrameSync>
+                                                {
+                                                    Caption = YTPlayerEXStrings.FrameLimiter,
+                                                    Current = config.GetBindable<FrameSync>(FrameworkSetting.FrameSync),
                                                 }),
                                                 windowModeDropdownSettings = new SettingsItemV2(windowModeDropdown = new FormDropdown<WindowMode>
                                                 {
@@ -582,6 +607,14 @@ namespace YouTubePlayerEX.App.Screens
                                                     Current = config.GetBindable<double>(FrameworkSetting.VolumeEffect),
                                                     DisplayAsPercentage = true,
                                                 }),
+                                                new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 15))
+                                                {
+                                                    RelativeSizeAxes = Axes.X,
+                                                    AutoSizeAxes = Axes.Y,
+                                                    Text = YTPlayerEXStrings.DislikeCounterCredits,
+                                                    Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
+                                                    TextAnchor = Anchor.Centre,
+                                                },
                                             }
                                         }
                                     }
@@ -672,7 +705,50 @@ namespace YouTubePlayerEX.App.Screens
                                                 }
                                             }
                                         },
-                                        new RoundedButtonContainer
+                                        new Container
+                                        {
+                                            AutoSizeAxes = Axes.X,
+                                            Height = 32,
+                                            CornerRadius = 12,
+                                            Masking = true,
+                                            AlwaysPresent = true,
+                                            Children = new Drawable[]
+                                            {
+                                                new Container
+                                                {
+                                                    RelativeSizeAxes = Axes.Both,
+                                                    CornerRadius = 12,
+                                                    Child = new Box
+                                                    {
+                                                        RelativeSizeAxes = Axes.Both,
+                                                        Colour = Color4.White,
+                                                        Alpha = 0.1f,
+                                                    },
+                                                },
+                                                new FillFlowContainer
+                                                {
+                                                    AutoSizeAxes = Axes.X,
+                                                    RelativeSizeAxes = Axes.Y,
+                                                    Direction = FillDirection.Horizontal,
+                                                    Spacing = new Vector2(4, 0),
+                                                    Padding = new MarginPadding(8),
+                                                    Children = new Drawable[]
+                                                    {
+                                                        new SpriteIcon
+                                                        {
+                                                            Width = 15,
+                                                            Height = 15,
+                                                            Icon = FontAwesome.Solid.ThumbsDown,
+                                                        },
+                                                        dislikeCount = new AdaptiveSpriteText
+                                                        {
+                                                            Text = "[no metadata]"
+                                                        },
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        commentOpenButtonDetails = new RoundedButtonContainer
                                         {
                                             AutoSizeAxes = Axes.X,
                                             Height = 32,
@@ -681,8 +757,10 @@ namespace YouTubePlayerEX.App.Screens
                                             AlwaysPresent = true,
                                             ClickAction = f =>
                                             {
-                                                hideOverlays();
-                                                showOverlayContainer(commentsContainer);
+                                                if (!commentsDisabled) {
+                                                    hideOverlays();
+                                                    showOverlayContainer(commentsContainer);
+                                                }
                                             },
                                             Children = new Drawable[]
                                             {
@@ -725,12 +803,15 @@ namespace YouTubePlayerEX.App.Screens
                                 new Container
                                 {
                                     RelativeSizeAxes = Axes.Both,
-                                    CornerRadius = 12,
-                                    Masking = true,
                                     Child = new AdaptiveScrollContainer
                                     {
+                                        Padding = new MarginPadding()
+                                        {
+                                            Bottom = 102,
+                                        },
                                         RelativeSizeAxes = Axes.Both,
                                         CornerRadius = 12,
+                                        Masking = true,
                                         ScrollbarVisible = false,
                                         Children = new Drawable[]
                                         {
@@ -738,6 +819,7 @@ namespace YouTubePlayerEX.App.Screens
                                             {
                                                 RelativeSizeAxes = Axes.Both,
                                                 CornerRadius = 12,
+                                                Masking = true,
                                                 Child = new Box
                                                 {
                                                     RelativeSizeAxes = Axes.Both,
@@ -752,6 +834,7 @@ namespace YouTubePlayerEX.App.Screens
                                                 CornerRadius = 12,
                                                 Spacing = new Vector2(0, 8),
                                                 Padding = new MarginPadding(12),
+                                                Masking = true,
                                                 Children = new Drawable[]
                                                 {
                                                     videoInfoDetails = new AdaptiveSpriteText
@@ -794,7 +877,7 @@ namespace YouTubePlayerEX.App.Screens
                         {
                             Origin = Anchor.TopLeft,
                             Anchor = Anchor.TopLeft,
-                            Text = YTPlayerEXStrings.Comments(0),
+                            Text = YTPlayerEXStrings.Comments("0"),
                             Margin = new MarginPadding(16),
                             Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
                         },
@@ -827,8 +910,19 @@ namespace YouTubePlayerEX.App.Screens
                         }
                     }
                 },
+                new Container
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Child = alert = new AdaptiveAlertContainer
+                    {
+                        Origin = Anchor.TopCentre,
+                        Anchor = Anchor.TopCentre,
+                        Size = new Vector2(600, 60),
+                    },
+                }
             };
 
+            thumbnailContainer.BlurTo(Vector2.Divide(new Vector2(10, 10), 1));
             loadVideoContainer.Hide();
             overlayFadeContainer.Hide();
             settingsContainer.Hide();
@@ -938,6 +1032,14 @@ namespace YouTubePlayerEX.App.Screens
             {
                 windowModeDropdownSettings.Hide();
             }
+
+            videoProgress.BindValueChanged(seek =>
+            {
+                if (seekbar.IsDragged)
+                {
+                    currentVideoSource?.SeekTo(seek.NewValue * 1000);
+                }
+            });
         }
 
         private AdaptiveSpriteText videoNameText;
@@ -953,7 +1055,39 @@ namespace YouTubePlayerEX.App.Screens
             }
         }
 
-        private SettingsItemV2 resolutionFullscreenDropdownCore, resolutionWindowedDropdownCore, displayDropdownCore, minimiseOnFocusLossCheckboxCore;
+        private async Task checkForUpdates()
+        {
+            if (updateManager == null || game == null)
+                return;
+
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+            game.UpdateManagerVersionText.Value = YTPlayerEXStrings.CheckingUpdate;
+
+            checkForUpdatesButton.Enabled.Value = false;
+
+            try
+            {
+                bool foundUpdate = await updateManager.CheckForUpdateAsync(cancellationTokenSource.Token).ConfigureAwait(true);
+
+                if (!foundUpdate)
+                {
+                    alert.Text = YTPlayerEXStrings.RunningLatestRelease(game.Version);
+                    alert.Show();
+                    spinnerShow = Scheduler.AddDelayed(alert.Hide, 3000);
+                }
+            }
+            catch
+            {
+            }
+            finally
+            {
+                game.UpdateManagerVersionText.Value = game.Version;
+                checkForUpdatesButton.Enabled.Value = true;
+            }
+        }
+
+        private SettingsItemV2 resolutionFullscreenDropdownCore, resolutionWindowedDropdownCore, displayDropdownCore, minimiseOnFocusLossCheckboxCore, checkForUpdatesButtonCore;
 
         private FormCheckBox hwAccelCheckbox;
         private FormEnumDropdown<Config.VideoQuality> videoQualitySettings;
@@ -1070,8 +1204,16 @@ namespace YouTubePlayerEX.App.Screens
             }
         }
 
+        private IDisposable? duckOperation;
+
         private void showOverlayContainer(OverlayContainer overlayContent)
         {
+            duckOperation = game.Duck(new DuckParameters
+            {
+                DuckVolumeTo = 1,
+                DuckDuration = 100,
+                RestoreDuration = 100,
+            });
             overlayContent.IsVisible = true;
             overlayFadeContainer.FadeTo(0.5f, 250, Easing.OutQuart);
             overlayContent.Show();
@@ -1083,6 +1225,7 @@ namespace YouTubePlayerEX.App.Screens
 
         private void hideOverlayContainer(OverlayContainer overlayContent)
         {
+            duckOperation?.Dispose();
             overlayContent.IsVisible = false;
             overlayHideSample.Play();
             overlayFadeContainer.FadeTo(0.0f, 250, Easing.OutQuart);
@@ -1097,6 +1240,9 @@ namespace YouTubePlayerEX.App.Screens
         [Resolved]
         private YouTubePlayerEXAppBase app { get; set; }
 
+        [Resolved(canBeNull: true)]
+        private UpdateManager updateManager { get; set; }
+
         private YouTubeVideoPlayer currentVideoSource;
 
         [Resolved]
@@ -1108,6 +1254,9 @@ namespace YouTubePlayerEX.App.Screens
         protected override void LoadComplete()
         {
             base.LoadComplete();
+
+            if (!game.IsDeployedBuild)
+                checkForUpdatesButtonCore.Hide();
 
             cursorInWindow?.BindValueChanged(active =>
             {
@@ -1133,7 +1282,13 @@ namespace YouTubePlayerEX.App.Screens
                 }
             };
 
-            commentOpenButton.ClickAction = _ => showOverlayContainer(commentsContainer);
+            commentOpenButton.ClickAction = _ =>
+            {
+                if (!commentsDisabled)
+                {
+                    showOverlayContainer(commentsContainer);
+                }
+            };
 
             loadBtnOverlayShow.ClickAction = _ => showOverlayContainer(loadVideoContainer);
             settingsOverlayShowBtn.ClickAction = _ => showOverlayContainer(settingsContainer);
@@ -1302,14 +1457,14 @@ namespace YouTubePlayerEX.App.Screens
                     currentTime.Text = $"{duration.Minutes.ToString("0")}:{duration.Seconds.ToString("00")}";
                 }
 
-                if (currentVideoSource.IsPlaying())
-                {
+                if (seekbar.IsDragged == false)
                     videoProgress.Value = currentVideoSource.VideoProgress.Value;
-                }
             }
         }
 
         private IconButton playPause;
+
+        private bool commentsDisabled = false;
 
         private void updateVideoMetadata(string videoId)
         {
@@ -1319,12 +1474,26 @@ namespace YouTubePlayerEX.App.Screens
             {
                 // metadata area
                 Google.Apis.YouTube.v3.Data.Video videoData = api.GetVideo(videoId);
+
+                Schedule(() => commentOpenButton.Enabled.Value = videoData.Statistics.CommentCount != null);
+
+                commentsDisabled = videoData.Statistics.CommentCount == null;
+
+                if (videoData.Statistics.CommentCount != null)
+                    Schedule(() => commentOpenButtonDetails.Show());
+                else
+                    Schedule(() => commentOpenButtonDetails.Hide());
+
+                game.RequestUpdateWindowTitle($"{videoData.Snippet.ChannelTitle} - {videoData.Snippet.Title}");
+
                 DateTimeOffset? dateTime = videoData.Snippet.PublishedAtDateTimeOffset;
                 DateTime now = DateTime.Now;
+                Schedule(() => thumbnailContainer.SetImageUrl(videoData.Snippet.Thumbnails.High.Url));
                 Schedule(() => videoDescription.Text = api.GetLocalizedVideoDescription(videoData));
-                commentCount.Text = Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0);
-                likeCount.Text = Convert.ToInt32(videoData.Statistics.LikeCount).ToStandardFormattedString(0);
-                commentsContainerTitle.Text = YTPlayerEXStrings.Comments(Convert.ToInt32(videoData.Statistics.CommentCount));
+                commentCount.Text = videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : YTPlayerEXStrings.DisabledByUploader;
+                dislikeCount.Text = videoData.Statistics.DislikeCount != null ? Convert.ToInt32(videoData.Statistics.DislikeCount).ToStandardFormattedString(0) : ReturnYouTubeDislike.GetDislikes(videoId).Dislikes.ToStandardFormattedString(0);
+                likeCount.Text = videoData.Statistics.LikeCount != null ? Convert.ToInt32(videoData.Statistics.LikeCount).ToStandardFormattedString(0) : ReturnYouTubeDislike.GetDislikes(videoId).RawLikes.ToStandardFormattedString(0);
+                commentsContainerTitle.Text = YTPlayerEXStrings.Comments(videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : YTPlayerEXStrings.Disabled);
                 videoInfoDetails.Text = YTPlayerEXStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
 
                 // comments area
@@ -1571,7 +1740,7 @@ namespace YouTubePlayerEX.App.Screens
         }
 
         [Resolved]
-        private YouTubePlayerEXAppBase game { get; set; }
+        private YouTubePlayerEXApp game { get; set; }
 
         public void OnReleased(KeyBindingReleaseEvent<GlobalAction> e)
         {

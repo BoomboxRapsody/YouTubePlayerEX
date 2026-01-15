@@ -13,7 +13,7 @@ namespace YouTubePlayerEX.App.Tests.Visual
 
         public TestSceneMainScreen()
         {
-            Add(new ScreenStack(new MainScreen()) { RelativeSizeAxes = Axes.Both });
+            Add(new ScreenStack(new MainAppView()) { RelativeSizeAxes = Axes.Both });
         }
     }
 }

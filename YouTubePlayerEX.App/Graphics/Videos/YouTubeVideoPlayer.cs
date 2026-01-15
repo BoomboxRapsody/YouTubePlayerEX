@@ -6,6 +6,7 @@ using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Audio;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Video;
 using osu.Framework.Timing;
 using YoutubeExplode.Videos.ClosedCaptions;
@@ -30,6 +31,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
         private Bindable<double> playbackSpeed;
         private double resumeFromTime;
+        private bool trackFinished = false;
 
         public YouTubeVideoPlayer(string fileName_Video, string fileName_Audio, ClosedCaptionTrack captionTrack, ClosedCaptionLanguage captionLanguage, double resumeFromTime)
         {
@@ -112,6 +114,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
         private void trackCompleted()
         {
+            trackFinished = true;
             Pause();
         }
 
@@ -152,6 +155,8 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                 SeekTo(resumeFromTime);
         }
 
+        private bool paused;
+
         protected override void Update()
         {
             base.Update();
@@ -165,21 +170,31 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
         public void SeekTo(double pos)
         {
-            drawableTrack?.Seek(pos);
-            video?.Seek(drawableTrack.CurrentTime);
+            double pos2 = pos;
+
+            if (pos2 < 0)
+                pos2 = 0;
+
+            drawableTrack?.Seek(pos2);
+            video?.Seek(pos2);
         }
 
         public void FastForward10Sec()
         {
-            video?.Seek(drawableTrack.CurrentTime + 10000);
-            drawableTrack?.Seek(drawableTrack.CurrentTime + 10000);
+            if ((drawableTrack.CurrentTime + 10000) >= drawableTrack.Length)
+            {
+                SeekTo(drawableTrack.Length);
+                trackFinished = true;
+                Pause();
+            }
+
+            SeekTo(drawableTrack.CurrentTime + 10000);
             keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.FastForward10sec);
         }
 
         public void FastRewind10Sec()
         {
-            video?.Seek(drawableTrack.CurrentTime - 10000);
-            drawableTrack?.Seek(drawableTrack.CurrentTime - 10000);
+            SeekTo(drawableTrack.CurrentTime - 10000);
             keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.FastRewind10sec);
         }
 
@@ -187,12 +202,22 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         {
             drawableTrack?.Stop();
             framedClock.Stop();
+            paused = true;
         }
 
         public void Play()
         {
+            if (trackFinished)
+            {
+                if (drawableTrack.CurrentTime == drawableTrack.Length)
+                    SeekTo(0);
+
+                trackFinished = false;
+            }
+
             drawableTrack?.Start();
             framedClock.Start();
+            paused = false;
         }
 
         public void SetPlaybackSpeed(double speed)

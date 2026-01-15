@@ -1,10 +1,13 @@
 using System;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
+using osu.Framework.Development;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.IO.Stores;
@@ -21,6 +24,7 @@ using YouTubePlayerEX.App.Graphics.UserInterface;
 using YouTubePlayerEX.App.Input.Binding;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
+using YouTubePlayerEX.App.Updater;
 using YouTubePlayerEX.Resources;
 
 namespace YouTubePlayerEX.App
@@ -55,6 +59,9 @@ namespace YouTubePlayerEX.App
         protected YTPlayerEXConfigManager LocalConfig { get; private set; }
 
         protected GlobalCursorDisplay GlobalCursorDisplay { get; private set; }
+
+        public Bindable<LocalisableString> UpdateManagerVersionText = new Bindable<LocalisableString>();
+        public Bindable<bool> RestartRequired = new Bindable<bool>();
 
         protected YouTubePlayerEXAppBase()
         {
@@ -139,9 +146,39 @@ namespace YouTubePlayerEX.App
 
         protected SessionStatics SessionStatics { get; private set; }
 
+        public virtual Version AssemblyVersion => Assembly.GetEntryAssembly()?.GetName().Version ?? new Version();
+
+        /// <summary>
+        /// MD5 representation of the game executable.
+        /// </summary>
+        public string VersionHash { get; private set; }
+
+        public bool IsDeployedBuild => AssemblyVersion.Major > 0;
+
+        public virtual string Version
+        {
+            get
+            {
+                if (!IsDeployedBuild)
+                    return @"local " + (DebugUtils.IsDebugBuild ? @"debug" : @"release");
+
+                string informationalVersion = Assembly.GetEntryAssembly()?
+                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                    .InformationalVersion;
+
+                if (!string.IsNullOrEmpty(informationalVersion))
+                    return informationalVersion.Split('+').First();
+
+                Version version = AssemblyVersion;
+                return $@"{version.Major}.{version.Minor}.{version.Build}";
+            }
+        }
+
         [BackgroundDependencyLoader]
         private void load(FrameworkConfigManager frameworkConfig)
         {
+            RestartRequired.Value = false;
+            UpdateManagerVersionText.Value = Version;
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             //Logger.Log(Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath("videoId") + @"\video.mp4");
@@ -195,6 +232,22 @@ namespace YouTubePlayerEX.App
 
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
             dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
+
+        public void RequestUpdateWindowTitle(string customTitle)
+        {
+            if (Host.Window == null)
+                return;
+
+            string newTitle = "YouTube Player EX";
+
+            if (!string.IsNullOrEmpty(customTitle))
+            {
+                newTitle = $"YouTube Player EX - {customTitle}";
+            }
+
+            if (newTitle != Host.Window.Title)
+                Host.Window.Title = newTitle;
+        }
 
         private void updateLanguage() => CurrentLanguage.Value = LanguageExtensions.GetLanguageFor(frameworkLocale.Value, localisationParameters.Value);
 
