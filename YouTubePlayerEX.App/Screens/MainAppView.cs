@@ -118,6 +118,7 @@ namespace YouTubePlayerEX.App.Screens
         private FormCheckUpdateButton checkForUpdatesButton;
         private ThumbnailContainer thumbnailContainer;
         private AdaptiveSliderBar<double> seekbar;
+        private Bindable<LocalisableString> updateInfomationText;
 
         [BackgroundDependencyLoader]
         private void load(ISampleStore sampleStore, FrameworkConfigManager config, YTPlayerEXConfigManager appConfig, GameHost host)
@@ -136,6 +137,7 @@ namespace YouTubePlayerEX.App.Screens
             sizeWindowed = config.GetBindable<Size>(FrameworkSetting.WindowedSize);
             windowedPositionX = config.GetBindable<double>(FrameworkSetting.WindowedPositionX);
             windowedPositionY = config.GetBindable<double>(FrameworkSetting.WindowedPositionY);
+            updateInfomationText = game.UpdateManagerVersionText.GetBoundCopy();
 
             windowedResolution.Value = sizeWindowed.Value;
 
@@ -1040,6 +1042,11 @@ namespace YouTubePlayerEX.App.Screens
                     currentVideoSource?.SeekTo(seek.NewValue * 1000);
                 }
             });
+
+            updateInfomationText.BindValueChanged(text =>
+            {
+                checkForUpdatesButton.Text = text.NewValue;
+            })
         }
 
         private AdaptiveSpriteText videoNameText;

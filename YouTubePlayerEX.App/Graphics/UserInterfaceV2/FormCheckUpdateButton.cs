@@ -27,10 +27,23 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         /// </summary>
         public LocalisableString Caption { get; init; }
 
+        private LocalisableString textValue;
+
         /// <summary>
         /// Caption describing this button, displayed on the left of it.
         /// </summary>
-        public LocalisableString Text { get; init; }
+        public LocalisableString Text
+        {
+            get => textValue;
+            set
+            {
+                if (textValue.Equals(value))
+                    return;
+
+                textValue = value;
+                text.Text = value;
+            }
+        }
 
         /// <summary>
         /// Sets text inside the button.
