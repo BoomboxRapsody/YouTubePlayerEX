@@ -1046,7 +1046,7 @@ namespace YouTubePlayerEX.App.Screens
             updateInfomationText.BindValueChanged(text =>
             {
                 checkForUpdatesButton.Text = text.NewValue;
-            })
+            });
         }
 
         private AdaptiveSpriteText videoNameText;
