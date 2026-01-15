@@ -174,6 +174,8 @@ namespace YouTubePlayerEX.App
             }
         }
 
+        public Action RestartAction;
+
         [BackgroundDependencyLoader]
         private void load(FrameworkConfigManager frameworkConfig)
         {

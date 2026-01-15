@@ -79,9 +79,10 @@ namespace YouTubePlayerEX.Desktop.Updater
 
             try
             {
-                await updateManager.DownloadUpdatesAsync(update, p => game.UpdateManagerVersionText.Value = YTPlayerEXStrings.DownloadingUpdate($"{ (p / 100f):N0}"), cancellationToken).ConfigureAwait(false);
+                await updateManager.DownloadUpdatesAsync(update, p => game.UpdateManagerVersionText.Value = YTPlayerEXStrings.DownloadingUpdate($"{p}"), cancellationToken).ConfigureAwait(false);
                 game.UpdateManagerVersionText.Value = YTPlayerEXStrings.RestartRequired;
                 game.RestartRequired.Value = true;
+                game.RestartAction = () => restartToApplyUpdate(updateManager, update);
             }
             catch (Exception e)
             {

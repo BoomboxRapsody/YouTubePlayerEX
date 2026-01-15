@@ -482,7 +482,12 @@ namespace YouTubePlayerEX.App.Screens
                                                 {
                                                     Caption = YTPlayerEXStrings.CheckUpdate,
                                                     Text = app.Version,
-                                                    Action = () => checkForUpdates().FireAndForget(),
+                                                    Action = () => {
+                                                        if (game.RestartRequired.Value != true)
+                                                            checkForUpdates().FireAndForget();
+                                                        else
+                                                            game.RestartAction.Invoke();
+                                                    },
                                                 }),
                                                 new AdaptiveSpriteText
                                                 {
