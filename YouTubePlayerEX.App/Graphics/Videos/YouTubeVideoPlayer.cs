@@ -7,6 +7,7 @@ using osu.Framework.Graphics;
 using osu.Framework.Graphics.Audio;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
+using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Video;
 using osu.Framework.Timing;
 using YoutubeExplode.Videos.ClosedCaptions;
@@ -194,23 +195,27 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             }
 
             SeekTo(drawableTrack.CurrentTime + 10000);
-            keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.FastForward10sec);
+            keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.FastForward10sec, FontAwesome.Solid.Box);
         }
 
         public void FastRewind10Sec()
         {
             SeekTo(drawableTrack.CurrentTime - 10000);
-            keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.FastRewind10sec);
+            keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.FastRewind10sec, FontAwesome.Solid.Box);
         }
 
-        public void Pause()
+        public void Pause(bool isKeyboardAction = false)
         {
             drawableTrack?.Stop();
             framedClock.Stop();
+
+            if (isKeyboardAction)
+                keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.PlayPause, FontAwesome.Solid.Pause);
+
             paused = true;
         }
 
-        public void Play()
+        public void Play(bool isKeyboardAction = false)
         {
             if (trackFinished)
             {
@@ -222,6 +227,10 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
             drawableTrack?.Start();
             framedClock.Start();
+
+            if (isKeyboardAction)
+                keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.PlayPause, FontAwesome.Solid.Play);
+
             paused = false;
         }
 

@@ -40,8 +40,13 @@ namespace YouTubePlayerEX.App.Input.Binding
             new KeyBinding(InputKey.ExtraMouseButton1, GlobalAction.Back),
 
             new KeyBinding(InputKey.Space, GlobalAction.PlayPause),
+            new KeyBinding(InputKey.K, GlobalAction.PlayPause),
+
             new KeyBinding(InputKey.Right, GlobalAction.FastForward_10sec),
             new KeyBinding(InputKey.Left, GlobalAction.FastRewind_10sec),
+            new KeyBinding(InputKey.L, GlobalAction.FastForward_10sec),
+            new KeyBinding(InputKey.J, GlobalAction.FastRewind_10sec),
+
             new KeyBinding(new[] { InputKey.Control, InputKey.O }, GlobalAction.OpenSettings),
         };
     }

@@ -237,6 +237,9 @@
   <data name="comments" xml:space="preserve">
     <value>Comments ({0})</value>
   </data>
+  <data name="comments_without_count" xml:space="preserve">
+    <value>Comments</value>
+  </data>
   <data name="dim" xml:space="preserve">
     <value>Video dim level</value>
   </data>
@@ -284,5 +287,20 @@
   </data>
   <data name="cannot_play_private_videos" xml:space="preserve">
     <value>Cannot play private videos.</value>
+  </data>
+  <data name="play" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="pause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="playback_speed" xml:space="preserve">
+    <value>Playback speed: {0}</value>
+  </data>
+  <data name="video_quality_8k_warning" xml:space="preserve">
+    <value>Setting the video quality to 8K may cause performance degradation, GPU overload, and driver crashes on some devices.</value>
+  </data>
+  <data name="renderer" xml:space="preserve">
+    <value>Renderer</value>
   </data>
 </root>

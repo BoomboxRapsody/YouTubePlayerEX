@@ -1,4 +1,5 @@
 ﻿using osu.Framework.Localisation;
+using YouTubePlayerEX.App.Extensions;
 using static osuTK.Graphics.OpenGL.GL;
 
 namespace YouTubePlayerEX.App.Localisation
@@ -286,6 +287,36 @@ namespace YouTubePlayerEX.App.Localisation
         /// "Cannot play private videos."
         /// </summary>
         public static LocalisableString CannotPlayPrivateVideos => new TranslatableString(getKey(@"cannot_play_private_videos"), "Cannot play private videos.");
+
+        /// <summary>
+        /// "Play"
+        /// </summary>
+        public static LocalisableString Play => new TranslatableString(getKey(@"play"), "Play");
+
+        /// <summary>
+        /// "Pause"
+        /// </summary>
+        public static LocalisableString Pause => new TranslatableString(getKey(@"pause"), "Pause");
+
+        /// <summary>
+        /// "Playback speed: {0}"
+        /// </summary>
+        public static LocalisableString PlaybackSpeed(double value) => new TranslatableString(getKey(@"playback_speed"), "Playback speed: {0}", value.ToStandardFormattedString(5, true));
+
+        /// <summary>
+        /// "Comments"
+        /// </summary>
+        public static LocalisableString CommentsWithoutCount => new TranslatableString(getKey(@"comments_without_count"), "Comments");
+
+        /// <summary>
+        /// "Setting the video quality to 8K may cause performance degradation, GPU overload, and driver crashes on some devices."
+        /// </summary>
+        public static LocalisableString VideoQuality8KWarning => new TranslatableString(getKey(@"video_quality_8k_warning"), "Setting the video quality to 8K may cause performance degradation, GPU overload, and driver crashes on some devices.");
+
+        /// <summary>
+        /// "Renderer"
+        /// </summary>
+        public static LocalisableString Renderer => new TranslatableString(getKey(@"renderer"), @"Renderer");
 
         private static string getKey(string key) => $@"{prefix}:{key}";
     }

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Shapes;
+using osu.Framework.Graphics.Containers;
 using osu.Framework.Input;
 using osu.Framework.Input.Events;
 
 namespace YouTubePlayerEX.App.Graphics.Containers
 {
-    public partial class OverlayFadeContainer : Box
+    public partial class OverlayFadeContainer : Container
     {
         /// <summary>
         /// Whether we should block any positional input from interacting with things behind us.
@@ -39,6 +39,10 @@ namespace YouTubePlayerEX.App.Graphics.Containers
         }
 
         public override bool DragBlocksClick => true;
+        protected override bool OnHover(HoverEvent e) => BlockPositionalInput;
+        protected override bool OnMouseDown(MouseDownEvent e) => BlockPositionalInput;
+        protected override bool OnMouseMove(MouseMoveEvent e) => BlockPositionalInput;
+        protected override bool OnScroll(ScrollEvent e) => BlockScrollInput && base.ReceivePositionalInputAt(e.ScreenSpaceMousePosition);
 
         public Action<OverlayFadeContainer>? ClickAction { get; set; }
 

@@ -1,7 +1,12 @@
 ﻿using osu.Framework.Allocation;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osuTK;
+using osuTK.Graphics;
 using YouTubePlayerEX.App.Graphics.Sprites;
 
 namespace YouTubePlayerEX.App.Graphics.Videos
@@ -10,19 +15,27 @@ namespace YouTubePlayerEX.App.Graphics.Videos
     {
         public partial class KeyBindingAnimations : Container
         {
-            private SeekAnimation leftContent, rightContent;
+            private SeekAnimation leftContent, centerContent, rightContent;
 
             [BackgroundDependencyLoader]
             private void load()
             {
                 AddRange(new Drawable[] {
-                    leftContent = new SeekAnimation(SeekAction.FastRewind10sec) {
+                    leftContent = new SeekAnimation(SeekAction.FastRewind10sec)
+                    {
                         Anchor = Anchor.TopLeft,
                         Origin = Anchor.TopLeft,
                         RelativeSizeAxes = Axes.Y,
                         Width = 200,
                     },
-                    rightContent = new SeekAnimation(SeekAction.FastForward10sec) {
+                    centerContent = new SeekAnimation(SeekAction.PlayPause)
+                    {
+                        Anchor = Anchor.TopRight,
+                        Origin = Anchor.TopRight,
+                        RelativeSizeAxes = Axes.Both,
+                    },
+                    rightContent = new SeekAnimation(SeekAction.FastForward10sec)
+                    {
                         Anchor = Anchor.TopRight,
                         Origin = Anchor.TopRight,
                         RelativeSizeAxes = Axes.Y,
@@ -31,20 +44,25 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                 });
             }
 
-            public void PlaySeekAnimation(SeekAction seekAction)
+            public void PlaySeekAnimation(SeekAction seekAction, IconUsage icon)
             {
                 switch (seekAction)
                 {
                     case SeekAction.FastRewind10sec:
                     {
                         rightContent.HideNow();
-                        leftContent.PlaySeekAnimation();
+                        leftContent.PlaySeekAnimation(FontAwesome.Solid.ChevronLeft);
                         break;
                     }
                     case SeekAction.FastForward10sec:
                     {
                         leftContent.HideNow();
-                        rightContent.PlaySeekAnimation();
+                        rightContent.PlaySeekAnimation(FontAwesome.Solid.ChevronRight);
+                        break;
+                    }
+                    case SeekAction.PlayPause:
+                    {
+                        centerContent.PlaySeekAnimation(icon);
                         break;
                     }
                 }
@@ -71,6 +89,11 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                             Origin = Anchor.Centre,
                             Children = new Drawable[]
                             {
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Colour = ColourInfo.GradientHorizontal(Color4.Black.Opacity(0.5f), Color4.Black.Opacity(0f)),
+                                },
                                 new Container
                                 {
                                     AutoSizeAxes = Axes.Both,
@@ -100,7 +123,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                             }
                         });
                     }
-                    else
+                    else if (trackAction == SeekAction.FastForward10sec)
                     {
                         Add(content = new Container
                         {
@@ -109,6 +132,11 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                             Origin = Anchor.Centre,
                             Children = new Drawable[]
                             {
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Colour = ColourInfo.GradientHorizontal(Color4.Black.Opacity(0f), Color4.Black.Opacity(0.5f)),
+                                },
                                 new Container
                                 {
                                     AutoSizeAxes = Axes.Both,
@@ -137,6 +165,46 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                                 }
                             }
                         });
+                    } else
+                    {
+                        Add(content = new Container
+                        {
+                            RelativeSizeAxes = Axes.Both,
+                            Anchor = Anchor.Centre,
+                            Origin = Anchor.Centre,
+                            Children = new Drawable[]
+                            {
+                                new CircularContainer
+                                {
+                                    Width = 100,
+                                    Height = 100,
+                                    Anchor = Anchor.Centre,
+                                    Origin = Anchor.Centre,
+                                    Masking = true,
+                                    Child = new Box
+                                    {
+                                        RelativeSizeAxes = Axes.Both,
+                                        Alpha = 0.5f,
+                                        Colour = Color4.Black,
+                                    }
+                                },
+                                new Container
+                                {
+                                    AutoSizeAxes = Axes.Both,
+                                    Anchor = Anchor.Centre,
+                                    Origin = Anchor.Centre,
+                                    Children = new Drawable[]
+                                    {
+                                        seekArrow = new SpriteIcon
+                                        {
+                                            Width = 25,
+                                            Height = 25,
+                                            Icon = FontAwesome.Solid.ChevronRight,
+                                        },
+                                    }
+                                }
+                            }
+                        });
                     }
                 }
 
@@ -148,45 +216,57 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
                 public void HideNow()
                 {
-                    content.FadeOut(250, Easing.In);
-                    using (BeginDelayedSequence(250))
+                    if (trackAction != SeekAction.PlayPause)
                     {
-                        seekArrow.ScaleTo(new osuTK.Vector2(0.8f, 1));
+                        content.FadeOut(250, Easing.In);
+                        using (BeginDelayedSequence(250))
+                        {
+                            seekArrow.ScaleTo(new osuTK.Vector2(0.8f, 1));
+                            if (trackAction == SeekAction.FastRewind10sec)
+                            {
+                                seekArrow.MoveTo(new osuTK.Vector2(20, 0));
+                            }
+                            else
+                            {
+                                seekArrow.MoveTo(new osuTK.Vector2(40, 0));
+                            }
+                        }
+                    }
+                }
+
+                public void PlaySeekAnimation(IconUsage icon)
+                {
+                    seekArrow.Icon = icon;
+                    if (trackAction != SeekAction.PlayPause)
+                    {
+                        content.FadeInFromZero(250, Easing.Out);
+                        seekArrow.ScaleTo(new osuTK.Vector2(0.7f, 1));
                         if (trackAction == SeekAction.FastRewind10sec)
                         {
                             seekArrow.MoveTo(new osuTK.Vector2(20, 0));
                         }
                         else
                         {
-                            seekArrow.MoveTo(new osuTK.Vector2(40, 0));
+                            seekArrow.MoveTo(new osuTK.Vector2(20, 0));
+                        }
+                        seekArrow.ScaleTo(1, 250, Easing.Out);
+                        if (trackAction == SeekAction.FastRewind10sec)
+                        {
+                            seekArrow.MoveTo(new osuTK.Vector2(0), 500, Easing.OutQuart);
+                        }
+                        else
+                        {
+                            seekArrow.MoveTo(new osuTK.Vector2(40, 0), 500, Easing.OutQuart);
+                        }
+                        using (BeginDelayedSequence(1250))
+                        {
+                            HideNow();
                         }
                     }
-                }
-
-                public void PlaySeekAnimation()
-                {
-                    content.FadeInFromZero(250, Easing.Out);
-                    seekArrow.ScaleTo(new osuTK.Vector2(0.7f, 1));
-                    if (trackAction == SeekAction.FastRewind10sec)
-                    {
-                        seekArrow.MoveTo(new osuTK.Vector2(20, 0));
-                    }
                     else
                     {
-                        seekArrow.MoveTo(new osuTK.Vector2(20, 0));
-                    }
-                    seekArrow.ScaleTo(1, 250, Easing.Out);
-                    if (trackAction == SeekAction.FastRewind10sec)
-                    {
-                        seekArrow.MoveTo(new osuTK.Vector2(0), 500, Easing.OutQuart);
-                    }
-                    else
-                    {
-                        seekArrow.MoveTo(new osuTK.Vector2(40, 0), 500, Easing.OutQuart);
-                    }
-                    using (BeginDelayedSequence(1250))
-                    {
-                        HideNow();
+                        content.FadeOutFromOne(500);
+                        content.ScaleTo(new osuTK.Vector2(1)).ScaleTo(new osuTK.Vector2(1.5f), 500);
                     }
                 }
             }
@@ -195,6 +275,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             {
                 FastForward10sec,
                 FastRewind10sec,
+                PlayPause,
             }
         }
     }

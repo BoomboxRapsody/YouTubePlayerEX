@@ -169,6 +169,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Comments과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string comments_without_count {
+            get {
+                return ResourceManager.GetString("comments_without_count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Default과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string common_default {
@@ -358,6 +367,33 @@ namespace YouTubePlayerEX.Resources.Localisation {
         }
         
         /// <summary>
+        ///   Pause과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string pause {
+            get {
+                return ResourceManager.GetString("pause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Play과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string play {
+            get {
+                return ResourceManager.GetString("play", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Playback speed: {0}과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string playback_speed {
+            get {
+                return ResourceManager.GetString("playback_speed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Prefer high quality과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string prefer_high_quality {
@@ -372,6 +408,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string profile_image_tooltip {
             get {
                 return ResourceManager.GetString("profile_image_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Renderer과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string renderer {
+            get {
+                return ResourceManager.GetString("renderer", resourceCulture);
             }
         }
         
@@ -552,6 +597,15 @@ namespace YouTubePlayerEX.Resources.Localisation {
         internal static string video_quality {
             get {
                 return ResourceManager.GetString("video_quality", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Setting the video quality to 8K may cause performance degradation, GPU overload, and driver crashes on some devices.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string video_quality_8k_warning {
+            get {
+                return ResourceManager.GetString("video_quality_8k_warning", resourceCulture);
             }
         }
         

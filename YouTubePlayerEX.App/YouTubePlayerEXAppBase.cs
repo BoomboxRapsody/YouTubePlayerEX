@@ -134,6 +134,12 @@ namespace YouTubePlayerEX.App
             return string.Empty;
         }
 
+        /// <summary>
+        /// If supported by the platform, the game will automatically restart after the next exit.
+        /// </summary>
+        /// <returns>Whether a restart operation was queued.</returns>
+        public virtual bool RestartAppWhenExited() => false;
+
         protected override void Dispose(bool isDisposing)
         {
             base.Dispose(isDisposing);

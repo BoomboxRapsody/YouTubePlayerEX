@@ -13,11 +13,12 @@ namespace YouTubePlayerEX.Desktop
 
             HostOptions hostOptions = new HostOptions
             {
-                FriendlyGameName = "YouTube Player EX"
+                FriendlyGameName = "YouTube Player EX",
             };
 
             using (GameHost host = Host.GetSuitableDesktopHost(@"YouTubePlayerEX", hostOptions))
             {
+                host.AllowBenchmarkUnlimitedFrames = true;
                 host.Run(new YouTubePlayerEXAppDesktop());
             }
         }
