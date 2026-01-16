@@ -65,7 +65,7 @@ namespace YouTubePlayerEX.App.Graphics.Caption
                     },
                     spriteText = new AdaptiveSpriteText(false)
                     {
-                        Font = YouTubePlayerEXApp.DefaultFont.With(size: 24),
+                        Font = YouTubePlayerEXApp.DefaultFont.With(family: "NotoSansKR", size: 24),
                         Margin = new MarginPadding(4),
                     }
                 }
