@@ -38,7 +38,7 @@ namespace YouTubePlayerEX.App.Screens
 
             LoadComponentAsync(loadableScreen = CreateLoadableScreen());
 
-            LoadComponentAsync(spinner = new LoadingSpinner(true, true)
+            LoadComponentAsync(spinner = new LoadingSpinner(true, false)
             {
                 Anchor = Anchor.BottomRight,
                 Origin = Anchor.BottomRight,

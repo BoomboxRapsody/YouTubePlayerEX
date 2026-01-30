@@ -67,10 +67,9 @@ namespace YouTubePlayerEX.App.Overlays.OSD
                 },
                 descriptionText = new AdaptiveSpriteText
                 {
-                    Padding = new MarginPadding { Horizontal = 16, Vertical = 15 },
+                    Padding = new MarginPadding { Horizontal = 22, Vertical = 15 },
                     Name = "Description",
                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 20, weight: "Bold"),
-                    Spacing = new Vector2(1, 0),
                     Anchor = Anchor.TopLeft,
                     Origin = Anchor.TopLeft,
                     Text = description
@@ -78,7 +77,7 @@ namespace YouTubePlayerEX.App.Overlays.OSD
                 ValueSpriteText = new AdaptiveSpriteText
                 {
                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 24, weight: "Light"),
-                    Padding = new MarginPadding { Horizontal = 16, Vertical = 15 },
+                    Padding = new MarginPadding { Horizontal = 22, Vertical = 15 },
                     Name = "Value",
                     Anchor = Anchor.CentreRight,
                     Origin = Anchor.CentreRight,
@@ -89,7 +88,7 @@ namespace YouTubePlayerEX.App.Overlays.OSD
                     Anchor = Anchor.BottomLeft,
                     Origin = Anchor.BottomLeft,
                     Name = "Extra Text",
-                    Margin = new MarginPadding { Bottom = 15, Horizontal = 16 },
+                    Margin = new MarginPadding { Bottom = 15, Horizontal = 22 },
                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 12, weight: "Bold"),
                 },
             };

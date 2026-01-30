@@ -41,8 +41,6 @@ namespace YouTubePlayerEX.App
         private BindableNumber<double> sampleVolume = null!;
         private FPSCounter fpsCounter;
         private Container topMostOverlayContent, overlayContainer;
-        private OverlayColourProvider overlayColourProvider;
-        private AdaptiveColour colours = null!;
 
         public const float UI_CORNER_RADIUS = 16f;
 
@@ -126,10 +124,6 @@ namespace YouTubePlayerEX.App
                     }
                 },
             });
-
-            dependencies.CacheAs(colours = new AdaptiveColour());
-
-            dependencies.CacheAs(overlayColourProvider = new OverlayColourProvider(OverlayColourScheme.Blue));
 
             onScreenDisplay = new OnScreenDisplay();
 

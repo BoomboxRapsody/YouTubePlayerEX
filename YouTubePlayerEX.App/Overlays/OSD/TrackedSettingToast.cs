@@ -50,7 +50,7 @@ namespace YouTubePlayerEX.App.Overlays.OSD
                     {
                         optionLights = new FillFlowContainer<OptionLight>
                         {
-                            Margin = new MarginPadding { Bottom = 5, Right = 16 },
+                            Margin = new MarginPadding { Bottom = 5, Right = 22 },
                             Spacing = new Vector2(5, 0),
                             Direction = FillDirection.Horizontal,
                             Anchor = Anchor.CentreRight,
@@ -75,7 +75,7 @@ namespace YouTubePlayerEX.App.Overlays.OSD
                     break;
             }
 
-            ValueSpriteText.Padding = optionCount > 0 ? new MarginPadding { Horizontal = 16, Bottom = 16 } : new MarginPadding { Horizontal = 16, Vertical = 15 };
+            ValueSpriteText.Padding = optionCount > 0 ? new MarginPadding { Horizontal = 22, Bottom = 16 } : new MarginPadding { Horizontal = 22, Vertical = 15 };
 
             for (int i = 0; i < optionCount; i++)
                 optionLights.Add(new OptionLight { Glowing = i == selectedOption });

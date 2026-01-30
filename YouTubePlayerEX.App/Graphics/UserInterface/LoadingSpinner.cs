@@ -1,8 +1,10 @@
 ﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Rendering.Vertices;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osuTK;
@@ -16,6 +18,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
     public partial class LoadingSpinner : VisibilityContainer
     {
         private readonly SpriteIcon spinner;
+        private readonly Box bg;
 
         protected override bool StartHidden => true;
 
@@ -25,6 +28,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         private const float spin_duration = 900;
 
+        private readonly bool inverted;
+
         /// <summary>
         /// Constuct a new loading spinner.
         /// </summary>
@@ -32,6 +37,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         /// <param name="inverted">Whether colours should be inverted (black spinner instead of white).</param>
         public LoadingSpinner(bool withBox = false, bool inverted = false)
         {
+            this.inverted = inverted;
             Size = new Vector2(60);
 
             Anchor = Anchor.Centre;
@@ -46,7 +52,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 Origin = Anchor.Centre,
                 Children = new Drawable[]
                 {
-                    new Box
+                    bg = new Box
                     {
                         Colour = inverted ? Color4.White : Color4.Black,
                         RelativeSizeAxes = Axes.Both,
@@ -63,6 +69,13 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     }
                 }
             };
+        }
+
+        [BackgroundDependencyLoader]
+        private void load(OverlayColourProvider overlayColourProvider)
+        {
+            bg.Colour = inverted ? overlayColourProvider.Background5 : overlayColourProvider.Content2;
+            spinner.Colour = inverted ? overlayColourProvider.Content2 : overlayColourProvider.Background5;
         }
 
         protected override void LoadComplete()

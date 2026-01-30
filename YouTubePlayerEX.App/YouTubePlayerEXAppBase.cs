@@ -186,6 +186,9 @@ namespace YouTubePlayerEX.App
         public Action RestartAction;
         public Bindable<bool> UpdateButtonEnabled = new Bindable<bool>();
 
+        private OverlayColourProvider overlayColourProvider;
+        private AdaptiveColour colours = null!;
+
         [BackgroundDependencyLoader]
         private void load(FrameworkConfigManager frameworkConfig)
         {
@@ -218,6 +221,10 @@ namespace YouTubePlayerEX.App
             AdaptiveMenuSamples menuSamples;
             dependencies.Cache(menuSamples = new AdaptiveMenuSamples());
             base.Content.Add(menuSamples);
+
+            dependencies.CacheAs(colours = new AdaptiveColour());
+
+            dependencies.CacheAs(overlayColourProvider = new OverlayColourProvider(OverlayColourScheme.Aquamarine));
 
             // Ensure game and tests scale with window size and screen DPI.
             base.Content.Add(globalBindings = new GlobalActionContainer(this)

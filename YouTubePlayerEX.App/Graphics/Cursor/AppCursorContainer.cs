@@ -250,7 +250,7 @@ namespace YouTubePlayerEX.App.Graphics.Cursor
             }
 
             [BackgroundDependencyLoader]
-            private void load(TextureStore textures)
+            private void load(TextureStore textures, OverlayColourProvider overlayColourProvider)
             {
                 Children = new Drawable[]
                 {
@@ -266,7 +266,7 @@ namespace YouTubePlayerEX.App.Graphics.Cursor
                             AdditiveLayer = new Sprite
                             {
                                 Blending = BlendingParameters.Additive,
-                                Colour = Color4Extensions.FromHex(@"00ccff"),
+                                Colour = overlayColourProvider.Colour0,
                                 Alpha = 0,
                                 Texture = textures.Get(@"Cursor/menu-cursor-additive"),
                             },
