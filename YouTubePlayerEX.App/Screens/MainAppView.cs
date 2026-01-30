@@ -365,7 +365,7 @@ namespace YouTubePlayerEX.App.Screens
                                                     AutoSizeAxes = Axes.X,
                                                     Height = 30,
                                                     Masking = true,
-                                                    CornerRadius = 12,
+                                                    CornerRadius = 15,
                                                     Children = new Drawable[]
                                                     {
                                                         new Box
