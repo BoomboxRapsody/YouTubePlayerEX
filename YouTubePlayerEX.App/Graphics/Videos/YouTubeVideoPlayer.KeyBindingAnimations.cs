@@ -72,7 +72,6 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
             private partial class SeekAnimation : Container
             {
-                public bool IsVisible;
                 private SeekAction trackAction;
                 private SpriteIcon seekArrow;
                 private AdaptiveSpriteText seekValue;

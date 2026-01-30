@@ -34,6 +34,7 @@ namespace YouTubePlayerEX.Desktop.Updater
             }, 60000 * 30);
         }
 
+#nullable enable
         protected override async Task<bool> PerformUpdateCheck(CancellationToken cancellationToken)
         {
             scheduledBackgroundCheck?.Cancel();
@@ -77,6 +78,7 @@ namespace YouTubePlayerEX.Desktop.Updater
                 return true;
             }
         }
+#nullable disable
 
         private void downloadUpdate(Velopack.UpdateManager updateManager, UpdateInfo update, CancellationToken cancellationToken) => Task.Run(async () =>
         {

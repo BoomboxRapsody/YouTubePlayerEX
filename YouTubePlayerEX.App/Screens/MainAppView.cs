@@ -1146,8 +1146,6 @@ namespace YouTubePlayerEX.App.Screens
 
         private bool automaticRendererInUse;
 
-        private AdaptiveSpriteText videoNameText;
-
         private void hideControls()
         {
             if (isControlVisible == true)
@@ -1344,7 +1342,7 @@ namespace YouTubePlayerEX.App.Screens
             overlayContent.FadeOutFromOne(250, Easing.OutQuart);
         }
 
-        private bool isLoadVideoContainerVisible, isSettingsContainerVisible;
+        private bool isLoadVideoContainerVisible = false;
 
         private readonly Bindable<Display> currentDisplay = new Bindable<Display>();
 

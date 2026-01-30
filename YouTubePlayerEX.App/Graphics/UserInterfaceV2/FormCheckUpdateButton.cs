@@ -85,6 +85,12 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
         private Button button = null!;
 
+        event Action IFormControl.ValueChanged
+        {
+            add => throw new NotImplementedException();
+            remove => throw new NotImplementedException();
+        }
+
         [BackgroundDependencyLoader]
         private void load(AudioManager audio)
         {
@@ -186,13 +192,16 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
         public IEnumerable<LocalisableString> FilterTerms => Caption.Yield();
 
-        public event Action? ValueChanged;
-
         public bool IsDefault => true;
 
         public void SetDefault()
         {
 
+        }
+
+        void IFormControl.SetDefault()
+        {
+            throw new NotImplementedException();
         }
 
         public bool IsDisabled => false;
