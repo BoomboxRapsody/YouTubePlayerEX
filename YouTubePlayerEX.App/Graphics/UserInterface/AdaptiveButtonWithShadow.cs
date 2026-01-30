@@ -3,23 +3,25 @@
 
 #nullable enable
 
+using System;
+using osu.Framework.Allocation;
+using osu.Framework.Bindables;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Events;
-using osuTK.Graphics;
-using System;
 using osu.Framework.Localisation;
-using osu.Framework.Bindables;
+using osuTK;
+using osuTK.Graphics;
 using YouTubePlayerEX.App.Graphics.Sprites;
-using osu.Framework.Allocation;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
-    public partial class AdaptiveButton : AdaptiveClickableContainer
+    public partial class AdaptiveButtonWithShadow : AdaptiveClickableContainer
     {
-        public Action<AdaptiveButton>? ClickAction { get; set; }
+        public Action<AdaptiveButtonWithShadow>? ClickAction { get; set; }
 
         public LocalisableString Text
         {
@@ -91,7 +93,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         protected SpriteText SpriteText;
         private readonly Container content;
 
-        public AdaptiveButton(HoverSampleSet hoverSampleSet = HoverSampleSet.Default)
+        public AdaptiveButtonWithShadow(HoverSampleSet hoverSampleSet = HoverSampleSet.Default)
             : base(hoverSampleSet)
         {
             base.Content.Add(content = new Container
@@ -101,6 +103,13 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 RelativeSizeAxes = Axes.Both,
                 CornerRadius = 12,
                 Masking = true,
+                EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                {
+                    Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                    Colour = Color4.Black.Opacity(0.25f),
+                    Offset = new Vector2(0, 2),
+                    Radius = 16,
+                },
                 Children = new Drawable[]
                 {
                     Background = new Box

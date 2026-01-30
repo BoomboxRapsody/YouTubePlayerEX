@@ -73,6 +73,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         /// </summary>
         public LocalisableString HintText { get; init; }
 
+        public Hotkey Hotkey { get; init; }
+
         /// <summary>
         /// Text displayed in the text box when its contents are empty.
         /// </summary>
@@ -115,6 +117,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
                             Origin = Anchor.TopLeft,
                             Caption = Caption,
                             TooltipText = HintText,
+                            Hotkey = Hotkey,
                         },
                         textBox = CreateTextBox().With(t =>
                         {
@@ -183,7 +186,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             textBox.ReadOnly = disabled;
             textBox.Alpha = 1;
 
-            caption.Colour = disabled ? colourProvider.Background1 : colourProvider.Content2;
+            caption.TextColour = disabled ? colourProvider.Background1 : colourProvider.Content2;
             textBox.Colour = disabled ? colourProvider.Foreground1 : colourProvider.Content1;
 
             if (Current.Disabled)

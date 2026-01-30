@@ -61,7 +61,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         }
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(OverlayColourProvider overlayColourProvider)
         {
             localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
             translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource);
@@ -74,8 +74,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 bgLayer = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
-                    Colour = Color4.White,
-                    Alpha = 0.1f,
+                    Colour = overlayColourProvider.Background4,
+                    Alpha = 0.7f,
                 },
                 new Container {
                     RelativeSizeAxes = Axes.Both,
@@ -96,17 +96,18 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                             {
                                 channelName = new TruncatingSpriteText
                                 {
-                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"),
+                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "SemiBold"),
                                     RelativeSizeAxes = Axes.X,
-                                    Colour = Color4.Gray,
                                     Text = "[channel name]",
+                                    Colour = overlayColourProvider.Background1,
                                 },
                                 commentText = new TruncatingSpriteText
                                 {
-                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 17, weight: "SemiBold"),
+                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 17, weight: "Regular"),
                                     RelativeSizeAxes = Axes.X,
-                                    Position = new osuTK.Vector2(0, 13),
+                                    Position = new Vector2(0, 13),
                                     Text = "[text]",
+                                    Colour = overlayColourProvider.Content2,
                                 },
                                 translateButton = new RoundedButtonContainer
                                 {
@@ -115,7 +116,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                     CornerRadius = 12,
                                     Masking = true,
                                     AlwaysPresent = true,
-                                    Position = new osuTK.Vector2(0, 35),
+                                    Position = new Vector2(0, 35),
                                     ClickAction = f => translateComment(),
                                     Children = new Drawable[]
                                     {
@@ -126,8 +127,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                             Child = new Box
                                             {
                                                 RelativeSizeAxes = Axes.Both,
-                                                Colour = Color4.White,
-                                                Alpha = 0.1f,
+                                                Colour = overlayColourProvider.Background3,
+                                                Alpha = 0.7f,
                                             },
                                         },
                                         new FillFlowContainer
@@ -142,6 +143,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                                 translateToText = new AdaptiveSpriteText
                                                 {
                                                     Text = "[no metadata]",
+                                                    Colour = overlayColourProvider.Content2,
                                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 12.5f, weight: "Regular"),
                                                 },
                                             }
@@ -152,7 +154,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                 {
                                     RelativeSizeAxes = Axes.X,
                                     AutoSizeAxes = Axes.Y,
-                                    Position = new osuTK.Vector2(0, 65),
+                                    Position = new Vector2(0, 65),
                                     Direction = FillDirection.Horizontal,
                                     Spacing = new Vector2(4, 0),
                                     Children = new Drawable[]
@@ -173,8 +175,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                                     Child = new Box
                                                     {
                                                         RelativeSizeAxes = Axes.Both,
-                                                        Colour = Color4.White,
-                                                        Alpha = 0.1f,
+                                                        Colour = overlayColourProvider.Background3,
+                                                        Alpha = 0.7f,
                                                     },
                                                 },
                                                 new FillFlowContainer
@@ -191,10 +193,12 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                                             Width = 12,
                                                             Height = 12,
                                                             Icon = FontAwesome.Solid.ThumbsUp,
+                                                            Colour = overlayColourProvider.Content2,
                                                         },
                                                         likeCount = new AdaptiveSpriteText
                                                         {
                                                             Text = "[no metadata]",
+                                                            Colour = overlayColourProvider.Content2,
                                                             Font = YouTubePlayerEXApp.DefaultFont.With(size: 12.5f, weight: "Regular"),
                                                         },
                                                     }

@@ -13,6 +13,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Input.Events;
 using osu.Framework.Localisation;
+using YouTubePlayerEX.App.Graphics.UserInterface;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 {
@@ -35,6 +36,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         /// Hint text containing an extended description of this slider bar, displayed in a tooltip when hovering the caption.
         /// </summary>
         public LocalisableString HintText { get; init; }
+
+        public Hotkey Hotkey { get; init; }
 
         private FormControlBackground background = null!;
         private FormFieldCaption caption = null!;
@@ -73,6 +76,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
                                 {
                                     Caption = Caption,
                                     TooltipText = HintText,
+                                    Hotkey = Hotkey,
                                 },
                             },
                         },
@@ -121,7 +125,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
         private void updateState()
         {
-            caption.Colour = Current.Disabled ? colourProvider.Background1 : colourProvider.Content2;
+            caption.TextColour = Current.Disabled ? colourProvider.Background1 : colourProvider.Content2;
 
             if (IsDisabled)
                 background.VisualStyle = VisualStyle.Disabled;

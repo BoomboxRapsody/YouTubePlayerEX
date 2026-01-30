@@ -23,7 +23,9 @@ using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osu.Framework.Graphics.Textures;
 using osu.Framework.Graphics.Video;
+using osu.Framework.Input;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
 using osu.Framework.Localisation;
@@ -73,7 +75,7 @@ namespace YouTubePlayerEX.App.Screens
         private Container uiContainer;
         private Container uiGradientContainer;
         private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer;
-        private AdaptiveButton loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton;
+        private AdaptiveButtonWithShadow loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton;
         private VideoMetadataDisplayWithoutProfile videoMetadataDisplay;
         private VideoMetadataDisplay videoMetadataDisplayDetails;
         private RoundedButtonContainer commentOpenButtonDetails;
@@ -138,7 +140,7 @@ namespace YouTubePlayerEX.App.Screens
         private Bindable<SettingsNote.Data> videoQualityWarning = new Bindable<SettingsNote.Data>();
 
         [BackgroundDependencyLoader]
-        private void load(ISampleStore sampleStore, FrameworkConfigManager config, YTPlayerEXConfigManager appConfig, GameHost host, Storage storage, OverlayColourProvider overlayColourProvider)
+        private void load(ISampleStore sampleStore, FrameworkConfigManager config, YTPlayerEXConfigManager appConfig, GameHost host, Storage storage, OverlayColourProvider overlayColourProvider, TextureStore textures)
         {
             window = host.Window;
 
@@ -223,7 +225,7 @@ namespace YouTubePlayerEX.App.Screens
                     {
                         new Box
                         {
-                            Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0.8f), Color4.Black.Opacity(0)),
+                            Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0.35f), Color4.Black.Opacity(0)),
                             Origin = Anchor.TopLeft,
                             Anchor = Anchor.TopLeft,
                             RelativeSizeAxes = Axes.X,
@@ -231,7 +233,7 @@ namespace YouTubePlayerEX.App.Screens
                         },
                         new Box
                         {
-                            Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0), Color4.Black.Opacity(0.8f)),
+                            Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0), Color4.Black.Opacity(0.35f)),
                             Origin = Anchor.BottomLeft,
                             Anchor = Anchor.BottomLeft,
                             RelativeSizeAxes = Axes.X,
@@ -253,7 +255,7 @@ namespace YouTubePlayerEX.App.Screens
                             Anchor = Anchor.TopLeft,
                             ClickEvent = _ => showOverlayContainer(videoDescriptionContainer),
                         },
-                        loadBtnOverlayShow = new IconButton
+                        loadBtnOverlayShow = new IconButtonWithShadow
                         {
                             Enabled = { Value = true },
                             Origin = Anchor.TopRight,
@@ -263,7 +265,7 @@ namespace YouTubePlayerEX.App.Screens
                             IconScale = new Vector2(1.2f),
                             TooltipText = YTPlayerEXStrings.LoadVideo,
                         },
-                        settingsOverlayShowBtn = new IconButton
+                        settingsOverlayShowBtn = new IconButtonWithShadow
                         {
                             Enabled = { Value = true },
                             Margin = new MarginPadding
@@ -277,7 +279,7 @@ namespace YouTubePlayerEX.App.Screens
                             IconScale = new Vector2(1.2f),
                             TooltipText = YTPlayerEXStrings.Settings,
                         },
-                        commentOpenButton = new IconButton
+                        commentOpenButton = new IconButtonWithShadow
                         {
                             Enabled = { Value = true },
                             Margin = new MarginPadding
@@ -297,14 +299,21 @@ namespace YouTubePlayerEX.App.Screens
                             RelativeSizeAxes = Axes.X,
                             Height = 100,
                             Masking = true,
-                            CornerRadius = 12,
+                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
+                            EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                            {
+                                Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                Colour = Color4.Black.Opacity(0.25f),
+                                Offset = new Vector2(0, 2),
+                                Radius = 16,
+                            },
                             Children = new Drawable[]
                             {
                                 new Box
                                 {
                                     RelativeSizeAxes = Axes.Both,
-                                    Colour = Color4.White,
-                                    Alpha = 0.1f,
+                                    Colour = overlayColourProvider.Background5,
+                                    Alpha = 0.7f,
                                 },
                                 new FillFlowContainer {
                                     RelativeSizeAxes = Axes.Both,
@@ -328,12 +337,14 @@ namespace YouTubePlayerEX.App.Screens
                                                     Anchor = Anchor.TopLeft,
                                                     Origin = Anchor.TopLeft,
                                                     Text = "0:00",
+                                                    Colour = overlayColourProvider.Content2,
                                                 },
                                                 totalTime = new AdaptiveSpriteText
                                                 {
                                                     Anchor = Anchor.TopRight,
                                                     Origin = Anchor.TopRight,
                                                     Text = "0:00",
+                                                    Colour = overlayColourProvider.Content2,
                                                 }
                                             },
                                         },
@@ -349,6 +360,7 @@ namespace YouTubePlayerEX.App.Screens
                                                     Enabled = { Value = true },
                                                     Icon = FontAwesome.Solid.Play,
                                                     TooltipText = YTPlayerEXStrings.Play,
+                                                    IconColour = overlayColourProvider.Content2,
                                                     ClickAction = _ =>
                                                     {
                                                         if (currentVideoSource != null)
@@ -371,8 +383,8 @@ namespace YouTubePlayerEX.App.Screens
                                                         new Box
                                                         {
                                                             RelativeSizeAxes = Axes.Both,
-                                                            Colour = Color4.White,
-                                                            Alpha = 0.1f,
+                                                            Colour = overlayColourProvider.Background3,
+                                                            Alpha = 0.7f,
                                                         },
                                                         new FillFlowContainer
                                                         {
@@ -394,6 +406,7 @@ namespace YouTubePlayerEX.App.Screens
                                                                     {
                                                                         Top = 8,
                                                                     },
+                                                                    Colour = overlayColourProvider.Content2,
                                                                 },
                                                                 new PlaybackSpeedSliderBar
                                                                 {
@@ -424,7 +437,7 @@ namespace YouTubePlayerEX.App.Screens
                     ClickAction = _ => hideOverlays(),
                     Child = new Box
                     {
-                         RelativeSizeAxes = Axes.Both,
+                        RelativeSizeAxes = Axes.Both,
                         Colour = Color4.Black,
                     }
                 },
@@ -432,16 +445,23 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     Width = 400,
                     Height = 200,
-                    CornerRadius = 12,
+                    CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
                     Masking = true,
                     Origin = Anchor.Centre,
                     Anchor = Anchor.Centre,
+                    EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                    {
+                        Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                        Colour = Color4.Black.Opacity(0.25f),
+                        Offset = new Vector2(0, 2),
+                        Radius = 16,
+                    },
                     Children = new Drawable[]
                     {
                         new Box
                         {
                             RelativeSizeAxes = Axes.Both,
-                            Colour = overlayColourProvider.Background6,
+                            Colour = overlayColourProvider.Background5,
                         },
                         new AdaptiveSpriteText
                         {
@@ -450,6 +470,7 @@ namespace YouTubePlayerEX.App.Screens
                             Text = YTPlayerEXStrings.LoadFromVideoId,
                             Margin = new MarginPadding(16),
                             Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
+                            Colour = overlayColourProvider.Content2,
                         },
                         loadBtn = new AdaptiveButton
                         {
@@ -475,16 +496,23 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     Size = new Vector2(0.7f),
                     RelativeSizeAxes = Axes.Both,
-                    CornerRadius = 12,
+                    CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
                     Masking = true,
                     Origin = Anchor.Centre,
                     Anchor = Anchor.Centre,
+                    EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                    {
+                        Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                        Colour = Color4.Black.Opacity(0.25f),
+                        Offset = new Vector2(0, 2),
+                        Radius = 16,
+                    },
                     Children = new Drawable[]
                     {
                         new Box
                         {
                             RelativeSizeAxes = Axes.Both,
-                            Colour = overlayColourProvider.Background6,
+                            Colour = overlayColourProvider.Background5,
                         },
                         new AdaptiveSpriteText
                         {
@@ -493,6 +521,7 @@ namespace YouTubePlayerEX.App.Screens
                             Text = YTPlayerEXStrings.Settings,
                             Margin = new MarginPadding(16),
                             Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
+                            Colour = overlayColourProvider.Content2,
                         },
                         new Container
                         {
@@ -514,12 +543,14 @@ namespace YouTubePlayerEX.App.Screens
                                             RelativeSizeAxes = Axes.X,
                                             AutoSizeAxes = Axes.Y,
                                             Spacing = new Vector2(0, 4),
+                                            Direction = FillDirection.Vertical,
                                             Children = new Drawable[] {
                                                 new AdaptiveSpriteText
                                                 {
                                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
-                                                    Text = YTPlayerEXStrings.General,
-                                                    Padding = new MarginPadding { Horizontal = 30, Bottom = 12 }
+                                                    Text = YTPlayerEXStrings.QuickAction,
+                                                    Padding = new MarginPadding { Horizontal = 30, Bottom = 12 },
+                                                    Colour = overlayColourProvider.Content2,
                                                 },
                                                 new SettingsButtonV2
                                                 {
@@ -527,6 +558,25 @@ namespace YouTubePlayerEX.App.Screens
                                                     Padding = new MarginPadding { Horizontal = 30 },
                                                     BackgroundColour = colours.YellowDarker.Darken(0.5f),
                                                     Action = () => Task.Run(exportLogs),
+                                                },
+                                                new SettingsButtonV2
+                                                {
+                                                    Text = @"Clear all caches",
+                                                    Padding = new MarginPadding { Horizontal = 30 },
+                                                    Action = () =>
+                                                    {
+                                                        host.Collect();
+
+                                                        // host.Collect() uses GCCollectionMode.Optimized, but we should be as aggressive as possible here.
+                                                        GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
+                                                    }
+                                                },
+                                                new AdaptiveSpriteText
+                                                {
+                                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
+                                                    Text = YTPlayerEXStrings.General,
+                                                    Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
+                                                    Colour = overlayColourProvider.Content2,
                                                 },
                                                 new SettingsItemV2(new FormEnumDropdown<Language>
                                                 {
@@ -537,10 +587,16 @@ namespace YouTubePlayerEX.App.Screens
                                                     ShowRevertToDefaultButton = false,
                                                     CanBeShown = { BindTarget = displayDropdownCanBeShown }
                                                 },
+                                                new SettingsItemV2(new FormEnumDropdown<ClosedCaptionFont>
+                                                {
+                                                    Caption = YTPlayerEXStrings.CaptionFont,
+                                                    Current = appConfig.GetBindable<ClosedCaptionFont>(YTPlayerEXSetting.ClosedCaptionFont),
+                                                }),
                                                 new SettingsItemV2(new FormEnumDropdown<ClosedCaptionLanguage>
                                                 {
                                                     Caption = YTPlayerEXStrings.CaptionLanguage,
                                                     Current = captionLanguage,
+                                                    Hotkey = new Hotkey(GlobalAction.CycleCaptionLanguage),
                                                 }),
                                                 new SettingsItemV2(new FormEnumDropdown<VideoMetadataTranslateSource>
                                                 {
@@ -562,12 +618,14 @@ namespace YouTubePlayerEX.App.Screens
                                                 {
                                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
                                                     Text = YTPlayerEXStrings.Graphics,
-                                                    Padding = new MarginPadding { Horizontal = 30, Vertical = 12 }
+                                                    Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
+                                                    Colour = overlayColourProvider.Content2,
                                                 },
                                                 new SettingsItemV2(new FormEnumDropdown<AspectRatioMethod>
                                                 {
                                                     Caption = YTPlayerEXStrings.AspectRatioMethod,
                                                     Current = aspectRatioMethod,
+                                                    Hotkey = new Hotkey(GlobalAction.CycleAspectRatio),
                                                 }),
                                                 new SettingsItemV2(new FormSliderBar<double>
                                                 {
@@ -644,12 +702,14 @@ namespace YouTubePlayerEX.App.Screens
                                                 {
                                                     Caption = YTPlayerEXStrings.ShowFPS,
                                                     Current = fpsDisplay,
+                                                    Hotkey = new Hotkey(GlobalAction.ToggleFPSDisplay),
                                                 }),
                                                 new AdaptiveSpriteText
                                                 {
                                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
                                                     Text = YTPlayerEXStrings.Video,
-                                                    Padding = new MarginPadding { Horizontal = 30, Vertical = 12 }
+                                                    Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
+                                                    Colour = overlayColourProvider.Content2,
                                                 },
                                                 new SettingsItemV2(hwAccelCheckbox = new FormCheckBox
                                                 {
@@ -672,12 +732,14 @@ namespace YouTubePlayerEX.App.Screens
                                                 {
                                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
                                                     Text = YTPlayerEXStrings.Audio,
-                                                    Padding = new MarginPadding { Horizontal = 30, Vertical = 12 }
+                                                    Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
+                                                    Colour = overlayColourProvider.Content2,
                                                 },
                                                 new SettingsItemV2(new FormCheckBox
                                                 {
                                                     Caption = YTPlayerEXStrings.AdjustPitchOnSpeedChange,
                                                     Current = adjustPitch,
+                                                    Hotkey = new Hotkey(GlobalAction.ToggleAdjustPitchOnSpeedChange),
                                                 }),
                                                 new SettingsItemV2(new FormSliderBar<double>
                                                 {
@@ -697,6 +759,41 @@ namespace YouTubePlayerEX.App.Screens
                                                     Current = config.GetBindable<double>(FrameworkSetting.VolumeEffect),
                                                     DisplayAsPercentage = true,
                                                 }),
+                                                new Container
+                                                {
+                                                    RelativeSizeAxes = Axes.X,
+                                                    AutoSizeAxes = Axes.Y,
+                                                    Margin = new MarginPadding { Top = 12 },
+                                                    Child = new Container
+                                                    {
+                                                        AutoSizeAxes = Axes.Both,
+                                                        Anchor = Anchor.Centre,
+                                                        Origin = Anchor.Centre,
+                                                        Child = new Sprite
+                                                        {
+                                                            Width = 100,
+                                                            Height = 100,
+                                                            Texture = textures.Get(@"YouTubePlayerEXLogo"),
+                                                            FillMode = FillMode.Fit,
+                                                        }
+                                                    },
+                                                },
+                                                new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 30, weight: "Bold"))
+                                                {
+                                                    RelativeSizeAxes = Axes.X,
+                                                    AutoSizeAxes = Axes.Y,
+                                                    Text = "YouTube Player EX",
+                                                    TextAnchor = Anchor.Centre,
+                                                    Colour = overlayColourProvider.Content2,
+                                                },
+                                                new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 15))
+                                                {
+                                                    RelativeSizeAxes = Axes.X,
+                                                    AutoSizeAxes = Axes.Y,
+                                                    Text = "made by BoomboxRapsody",
+                                                    TextAnchor = Anchor.Centre,
+                                                    Colour = overlayColourProvider.Content2,
+                                                },
                                                 new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 15))
                                                 {
                                                     RelativeSizeAxes = Axes.X,
@@ -704,6 +801,7 @@ namespace YouTubePlayerEX.App.Screens
                                                     Text = YTPlayerEXStrings.DislikeCounterCredits,
                                                     Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                     TextAnchor = Anchor.Centre,
+                                                    Colour = overlayColourProvider.Content2,
                                                 },
                                             }
                                         }
@@ -717,16 +815,23 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     Size = new Vector2(0.7f),
                     RelativeSizeAxes = Axes.Both,
-                    CornerRadius = 12,
+                    CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
                     Masking = true,
                     Origin = Anchor.Centre,
                     Anchor = Anchor.Centre,
+                    EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                    {
+                        Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                        Colour = Color4.Black.Opacity(0.25f),
+                        Offset = new Vector2(0, 2),
+                        Radius = 16,
+                    },
                     Children = new Drawable[]
                     {
                         new Box
                         {
                             RelativeSizeAxes = Axes.Both,
-                            Colour = overlayColourProvider.Background6,
+                            Colour = overlayColourProvider.Background5,
                         },
                         new FillFlowContainer
                         {
@@ -756,7 +861,7 @@ namespace YouTubePlayerEX.App.Screens
                                         {
                                             AutoSizeAxes = Axes.X,
                                             Height = 32,
-                                            CornerRadius = 12,
+                                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
                                             Masking = true,
                                             AlwaysPresent = true,
                                             Children = new Drawable[]
@@ -764,12 +869,12 @@ namespace YouTubePlayerEX.App.Screens
                                                 new Container
                                                 {
                                                     RelativeSizeAxes = Axes.Both,
-                                                    CornerRadius = 12,
+                                                    CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
                                                     Child = new Box
                                                     {
                                                         RelativeSizeAxes = Axes.Both,
-                                                        Colour = Color4.White,
-                                                        Alpha = 0.1f,
+                                                        Colour = overlayColourProvider.Background4,
+                                                        Alpha = 0.7f,
                                                     },
                                                 },
                                                 new FillFlowContainer
@@ -786,10 +891,12 @@ namespace YouTubePlayerEX.App.Screens
                                                             Width = 15,
                                                             Height = 15,
                                                             Icon = FontAwesome.Solid.ThumbsUp,
+                                                            Colour = overlayColourProvider.Content2,
                                                         },
                                                         likeCount = new AdaptiveSpriteText
                                                         {
-                                                            Text = "[no metadata]"
+                                                            Text = "[no metadata]",
+                                                            Colour = overlayColourProvider.Content2,
                                                         },
                                                     }
                                                 }
@@ -799,7 +906,7 @@ namespace YouTubePlayerEX.App.Screens
                                         {
                                             AutoSizeAxes = Axes.X,
                                             Height = 32,
-                                            CornerRadius = 12,
+                                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
                                             Masking = true,
                                             AlwaysPresent = true,
                                             Children = new Drawable[]
@@ -807,12 +914,12 @@ namespace YouTubePlayerEX.App.Screens
                                                 new Container
                                                 {
                                                     RelativeSizeAxes = Axes.Both,
-                                                    CornerRadius = 12,
+                                                    CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
                                                     Child = new Box
                                                     {
                                                         RelativeSizeAxes = Axes.Both,
-                                                        Colour = Color4.White,
-                                                        Alpha = 0.1f,
+                                                        Colour = overlayColourProvider.Background4,
+                                                        Alpha = 0.7f,
                                                     },
                                                 },
                                                 new FillFlowContainer
@@ -829,10 +936,12 @@ namespace YouTubePlayerEX.App.Screens
                                                             Width = 15,
                                                             Height = 15,
                                                             Icon = FontAwesome.Solid.ThumbsDown,
+                                                            Colour = overlayColourProvider.Content2,
                                                         },
                                                         dislikeCount = new AdaptiveSpriteText
                                                         {
-                                                            Text = "[no metadata]"
+                                                            Text = "[no metadata]",
+                                                            Colour = overlayColourProvider.Content2,
                                                         },
                                                     }
                                                 }
@@ -842,7 +951,7 @@ namespace YouTubePlayerEX.App.Screens
                                         {
                                             AutoSizeAxes = Axes.X,
                                             Height = 32,
-                                            CornerRadius = 12,
+                                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
                                             Masking = true,
                                             AlwaysPresent = true,
                                             ClickAction = f =>
@@ -857,12 +966,12 @@ namespace YouTubePlayerEX.App.Screens
                                                 new Container
                                                 {
                                                     RelativeSizeAxes = Axes.Both,
-                                                    CornerRadius = 12,
+                                                    CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
                                                     Child = new Box
                                                     {
                                                         RelativeSizeAxes = Axes.Both,
-                                                        Colour = Color4.White,
-                                                        Alpha = 0.1f,
+                                                        Colour = overlayColourProvider.Background4,
+                                                        Alpha = 0.7f,
                                                     },
                                                 },
                                                 new FillFlowContainer
@@ -879,10 +988,12 @@ namespace YouTubePlayerEX.App.Screens
                                                             Width = 15,
                                                             Height = 15,
                                                             Icon = FontAwesome.Regular.CommentAlt,
+                                                            Colour = overlayColourProvider.Content2,
                                                         },
                                                         commentCount = new AdaptiveSpriteText
                                                         {
                                                             Text = "[no metadata]",
+                                                            Colour = overlayColourProvider.Content2,
                                                         },
                                                     }
                                                 }
@@ -900,7 +1011,7 @@ namespace YouTubePlayerEX.App.Screens
                                             Bottom = 102,
                                         },
                                         RelativeSizeAxes = Axes.Both,
-                                        CornerRadius = 12,
+                                        CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
                                         Masking = true,
                                         ScrollbarVisible = false,
                                         Children = new Drawable[]
@@ -908,20 +1019,20 @@ namespace YouTubePlayerEX.App.Screens
                                             new Container
                                             {
                                                 RelativeSizeAxes = Axes.Both,
-                                                CornerRadius = 12,
+                                                CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
                                                 Masking = true,
                                                 Child = new Box
                                                 {
                                                     RelativeSizeAxes = Axes.Both,
-                                                    Colour = Color4.White,
-                                                    Alpha = 0.1f,
+                                                    Colour = overlayColourProvider.Background4,
+                                                    Alpha = 0.7f,
                                                 },
                                             },
                                             new FillFlowContainer
                                             {
                                                 RelativeSizeAxes = Axes.X,
                                                 AutoSizeAxes = Axes.Y,
-                                                CornerRadius = 12,
+                                                CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
                                                 Spacing = new Vector2(0, 8),
                                                 Padding = new MarginPadding(12),
                                                 Masking = true,
@@ -931,6 +1042,7 @@ namespace YouTubePlayerEX.App.Screens
                                                     {
                                                         RelativeSizeAxes = Axes.X,
                                                         Font = YouTubePlayerEXApp.DefaultFont.With(weight: "Black"),
+                                                        Colour = overlayColourProvider.Content2,
                                                         AlwaysPresent = true,
                                                     },
                                                     videoDescription = new TextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont)
@@ -938,6 +1050,7 @@ namespace YouTubePlayerEX.App.Screens
                                                         RelativeSizeAxes = Axes.X,
                                                         AutoSizeAxes = Axes.Y,
                                                         AlwaysPresent = true,
+                                                        Colour = overlayColourProvider.Content2,
                                                     }
                                                 }
                                             }
@@ -952,16 +1065,23 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     Size = new Vector2(0.7f),
                     RelativeSizeAxes = Axes.Both,
-                    CornerRadius = 12,
+                    CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
                     Masking = true,
                     Origin = Anchor.Centre,
                     Anchor = Anchor.Centre,
+                    EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                    {
+                        Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                        Colour = Color4.Black.Opacity(0.25f),
+                        Offset = new Vector2(0, 2),
+                        Radius = 16,
+                    },
                     Children = new Drawable[]
                     {
                         new Box
                         {
                             RelativeSizeAxes = Axes.Both,
-                            Colour = overlayColourProvider.Background6,
+                            Colour = overlayColourProvider.Background5,
                         },
                         commentsContainerTitle = new AdaptiveSpriteText
                         {
@@ -970,6 +1090,7 @@ namespace YouTubePlayerEX.App.Screens
                             Text = YTPlayerEXStrings.Comments("0"),
                             Margin = new MarginPadding(16),
                             Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
+                            Colour = overlayColourProvider.Content2,
                         },
                         new Container
                         {
@@ -1018,6 +1139,8 @@ namespace YouTubePlayerEX.App.Screens
             settingsContainer.Hide();
             videoDescriptionContainer.Hide();
             commentsContainer.Hide();
+
+            playPause.BackgroundColour = overlayColourProvider.Background3;
 
             hwAccelCheckbox.Current.Default = hardwareVideoDecoder.Default != HardwareVideoDecoder.None;
             hwAccelCheckbox.Current.Value = hardwareVideoDecoder.Value != HardwareVideoDecoder.None;
@@ -1153,9 +1276,12 @@ namespace YouTubePlayerEX.App.Screens
                 isControlVisible = false;
                 uiContainer.FadeOutFromOne(250);
                 uiGradientContainer.FadeOutFromOne(250);
-                currentVideoSource?.UpdateControlsVisibleState(false);
+                sessionStatics.GetBindable<bool>(Static.IsControlVisible).Value = false;
             }
         }
+
+        [Resolved]
+        private SessionStatics sessionStatics { get; set; }
 
         private async Task checkForUpdates()
         {
@@ -1200,7 +1326,7 @@ namespace YouTubePlayerEX.App.Screens
                 isControlVisible = true;
                 uiContainer.FadeInFromZero(125);
                 uiGradientContainer.FadeInFromZero(125);
-                currentVideoSource?.UpdateControlsVisibleState(true);
+                sessionStatics.GetBindable<bool>(Static.IsControlVisible).Value = true;
             }
         }
 
@@ -1367,6 +1493,8 @@ namespace YouTubePlayerEX.App.Screens
             if (!game.IsDeployedBuild)
                 checkForUpdatesButtonCore.Hide();
 
+            sessionStatics.GetBindable<bool>(Static.IsControlVisible).Value = true;
+
             cursorInWindow?.BindValueChanged(active =>
             {
                 if (active.NewValue == false)
@@ -1520,6 +1648,28 @@ namespace YouTubePlayerEX.App.Screens
                     }
                     else
                         hideOverlayContainer(settingsContainer);
+
+                    return true;
+
+                case GlobalAction.OpenDescription:
+                    if (!videoDescriptionContainer.IsVisible)
+                    {
+                        hideOverlays();
+                        showOverlayContainer(videoDescriptionContainer);
+                    }
+                    else
+                        hideOverlayContainer(videoDescriptionContainer);
+
+                    return true;
+
+                case GlobalAction.OpenComments:
+                    if (!commentsContainer.IsVisible)
+                    {
+                        hideOverlays();
+                        showOverlayContainer(commentsContainer);
+                    }
+                    else
+                        hideOverlayContainer(commentsContainer);
 
                     return true;
 

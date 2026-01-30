@@ -13,6 +13,8 @@ namespace YouTubePlayerEX.App.Config
         protected override void InitialiseDefaults()
         {
             SetDefault(Static.LastHoverSoundPlaybackTime, (double?)null);
+
+            SetDefault(Static.IsControlVisible, false);
         }
     }
 
@@ -22,5 +24,7 @@ namespace YouTubePlayerEX.App.Config
         /// The last playback time in milliseconds of a hover sample (from <see cref="HoverSounds"/>).
         /// </summary>
         LastHoverSoundPlaybackTime,
+
+        IsControlVisible,
     }
 }

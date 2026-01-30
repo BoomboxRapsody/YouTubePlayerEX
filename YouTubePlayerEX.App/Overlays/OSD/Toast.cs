@@ -24,7 +24,7 @@ namespace YouTubePlayerEX.App.Overlays.OSD
             set => extraText.Text = value.ToUpper();
         }
 
-        private const int toast_minimum_width = 240;
+        private const int toast_minimum_width = 600;
 
         private readonly Container content;
         private readonly Box background;
@@ -32,7 +32,7 @@ namespace YouTubePlayerEX.App.Overlays.OSD
         protected override Container<Drawable> Content => content;
 
         protected readonly AdaptiveSpriteText ValueSpriteText;
-        private readonly AdaptiveSpriteText extraText;
+        private readonly AdaptiveSpriteText extraText, descriptionText;
 
         [Resolved]
         private OverlayColourProvider overlayColourProvider { get; set; } = null!;
@@ -65,31 +65,31 @@ namespace YouTubePlayerEX.App.Overlays.OSD
                     Origin = Anchor.Centre,
                     RelativeSizeAxes = Axes.Both,
                 },
-                new AdaptiveSpriteText
+                descriptionText = new AdaptiveSpriteText
                 {
-                    Padding = new MarginPadding(10),
+                    Padding = new MarginPadding { Horizontal = 16, Vertical = 15 },
                     Name = "Description",
-                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 14, weight: "Bold"),
+                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 20, weight: "Bold"),
                     Spacing = new Vector2(1, 0),
-                    Anchor = Anchor.TopCentre,
-                    Origin = Anchor.TopCentre,
-                    Text = description.ToUpper()
+                    Anchor = Anchor.TopLeft,
+                    Origin = Anchor.TopLeft,
+                    Text = description
                 },
                 ValueSpriteText = new AdaptiveSpriteText
                 {
                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 24, weight: "Light"),
-                    Padding = new MarginPadding { Horizontal = 10 },
+                    Padding = new MarginPadding { Horizontal = 16, Vertical = 15 },
                     Name = "Value",
-                    Anchor = Anchor.Centre,
-                    Origin = Anchor.Centre,
+                    Anchor = Anchor.CentreRight,
+                    Origin = Anchor.CentreRight,
                     Text = value
                 },
                 extraText = new AdaptiveSpriteText
                 {
-                    Anchor = Anchor.BottomCentre,
-                    Origin = Anchor.BottomCentre,
+                    Anchor = Anchor.BottomLeft,
+                    Origin = Anchor.BottomLeft,
                     Name = "Extra Text",
-                    Margin = new MarginPadding { Bottom = 15, Horizontal = 10 },
+                    Margin = new MarginPadding { Bottom = 15, Horizontal = 16 },
                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 12, weight: "Bold"),
                 },
             };
@@ -98,8 +98,10 @@ namespace YouTubePlayerEX.App.Overlays.OSD
         [BackgroundDependencyLoader]
         private void load()
         {
+            descriptionText.Origin = descriptionText.Anchor = (string.IsNullOrEmpty(extraText.Text.ToString())) ? Anchor.CentreLeft : Anchor.TopLeft;
+            descriptionText.Colour = ValueSpriteText.Colour = overlayColourProvider.Content2;
             background.Colour = overlayColourProvider.Background5;
-            extraText.Colour = overlayColourProvider.Dark1;
+            extraText.Colour = overlayColourProvider.Background1;
         }
     }
 }

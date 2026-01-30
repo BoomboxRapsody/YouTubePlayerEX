@@ -116,11 +116,6 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             }, true);
         }
 
-        public void UpdateControlsVisibleState(bool state)
-        {
-            closedCaption.UpdateControlsVisibleState(state);
-        }
-
         private void trackCompleted()
         {
             trackFinished = true;

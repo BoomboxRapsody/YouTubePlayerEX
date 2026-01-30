@@ -256,4 +256,10 @@
   <data name="playback_speed_without_value" xml:space="preserve">
     <value>재생 속도</value>
   </data>
+  <data name="quick_action" xml:space="preserve">
+    <value>빠른 작업</value>
+  </data>
+  <data name="caption_font" xml:space="preserve">
+    <value>자막 글꼴</value>
+  </data>
 </root>

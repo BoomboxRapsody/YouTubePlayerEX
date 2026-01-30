@@ -90,6 +90,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                             {
                                 Height = 5,
                                 EdgeSmoothness = new Vector2(0, 0.5f),
+                                Colour = AccentColour,
                                 RelativeSizeAxes = Axes.None,
                                 Anchor = Anchor.CentreLeft,
                                 Origin = Anchor.CentreLeft,
@@ -98,6 +99,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                             {
                                 Height = 5,
                                 EdgeSmoothness = new Vector2(0, 0.5f),
+                                Colour = backgroundColour,
                                 RelativeSizeAxes = Axes.None,
                                 Anchor = Anchor.CentreRight,
                                 Origin = Anchor.CentreRight,
@@ -111,6 +113,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     Child = Nub = new SliderNub
                     {
                         Origin = Anchor.TopCentre,
+                        Colour = AccentColour,
                         RelativePositionAxes = Axes.X,
                         Current = { Value = true },
                         OnDoubleClicked = () => ResetToDefault.Invoke(),
@@ -120,10 +123,10 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         }
 
         [BackgroundDependencyLoader(true)]
-        private void load()
+        private void load(OverlayColourProvider overlayColourProvider)
         {
-            AccentColour = Color4.White;
-            BackgroundColour = Color4.White.Darken(1);
+            AccentColour = Nub.Colour = overlayColourProvider.Content2;
+            BackgroundColour = overlayColourProvider.Content2.Darken(1);
         }
 
         protected override void Update()

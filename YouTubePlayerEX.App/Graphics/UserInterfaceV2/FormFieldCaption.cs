@@ -3,6 +3,7 @@
 
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Cursor;
 using osu.Framework.Graphics.Sprites;
@@ -30,6 +31,20 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             }
         }
 
+        private ColourInfo textColour;
+
+        public ColourInfo TextColour
+        {
+            get => textColour;
+            set
+            {
+                textColour = value;
+
+                if (IsLoaded)
+                    updateDisplay();
+            }
+        }
+
         private LocalisableString tooltipText;
 
         public LocalisableString TooltipText
@@ -38,6 +53,20 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             set
             {
                 tooltipText = value;
+
+                if (IsLoaded)
+                    updateDisplay();
+            }
+        }
+
+        private Hotkey hotkey;
+
+        public Hotkey Hotkey
+        {
+            get => hotkey;
+            set
+            {
+                hotkey = value;
 
                 if (IsLoaded)
                     updateDisplay();
@@ -66,6 +95,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         private void updateDisplay()
         {
             textFlow.Text = caption;
+            textFlow.Colour = textColour;
 
             if (TooltipText != default)
             {
@@ -77,6 +107,19 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
                     Icon = FontAwesome.Solid.QuestionCircle,
                     Margin = new MarginPadding { Left = 5 },
                     Y = 1f,
+                });
+            }
+
+            if (Hotkey != default)
+            {
+                textFlow.AddArbitraryDrawable(new HotkeyDisplay
+                {
+                    Anchor = Anchor.BottomLeft,
+                    Origin = Anchor.BottomLeft,
+                    Size = new Vector2(10),
+                    Hotkey = hotkey,
+                    Margin = new MarginPadding { Left = 5 },
+                    Y = 3f,
                 });
             }
         }

@@ -30,13 +30,13 @@ namespace YouTubePlayerEX.App.Input.Binding
         /// IMPORTANT: Take care when changing order of the items in the enumerable.
         /// It is used to decide the order of precedence, with the earlier items having higher precedence.
         /// </remarks>
-        public override IEnumerable<IKeyBinding> DefaultKeyBindings => globalKeyBindings;
+        public override IEnumerable<IKeyBinding> DefaultKeyBindings => GlobalKeyBindings;
 
         public bool OnPressed(KeyBindingPressEvent<GlobalAction> e) => handler?.OnPressed(e) == true;
 
         public void OnReleased(KeyBindingReleaseEvent<GlobalAction> e) => handler?.OnReleased(e);
 
-        private static IEnumerable<KeyBinding> globalKeyBindings => new[]
+        public static IEnumerable<KeyBinding> GlobalKeyBindings => new[]
         {
             new KeyBinding(InputKey.Enter, GlobalAction.Select),
             new KeyBinding(InputKey.KeypadEnter, GlobalAction.Select),
@@ -59,6 +59,8 @@ namespace YouTubePlayerEX.App.Input.Binding
             new KeyBinding(new[] { InputKey.Control, InputKey.F6 }, GlobalAction.CycleAspectRatio),
 
             new KeyBinding(new[] { InputKey.Control, InputKey.O }, GlobalAction.OpenSettings),
+            new KeyBinding(new[] { InputKey.Control, InputKey.D }, GlobalAction.OpenDescription),
+            new KeyBinding(new[] { InputKey.Control, InputKey.E }, GlobalAction.OpenComments),
 
             new KeyBinding(new[] { InputKey.Shift, InputKey.P }, GlobalAction.ToggleAdjustPitchOnSpeedChange),
 
@@ -85,5 +87,8 @@ namespace YouTubePlayerEX.App.Input.Binding
 
         DecreasePlaybackSpeed,
         IncreasePlaybackSpeed,
+
+        OpenDescription,
+        OpenComments,
     }
 }

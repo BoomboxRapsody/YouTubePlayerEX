@@ -21,6 +21,11 @@ namespace YouTubePlayerEX.App.Localisation
         public static LocalisableString PlaybackSpeedWithoutValue => new TranslatableString(getKey(@"playback_speed_without_value"), "Playback speed");
 
         /// <summary>
+        /// "Quick Action"
+        /// </summary>
+        public static LocalisableString QuickAction => new TranslatableString(getKey(@"quick_action"), "Quick Action");
+
+        /// <summary>
         /// "Export logs"
         /// </summary>
         public static LocalisableString ExportLogs => new TranslatableString(getKey(@"export_logs"), "Export logs");
@@ -89,6 +94,11 @@ namespace YouTubePlayerEX.App.Localisation
         /// "Closed caption language (only available)"
         /// </summary>
         public static LocalisableString CaptionLanguage => new TranslatableString(getKey(@"caption_language"), "Closed caption language (only available)");
+
+        /// <summary>
+        /// "Closed caption font"
+        /// </summary>
+        public static LocalisableString CaptionFont => new TranslatableString(getKey(@"caption_font"), "Closed caption font");
 
         /// <summary>
         /// "Press F11 to exit the full screen."

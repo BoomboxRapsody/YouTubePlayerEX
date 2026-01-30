@@ -44,6 +44,8 @@ namespace YouTubePlayerEX.App
         private OverlayColourProvider overlayColourProvider;
         private AdaptiveColour colours = null!;
 
+        public const float UI_CORNER_RADIUS = 16f;
+
         private OnScreenDisplay onScreenDisplay;
 
         [Resolved]

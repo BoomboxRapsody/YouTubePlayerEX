@@ -21,7 +21,7 @@ namespace YouTubePlayerEX.App.Overlays.OSD
 {
     public partial class TrackedSettingToast : Toast
     {
-        private const int lights_bottom_margin = 40;
+        private const int lights_bottom_margin = 16;
 
         private readonly int optionCount;
         private readonly int selectedOption = -1;
@@ -43,18 +43,18 @@ namespace YouTubePlayerEX.App.Overlays.OSD
             {
                 new Container
                 {
-                    Anchor = Anchor.BottomCentre,
-                    Origin = Anchor.BottomCentre,
+                    Anchor = Anchor.BottomRight,
+                    Origin = Anchor.BottomRight,
                     Margin = new MarginPadding { Bottom = lights_bottom_margin },
                     Children = new Drawable[]
                     {
                         optionLights = new FillFlowContainer<OptionLight>
                         {
-                            Margin = new MarginPadding { Bottom = 5 },
+                            Margin = new MarginPadding { Bottom = 5, Right = 16 },
                             Spacing = new Vector2(5, 0),
                             Direction = FillDirection.Horizontal,
-                            Anchor = Anchor.TopCentre,
-                            Origin = Anchor.TopCentre,
+                            Anchor = Anchor.CentreRight,
+                            Origin = Anchor.CentreRight,
                             AutoSizeAxes = Axes.Both
                         },
                     }
@@ -75,7 +75,7 @@ namespace YouTubePlayerEX.App.Overlays.OSD
                     break;
             }
 
-            ValueSpriteText.Origin = optionCount > 0 ? Anchor.BottomCentre : Anchor.Centre;
+            ValueSpriteText.Padding = optionCount > 0 ? new MarginPadding { Horizontal = 16, Bottom = 16 } : new MarginPadding { Horizontal = 16, Vertical = 15 };
 
             for (int i = 0; i < optionCount; i++)
                 optionLights.Add(new OptionLight { Glowing = i == selectedOption });
@@ -165,22 +165,15 @@ namespace YouTubePlayerEX.App.Overlays.OSD
             }
 
             [BackgroundDependencyLoader]
-            private void load(AdaptiveColour colours)
+            private void load(OverlayColourProvider overlayColourProvider)
             {
-                fill.Colour = idleColour = Color4.White.Opacity(0.4f);
-                glowingColour = Color4.White;
+                fill.Colour = idleColour = overlayColourProvider.Background1;
+                glowingColour = overlayColourProvider.Light2;
 
                 Size = new Vector2(25, 5);
 
                 Masking = true;
                 CornerRadius = 3;
-
-                EdgeEffect = new EdgeEffectParameters
-                {
-                    Colour = colours.BlueDark.Opacity(glow_strength),
-                    Type = EdgeEffectType.Glow,
-                    Radius = 8,
-                };
             }
 
             protected override void LoadComplete()
@@ -194,11 +187,9 @@ namespace YouTubePlayerEX.App.Overlays.OSD
                 if (glowing)
                 {
                     fill.FadeColour(glowingColour, transition_speed, Easing.OutQuint);
-                    FadeEdgeEffectTo(glow_strength, transition_speed, Easing.OutQuint);
                 }
                 else
                 {
-                    FadeEdgeEffectTo(0, transition_speed, Easing.OutQuint);
                     fill.FadeColour(idleColour, transition_speed, Easing.OutQuint);
                 }
             }

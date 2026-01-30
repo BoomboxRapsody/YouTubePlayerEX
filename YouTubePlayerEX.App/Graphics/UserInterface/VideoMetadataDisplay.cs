@@ -28,7 +28,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private TruncatingSpriteText desc;
         public Action<VideoMetadataDisplay> ClickEvent;
 
-        private Box bgLayer;
+        private Box bgLayer, hover;
 
         [Resolved]
         private YouTubeAPI api { get; set; }
@@ -43,12 +43,12 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private Bindable<VideoMetadataTranslateSource> translationSource = new Bindable<VideoMetadataTranslateSource>();
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(OverlayColourProvider overlayColourProvider)
         {
             localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
             translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource);
 
-            CornerRadius = 12;
+            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS;
             Masking = true;
             InternalChildren = new Drawable[]
             {
@@ -56,8 +56,15 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 bgLayer = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
+                    Colour = overlayColourProvider.Background4,
+                    Alpha = 0.7f,
+                },
+                hover = new Box
+                {
+                    RelativeSizeAxes = Axes.Both,
                     Colour = Color4.White,
-                    Alpha = 0.1f,
+                    Blending = BlendingParameters.Additive,
+                    Alpha = 0,
                 },
                 new Container {
                     RelativeSizeAxes = Axes.Both,
@@ -81,12 +88,13 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 20, weight: "Bold"),
                                     RelativeSizeAxes = Axes.X,
                                     Text = "please enter a video id!",
+                                    Colour = overlayColourProvider.Content2,
                                 },
                                 desc = new TruncatingSpriteText
                                 {
-                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"),
+                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "SemiBold"),
                                     RelativeSizeAxes = Axes.X,
-                                    Colour = Color4.Gray,
+                                    Colour = overlayColourProvider.Background1,
                                     Text = "[no metadata available]",
                                     Position = new osuTK.Vector2(0, 20),
                                 }
@@ -111,7 +119,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         protected override bool OnHover(HoverEvent e)
         {
             if (ClickEvent != null)
-                bgLayer.FadeTo(0.2f, 500, Easing.OutQuint);
+                hover.FadeTo(0.1f, 500, Easing.OutQuint);
 
             return base.OnHover(e);
         }
@@ -121,7 +129,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             base.OnHoverLost(e);
 
             if(ClickEvent != null)
-                bgLayer.FadeTo(0.1f, 500, Easing.OutQuint);
+                hover.FadeOut(500, Easing.OutQuint);
         }
 
         protected override void LoadComplete()

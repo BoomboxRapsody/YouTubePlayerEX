@@ -25,6 +25,10 @@ namespace YouTubePlayerEX.App.Graphics.Caption
         private ClosedCaptionLanguage captionLanguage;
         private Container captionContainer;
 
+        private Bindable<ClosedCaptionFont> closedCaptionFont = null!;
+
+        private Bindable<float> bottomMargin = new Bindable<float>();
+
         public ClosedCaptionContainer(YouTubeVideoPlayer videoPlayer, ClosedCaptionTrack captionTrack, ClosedCaptionLanguage captionLanguage)
         {
             this.videoPlayer = videoPlayer;
@@ -46,9 +50,14 @@ namespace YouTubePlayerEX.App.Graphics.Caption
                 this.captionTrack = null;
         }
 
+        private Bindable<bool> controlsVisibleState = null!;
+
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(YTPlayerEXConfigManager config, SessionStatics sessionStatics)
         {
+            closedCaptionFont = config.GetBindable<ClosedCaptionFont>(YTPlayerEXSetting.ClosedCaptionFont);
+            controlsVisibleState = sessionStatics.GetBindable<bool>(Static.IsControlVisible);
+
             Add(captionContainer = new Container
             {
                 AutoSizeAxes = Axes.Both,
@@ -72,14 +81,48 @@ namespace YouTubePlayerEX.App.Graphics.Caption
                     }
                 }
             });
+
+            closedCaptionFont.BindValueChanged(font =>
+            {
+                switch (font.NewValue)
+                {
+                    case ClosedCaptionFont.NotoSansCJK:
+                    {
+                        spriteText.Font = YouTubePlayerEXApp.DefaultFont.With(family: "NotoSansKR", size: 24);
+                        break;
+                    }
+                    case ClosedCaptionFont.Pretendard:
+                    {
+                        spriteText.Font = YouTubePlayerEXApp.DefaultFont.With(size: 24);
+                        break;
+                    }
+                }
+            }, true);
+
+            controlsVisibleState.BindValueChanged(v =>
+            {
+                UpdateControlsVisibleState(v.NewValue);
+            }, true);
+
+            bottomMargin.BindValueChanged(v =>
+            {
+                captionContainer.Margin = new MarginPadding
+                {
+                    Bottom = v.NewValue
+                };
+            }, true);
         }
 
         public void UpdateControlsVisibleState(bool state)
         {
+            /*
             captionContainer.Margin = new MarginPadding
             {
                 Bottom = state ? 90 : 0
             };
+            */
+
+            this.TransformBindableTo(bottomMargin, state ? 90 : 0, 500, Easing.OutQuint);
         }
 
         protected override void Update()

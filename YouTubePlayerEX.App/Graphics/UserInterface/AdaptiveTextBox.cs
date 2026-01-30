@@ -79,12 +79,12 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         }
 
         [BackgroundDependencyLoader(true)]
-        private void load(AudioManager audio)
+        private void load(OverlayColourProvider? colourProvider, AdaptiveColour colour, AudioManager audio)
         {
-            BackgroundUnfocused = Color4Extensions.FromHex(@"22252a");
-            BackgroundFocused = Color4Extensions.FromHex(@"2e3238");
-            BackgroundCommit = BorderColour = Color4Extensions.FromHex(@"66a3ff");
-            selectionColour = Color4Extensions.FromHex(@"5c6470");
+            BackgroundUnfocused = colourProvider?.Background4 ?? Color4.Black.Opacity(0.5f);
+            BackgroundFocused = colourProvider?.Background3 ?? AdaptiveColour.Gray(0.3f).Opacity(0.8f);
+            BackgroundCommit = BorderColour = colourProvider?.Highlight1 ?? colour.Yellow;
+            selectionColour = colourProvider?.Background1 ?? new Color4(249, 90, 255, 255);
 
             if (caret != null)
                 caret.SelectionColour = selectionColour;

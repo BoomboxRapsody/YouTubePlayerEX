@@ -8,10 +8,12 @@ using Humanizer;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Input.Events;
+using osuTK;
 using osuTK.Graphics;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Extensions;
@@ -27,7 +29,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private TruncatingSpriteText desc;
         public Action<VideoMetadataDisplayWithoutProfile> ClickEvent;
 
-        private Box bgLayer;
+        private Box bgLayer, hover;
 
         [Resolved]
         private YouTubeAPI api { get; set; }
@@ -42,21 +44,37 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private Bindable<VideoMetadataTranslateSource> translationSource = new Bindable<VideoMetadataTranslateSource>();
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(OverlayColourProvider overlayColourProvider)
         {
             localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
             translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource);
 
-            CornerRadius = 12;
+            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS;
             Masking = true;
+
+            EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+            {
+                Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                Colour = Color4.Black.Opacity(0.25f),
+                Offset = new Vector2(0, 2),
+                Radius = 16,
+            };
+
             InternalChildren = new Drawable[]
             {
                 samples,
                 bgLayer = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
+                    Colour = overlayColourProvider.Background5,
+                    Alpha = 0.7f,
+                },
+                hover = new Box
+                {
+                    RelativeSizeAxes = Axes.Both,
                     Colour = Color4.White,
-                    Alpha = 0.1f,
+                    Blending = BlendingParameters.Additive,
+                    Alpha = 0,
                 },
                 new Container {
                     RelativeSizeAxes = Axes.Both,
@@ -78,13 +96,14 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 20, weight: "Bold"),
                                     RelativeSizeAxes = Axes.X,
                                     Text = "please enter a video id!",
+                                    Colour = overlayColourProvider.Content2,
                                 },
                                 desc = new TruncatingSpriteText
                                 {
-                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"),
+                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "SemiBold"),
                                     RelativeSizeAxes = Axes.X,
-                                    Colour = Color4.Gray,
                                     Text = "[no metadata available]",
+                                    Colour = overlayColourProvider.Background1,
                                     Position = new osuTK.Vector2(0, 20),
                                 }
                             }
@@ -108,7 +127,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         protected override bool OnHover(HoverEvent e)
         {
             if (ClickEvent != null)
-                bgLayer.FadeTo(0.2f, 500, Easing.OutQuint);
+                hover.FadeTo(0.1f, 500, Easing.OutQuint);
 
             return base.OnHover(e);
         }
@@ -117,8 +136,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         {
             base.OnHoverLost(e);
 
-            if(ClickEvent != null)
-                bgLayer.FadeTo(0.1f, 500, Easing.OutQuint);
+            if (ClickEvent != null)
+                hover.FadeOut(500, Easing.OutQuint);
         }
 
         protected override void LoadComplete()

@@ -5,15 +5,19 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Configuration;
 using osu.Framework.Configuration.Tracking;
 using osu.Framework.Development;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Transforms;
 using osu.Framework.Threading;
-using YouTubePlayerEX.App.Overlays.OSD;
 using osuTK;
+using osuTK.Graphics;
+using YouTubePlayerEX.App.Config;
+using YouTubePlayerEX.App.Overlays.OSD;
 
 namespace YouTubePlayerEX.App.Overlays
 {
@@ -25,8 +29,9 @@ namespace YouTubePlayerEX.App.Overlays
     {
         private readonly Container box;
 
-        private const float height = 110;
-        private const float height_contracted = height * 0.9f;
+        private const float height = 65;
+
+        private Bindable<bool> controlsVisibleState = null!;
 
         public OnScreenDisplay()
         {
@@ -38,14 +43,33 @@ namespace YouTubePlayerEX.App.Overlays
                 {
                     Origin = Anchor.Centre,
                     RelativePositionAxes = Axes.Both,
-                    Position = new Vector2(0.5f, 0.75f),
+                    Position = new Vector2(0.5f, 0.8f),
                     Masking = true,
                     AutoSizeAxes = Axes.X,
-                    Height = height_contracted,
+                    Height = height,
                     Alpha = 0,
-                    CornerRadius = 20,
+                    CornerRadius = height / 2,
+                    Scale = new Vector2(0.9f),
+                    EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                    {
+                        Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                        Colour = Color4.Black.Opacity(0.25f),
+                        Offset = new Vector2(0, 2),
+                        Radius = 16,
+                    }
                 },
             };
+        }
+
+        [BackgroundDependencyLoader]
+        private void load(SessionStatics sessionStatics)
+        {
+            controlsVisibleState = sessionStatics.GetBindable<bool>(Static.IsControlVisible);
+
+            controlsVisibleState.BindValueChanged(v =>
+            {
+                box.MoveTo(new Vector2(0.5f, v.NewValue ? 0.8f : 0.935f), 500, Easing.OutQuint);
+            }, true);
         }
 
         private readonly Dictionary<(object, IConfigManager), TrackedSettings> trackedConfigManagers = new Dictionary<(object, IConfigManager), TrackedSettings>();
@@ -105,7 +129,7 @@ namespace YouTubePlayerEX.App.Overlays
             {
                 fadeIn = toDisplay.Animate(
                     b => b.FadeIn(500, Easing.OutQuint),
-                    b => b.ResizeHeightTo(height, 500, Easing.OutQuint)
+                    b => b.ScaleTo(1f, 500, Easing.OutQuint)
                 );
 
                 fadeIn.Finally(_ => fadeIn = null);
@@ -115,9 +139,10 @@ namespace YouTubePlayerEX.App.Overlays
             fadeOut = Scheduler.AddDelayed(() =>
             {
                 toDisplay.Animate(
-                    b => b.FadeOutFromOne(1500, Easing.InQuint),
-                    b => b.ResizeHeightTo(height_contracted, 1500, Easing.InQuint));
-            }, 500);
+                    b => b.FadeOutFromOne(250, Easing.OutQuint),
+                    b => b.ScaleTo(.9f, 250, Easing.OutQuint)
+                );
+            }, 1500);
         }
     }
 }

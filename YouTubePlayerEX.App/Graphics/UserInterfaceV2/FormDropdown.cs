@@ -36,6 +36,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             set => header.HintText = value;
         }
 
+        public Hotkey Hotkey { get; init; }
+
         /// <summary>
         /// The maximum height of the dropdown's menu.
         /// By default, this is set to 200px high. Set to <see cref="float.PositiveInfinity"/> to remove such limit.
@@ -53,6 +55,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
             header.Caption = Caption;
             header.HintText = HintText;
+            header.Hotkey = Hotkey;
         }
 
         protected override void LoadComplete()
@@ -100,6 +103,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             private LocalisableString hintText;
             private LocalisableString labelText;
 
+            private Hotkey hotkey;
+
             public LocalisableString Caption
             {
                 get => captionText;
@@ -121,6 +126,18 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
                     if (caption.IsNotNull())
                         caption.TooltipText = value;
+                }
+            }
+
+            public Hotkey Hotkey
+            {
+                get => hotkey;
+                set
+                {
+                    hotkey = value;
+
+                    if (caption.IsNotNull())
+                        caption.Hotkey = value;
                 }
             }
 
@@ -230,7 +247,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
             private void updateState()
             {
-                caption.Colour = Dropdown.Current.Disabled ? colourProvider.Background1 : colourProvider.Content2;
+                caption.TextColour = Dropdown.Current.Disabled ? colourProvider.Background1 : colourProvider.Content2;
                 label.Colour = Dropdown.Current.Disabled ? colourProvider.Background1 : colourProvider.Content1;
                 chevron.Colour = Dropdown.Current.Disabled ? colourProvider.Background1 : colourProvider.Content1;
                 DisabledColour = Colour4.White;

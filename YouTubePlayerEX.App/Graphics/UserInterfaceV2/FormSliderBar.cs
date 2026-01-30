@@ -93,6 +93,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         /// </summary>
         public LocalisableString HintText { get; init; }
 
+        public Hotkey Hotkey { get; init; }
+
         /// <summary>
         /// A custom step value for each key press which actuates a change on this control.
         /// </summary>
@@ -240,6 +242,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
                                 captionText = new FormFieldCaption
                                 {
                                     TooltipText = HintText,
+                                    Hotkey = Hotkey,
                                 },
                                 new Container
                                 {
@@ -392,7 +395,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             textBox.Alpha = textBox.Focused.Value ? 1 : 0;
             valueLabel.Alpha = textBox.Focused.Value ? 0 : 1;
 
-            captionText.Colour = currentNumberInstantaneous.Disabled ? colourProvider.Background1 : colourProvider.Content2;
+            captionText.TextColour = currentNumberInstantaneous.Disabled ? colourProvider.Background1 : colourProvider.Content2;
             textBox.Colour = currentNumberInstantaneous.Disabled ? colourProvider.Background1 : colourProvider.Content1;
             valueLabel.Colour = currentNumberInstantaneous.Disabled ? colourProvider.Background1 : colourProvider.Content1;
 

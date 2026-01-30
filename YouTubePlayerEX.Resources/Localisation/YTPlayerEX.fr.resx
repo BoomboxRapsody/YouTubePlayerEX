@@ -256,4 +256,10 @@
   <data name="playback_speed_without_value" xml:space="preserve">
     <value>Playback speed</value>
   </data>
+  <data name="quick_action" xml:space="preserve">
+    <value>Quick Action</value>
+  </data>
+  <data name="caption_font" xml:space="preserve">
+    <value>Closed caption font</value>
+  </data>
 </root>

@@ -179,7 +179,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
         private void updateState()
         {
-            caption.Colour = colourProvider.Content2;
+            caption.TextColour = colourProvider.Content2;
             text.Colour = Color4.White;
 
             if (!Enabled.Value)

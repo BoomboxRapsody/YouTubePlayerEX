@@ -10,7 +10,7 @@ using osu.Framework.Allocation;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
-    public partial class IconButton : AdaptiveButton
+    public partial class IconButtonWithShadow : AdaptiveButtonWithShadow
     {
         public const float DEFAULT_BUTTON_SIZE = 30;
 
@@ -60,7 +60,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         private readonly SpriteIcon icon;
 
-        public IconButton()
+        public IconButtonWithShadow()
         {
             Size = new Vector2(DEFAULT_BUTTON_SIZE);
 
