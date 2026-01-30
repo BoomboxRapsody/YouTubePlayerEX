@@ -252,11 +252,14 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     if (replyReference != null)
                         channelData2 = api.GetChannel(replyReference.Snippet.AuthorChannelId.Value);
 
-                    channelName.Text = (channelData2 == null) ? api.GetLocalizedChannelTitle(channelData) : YTPlayerEXStrings.CommentReply(api.GetLocalizedChannelTitle(channelData), api.GetLocalizedChannelTitle(channelData2));
-                    commentText.Text = commentData.Snippet.TextOriginal;
-                    likeCount.Text = Convert.ToInt32(commentData.Snippet.LikeCount).ToStandardFormattedString(0);
-                    translateToText.Text = YTPlayerEXStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
-                    profileImage.UpdateProfileImage(commentData.Snippet.AuthorChannelId.Value);
+                    Schedule(() =>
+                    {
+                        channelName.Text = (channelData2 == null) ? api.GetLocalizedChannelTitle(channelData) : YTPlayerEXStrings.CommentReply(api.GetLocalizedChannelTitle(channelData), api.GetLocalizedChannelTitle(channelData2));
+                        commentText.Text = commentData.Snippet.TextOriginal;
+                        likeCount.Text = Convert.ToInt32(commentData.Snippet.LikeCount).ToStandardFormattedString(0);
+                        translateToText.Text = YTPlayerEXStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
+                        profileImage.UpdateProfileImage(commentData.Snippet.AuthorChannelId.Value);
+                    });
 
                     localeBindable.BindValueChanged(locale =>
                     {
