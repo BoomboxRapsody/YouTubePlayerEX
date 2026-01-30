@@ -164,8 +164,6 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                 SeekTo(resumeFromTime);
         }
 
-        private bool paused;
-
         protected override void Update()
         {
             base.Update();
@@ -214,8 +212,6 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
             if (isKeyboardAction)
                 keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.PlayPause, FontAwesome.Solid.Pause);
-
-            paused = true;
         }
 
         public void Play(bool isKeyboardAction = false)
@@ -233,8 +229,6 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
             if (isKeyboardAction)
                 keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.PlayPause, FontAwesome.Solid.Play);
-
-            paused = false;
         }
 
         public void SetPlaybackSpeed(double speed)
