@@ -16,5 +16,14 @@ namespace YouTubePlayerEX.App.Localisation
 
         [Description(@"한국어")]
         ko,
+
+        [Description(@"Français")]
+        fr,
+
+        [Description(@"Deutsch")]
+        de,
+
+        [Description(@"Русский")]
+        ru,
     }
 }

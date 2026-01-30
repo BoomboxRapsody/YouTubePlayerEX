@@ -59,198 +59,198 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="aspect_ratio_method" xml:space="preserve">
-    <value>종횡비 설정</value>
+    <value>Méthode de ratio d'aspect</value>
   </data>
   <data name="audio" xml:space="preserve">
-    <value>오디오</value>
+    <value>Audio</value>
   </data>
   <data name="audio_language" xml:space="preserve">
-    <value>오디오 트랙 (가능한 경우)</value>
+    <value>Pistes audio (uniquement disponibles)</value>
   </data>
   <data name="auto" xml:space="preserve">
-    <value>자동</value>
+    <value>Automatique</value>
   </data>
   <data name="caption_disabled" xml:space="preserve">
-    <value>사용 안함</value>
+    <value>Désactivé</value>
   </data>
   <data name="caption_language" xml:space="preserve">
-    <value>자막 언어 (가능한 경우)</value>
+    <value>Langue de la légende fermée (uniquement disponible)</value>
   </data>
   <data name="disabled" xml:space="preserve">
-    <value>꺼짐</value>
+    <value>Désactivé</value>
   </data>
   <data name="display" xml:space="preserve">
-    <value>디스플레이</value>
+    <value>Afficher</value>
   </data>
   <data name="enabled" xml:space="preserve">
-    <value>켜짐</value>
+    <value>Activé</value>
   </data>
   <data name="error_noVideoId" xml:space="preserve">
-    <value>비디오 ID는 비어있지 않아야 합니다.</value>
+    <value>L'ID de la vidéo ne doit pas être vide!</value>
   </data>
   <data name="fill" xml:space="preserve">
-    <value>채우기</value>
+    <value>Remplir</value>
   </data>
   <data name="frame_limiter" xml:space="preserve">
-    <value>프레임 제한</value>
+    <value>Frame limiter</value>
   </data>
   <data name="fullscreen_entered" xml:space="preserve">
-    <value>전체 화면을 종료하려면 F11 키를 누르세요.</value>
+    <value>Appuyez sur F11 pour quitter le mode plein écran.</value>
   </data>
   <data name="general" xml:space="preserve">
-    <value>일반</value>
+    <value>Généraux</value>
   </data>
   <data name="google_translate" xml:space="preserve">
-    <value>Google 번역</value>
+    <value>Traduire Google</value>
   </data>
   <data name="graphics" xml:space="preserve">
-    <value>그래픽</value>
+    <value>Graphiques</value>
   </data>
   <data name="language" xml:space="preserve">
-    <value>언어</value>
+    <value>Langue</value>
   </data>
   <data name="letterbox" xml:space="preserve">
-    <value>레터박스</value>
+    <value>Letterbox</value>
   </data>
   <data name="load_from_video_id" xml:space="preserve">
-    <value>동영상 ID로 불러오기</value>
+    <value>Charger depuis l'ID vidéo</value>
   </data>
   <data name="load_video" xml:space="preserve">
-    <value>동영상 불러오기</value>
+    <value>Charger la vidéo</value>
   </data>
   <data name="master_volume" xml:space="preserve">
-    <value>마스터 음량 (비디오, 효과음 모두 포함)</value>
+    <value>Volume principal</value>
   </data>
   <data name="minimise_on_focus_loss" xml:space="preserve">
-    <value>다른 앱으로 전환할 때 동영상 플레이어 창을 최소화하기</value>
+    <value>Réduire le lecteur vidéo lors du passage à une autre application</value>
   </data>
   <data name="prefer_high_quality" xml:space="preserve">
-    <value>사용 가능한 최고 화질</value>
+    <value>Préférer la haute qualité</value>
   </data>
   <data name="adjust_pitch_on_speed_change" xml:space="preserve">
-    <value>속도를 조정할 때 음정도 같이 조절</value>
+    <value>Ajuster le pas en cas de changement de vitesse</value>
   </data>
   <data name="profile_image_tooltip" xml:space="preserve">
-    <value>{0} • 구독자 {1}명 • 여기를 클릭하여 외부 브라우저에서 채널 링크를 엽니다.</value>
+    <value>{0} • {1} subscribers • Click to view channel via external web browser.</value>
   </data>
   <data name="screen_mode" xml:space="preserve">
-    <value>화면 모드</value>
+    <value>Mode écran</value>
   </data>
   <data name="screen_resolution" xml:space="preserve">
-    <value>화면 해상도</value>
+    <value>Résolution de l'écran</value>
   </data>
   <data name="selected_caption" xml:space="preserve">
-    <value>선택한 자막: {0}</value>
+    <value>Légende sélectionnée : {0}</value>
   </data>
   <data name="selected_caption_auto_gen" xml:space="preserve">
-    <value>선택한 자막: {0} (자동 생성됨)</value>
+    <value>Légende sélectionnée : {0} (auto-générée)</value>
   </data>
   <data name="settings" xml:space="preserve">
-    <value>설정</value>
+    <value>Réglages</value>
   </data>
   <data name="sfx_volume" xml:space="preserve">
-    <value>효과음 음량</value>
+    <value>Volume des effets sonores</value>
   </data>
   <data name="ui_scaling" xml:space="preserve">
-    <value>UI 크기 조정</value>
+    <value>Mise à l'échelle de l'interface utilisateur</value>
   </data>
   <data name="use_hardware_acceleration" xml:space="preserve">
-    <value>하드웨어 가속 사용</value>
+    <value>Utiliser l'accélération matérielle</value>
   </data>
   <data name="video" xml:space="preserve">
-    <value>동영상</value>
+    <value>Vidéo</value>
   </data>
   <data name="video_metadata_desc" xml:space="preserve">
-    <value>{0} • 조회수 {1}회 • {2}</value>
+    <value>{0} • Vues {1} • {2}</value>
   </data>
   <data name="video_metadata_desc_without_channel_name" xml:space="preserve">
-    <value>조회수 {0}회  {1}</value>
+    <value>{0} visualise  {1}</value>
   </data>
   <data name="video_metadata_translate_source" xml:space="preserve">
-    <value>동영상 메타데이터 번역 소스</value>
+    <value>Source de traduction des métadonnées vidéo</value>
   </data>
   <data name="video_quality" xml:space="preserve">
-    <value>동영상 화질</value>
+    <value>Qualité vidéo</value>
   </data>
   <data name="video_volume" xml:space="preserve">
-    <value>동영상 음량</value>
+    <value>Volume de la vidéo</value>
   </data>
   <data name="comments" xml:space="preserve">
-    <value>댓글 ({0})</value>
+    <value>Commentaires ({0})</value>
   </data>
   <data name="comments_without_count" xml:space="preserve">
-    <value>댓글</value>
+    <value>Commentaires</value>
   </data>
   <data name="dim" xml:space="preserve">
-    <value>동영상의 어두운 정도</value>
+    <value>Niveau de luminosité de la vidéo</value>
   </data>
   <data name="translate_to" xml:space="preserve">
-    <value>{0}로 번역</value>
+    <value>Traduire en {0}</value>
   </data>
   <data name="translate_view_original" xml:space="preserve">
-    <value>원본 보기(Google 번역 제공)</value>
+    <value>Voir l'original (traduit par Google)</value>
   </data>
   <data name="comment_reply" xml:space="preserve">
-    <value>{0} ({1}의 댓글에 답장함)</value>
+    <value>{0} (Reply to {1})</value>
   </data>
   <data name="running_latest_release" xml:space="preserve">
-    <value>현재 최신 버전을 실행 중이에요. ({0})</value>
+    <value>Vous utilisez la dernière version ({0})</value>
   </data>
   <data name="updating" xml:space="preserve">
-    <value>업데이트를 다운로드하는 중... {0}%</value>
+    <value>Téléchargement de la mise à jour... {0}%</value>
   </data>
   <data name="restart_required" xml:space="preserve">
-    <value>업데이트를 적용하려면 앱을 다시 시작하세요.</value>
+    <value>Pour appliquer les mises à jour, veuillez redémarrer l'application.</value>
   </data>
   <data name="update_failed" xml:space="preserve">
-    <value>업데이트 실패!</value>
+    <value>Échec de la mise à jour !</value>
   </data>
   <data name="checking_update" xml:space="preserve">
-    <value>업데이트 확인 중...</value>
+    <value>Vérification de la mise à jour...</value>
   </data>
   <data name="check_update" xml:space="preserve">
-    <value>업데이트 확인</value>
+    <value>Vérifier les mises à jour</value>
   </data>
   <data name="like_count_hidden" xml:space="preserve">
-    <value>업로더가 좋아요 수를 숨김</value>
+    <value>Nombre d'"J'aime" masqué par l'uploader</value>
   </data>
   <data name="disabled_by_uploader" xml:space="preserve">
-    <value>업로더가 비활성화함</value>
+    <value>Désactivé par le chargeur</value>
   </data>
   <data name="dislike_counter_credits" xml:space="preserve">
-    <value>싫어요 수의 데이터는 Return YouTube Dislike API에 의해 제공됩니다.</value>
+    <value>Les données à bas nombre sont fournies par le Return YouTube Dislike API.</value>
   </data>
   <data name="common_default" xml:space="preserve">
-    <value>기본값</value>
+    <value>Par défaut</value>
   </data>
   <data name="show_fps" xml:space="preserve">
-    <value>FPS 표시</value>
+    <value>Afficher FPS</value>
   </data>
   <data name="cannot_play_private_videos" xml:space="preserve">
-    <value>비공개 동영상을 재생할 수 없습니다.</value>
+    <value>Impossible de lire des vidéos privées.</value>
   </data>
   <data name="play" xml:space="preserve">
-    <value>재생</value>
+    <value>Jouer</value>
   </data>
   <data name="pause" xml:space="preserve">
-    <value>일시중지</value>
+    <value>Mettre en pause</value>
   </data>
   <data name="playback_speed" xml:space="preserve">
-    <value>재생 속도: {0}</value>
+    <value>Vitesse de lecture : {0}</value>
   </data>
   <data name="video_quality_8k_warning" xml:space="preserve">
-    <value>동영상 화질을 8K로 설정하면 일부 기기에서 성능 저하, GPU 과부하, 드라이버 충돌을 유발할 수 있습니다.</value>
+    <value>Définir la qualité vidéo à 8K peut causer une dégradation des performances, une surcharge GPU et un plantage du pilote sur certains périphériques.</value>
   </data>
   <data name="renderer" xml:space="preserve">
-    <value>렌더러</value>
+    <value>Renderer</value>
   </data>
   <data name="export_logs" xml:space="preserve">
-    <value>로그 내보내기</value>
+    <value>Exporter les logs</value>
   </data>
   <data name="logs_export_finished" xml:space="preserve">
-    <value>로그를 성공적으로 내보냈습니다!</value>
+    <value>Journaux exportés !</value>
   </data>
   <data name="revert_to_default" xml:space="preserve">
-    <value>기본값으로 복원</value>
+    <value>Revenir à la valeur par défaut</value>
   </data>
 </root>
