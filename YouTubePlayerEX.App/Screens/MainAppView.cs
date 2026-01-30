@@ -1027,10 +1027,10 @@ namespace YouTubePlayerEX.App.Screens
                 hardwareVideoDecoder.Value = val.NewValue ? HardwareVideoDecoder.Any : HardwareVideoDecoder.None;
             });
 
-            OverlayContainers.Add(loadVideoContainer);
-            OverlayContainers.Add(settingsContainer);
-            OverlayContainers.Add(videoDescriptionContainer);
-            OverlayContainers.Add(commentsContainer);
+            overlayContainers.Add(loadVideoContainer);
+            overlayContainers.Add(settingsContainer);
+            overlayContainers.Add(videoDescriptionContainer);
+            overlayContainers.Add(commentsContainer);
 
             videoQuality.BindValueChanged(quality =>
             {
@@ -1093,11 +1093,11 @@ namespace YouTubePlayerEX.App.Screens
             {
                 if (idle.NewValue == true)
                 {
-                    HideControls();
+                    hideControls();
                 }
                 else
                 {
-                    ShowControls();
+                    showControls();
                 }
             }, true);
 
@@ -1148,7 +1148,7 @@ namespace YouTubePlayerEX.App.Screens
 
         private AdaptiveSpriteText videoNameText;
 
-        private void HideControls()
+        private void hideControls()
         {
             if (isControlVisible == true)
             {
@@ -1195,7 +1195,7 @@ namespace YouTubePlayerEX.App.Screens
 
         private FormCheckBox hwAccelCheckbox;
 
-        private void ShowControls()
+        private void showControls()
         {
             if (isControlVisible == false)
             {
@@ -1207,7 +1207,9 @@ namespace YouTubePlayerEX.App.Screens
         }
 
         private IBindable<bool> cursorInWindow;
+#nullable enable
         private IWindow? window;
+#nullable disable
 
         private SettingsItemV2 windowModeDropdownSettings;
 
@@ -1280,7 +1282,9 @@ namespace YouTubePlayerEX.App.Screens
         private FormDropdown<Display> displayDropdown = null!;
         private FormDropdown<WindowMode> windowModeDropdown = null!;
 
+#nullable enable
         private readonly Bindable<SettingsNote.Data?> windowModeDropdownNote = new Bindable<SettingsNote.Data?>();
+#nullable disable
 
         private BindableNumber<double> playbackSpeed = new BindableNumber<double>(1)
         {
@@ -1307,7 +1311,9 @@ namespace YouTubePlayerEX.App.Screens
             }
         }
 
+#nullable enable
         private IDisposable? duckOperation;
+#nullable disable
 
         private void showOverlayContainer(OverlayContainer overlayContent)
         {
@@ -1367,11 +1373,11 @@ namespace YouTubePlayerEX.App.Screens
             {
                 if (active.NewValue == false)
                 {
-                    Schedule(() => HideControls());
+                    Schedule(() => hideControls());
                 }
                 else
                 {
-                    Schedule(() => ShowControls());
+                    Schedule(() => showControls());
                 }
             });
 
@@ -1465,7 +1471,7 @@ namespace YouTubePlayerEX.App.Screens
 
         private void hideOverlays()
         {
-            foreach (var item in OverlayContainers)
+            foreach (var item in overlayContainers)
             {
                 if (item.IsVisible == true)
                 {
@@ -1474,7 +1480,7 @@ namespace YouTubePlayerEX.App.Screens
             }
         }
 
-        private List<OverlayContainer> OverlayContainers = new List<OverlayContainer>();
+        private List<OverlayContainer> overlayContainers = new List<OverlayContainer>();
 
         public bool OnPressed(KeyBindingPressEvent<GlobalAction> e)
         {
@@ -1812,7 +1818,7 @@ namespace YouTubePlayerEX.App.Screens
                             .Where(s => s.AudioLanguage.Value.Code == appGlobalConfig.Get<Language>(YTPlayerEXSetting.AudioLanguage).ToString()) //Fix black screen on some videos
                             .GetWithHighestBitrate();
                     }
-                    catch (Exception e)
+                    catch
                     {
                         // Select best audio stream (highest bitrate)
                         audioStreamInfo = streamManifest
@@ -1924,6 +1930,7 @@ namespace YouTubePlayerEX.App.Screens
 
         private Storage exportStorage = null!;
 
+#nullable enable
         private void exportLogs()
         {
             const string archive_filename = "compressed-logs.zip";
@@ -1959,6 +1966,7 @@ namespace YouTubePlayerEX.App.Screens
                 exportStorage.PresentFileExternally(archive_filename);
             });
         }
+#nullable disable
 
         [Resolved]
         private YouTubePlayerEXApp game { get; set; }
@@ -1967,6 +1975,7 @@ namespace YouTubePlayerEX.App.Screens
         {
         }
 
+#nullable enable
         /// <summary>
         /// Contrary to <see cref="Display.Equals(osu.Framework.Platform.Display?)"/>, this comparer disregards the value of <see cref="Display.Bounds"/>.
         /// We want to just show a list of displays, and for the purposes of settings we don't care about their bounds when it comes to the list.
@@ -2004,6 +2013,7 @@ namespace YouTubePlayerEX.App.Screens
                 return hashCode.ToHashCode();
             }
         }
+#nullable disable
 
         private partial class RendererSettingsDropdown : FormEnumDropdown<RendererType>
         {

@@ -1,11 +1,12 @@
 ﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Text;
+using System.Globalization;
+using System.Net.Http;
 using Newtonsoft.Json;
 using osu.Framework.Extensions;
 using osu.Framework.Logging;
@@ -20,34 +21,16 @@ namespace YouTubePlayerEX.App.Online
 
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://returnyoutubedislikeapi.com/Votes?videoId={videoId}");
-                request.Method = "GET";
-                request.UserAgent = "Mozilla/5.0";
-
-                using (HttpWebResponse resp = (HttpWebResponse)request.GetResponse())
+                // SYSLIB0014 및 OLOC001 수정: HttpClient 사용 및 문자열 지역화
+                using (HttpClient client = new HttpClient())
                 {
-                    Encoding encode;
-                    if (resp.CharacterSet.ToLower() == "utf-8")
-                    {
-                        encode = Encoding.UTF8;
-                    }
-                    else
-                    {
-                        encode = Encoding.Default;
-                    }
+                    string url = string.Format(CultureInfo.InvariantCulture, "https://returnyoutubedislikeapi.com/Votes?videoId={0}", videoId);
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
 
-                    HttpStatusCode status = resp.StatusCode;
-                    // response 매시지 중 StatusCode를 가져온다.
+                    HttpResponseMessage resp = client.GetAsync(url).GetAwaiter().GetResult();
+                    resp.EnsureSuccessStatusCode();
 
-                    Console.WriteLine(status);
-                    // 정상이면 "OK"
-
-                    Stream respStream = resp.GetResponseStream();
-                    // Response Data 내용은 GetResponseStream 메서드로부터 얻어낸 스트림을 읽어 가져올 수 있음
-                    using (StreamReader sr = new StreamReader(respStream, encode))
-                    {
-                        responseText = sr.ReadToEnd();
-                    }
+                    responseText = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 }
             }
             catch (Exception e)
@@ -59,7 +42,9 @@ namespace YouTubePlayerEX.App.Online
 
             responseText = $"[{responseText}]";
 
-            List<ReturnYouTubeDislikesResponse> dislikes = JsonConvert.DeserializeObject<List<ReturnYouTubeDislikesResponse>>(responseText);
+            List<ReturnYouTubeDislikesResponse>? dislikes = JsonConvert.DeserializeObject<List<ReturnYouTubeDislikesResponse>>(responseText);
+            if (dislikes == null || dislikes.Count == 0)
+                return new ReturnYouTubeDislikesResponse(); // 또는 적절한 기본값 반환
 
             return dislikes[0];
         }
@@ -67,8 +52,8 @@ namespace YouTubePlayerEX.App.Online
 
     public class ReturnYouTubeDislikesResponse
     {
-        public string Id { get; set; }
-        public string DateCreated { get; set; }
+        public string? Id { get; set; }
+        public string? DateCreated { get; set; }
         public int Likes { get; set; }
         public int RawDislikes { get; set; }
         public int RawLikes { get; set; }

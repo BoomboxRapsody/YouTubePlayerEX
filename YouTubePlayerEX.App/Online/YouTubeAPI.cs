@@ -1,10 +1,11 @@
 ﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Google.Apis.Requests;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
@@ -30,7 +31,7 @@ namespace YouTubePlayerEX.App.Online
             youtubeService = new YouTubeService(new BaseClientService.Initializer()
             {
                 ApiKey = "AIzaSyDGpklqOVqNLzOuChi5hHKswhZIC9ocEIQ",
-                ApplicationName = this.GetType().ToString()
+                ApplicationName = GetType().ToString()
             });
         }
 
@@ -91,7 +92,7 @@ namespace YouTubePlayerEX.App.Online
                 {
                     return channel.Localizations[language].Title;
                 }
-                catch (Exception e)
+                catch
                 {
                     return channel.Snippet.Title;
                 }
@@ -104,7 +105,7 @@ namespace YouTubePlayerEX.App.Online
                     string translatedTitle = translateApi.Translate(originalTitle, GoogleTranslateLanguage.auto);
                     return translatedTitle;
                 }
-                catch (Exception e)
+                catch
                 {
                     return channel.Snippet.Title;
                 }
@@ -148,20 +149,19 @@ namespace YouTubePlayerEX.App.Online
                     string translatedTitle = translateApi.Translate(originalTitle, GoogleTranslateLanguage.auto);
                     return translatedTitle;
                 }
-                catch (Exception e)
+                catch
                 {
                     return video.Snippet.Title;
                 }
             }
 
             string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
-            string languageParsed = string.Empty;
 
             try
             {
                 return video.Localizations[language].Title;
             }
-            catch (Exception e)
+            catch
             {
                 return video.Snippet.Title;
             }
@@ -180,20 +180,19 @@ namespace YouTubePlayerEX.App.Online
                     string translatedDescription = translateApi.Translate(originalDescription, GoogleTranslateLanguage.auto);
                     return translatedDescription;
                 }
-                catch (Exception e)
+                catch
                 {
                     return video.Snippet.Description;
                 }
             }
 
             string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
-            string languageParsed = string.Empty;
 
             try
             {
                 return video.Localizations[language].Description;
             }
-            catch (Exception e)
+            catch
             {
                 return video.Snippet.Description;
             }

@@ -229,6 +229,7 @@ namespace YouTubePlayerEX.App
         private readonly BindableDouble audioDuckVolume = new BindableDouble(1);
         private AudioFilter audioDuckFilter = null!;
 
+#nullable enable
         /// <summary>
         /// Applies ducking, attenuating the volume and/or low-pass cutoff of the currently playing track to make headroom for effects (or just to apply an effect).
         /// </summary>
@@ -264,6 +265,7 @@ namespace YouTubePlayerEX.App
                 this.TransformBindableTo(audioDuckVolume, restoreVolumeOperation?.DuckVolumeTo ?? 1, parameters.RestoreDuration, parameters.RestoreEasing);
             });
         }
+#nullable disable
 
         public class DuckParameters
         {

@@ -1,6 +1,8 @@
 ﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+#nullable enable
+
 using System.IO;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -21,18 +23,18 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 {
     public partial class YouTubeVideoPlayer : Container
     {
-        private Video video;
-        private Track track;
-        private DrawableTrack drawableTrack;
+        private Video video = null!;
+        private Track track = null!;
+        private DrawableTrack drawableTrack = null!;
 
-        private string fileName_Video, fileName_Audio;
-        private ClosedCaptionTrack captionTrack;
+        private string fileName_Video, fileName_Audio = null!;
+        private ClosedCaptionTrack captionTrack = null!;
         private ClosedCaptionLanguage captionLanguage;
 
-        private StopwatchClock rateAdjustClock;
-        private DecouplingFramedClock framedClock;
+        private StopwatchClock rateAdjustClock = null!;
+        private DecouplingFramedClock framedClock = null!;
 
-        private Bindable<double> playbackSpeed;
+        private Bindable<double> playbackSpeed = null!;
         private double resumeFromTime;
         private bool trackFinished = false;
 
@@ -57,8 +59,8 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             MaxValue = 1,
         };
 
-        private KeyBindingAnimations keyBindingAnimations;
-        private ClosedCaptionContainer closedCaption;
+        private KeyBindingAnimations keyBindingAnimations = null!;
+        private ClosedCaptionContainer closedCaption = null!;
         private Bindable<AspectRatioMethod> aspectRatioMethod = null!;
 
         [BackgroundDependencyLoader]

@@ -20,7 +20,9 @@ namespace YouTubePlayerEX.Desktop.Updater
         [Resolved]
         private YouTubePlayerEXAppBase game { get; set; } = null!;
 
+#nullable enable
         private ScheduledDelegate? scheduledBackgroundCheck;
+#nullable disable
 
         private void scheduleNextUpdateCheck()
         {
