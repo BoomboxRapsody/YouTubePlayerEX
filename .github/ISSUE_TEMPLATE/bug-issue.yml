@@ -59,7 +59,7 @@ body:
           2. Click the notification to locate the file
           3. Drag the generated `.zip` files into the github issue window
 
-        ![export logs button](https://github.com/BoomboxRapsody/YouTubePlayerEX/assets/export-logs.png)
+        ![export logs button](https://github.com/BoomboxRapsody/YouTubePlayerEX/blob/master/assets/export-logs.png)
 
   - type: textarea
     attributes:
