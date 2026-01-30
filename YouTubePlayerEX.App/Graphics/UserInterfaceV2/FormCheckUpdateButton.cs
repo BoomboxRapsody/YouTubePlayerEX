@@ -29,6 +29,9 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
         private LocalisableString textValue;
 
+        [Resolved]
+        private OverlayColourProvider colourProvider { get; set; } = null!;
+
         /// <summary>
         /// Caption describing this button, displayed on the left of it.
         /// </summary>
@@ -62,7 +65,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         /// </summary>
         public IconUsage ButtonIcon { get; init; } = FontAwesome.Solid.Sync;
 
-        private Box background = null!;
+        private FormControlBackground background = null!;
         private FormFieldCaption caption = null!;
         private AdaptiveSpriteText text = null!;
 
@@ -90,11 +93,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
             InternalChildren = new Drawable[]
             {
-                background = new Box
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    Colour = Color4Extensions.FromHex(@"22252a"),
-                },
+                background = new FormControlBackground(),
                 new Container
                 {
                     RelativeSizeAxes = Axes.X,
@@ -170,16 +169,15 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
         private void updateState()
         {
-            caption.Colour = Color4Extensions.FromHex(@"dbe3f0");
+            caption.Colour = colourProvider.Content2;
             text.Colour = Color4.White;
 
-            // use FadeColour to override any existing colour transform (i.e. FlashColour on click).
-            background.FadeColour(IsHovered
-                ? ColourInfo.GradientVertical(Color4Extensions.FromHex(@"22252a"), Color4Extensions.FromHex(@"29313d"))
-                : Color4Extensions.FromHex(@"22252a"));
-
-            BorderThickness = IsHovered ? 2 : 0;
-            BorderColour = Color4Extensions.FromHex(@"4d77b3");
+            if (!Enabled.Value)
+                background.VisualStyle = VisualStyle.Disabled;
+            else if (IsHovered)
+                background.VisualStyle = VisualStyle.Hovered;
+            else
+                background.VisualStyle = VisualStyle.Normal;
         }
 
         public IEnumerable<LocalisableString> FilterTerms => Caption.Yield();

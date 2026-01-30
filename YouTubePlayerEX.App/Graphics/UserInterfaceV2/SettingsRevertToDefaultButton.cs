@@ -1,4 +1,5 @@
-﻿using osu.Framework.Allocation;
+﻿using System.Reflection;
+using osu.Framework.Allocation;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Shapes;
@@ -8,28 +9,33 @@ using osu.Framework.Input.Events;
 using osu.Framework.Localisation;
 using osuTK;
 using YouTubePlayerEX.App.Graphics.UserInterface;
+using YouTubePlayerEX.App.Localisation;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 {
     public partial class SettingsRevertToDefaultButton : AdaptiveClickableContainer
     {
-        public const float WIDTH = 32;
+        public const float WIDTH = 28;
 
-        public float IconSize { get; init; } = 14;
+        public float IconSize { get; init; } = 10;
 
         private Box background = null!;
-        private Sprite spriteIcon = null!;
+        private SpriteIcon spriteIcon = null!;
+
+        [Resolved]
+        private OverlayColourProvider colourProvider { get; set; } = null!;
 
         // this is done to ensure a click on this button doesn't trigger focus on a parent element which contains the button.
         public override bool AcceptsFocus => true;
 
         public SettingsRevertToDefaultButton()
         {
-            Size = new Vector2(WIDTH, 50);
+            RelativeSizeAxes = Axes.Y;
+            Width = WIDTH;
         }
 
         [BackgroundDependencyLoader]
-        private void load(TextureStore textureStore)
+        private void load()
         {
             Masking = true;
             CornerRadius = 5;
@@ -40,14 +46,14 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
                 background = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
-                    Colour = Color4Extensions.FromHex(@"393e47"),
+                    Colour = colourProvider.Background3,
                 },
-                spriteIcon = new Sprite
+                spriteIcon = new SpriteIcon
                 {
                     Anchor = Anchor.Centre,
                     Origin = Anchor.Centre,
-                    Colour = Color4Extensions.FromHex(@"b8c6e0"),
-                    Texture = textureStore.Get("undo"),
+                    Colour = colourProvider.Light1,
+                    Icon = FontAwesome.Solid.Undo,
                     Margin = new MarginPadding { Left = 12, Right = 5 },
                     Size = new Vector2(IconSize),
                 }
@@ -60,7 +66,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             Enabled.BindValueChanged(_ => updateDisplay(), true);
         }
 
-        public override LocalisableString TooltipText => "Revert to default";
+        public override LocalisableString TooltipText => YTPlayerEXStrings.RevertToDefault;
 
         protected override bool OnHover(HoverEvent e)
         {
@@ -86,8 +92,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
         private void updateDisplay()
         {
-            spriteIcon.FadeColour(IsHovered ? Color4Extensions.FromHex(@"dbe3f0") : Color4Extensions.FromHex(@"b8c6e0"), 300, Easing.OutQuint);
-            background.FadeColour(IsHovered ? Color4Extensions.FromHex(@"454b54") : Color4Extensions.FromHex(@"393e47"), 300, Easing.OutQuint);
+            spriteIcon.FadeColour(IsHovered ? colourProvider.Content2 : colourProvider.Light1, 300, Easing.OutQuint);
+            background.FadeColour(IsHovered ? colourProvider.Background2 : colourProvider.Background3, 300, Easing.OutQuint);
         }
     }
 }

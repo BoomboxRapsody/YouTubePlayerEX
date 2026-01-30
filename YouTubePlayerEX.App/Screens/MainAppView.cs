@@ -25,16 +25,20 @@ using osu.Framework.Graphics.Video;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
 using osu.Framework.Localisation;
+using osu.Framework.Logging;
 using osu.Framework.Platform;
 using osu.Framework.Platform.Windows;
+using osu.Framework.Statistics;
 using osu.Framework.Threading;
 using osuTK;
 using osuTK.Graphics;
+using SharpCompress.Archives.Zip;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Videos.ClosedCaptions;
 using YoutubeExplode.Videos.Streams;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Extensions;
+using YouTubePlayerEX.App.Graphics;
 using YouTubePlayerEX.App.Graphics.Containers;
 using YouTubePlayerEX.App.Graphics.Sprites;
 using YouTubePlayerEX.App.Graphics.UserInterface;
@@ -45,6 +49,8 @@ using YouTubePlayerEX.App.Input.Binding;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
 using YouTubePlayerEX.App.Updater;
+using YouTubePlayerEX.App.Utils;
+using static SharpGen.Runtime.TypeDataStorage;
 using static YouTubePlayerEX.App.YouTubePlayerEXApp;
 using Container = osu.Framework.Graphics.Containers.Container;
 using Language = YouTubePlayerEX.App.Localisation.Language;
@@ -122,15 +128,20 @@ namespace YouTubePlayerEX.App.Screens
         private Bindable<LocalisableString> updateInfomationText;
         private Bindable<bool> updateButtonEnabled;
 
+        [Resolved]
+        private AdaptiveColour colours { get; set; } = null!;
+
         private Bindable<SettingsNote.Data> videoQualityWarning = new Bindable<SettingsNote.Data>();
 
         [BackgroundDependencyLoader]
-        private void load(ISampleStore sampleStore, FrameworkConfigManager config, YTPlayerEXConfigManager appConfig, GameHost host)
+        private void load(ISampleStore sampleStore, FrameworkConfigManager config, YTPlayerEXConfigManager appConfig, GameHost host, Storage storage)
         {
             window = host.Window;
 
             var renderer = config.GetBindable<RendererType>(FrameworkSetting.Renderer);
             automaticRendererInUse = renderer.Value == RendererType.Automatic;
+
+            exportStorage = storage.GetStorageForDirectory(@"exports");
 
             localeBindable = config.GetBindable<string>(FrameworkSetting.Locale);
             adjustPitch = appConfig.GetBindable<bool>(YTPlayerEXSetting.AdjustPitchOnSpeedChange);
@@ -502,6 +513,13 @@ namespace YouTubePlayerEX.App.Screens
                                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
                                                     Text = YTPlayerEXStrings.General,
                                                     Padding = new MarginPadding { Horizontal = 30, Bottom = 12 }
+                                                },
+                                                new SettingsButtonV2
+                                                {
+                                                    Text = YTPlayerEXStrings.ExportLogs,
+                                                    Padding = new MarginPadding { Horizontal = 30 },
+                                                    BackgroundColour = colours.YellowDarker.Darken(0.5f),
+                                                    Action = () => Task.Run(exportLogs),
                                                 },
                                                 new SettingsItemV2(new FormEnumDropdown<Language>
                                                 {
@@ -1858,6 +1876,44 @@ namespace YouTubePlayerEX.App.Screens
                 alert.Show();
                 spinnerShow = Scheduler.AddDelayed(alert.Hide, 3000);
             }
+        }
+
+        private Storage exportStorage = null!;
+
+        private void exportLogs()
+        {
+            const string archive_filename = "compressed-logs.zip";
+
+            try
+            {
+                GlobalStatistics.OutputToLog();
+                Logger.Flush();
+
+                var logStorage = Logger.Storage;
+
+                using (var outStream = exportStorage.CreateFileSafely(archive_filename))
+                using (var zip = ZipArchive.Create())
+                {
+                    foreach (string? f in logStorage.GetFiles(string.Empty, "*.log"))
+                        FileUtils.AttemptOperation(z => z.AddEntry(f, logStorage.GetStream(f), closeStream: true), zip, throwOnFailure: false);
+
+                    zip.SaveTo(outStream);
+                }
+            }
+            catch
+            {
+                // cleanup if export is failed or canceled.
+                exportStorage.Delete(archive_filename);
+                throw;
+            }
+
+            Schedule(() =>
+            {
+                alert.Text = YTPlayerEXStrings.LogsExportFinished;
+                alert.Show();
+                spinnerShow = Scheduler.AddDelayed(alert.Hide, 3000);
+                exportStorage.PresentFileExternally(archive_filename);
+            });
         }
 
         [Resolved]

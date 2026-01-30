@@ -74,29 +74,24 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         /// </summary>
         public LocalisableString PlaceholderText { get; init; }
 
-        private Box background = null!;
+        private FormControlBackground background = null!;
         private Box flashLayer = null!;
         private InnerTextBox textBox = null!;
         private FormFieldCaption caption = null!;
         private IFocusManager focusManager = null!;
 
+        [Resolved]
+        private OverlayColourProvider colourProvider { get; set; } = null!;
+
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(AdaptiveColour colours)
         {
             RelativeSizeAxes = Axes.X;
             AutoSizeAxes = Axes.Y;
 
-            Masking = true;
-            CornerRadius = 5;
-            CornerExponent = 2.5f;
-
             InternalChildren = new Drawable[]
             {
-                background = new Box
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    Colour = Color4Extensions.FromHex(@"22252a"),
-                },
+                background = new FormControlBackground(),
                 flashLayer = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
@@ -130,13 +125,13 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
                                 if (!current.Disabled && !ReadOnly)
                                 {
-                                    flashLayer.Colour = ColourInfo.GradientVertical(Color4Extensions.FromHex(@"3d485c").Opacity(0), Color4Extensions.FromHex(@"3d485c"));
+                                    flashLayer.Colour = ColourInfo.GradientVertical(colourProvider.Dark2.Opacity(0), colourProvider.Dark2);
                                     flashLayer.FadeOutFromOne(800, Easing.OutQuint);
                                 }
                             };
                             t.OnInputError = () =>
                             {
-                                flashLayer.Colour = ColourInfo.GradientVertical(Color4Extensions.FromHex(@"cc3333").Opacity(0), Color4Extensions.FromHex(@"cc3333"));
+                                flashLayer.Colour = ColourInfo.GradientVertical(colours.Red3.Opacity(0), colours.Red3);
                                 flashLayer.FadeOutFromOne(200, Easing.OutQuint);
                             };
                             t.TabbableContentContainer = tabbableContentContainer;
@@ -184,22 +179,17 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             textBox.ReadOnly = disabled;
             textBox.Alpha = 1;
 
-            caption.Colour = disabled ? Color4Extensions.FromHex(@"5c6470") : Color4Extensions.FromHex(@"dbe3f0");
-            textBox.Colour = disabled ? Color4Extensions.FromHex(@"8f97a3") : Color4.White;
+            caption.Colour = disabled ? colourProvider.Background1 : colourProvider.Content2;
+            textBox.Colour = disabled ? colourProvider.Foreground1 : colourProvider.Content1;
 
-            BorderThickness = IsHovered || textBox.Focused.Value ? 2 : 0;
-
-            if (disabled)
-                BorderColour = Color4Extensions.FromHex(@"47556b");
-            else
-                BorderColour = textBox.Focused.Value ? Color4Extensions.FromHex(@"66a1ff") : Color4Extensions.FromHex(@"4d74b3");
-
-            if (textBox.Focused.Value)
-                background.Colour = ColourInfo.GradientVertical(Color4Extensions.FromHex(@"22252a"), Color4Extensions.FromHex(@"333c4d"));
+            if (Current.Disabled)
+                background.VisualStyle = VisualStyle.Disabled;
+            else if (textBox.Focused.Value)
+                background.VisualStyle = VisualStyle.Focused;
             else if (IsHovered)
-                background.Colour = ColourInfo.GradientVertical(Color4Extensions.FromHex(@"22252a"), Color4Extensions.FromHex(@"29303d"));
+                background.VisualStyle = VisualStyle.Hovered;
             else
-                background.Colour = Color4Extensions.FromHex(@"22252a");
+                background.VisualStyle = VisualStyle.Normal;
         }
 
         internal partial class InnerTextBox : AdaptiveTextBox
@@ -215,7 +205,6 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             {
                 Height = 16;
                 TextContainer.Height = 1;
-                Masking = false;
                 BackgroundUnfocused = BackgroundFocused = BackgroundCommit = Colour4.Transparent;
             }
 

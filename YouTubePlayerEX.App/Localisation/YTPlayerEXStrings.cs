@@ -14,6 +14,11 @@ namespace YouTubePlayerEX.App.Localisation
         public static LocalisableString VideoMetadataDesc(string username, string views, string daysAgo) => new TranslatableString(getKey(@"video_metadata_desc"), "{0} • {1} views • {2}", username, views, daysAgo);
 
         /// <summary>
+        /// "Export logs"
+        /// </summary>
+        public static LocalisableString ExportLogs => new TranslatableString(getKey(@"export_logs"), "Export logs");
+
+        /// <summary>
         /// "Load from video ID"
         /// </summary>
         public static LocalisableString LoadFromVideoId => new TranslatableString(getKey(@"load_from_video_id"), "Load from video ID");
@@ -317,6 +322,16 @@ namespace YouTubePlayerEX.App.Localisation
         /// "Renderer"
         /// </summary>
         public static LocalisableString Renderer => new TranslatableString(getKey(@"renderer"), @"Renderer");
+
+        /// <summary>
+        /// "Exported logs!"
+        /// </summary>
+        public static LocalisableString LogsExportFinished => new TranslatableString(getKey(@"logs_export_finished"), @"Exported logs!");
+
+        /// <summary>
+        /// "Revert to default"
+        /// </summary>
+        public static LocalisableString RevertToDefault => new TranslatableString(getKey(@"revert_to_default"), @"Revert to default");
 
         private static string getKey(string key) => $@"{prefix}:{key}";
     }

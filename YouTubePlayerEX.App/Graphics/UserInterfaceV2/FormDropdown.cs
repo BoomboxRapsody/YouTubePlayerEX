@@ -27,7 +27,11 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         /// <summary>
         /// Hint text containing an extended description of this slider bar, displayed in a tooltip when hovering the caption.
         /// </summary>
-        public LocalisableString HintText { get; init; }
+        public LocalisableString HintText
+        {
+            get => header.HintText;
+            set => header.HintText = value;
+        }
 
         /// <summary>
         /// The maximum height of the dropdown's menu.
@@ -36,6 +40,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         public float MaxHeight { get; set; } = 200;
 
         private FormDropdownHeader header = null!;
+
+        private const float header_menu_spacing = 5;
 
         [BackgroundDependencyLoader]
         private void load()
@@ -132,6 +138,10 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             private FormFieldCaption caption = null!;
             private AdaptiveSpriteText label = null!;
             private SpriteIcon chevron = null!;
+            private FormControlBackground background = null!;
+
+            [Resolved]
+            private OverlayColourProvider colourProvider { get; set; } = null!;
 
             [BackgroundDependencyLoader]
             private void load()
@@ -139,42 +149,51 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
                 Masking = true;
                 CornerRadius = 5;
 
-                Foreground.Padding = new MarginPadding(9);
+                // We use our own background for more control.
+                Background.Alpha = 0;
+
                 Foreground.Children = new Drawable[]
                 {
-                    new FillFlowContainer
+                    background = new FormControlBackground(),
+                    new Container
                     {
                         RelativeSizeAxes = Axes.X,
                         AutoSizeAxes = Axes.Y,
-                        Direction = FillDirection.Vertical,
-                        Spacing = new Vector2(0, 4),
+                        Padding = new MarginPadding(9),
                         Children = new Drawable[]
                         {
-                            caption = new FormFieldCaption
-                            {
-                                Caption = Caption,
-                                TooltipText = HintText,
-                            },
-                            label = new AdaptiveSpriteText
+                            new FillFlowContainer
                             {
                                 RelativeSizeAxes = Axes.X,
+                                AutoSizeAxes = Axes.Y,
+                                Direction = FillDirection.Vertical,
+                                Spacing = new Vector2(0, 4),
+                                Children = new Drawable[]
+                                {
+                                    caption = new FormFieldCaption
+                                    {
+                                        Caption = Caption,
+                                        TooltipText = HintText,
+                                    },
+                                    label = new TruncatingSpriteText
+                                    {
+                                        RelativeSizeAxes = Axes.X,
+                                        Padding = new MarginPadding { Right = 25 },
+                                        AlwaysPresent = true,
+                                    },
+                                }
+                            },
+                            chevron = new SpriteIcon
+                            {
+                                Icon = FontAwesome.Solid.ChevronDown,
+                                Anchor = Anchor.BottomRight,
+                                Origin = Anchor.BottomRight,
+                                Size = new Vector2(16),
+                                Margin = new MarginPadding { Right = 5 },
                             },
                         }
                     },
-                    chevron = new SpriteIcon
-                    {
-                        Icon = FontAwesome.Solid.ChevronDown,
-                        Anchor = Anchor.CentreRight,
-                        Origin = Anchor.CentreRight,
-                        Size = new Vector2(16),
-                        Margin = new MarginPadding { Right = 5 },
-                    },
                 };
-
-                AddInternal(new HoverClickSounds
-                {
-                    Enabled = { BindTarget = Enabled },
-                });
             }
 
             protected override void LoadComplete()
@@ -190,7 +209,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
                 };
                 SearchBar.TextBox.OnCommit += (_, _) =>
                 {
-                    Background.FlashColour(ColourInfo.GradientVertical(Color4Extensions.FromHex(@"22252a"), Color4Extensions.FromHex(@"3d485c")), 800, Easing.OutQuint);
+                    Background.FlashColour(ColourInfo.GradientVertical(colourProvider.Background5, colourProvider.Dark2), 800, Easing.OutQuint);
                 };
             }
 
@@ -208,34 +227,33 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
             private void updateState()
             {
-                label.Alpha = string.IsNullOrEmpty(SearchBar.SearchTerm.Value) ? 1 : 0;
-
-                caption.Colour = Dropdown.Current.Disabled ? Color4Extensions.FromHex(@"5c6470") : Color4Extensions.FromHex(@"dbe3f0");
-                label.Colour = Dropdown.Current.Disabled ? Color4Extensions.FromHex(@"5c6470") : Color4.White;
-                chevron.Colour = Dropdown.Current.Disabled ? Color4Extensions.FromHex(@"5c6470") : Color4.White;
+                caption.Colour = Dropdown.Current.Disabled ? colourProvider.Background1 : colourProvider.Content2;
+                label.Colour = Dropdown.Current.Disabled ? colourProvider.Background1 : colourProvider.Content1;
+                chevron.Colour = Dropdown.Current.Disabled ? colourProvider.Background1 : colourProvider.Content1;
                 DisabledColour = Colour4.White;
 
                 bool dropdownOpen = Dropdown.Menu.State == MenuState.Open;
 
-                BorderThickness = IsHovered || dropdownOpen ? 2 : 0;
+                if (dropdownOpen)
+                    label.Alpha = AlwaysShowSearchBar || !string.IsNullOrEmpty(SearchBar.SearchTerm.Value) ? 0 : 1;
+                else
+                    label.Alpha = 1;
 
                 if (Dropdown.Current.Disabled)
-                    BorderColour = Color4Extensions.FromHex(@"47556b");
-                else
-                    BorderColour = dropdownOpen ? Color4Extensions.FromHex(@"66a1ff") : Color4Extensions.FromHex(@"4d74b3");
-
-                if (dropdownOpen)
-                    Background.Colour = ColourInfo.GradientVertical(Color4Extensions.FromHex(@"22252a"), Color4Extensions.FromHex(@"333c4d"));
+                    background.VisualStyle = VisualStyle.Disabled;
+                else if (dropdownOpen)
+                    background.VisualStyle = VisualStyle.Focused;
                 else if (IsHovered)
-                    Background.Colour = ColourInfo.GradientVertical(Color4Extensions.FromHex(@"22252a"), Color4Extensions.FromHex(@"29303d"));
+                    background.VisualStyle = VisualStyle.Hovered;
                 else
-                    Background.Colour = Color4Extensions.FromHex(@"22252a");
+                    background.VisualStyle = VisualStyle.Normal;
             }
 
             private void updateChevron()
             {
                 bool open = Dropdown.Menu.State == MenuState.Open;
                 chevron.ScaleTo(open ? new Vector2(1f, -1f) : Vector2.One, 300, Easing.OutQuint);
+                chevron.MoveToY(open ? -chevron.DrawHeight : 0, 300, Easing.OutQuint);
             }
         }
 
@@ -246,7 +264,10 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             protected override void PopIn() => this.FadeIn();
             protected override void PopOut() => this.FadeOut();
 
-            protected override TextBox CreateTextBox() => TextBox = new FormTextBox.InnerTextBox();
+            protected override TextBox CreateTextBox() => TextBox = new FormTextBox.InnerTextBox
+            {
+                PlaceholderText = "search...",
+            };
 
             [BackgroundDependencyLoader]
             private void load()
@@ -254,20 +275,36 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
                 TextBox.Anchor = Anchor.BottomLeft;
                 TextBox.Origin = Anchor.BottomLeft;
                 TextBox.RelativeSizeAxes = Axes.X;
-                TextBox.Margin = new MarginPadding(9);
+                Padding = new MarginPadding { Left = 9, Bottom = 9, Right = 34 };
             }
         }
 
         private partial class FormDropdownMenu : AdaptiveDropdownMenu
         {
             [BackgroundDependencyLoader]
-            private void load()
+            private void load(OverlayColourProvider colourProvider)
             {
                 ItemsContainer.Padding = new MarginPadding(9);
-                Margin = new MarginPadding { Top = 5 };
 
-                MaskingContainer.BorderThickness = 2;
-                MaskingContainer.BorderColour = Color4Extensions.FromHex(@"66a1ff");
+                MaskingContainer.BorderThickness = FormControlBackground.BORDER_THICKNESS;
+                MaskingContainer.CornerExponent = FormControlBackground.CORNER_EXPONENT;
+                MaskingContainer.BorderColour = colourProvider.Highlight1;
+            }
+
+            protected override void AnimateOpen()
+            {
+                base.AnimateOpen();
+
+                this.TransformTo(nameof(Margin), new MarginPadding
+                {
+                    Top = header_menu_spacing,
+                }, 300, Easing.OutQuint);
+            }
+
+            protected override void AnimateClose()
+            {
+                base.AnimateClose();
+                this.TransformTo(nameof(Margin), new MarginPadding(), 300, Easing.OutQuint);
             }
         }
     }

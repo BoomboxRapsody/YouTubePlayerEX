@@ -17,6 +17,12 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         private Box background = null!;
         private AdaptiveTextFlowContainer text = null!;
 
+        [Resolved]
+        private AdaptiveColour colours { get; set; } = null!;
+
+        [Resolved]
+        private OverlayColourProvider colourProvider { get; set; } = null!;
+
         [BackgroundDependencyLoader]
         private void load()
         {
@@ -56,6 +62,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         protected override void LoadComplete()
         {
             base.LoadComplete();
+
             Current.BindValueChanged(_ => updateDisplay(), true);
             FinishTransforms(true);
         }
@@ -63,7 +70,9 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         private void updateDisplay()
         {
             // Explicitly use ClearTransforms to clear any existing auto-size transform before modifying size / flag.
-            ClearTransforms();
+            // TODO: This is dodgy as hell and needs to go.
+            ClearTransforms(false, @"baseSize");
+            ClearTransforms(false, nameof(Height));
 
             if (Current.Value == null)
             {
@@ -79,18 +88,18 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             switch (Current.Value.Type)
             {
                 case Type.Informational:
-                    background.Colour = Color4Extensions.FromHex(@"3d485c");
-                    text.Colour = Color4Extensions.FromHex(@"dbe2f0");
+                    background.Colour = colourProvider.Dark2;
+                    text.Colour = colourProvider.Content2;
                     break;
 
                 case Type.Warning:
-                    background.Colour = Color4Extensions.FromHex(@"ffd966");
-                    text.Colour = Color4Extensions.FromHex(@"22252a");
+                    background.Colour = colours.Orange1;
+                    text.Colour = colourProvider.Background5;
                     break;
 
                 case Type.Critical:
-                    background.Colour = Color4Extensions.FromHex(@"ff6666");
-                    text.Colour = Color4Extensions.FromHex(@"22252a");
+                    background.Colour = colours.Red1;
+                    text.Colour = colourProvider.Background5;
                     break;
             }
 

@@ -15,29 +15,32 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 {
     public partial class SwitchButton : Checkbox
     {
-        public const float WIDTH = 45;
-
-        private const float border_thickness = 4.5f;
-        private const float padding = 1.25f;
+        public const float WIDTH = 56;
 
         private readonly Box fill;
-        private readonly Container nubContainer;
-        private readonly Drawable nub;
-        private readonly CircularContainer content;
+        private readonly Container content;
+
+        [Resolved]
+        private OverlayColourProvider colourProvider { get; set; } = null!;
+
+        public bool ExpandOnCurrent { get; init; } = true;
 
         private Sample? sampleChecked;
         private Sample? sampleUnchecked;
 
         public SwitchButton()
         {
-            Size = new Vector2(WIDTH, 20);
+            Size = new Vector2(WIDTH, 16);
 
             InternalChild = content = new CircularContainer
             {
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
                 RelativeSizeAxes = Axes.Both,
                 BorderColour = Color4.White,
-                BorderThickness = border_thickness,
+                BorderThickness = 3.2f,
                 Masking = true,
+                CornerExponent = 2.5f,
                 Children = new Drawable[]
                 {
                     fill = new Box
@@ -45,21 +48,6 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
                         RelativeSizeAxes = Axes.Both,
                         AlwaysPresent = true,
                     },
-                    new Container
-                    {
-                        RelativeSizeAxes = Axes.Both,
-                        Padding = new MarginPadding(border_thickness + padding),
-                        Child = nubContainer = new Container
-                        {
-                            RelativeSizeAxes = Axes.Both,
-                            Child = nub = new Circle
-                            {
-                                RelativeSizeAxes = Axes.Both,
-                                FillMode = FillMode.Fit,
-                                Masking = true,
-                            }
-                        }
-                    }
                 }
             };
         }
@@ -75,70 +63,65 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         {
             base.LoadComplete();
 
-            Current.BindDisabledChanged(_ => updateColours());
+            Current.BindDisabledChanged(_ => updateState());
             Current.BindValueChanged(_ => updateState(), true);
 
             FinishTransforms(true);
         }
 
-        private void updateState()
-        {
-            nub.MoveToX(Current.Value ? nubContainer.DrawWidth - nub.DrawWidth : 0, 200, Easing.OutQuint);
-
-            updateColours();
-        }
-
         protected override bool OnHover(HoverEvent e)
         {
-            updateColours();
+            updateState();
             return base.OnHover(e);
         }
 
         protected override void OnHoverLost(HoverLostEvent e)
         {
-            updateColours();
+            updateState();
             base.OnHoverLost(e);
         }
 
         protected override void OnUserChange(bool value)
         {
             base.OnUserChange(value);
+            PlaySample(value);
+        }
 
+        public void PlaySample(bool value)
+        {
             if (value)
                 sampleChecked?.Play();
             else
                 sampleUnchecked?.Play();
         }
 
-        private void updateColours()
+        private void updateState()
         {
-            ColourInfo borderColour;
-            ColourInfo switchColour;
+            Color4 fillColour = colourProvider.Background5.Opacity(0);
+            Color4 borderColour = colourProvider.Light4;
+
+            if (IsHovered)
+                borderColour = colourProvider.Highlight1;
+            else if (Current.Value)
+                borderColour = colourProvider.Highlight1.Darken(0.1f);
+
+            if (Current.Value)
+                fillColour = borderColour;
 
             if (Current.Disabled)
             {
-                borderColour = Color4Extensions.FromHex(@"3d4a5c");
-                switchColour = Color4Extensions.FromHex(@"47566b");
-                fill.Colour = Color4Extensions.FromHex(@"1f252e");
+                fillColour = fillColour.Darken(0.4f);
+                borderColour = borderColour.Darken(0.4f);
             }
+
+            fill.FadeColour(fillColour, 250, Easing.OutQuint);
+
+            content.TransformTo(nameof(BorderColour), (ColourInfo)borderColour, 250, Easing.OutQuint);
+
+            if (ExpandOnCurrent && Current.Value)
+                content.ResizeWidthTo(1f, 200, Easing.OutElasticQuarter);
             else
-            {
-                bool hover = IsHovered && !Current.Disabled;
-
-                borderColour = hover ? Color4Extensions.FromHex(@"66a3ff").Opacity(0.5f) : Color4Extensions.FromHex(@"66a3ff").Opacity(0.3f);
-                switchColour = hover || Current.Value ? Color4Extensions.FromHex(@"66a3ff") : Color4Extensions.FromHex(@"4d76b3");
-
-                if (!Current.Value)
-                {
-                    borderColour = borderColour.MultiplyAlpha(0.8f);
-                    switchColour = switchColour.MultiplyAlpha(0.8f);
-                }
-
-                fill.Colour = Current.Value ? Color4Extensions.FromHex(@"2e466b").Darken(0.2f) : Color4Extensions.FromHex(@"17191c");
-            }
-
-            nubContainer.FadeColour(switchColour, 250, Easing.OutQuint);
-            content.TransformTo(nameof(BorderColour), borderColour, 250, Easing.OutQuint);
+                content.ResizeWidthTo(0.75f, 120, Easing.OutExpo);
         }
     }
 }

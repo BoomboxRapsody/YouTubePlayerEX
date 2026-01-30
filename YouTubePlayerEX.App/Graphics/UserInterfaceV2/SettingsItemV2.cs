@@ -13,7 +13,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 {
     public sealed partial class SettingsItemV2 : CompositeDrawable, IConditionalFilterable
     {
-        private readonly IFormControl control;
+        public readonly IFormControl Control;
+
         private readonly SettingsRevertToDefaultButton revertButton;
 
         private readonly BindableBool controlDefault = new BindableBool(true);
@@ -31,7 +32,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
         public SettingsItemV2(IFormControl control)
         {
-            this.control = control;
+            Control = control;
 
             RelativeSizeAxes = Axes.X;
             AutoSizeAxes = Axes.Y;
@@ -40,8 +41,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             {
                 RelativeSizeAxes = Axes.X,
                 AutoSizeAxes = Axes.Y,
-                Direction = FillDirection.Vertical,
                 Padding = new MarginPadding { Horizontal = 30 },
+                Direction = FillDirection.Vertical,
                 Children = new Drawable[]
                 {
                     new Container
@@ -77,12 +78,18 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         {
             base.LoadComplete();
 
-            controlDefault.Value = control.IsDefault;
-            controlEnabled.Value = !control.IsDisabled;
+            controlDefault.Value = Control.IsDefault;
+            controlEnabled.Value = !Control.IsDisabled;
 
             controlDefault.BindValueChanged(_ => updateDefaultState());
             controlEnabled.BindValueChanged(_ => updateDefaultState(), true);
             FinishTransforms(true);
+
+            ScheduleAfterChildren(() =>
+            {
+                revertButton.RelativeSizeAxes = Axes.None;
+                revertButton.Height = ((Drawable)Control).DrawHeight;
+            });
         }
 
         private void updateDefaultState()
@@ -98,8 +105,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         protected override void Update()
         {
             base.Update();
-            controlDefault.Value = control.IsDefault;
-            controlEnabled.Value = !control.IsDisabled;
+            controlDefault.Value = Control.IsDefault;
+            controlEnabled.Value = !Control.IsDisabled;
         }
 
         #region ISettingsItem
@@ -110,18 +117,18 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         /// If set, this setting is considered as having a "classic" default value,
         /// and this is the function for overwriting the control with that value.
         /// </summary>
-        public Action? ApplyClassicDefault { get; set; }
+        public Action<IFormControl>? ApplyClassicDefault { get; set; }
 
         public void ApplyDefault()
         {
-            if (!control.IsDisabled)
-                control.SetDefault();
+            if (!Control.IsDisabled)
+                Control.SetDefault();
         }
 
         public event Action SettingChanged
         {
-            add => control.ValueChanged += value;
-            remove => control.ValueChanged -= value;
+            add => Control.ValueChanged += value;
+            remove => Control.ValueChanged -= value;
         }
 
         #endregion
@@ -137,7 +144,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             get
             {
                 var filterTerms = new List<LocalisableString>(Keywords.Select(k => (LocalisableString)k));
-                filterTerms.AddRange(control.FilterTerms);
+                filterTerms.AddRange(Control.FilterTerms);
 
                 if (HasClassicDefault)
                     filterTerms.Add(CLASSIC_DEFAULT_SEARCH_TERM);

@@ -40,31 +40,23 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         /// </summary>
         public LocalisableString HintText { get; init; }
 
-        private Box background = null!;
+        private FormControlBackground background = null!;
         private FormFieldCaption caption = null!;
-        private AdaptiveSpriteText text = null!;
 
-        private Sample? sampleChecked;
-        private Sample? sampleUnchecked;
-        private Sample? sampleDisabled;
+        private SwitchButton switchButton = null!;
+
+        [Resolved]
+        private OverlayColourProvider colourProvider { get; set; } = null!;
 
         [BackgroundDependencyLoader]
-        private void load(AudioManager audio)
+        private void load()
         {
             RelativeSizeAxes = Axes.X;
             AutoSizeAxes = Axes.Y;
 
-            Masking = true;
-            CornerRadius = 5;
-            CornerExponent = 2.5f;
-
             InternalChildren = new Drawable[]
             {
-                background = new Box
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    Colour = Color4Extensions.FromHex(@"22252a"),
-                },
+                background = new FormControlBackground(),
                 new Container
                 {
                     RelativeSizeAxes = Axes.X,
@@ -72,13 +64,13 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
                     Padding = new MarginPadding(9),
                     Children = new Drawable[]
                     {
-                        new FillFlowContainer
+                        new Container
                         {
+                            Anchor = Anchor.CentreLeft,
+                            Origin = Anchor.CentreLeft,
                             RelativeSizeAxes = Axes.X,
                             AutoSizeAxes = Axes.Y,
-                            Direction = FillDirection.Vertical,
                             Padding = new MarginPadding { Right = SwitchButton.WIDTH + 5 },
-                            Spacing = new Vector2(0f, 4f),
                             Children = new Drawable[]
                             {
                                 caption = new FormFieldCaption
@@ -86,13 +78,9 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
                                     Caption = Caption,
                                     TooltipText = HintText,
                                 },
-                                text = new AdaptiveSpriteText
-                                {
-                                    RelativeSizeAxes = Axes.X,
-                                },
                             },
                         },
-                        new SwitchButton
+                        switchButton = new SwitchButton
                         {
                             Anchor = Anchor.CentreRight,
                             Origin = Anchor.CentreRight,
@@ -101,9 +89,6 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
                     },
                 },
             };
-            sampleChecked = audio.Samples.Get(@"UI/check-on");
-            sampleUnchecked = audio.Samples.Get(@"UI/check-off");
-            sampleDisabled = audio.Samples.Get(@"UI/default-select-disabled");
         }
 
         protected override void LoadComplete()
@@ -113,20 +98,11 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             current.BindValueChanged(_ =>
             {
                 updateState();
-                playSamples();
-                background.FlashColour(ColourInfo.GradientVertical(Color4Extensions.FromHex(@"22252a"), Color4Extensions.FromHex(@"3d495c")), 800, Easing.OutQuint);
+                background.Flash();
 
                 ValueChanged?.Invoke();
             });
             current.BindDisabledChanged(_ => updateState(), true);
-        }
-
-        private void playSamples()
-        {
-            if (Current.Value)
-                sampleChecked?.Play();
-            else
-                sampleUnchecked?.Play();
         }
 
         protected override bool OnHover(HoverEvent e)
@@ -143,28 +119,20 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
         protected override bool OnClick(ClickEvent e)
         {
-            if (!Current.Disabled)
-                Current.Value = !Current.Value;
-            else
-                sampleDisabled?.Play();
-
+            switchButton.TriggerClick();
             return true;
         }
 
         private void updateState()
         {
-            caption.Colour = Current.Disabled ? Color4Extensions.FromHex(@"5c6470") : Color4Extensions.FromHex(@"dbe3f0");
-            text.Colour = Current.Disabled ? Color4Extensions.FromHex(@"5c6470") : Color4.White;
+            caption.Colour = Current.Disabled ? colourProvider.Background1 : colourProvider.Content2;
 
-            text.Text = Current.Value ? YTPlayerEXStrings.Enabled : YTPlayerEXStrings.Disabled;
-
-            // use FadeColour to override any existing colour transform (i.e. FlashColour on click).
-            background.FadeColour(IsHovered
-                ? ColourInfo.GradientVertical(Color4Extensions.FromHex(@"22252a"), Color4Extensions.FromHex(@"29313d"))
-                : Color4Extensions.FromHex(@"22252a"));
-
-            BorderThickness = IsHovered ? 2 : 0;
-            BorderColour = Current.Disabled ? Color4Extensions.FromHex(@"47566b") : Color4Extensions.FromHex(@"4d77b3");
+            if (IsDisabled)
+                background.VisualStyle = VisualStyle.Disabled;
+            else if (IsHovered)
+                background.VisualStyle = VisualStyle.Hovered;
+            else
+                background.VisualStyle = VisualStyle.Normal;
         }
 
         public IEnumerable<LocalisableString> FilterTerms => Caption.Yield();

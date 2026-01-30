@@ -15,6 +15,7 @@ using osu.Framework.Screens;
 using osu.Framework.Threading;
 using YouTubePlayerEX.App.Audio.Effects;
 using YouTubePlayerEX.App.Extensions;
+using YouTubePlayerEX.App.Graphics;
 using YouTubePlayerEX.App.Graphics.Containers;
 using YouTubePlayerEX.App.Graphics.UserInterface;
 using YouTubePlayerEX.App.Localisation;
@@ -33,6 +34,8 @@ namespace YouTubePlayerEX.App
         private BindableNumber<double> sampleVolume = null!;
         private FPSCounter fpsCounter;
         private Container topMostOverlayContent;
+        private OverlayColourProvider overlayColourProvider;
+        private AdaptiveColour colours = null!;
 
         [BackgroundDependencyLoader]
         private void load()
@@ -72,6 +75,10 @@ namespace YouTubePlayerEX.App
                 },
                 topMostOverlayContent = new Container { RelativeSizeAxes = Axes.Both },
             });
+
+            dependencies.CacheAs(colours = new AdaptiveColour());
+
+            dependencies.CacheAs(overlayColourProvider = new OverlayColourProvider(OverlayColourScheme.Blue));
 
             loadComponentSingleFile(fpsCounter = new FPSCounter
             {
