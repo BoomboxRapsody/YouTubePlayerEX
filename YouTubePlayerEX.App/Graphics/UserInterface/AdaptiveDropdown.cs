@@ -74,11 +74,11 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             }
 
             [BackgroundDependencyLoader(true)]
-            private void load(AudioManager audio)
+            private void load(OverlayColourProvider? colourProvider, AdaptiveColour colours, AudioManager audio)
             {
-                BackgroundColour = Color4Extensions.FromHex(@"22252a");
-                HoverColour = Color4Extensions.FromHex(@"4d72b3");
-                SelectionColour = Color4Extensions.FromHex(@"393e46").Opacity(0.5f);
+                BackgroundColour = colourProvider?.Background5 ?? Color4.Black;
+                HoverColour = colourProvider?.Light4 ?? colours.PinkDarker;
+                SelectionColour = colourProvider?.Background3 ?? colours.PinkDarker.Opacity(0.5f);
 
                 sampleOpen = audio.Samples.Get(@"UI/dropdown-open");
                 sampleClose = audio.Samples.Get(@"UI/dropdown-close");
@@ -269,9 +269,9 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     }
 
                     [BackgroundDependencyLoader(true)]
-                    private void load()
+                    private void load(OverlayColourProvider? colourProvider)
                     {
-                        Chevron.Colour = Color4.White;
+                        Chevron.Colour = colourProvider?.Background5 ?? Color4.Black;
                     }
 
                     private bool hovering;
@@ -367,6 +367,12 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 AddInternal(new HoverClickSounds());
             }
 
+            [Resolved]
+            private OverlayColourProvider? colourProvider { get; set; }
+
+            [Resolved]
+            private AdaptiveColour colours { get; set; } = null!;
+
             protected override void LoadComplete()
             {
                 base.LoadComplete();
@@ -393,8 +399,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             private void updateColour()
             {
                 bool hovered = Enabled.Value && IsHovered;
-                var hoveredColour = Color4Extensions.FromHex(@"bb1177");
-                var unhoveredColour = Color4.Black;
+                var hoveredColour = colourProvider?.Light4 ?? colours.PinkDarker;
+                var unhoveredColour = colourProvider?.Background5 ?? Color4.Black;
 
                 Colour = Color4.White;
                 Alpha = Enabled.Value ? 1 : 0.3f;
