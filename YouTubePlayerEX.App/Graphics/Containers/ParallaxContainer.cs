@@ -17,8 +17,6 @@ namespace YouTubePlayerEX.App.Graphics.Containers
         /// </summary>
         public float ParallaxAmount = DEFAULT_PARALLAX_AMOUNT;
 
-        private bool parallaxEnabled;
-
         private const float parallax_duration = 100;
 
         private bool firstUpdate = true;
@@ -35,7 +33,7 @@ namespace YouTubePlayerEX.App.Graphics.Containers
         }
 
         private readonly Container content;
-        private InputManager input;
+        private InputManager? input;
 
         protected override Container<Drawable> Content => content;
 
@@ -58,7 +56,7 @@ namespace YouTubePlayerEX.App.Graphics.Containers
 
             Vector2 offset = Vector2.Zero;
 
-            if (input.CurrentState.Mouse != null)
+            if (input?.CurrentState.Mouse != null)
             {
                 var sizeDiv2 = DrawSize / 2;
 

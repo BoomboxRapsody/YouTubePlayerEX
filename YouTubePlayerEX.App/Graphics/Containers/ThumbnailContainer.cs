@@ -17,15 +17,13 @@ namespace YouTubePlayerEX.App.Graphics.Containers
     /// </summary>
     public partial class ThumbnailContainer : CompositeDrawable, IEquatable<ThumbnailContainer>
     {
-        public Sprite Sprite;
+        public Sprite Sprite = null!;
 
         private string textureName;
 
-        private BufferedContainer bufferedContainer;
+        private BufferedContainer bufferedContainer = null!;
 
-        private Container box;
-        private Sprite avatarIcon;
-        private TextureStore textureStore;
+        private TextureStore textureStore = null!;
 
         public ThumbnailContainer(string textureName = @"")
         {
@@ -117,7 +115,7 @@ namespace YouTubePlayerEX.App.Graphics.Containers
             return MathF.Round(scale / 0.2f, MidpointRounding.AwayFromZero) * 0.2f;
         }
 
-        public virtual bool Equals(ThumbnailContainer other)
+        public virtual bool Equals(ThumbnailContainer? other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;

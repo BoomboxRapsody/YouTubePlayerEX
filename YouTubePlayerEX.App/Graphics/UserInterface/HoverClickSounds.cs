@@ -16,10 +16,10 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
     /// </summary>
     public partial class HoverClickSounds : HoverSounds
     {
-        public Bindable<bool> Enabled = new Bindable<bool>(true);
+        public new Bindable<bool> Enabled = new Bindable<bool>(true);
 
-        private Sample sampleClick;
-        private Sample sampleClickDisabled;
+        private Sample sampleClick = null!;
+        private Sample sampleClickDisabled = null!;
 
         private readonly MouseButton[] buttons;
 
@@ -31,7 +31,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         /// Array of button codes which should trigger the click sound.
         /// If this optional parameter is omitted or set to <code>null</code>, the click sound will only be played on left click.
         /// </param>
-        public HoverClickSounds(HoverSampleSet sampleSet = HoverSampleSet.Default, MouseButton[] buttons = null)
+        public HoverClickSounds(HoverSampleSet sampleSet = HoverSampleSet.Default, MouseButton[]? buttons = null)
             : base(sampleSet)
         {
             this.buttons = buttons ?? new[] { MouseButton.Left };

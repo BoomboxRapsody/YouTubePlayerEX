@@ -22,33 +22,32 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
     public partial class CommentDisplay : CompositeDrawable
     {
-        private ProfileImage profileImage;
-        private TruncatingSpriteText channelName;
-        private TruncatingSpriteText commentText;
-        public Action<VideoMetadataDisplay> ClickEvent;
-        private AdaptiveSpriteText likeCount, translateToText;
-        private RoundedButtonContainer translateButton;
+        private ProfileImage profileImage = null!;
+        private TruncatingSpriteText channelName = null!;
+        private TruncatingSpriteText commentText = null!;
+        public Action<VideoMetadataDisplay> ClickEvent = null!;
+        private AdaptiveSpriteText likeCount = null!, translateToText = null!;
+        private RoundedButtonContainer translateButton = null!;
 
-        private Box bgLayer;
-
-        [Resolved]
-        private YouTubeAPI api { get; set; }
+        private Box bgLayer = null!;
 
         [Resolved]
-        private YouTubePlayerEXAppBase app { get; set; }
+        private YouTubeAPI api { get; set; } = null!;
 
         [Resolved]
-        private FrameworkConfigManager frameworkConfig { get; set; }
+        private YouTubePlayerEXAppBase app { get; set; } = null!;
 
         [Resolved]
-        private YTPlayerEXConfigManager appConfig { get; set; }
+        private FrameworkConfigManager frameworkConfig { get; set; } = null!;
+
+        [Resolved]
+        private YTPlayerEXConfigManager appConfig { get; set; } = null!;
 
         private Bindable<string> localeBindable = new Bindable<string>();
         private Bindable<VideoMetadataTranslateSource> translationSource = new Bindable<VideoMetadataTranslateSource>();
 
-        public CommentDisplay(Comment comment, Comment replyReference = null)
+        public CommentDisplay(Comment comment)
         {
-            this.replyReference = replyReference;
             commentData = comment;
             Height = 110;
             Task.Run(async () =>
@@ -209,14 +208,15 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         private bool translated;
 
-        private Comment commentData, replyReference;
+        private Comment commentData, replyReference = null!;
 
         private HoverSounds samples = new HoverClickSounds(HoverSampleSet.Default);
 
         protected override void LoadComplete()
         {
             base.LoadComplete();
-            (samples as HoverClickSounds).Enabled.Value = (ClickEvent != null);
+            if (samples is HoverClickSounds hoverClickSounds)
+                hoverClickSounds.Enabled.Value = (ClickEvent != null);
         }
 
         private void translateComment()
@@ -236,7 +236,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         }
 
         [Resolved]
-        private GoogleTranslate translate { get; set; }
+        private GoogleTranslate translate { get; set; } = null!;
 
         public void UpdateData()
         {
@@ -247,7 +247,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     DateTimeOffset? dateTime = commentData.Snippet.PublishedAtDateTimeOffset;
                     DateTimeOffset now = DateTime.Now;
                     Channel channelData = api.GetChannel(commentData.Snippet.AuthorChannelId.Value);
-                    Channel channelData2 = null;
+                    Channel? channelData2 = null;
 
                     if (replyReference != null)
                         channelData2 = api.GetChannel(replyReference.Snippet.AuthorChannelId.Value);
@@ -263,7 +263,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                         translateToText.Text = YTPlayerEXStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
                     }, true);
                 }
-                catch (Exception e)
+                catch
                 {
                     Hide();
                 }
