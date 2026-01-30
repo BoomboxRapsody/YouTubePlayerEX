@@ -1,4 +1,7 @@
-﻿using System.Runtime.InteropServices;
+﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
+// See the LICENCE file in the repository root for full licence text.
+
+using System.Runtime.InteropServices;
 using osu.Framework.Graphics.Shaders.Types;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2

@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
+// See the LICENCE file in the repository root for full licence text.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using osu.Framework.Allocation;
@@ -9,7 +12,6 @@ using osu.Framework.Extensions.IEnumerableExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input.Events;
 using osu.Framework.Localisation;
@@ -215,9 +217,9 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             public IconUsage Icon { get; init; }
 
             [BackgroundDependencyLoader]
-            private void load()
+            private void load(OverlayColourProvider overlayColourProvider)
             {
-                DefaultBackgroundColour = Color4Extensions.FromHex(@"336ecc");
+                DefaultBackgroundColour = overlayColourProvider.Colour3;
                 triangleGradientSecondColour ??= DefaultBackgroundColour.Lighten(0.2f);
 
                 if (Text == default)

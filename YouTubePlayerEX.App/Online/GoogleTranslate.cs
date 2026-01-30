@@ -1,19 +1,17 @@
-﻿using System;
+﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
+// See the LICENCE file in the repository root for full licence text.
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Web;
-using AngleSharp.Dom;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using osu.Framework.Configuration;
 using osu.Framework.Extensions;
 using osu.Framework.Logging;
-using SharpGen.Runtime;
 using YouTubePlayerEX.App.Localisation;
 
 namespace YouTubePlayerEX.App.Online

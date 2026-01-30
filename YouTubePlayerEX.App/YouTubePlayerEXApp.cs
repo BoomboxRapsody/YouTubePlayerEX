@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
+// See the LICENCE file in the repository root for full licence text.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -6,9 +9,12 @@ using System.Threading.Tasks;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Bindables;
+using osu.Framework.Configuration;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
+using osu.Framework.Input;
+using osu.Framework.Input.Events;
 using osu.Framework.Localisation;
 using osu.Framework.Logging;
 using osu.Framework.Screens;
@@ -19,6 +25,7 @@ using YouTubePlayerEX.App.Graphics;
 using YouTubePlayerEX.App.Graphics.Containers;
 using YouTubePlayerEX.App.Graphics.UserInterface;
 using YouTubePlayerEX.App.Localisation;
+using YouTubePlayerEX.App.Overlays;
 using YouTubePlayerEX.App.Screens;
 using YouTubePlayerEX.App.Updater;
 
@@ -33,9 +40,38 @@ namespace YouTubePlayerEX.App
 
         private BindableNumber<double> sampleVolume = null!;
         private FPSCounter fpsCounter;
-        private Container topMostOverlayContent;
+        private Container topMostOverlayContent, overlayContainer;
         private OverlayColourProvider overlayColourProvider;
         private AdaptiveColour colours = null!;
+
+        private OnScreenDisplay onScreenDisplay;
+
+        [Resolved]
+        private FrameworkConfigManager frameworkConfig { get; set; }
+
+        private Bindable<float> uiScale;
+
+        public override bool OnPressed(KeyBindingPressEvent<PlatformAction> e)
+        {
+            const float adjustment_increment = 0.05f;
+
+            switch (e.Action)
+            {
+                case PlatformAction.ZoomIn:
+                    uiScale.Value += adjustment_increment;
+                    return true;
+
+                case PlatformAction.ZoomOut:
+                    uiScale.Value -= adjustment_increment;
+                    return true;
+
+                case PlatformAction.ZoomDefault:
+                    uiScale.SetDefault();
+                    return true;
+            }
+
+            return base.OnPressed(e);
+        }
 
         [BackgroundDependencyLoader]
         private void load()
@@ -44,6 +80,11 @@ namespace YouTubePlayerEX.App
 
             var mappings = languages.Select(language =>
             {
+#if DEBUG
+                if (language == Language.debug)
+                    return new LocaleMapping("debug", new DebugLocalisationStore());
+#endif
+
                 string cultureCode = language.ToCultureCode();
 
                 try
@@ -57,6 +98,8 @@ namespace YouTubePlayerEX.App
                 }
             }).Where(m => m != null);
 
+            uiScale = LocalConfig.GetBindable<float>(Config.YTPlayerEXSetting.UIScale);
+
             Localisation.AddLocaleMappings(mappings);
 
             // dependency on notification overlay, dependent by settings overlay
@@ -68,17 +111,30 @@ namespace YouTubePlayerEX.App
             {
                 new ScalingContainer
                 {
-                    Child = screenStack = new ScreenStack
-                    {
-                        RelativeSizeAxes = Axes.Both
-                    },
+                    Children = new Drawable[] {
+                        screenStack = new ScreenStack
+                        {
+                            RelativeSizeAxes = Axes.Both
+                        },
+                        overlayContainer = new Container
+                        {
+                            RelativeSizeAxes = Axes.Both
+                        },
+                        topMostOverlayContent = new Container { RelativeSizeAxes = Axes.Both },
+                    }
                 },
-                topMostOverlayContent = new Container { RelativeSizeAxes = Axes.Both },
             });
 
             dependencies.CacheAs(colours = new AdaptiveColour());
 
             dependencies.CacheAs(overlayColourProvider = new OverlayColourProvider(OverlayColourScheme.Blue));
+
+            onScreenDisplay = new OnScreenDisplay();
+
+            onScreenDisplay.BeginTracking(this, frameworkConfig);
+            onScreenDisplay.BeginTracking(this, LocalConfig);
+
+            loadComponentSingleFile(onScreenDisplay, overlayContainer.Add, true);
 
             loadComponentSingleFile(fpsCounter = new FPSCounter
             {

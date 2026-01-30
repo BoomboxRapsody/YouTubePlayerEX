@@ -1,6 +1,8 @@
-﻿using osu.Framework.Localisation;
+﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
+// See the LICENCE file in the repository root for full licence text.
+
+using osu.Framework.Localisation;
 using YouTubePlayerEX.App.Extensions;
-using static osuTK.Graphics.OpenGL.GL;
 
 namespace YouTubePlayerEX.App.Localisation
 {
@@ -12,6 +14,11 @@ namespace YouTubePlayerEX.App.Localisation
         /// "{0} • {1} views • {2}"
         /// </summary>
         public static LocalisableString VideoMetadataDesc(string username, string views, string daysAgo) => new TranslatableString(getKey(@"video_metadata_desc"), "{0} • {1} views • {2}", username, views, daysAgo);
+
+        /// <summary>
+        /// "Playback speed"
+        /// </summary>
+        public static LocalisableString PlaybackSpeedWithoutValue => new TranslatableString(getKey(@"playback_speed_without_value"), "Playback speed");
 
         /// <summary>
         /// "Export logs"

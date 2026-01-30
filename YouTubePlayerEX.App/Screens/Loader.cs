@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
+// See the LICENCE file in the repository root for full licence text.
+
+using System.Collections.Generic;
 using System.Linq;
 using osu.Framework.Allocation;
-using osu.Framework.Development;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shaders;
-using osu.Framework.Utils;
 using osu.Framework.Screens;
 using osu.Framework.Threading;
 using YouTubePlayerEX.App.Graphics.UserInterface;

@@ -253,4 +253,7 @@
   <data name="revert_to_default" xml:space="preserve">
     <value>Revert to default</value>
   </data>
+  <data name="playback_speed_without_value" xml:space="preserve">
+    <value>Playback speed</value>
+  </data>
 </root>

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
+// See the LICENCE file in the repository root for full licence text.
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,7 +21,6 @@ using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
-using osu.Framework.Graphics.Rendering;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Video;
@@ -48,9 +50,10 @@ using YouTubePlayerEX.App.Input;
 using YouTubePlayerEX.App.Input.Binding;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
+using YouTubePlayerEX.App.Overlays;
+using YouTubePlayerEX.App.Overlays.OSD;
 using YouTubePlayerEX.App.Updater;
 using YouTubePlayerEX.App.Utils;
-using static SharpGen.Runtime.TypeDataStorage;
 using static YouTubePlayerEX.App.YouTubePlayerEXApp;
 using Container = osu.Framework.Graphics.Containers.Container;
 using Language = YouTubePlayerEX.App.Localisation.Language;
@@ -126,7 +129,8 @@ namespace YouTubePlayerEX.App.Screens
         private ThumbnailContainer thumbnailContainer;
         private AdaptiveSliderBar<double> seekbar;
         private Bindable<LocalisableString> updateInfomationText;
-        private Bindable<bool> updateButtonEnabled;
+        private Bindable<bool> updateButtonEnabled, fpsDisplay;
+        private Bindable<AspectRatioMethod> aspectRatioMethod;
 
         [Resolved]
         private AdaptiveColour colours { get; set; } = null!;
@@ -134,7 +138,7 @@ namespace YouTubePlayerEX.App.Screens
         private Bindable<SettingsNote.Data> videoQualityWarning = new Bindable<SettingsNote.Data>();
 
         [BackgroundDependencyLoader]
-        private void load(ISampleStore sampleStore, FrameworkConfigManager config, YTPlayerEXConfigManager appConfig, GameHost host, Storage storage)
+        private void load(ISampleStore sampleStore, FrameworkConfigManager config, YTPlayerEXConfigManager appConfig, GameHost host, Storage storage, OverlayColourProvider overlayColourProvider)
         {
             window = host.Window;
 
@@ -144,6 +148,7 @@ namespace YouTubePlayerEX.App.Screens
             exportStorage = storage.GetStorageForDirectory(@"exports");
 
             localeBindable = config.GetBindable<string>(FrameworkSetting.Locale);
+            fpsDisplay = appConfig.GetBindable<bool>(YTPlayerEXSetting.ShowFpsDisplay);
             adjustPitch = appConfig.GetBindable<bool>(YTPlayerEXSetting.AdjustPitchOnSpeedChange);
             videoQuality = appConfig.GetBindable<Config.VideoQuality>(YTPlayerEXSetting.VideoQuality);
             audioLanguage = appConfig.GetBindable<Localisation.Language>(YTPlayerEXSetting.AudioLanguage);
@@ -157,6 +162,8 @@ namespace YouTubePlayerEX.App.Screens
             windowedPositionY = config.GetBindable<double>(FrameworkSetting.WindowedPositionY);
             updateInfomationText = game.UpdateManagerVersionText.GetBoundCopy();
             updateButtonEnabled = game.UpdateButtonEnabled.GetBoundCopy();
+
+            aspectRatioMethod = appConfig.GetBindable<AspectRatioMethod>(YTPlayerEXSetting.AspectRatioMethod);
 
             windowedResolution.Value = sizeWindowed.Value;
 
@@ -434,7 +441,7 @@ namespace YouTubePlayerEX.App.Screens
                         new Box
                         {
                             RelativeSizeAxes = Axes.Both,
-                            Colour = Color4Extensions.FromHex("#1a1a1a"),
+                            Colour = overlayColourProvider.Background6,
                         },
                         new AdaptiveSpriteText
                         {
@@ -477,7 +484,7 @@ namespace YouTubePlayerEX.App.Screens
                         new Box
                         {
                             RelativeSizeAxes = Axes.Both,
-                            Colour = Color4Extensions.FromHex("#1a1a1a"),
+                            Colour = overlayColourProvider.Background6,
                         },
                         new AdaptiveSpriteText
                         {
@@ -560,7 +567,7 @@ namespace YouTubePlayerEX.App.Screens
                                                 new SettingsItemV2(new FormEnumDropdown<AspectRatioMethod>
                                                 {
                                                     Caption = YTPlayerEXStrings.AspectRatioMethod,
-                                                    Current = appConfig.GetBindable<AspectRatioMethod>(YTPlayerEXSetting.AspectRatioMethod),
+                                                    Current = aspectRatioMethod,
                                                 }),
                                                 new SettingsItemV2(new FormSliderBar<double>
                                                 {
@@ -636,7 +643,7 @@ namespace YouTubePlayerEX.App.Screens
                                                 new SettingsItemV2(new FormCheckBox
                                                 {
                                                     Caption = YTPlayerEXStrings.ShowFPS,
-                                                    Current = appConfig.GetBindable<bool>(YTPlayerEXSetting.ShowFpsDisplay),
+                                                    Current = fpsDisplay,
                                                 }),
                                                 new AdaptiveSpriteText
                                                 {
@@ -719,7 +726,7 @@ namespace YouTubePlayerEX.App.Screens
                         new Box
                         {
                             RelativeSizeAxes = Axes.Both,
-                            Colour = Color4Extensions.FromHex("#1a1a1a"),
+                            Colour = overlayColourProvider.Background6,
                         },
                         new FillFlowContainer
                         {
@@ -954,7 +961,7 @@ namespace YouTubePlayerEX.App.Screens
                         new Box
                         {
                             RelativeSizeAxes = Axes.Both,
-                            Colour = Color4Extensions.FromHex("#1a1a1a"),
+                            Colour = overlayColourProvider.Background6,
                         },
                         commentsContainerTitle = new AdaptiveSpriteText
                         {
@@ -1384,15 +1391,9 @@ namespace YouTubePlayerEX.App.Screens
             loadBtnOverlayShow.ClickAction = _ => showOverlayContainer(loadVideoContainer);
             settingsOverlayShowBtn.ClickAction = _ => showOverlayContainer(settingsContainer);
 
-            windowModeDropdown.Current.BindValueChanged(wndMode =>
+            windowModeDropdown.Current.BindValueChanged(_ =>
             {
                 updateDisplaySettingsVisibility();
-                if (wndMode.NewValue == WindowMode.Fullscreen)
-                {
-                    alert.Text = YTPlayerEXStrings.FullscreenEntered;
-                    alert.Show();
-                    spinnerShow = Scheduler.AddDelayed(alert.Hide, 3000);
-                }
             }, true);
 
             currentDisplay.BindValueChanged(display => Schedule(() =>
@@ -1486,8 +1487,17 @@ namespace YouTubePlayerEX.App.Screens
                 case GlobalAction.FastRewind_10sec:
                     currentVideoSource?.FastRewind10Sec();
                     return true;
-            }
 
+                case GlobalAction.DecreasePlaybackSpeed:
+                    playbackSpeed.Value -= 0.05;
+                    osd.Display(new SpeedChangeToast(playbackSpeed.Value));
+                    return true;
+
+                case GlobalAction.IncreasePlaybackSpeed:
+                    playbackSpeed.Value += 0.05;
+                    osd.Display(new SpeedChangeToast(playbackSpeed.Value));
+                    return true;
+            }
 
             if (e.Repeat)
                 return false;
@@ -1535,9 +1545,64 @@ namespace YouTubePlayerEX.App.Screens
                             currentVideoSource.Play(true);
                     }
                     return true;
+
+                case GlobalAction.ToggleAdjustPitchOnSpeedChange:
+                    adjustPitch.Value = !adjustPitch.Value;
+                    return true;
+
+                case GlobalAction.ToggleFPSDisplay:
+                    fpsDisplay.Value = !fpsDisplay.Value;
+                    return true;
+
+                case GlobalAction.CycleCaptionLanguage:
+                    CycleCaptionLanguage();
+                    return true;
+
+                case GlobalAction.CycleAspectRatio:
+                    CycleAspectRatio();
+                    return true;
             }
 
             return false;
+        }
+
+        [Resolved]
+        private OnScreenDisplay osd { get; set; } = null!;
+
+        protected void CycleCaptionLanguage()
+        {
+            switch (captionLanguage.Value)
+            {
+                case ClosedCaptionLanguage.Disabled:
+                    captionLanguage.Value = ClosedCaptionLanguage.English;
+                    break;
+
+                case ClosedCaptionLanguage.English:
+                    captionLanguage.Value = ClosedCaptionLanguage.Korean;
+                    break;
+
+                case ClosedCaptionLanguage.Korean:
+                    captionLanguage.Value = ClosedCaptionLanguage.Japanese;
+                    break;
+
+                case ClosedCaptionLanguage.Japanese:
+                    captionLanguage.Value = ClosedCaptionLanguage.Disabled;
+                    break;
+            }
+        }
+
+        protected void CycleAspectRatio()
+        {
+            switch (aspectRatioMethod.Value)
+            {
+                case AspectRatioMethod.Letterbox:
+                    aspectRatioMethod.Value = AspectRatioMethod.Fill;
+                    break;
+
+                case AspectRatioMethod.Fill:
+                    aspectRatioMethod.Value = AspectRatioMethod.Letterbox;
+                    break;
+            }
         }
 
         protected override void Update()
