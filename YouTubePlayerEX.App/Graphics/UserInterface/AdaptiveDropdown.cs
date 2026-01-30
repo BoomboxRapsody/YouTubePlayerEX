@@ -448,10 +448,10 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     }
 
                     [BackgroundDependencyLoader]
-                    private void load()
+                    private void load(OverlayColourProvider? colourProvider)
                     {
-                        BackgroundUnfocused = new Color4(10, 10, 10, 255);
-                        BackgroundFocused = new Color4(10, 10, 10, 255);
+                        BackgroundUnfocused = colourProvider?.Background5 ?? new Color4(10, 10, 10, 255);
+                        BackgroundFocused = colourProvider?.Background5 ?? new Color4(10, 10, 10, 255);
                     }
 
                     protected override void OnFocus(FocusEvent e)
