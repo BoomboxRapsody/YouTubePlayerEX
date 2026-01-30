@@ -259,12 +259,12 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                         likeCount.Text = Convert.ToInt32(commentData.Snippet.LikeCount).ToStandardFormattedString(0);
                         translateToText.Text = YTPlayerEXStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
                         profileImage.UpdateProfileImage(commentData.Snippet.AuthorChannelId.Value);
-                    });
 
-                    localeBindable.BindValueChanged(locale =>
-                    {
-                        translateToText.Text = YTPlayerEXStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
-                    }, true);
+                        localeBindable.BindValueChanged(locale =>
+                        {
+                            translateToText.Text = YTPlayerEXStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
+                        }, true);
+                    });
                 }
                 catch
                 {

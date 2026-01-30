@@ -1032,14 +1032,7 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     Task.Run(async () =>
                     {
-                        try
-                        {
-                            await SetVideoSource(videoId, true);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"예외 발생: {ex.Message}");
-                        }
+                        await SetVideoSource(videoId, true);
                     });
                 }
             });
@@ -1055,14 +1048,7 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     Task.Run(async () =>
                     {
-                        try
-                        {
-                            await SetVideoSource(videoId, true);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"예외 발생: {ex.Message}");
-                        }
+                        await SetVideoSource(videoId, true);
                     });
                 }
             });
@@ -1384,14 +1370,7 @@ namespace YouTubePlayerEX.App.Screens
 
             loadBtn.ClickAction = async _ =>
             {
-                try
-                {
-                    await SetVideoSource(videoIdBox.Text);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"예외 발생: {ex.Message}");
-                }
+                await SetVideoSource(videoIdBox.Text);
             };
 
             commentOpenButton.ClickAction = _ =>
