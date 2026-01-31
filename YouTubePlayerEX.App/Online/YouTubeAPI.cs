@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
@@ -55,7 +56,7 @@ namespace YouTubePlayerEX.App.Online
             var part = "snippet,replies";
             var request = youtubeService.CommentThreads.List(part);
 
-            request.MaxResults = 25; // hell
+            request.MaxResults = 20; // <------ why 20? dues to quota limits
             request.VideoId = videoId;
             request.Order = orderEnum;
 
@@ -66,14 +67,14 @@ namespace YouTubePlayerEX.App.Online
             return result;
         }
 
-        public Comment GetComment(string commentId)
+        public async Task<Comment> GetComment(string commentId)
         {
             var part = "snippet";
             var request = youtubeService.Comments.List(part);
 
             request.Id = commentId;
 
-            var response = request.Execute();
+            var response = await request.ExecuteAsync();
 
             var result = response.Items.First();
 

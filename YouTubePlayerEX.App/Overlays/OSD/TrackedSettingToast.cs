@@ -32,9 +32,10 @@ namespace YouTubePlayerEX.App.Overlays.OSD
 
         private Bindable<double?> lastPlaybackTime;
 
-        public TrackedSettingToast(SettingDescription description)
+        public TrackedSettingToast(SettingDescription description, bool canPlaySound = true)
             : base(description.Name, description.Value)
         {
+            this.canPlaySound = canPlaySound;
             ExtraText = description.Shortcut;
 
             FillFlowContainer<OptionLight> optionLights;
@@ -84,11 +85,14 @@ namespace YouTubePlayerEX.App.Overlays.OSD
         [Resolved]
         private SessionStatics statics { get; set; }
 
+        private bool canPlaySound;
+
         protected override void LoadComplete()
         {
             base.LoadComplete();
 
-            playSound();
+            if (canPlaySound)
+                playSound();
         }
 
         private void playSound()

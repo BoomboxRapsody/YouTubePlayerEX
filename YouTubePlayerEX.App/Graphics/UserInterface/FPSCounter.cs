@@ -57,14 +57,19 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         /// </summary>
         private double lastDisplayRequiredTime;
 
+        private IBindable<bool> uiVisible;
+
         public FPSCounter()
         {
+            AlwaysPresent = true;
             AutoSizeAxes = Axes.Both;
         }
 
         [BackgroundDependencyLoader]
-        private void load(YTPlayerEXConfigManager config, GameHost gameHost)
+        private void load(YTPlayerEXConfigManager config, GameHost gameHost, ScreenshotManager screenshotManager)
         {
+            uiVisible = screenshotManager.CursorVisibility.GetBoundCopy();
+
             InternalChildren = new Drawable[]
             {
                 mainContent = new Container
@@ -122,6 +127,21 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
             config.BindWith(YTPlayerEXSetting.ShowFpsDisplay, showFpsDisplay);
 
+            uiVisible.BindValueChanged(visible =>
+            {
+                Schedule(() =>
+                {
+                    if (visible.NewValue)
+                    {
+                        Show();
+                    }
+                    else
+                    {
+                        Hide();
+                    }
+                });
+            }, true);
+
             drawClock = gameHost.DrawThread.Clock;
             updateClock = gameHost.UpdateThread.Clock;
             inputClock = gameHost.InputThread.Clock;
@@ -143,9 +163,9 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             State.BindValueChanged(state => showFpsDisplay.Value = state.NewValue == Visibility.Visible);
         }
 
-        protected override void PopIn() => this.FadeIn(100);
+        protected override void PopIn() => this.FadeIn(uiVisible.Value ? 100 : 0);
 
-        protected override void PopOut() => this.FadeOut(100);
+        protected override void PopOut() => this.FadeOut(uiVisible.Value ? 100 : 0);
 
         protected override bool OnHover(HoverEvent e)
         {

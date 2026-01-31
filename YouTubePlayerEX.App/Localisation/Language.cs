@@ -11,6 +11,21 @@ namespace YouTubePlayerEX.App.Localisation
     [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     public enum Language
     {
+        [Description(@"繁體中文（台灣）")]
+        zh_hant,
+
+        [Description(@"Nederlands")]
+        nl,
+
+        [Description(@"Deutsch")]
+        de,
+
+        [Description(@"Italiano")]
+        it,
+
+        [Description(@"Português")]
+        pt,
+
         [Description(@"English")]
         en,
 
@@ -23,11 +38,17 @@ namespace YouTubePlayerEX.App.Localisation
         [Description(@"Français")]
         fr,
 
-        [Description(@"Deutsch")]
-        de,
-
         [Description(@"Русский")]
         ru,
+
+        [Description(@"español")]
+        es,
+
+        [Description(@"Türkçe")]
+        tr,
+
+        [Description(@"Tiếng Việt")]
+        vi,
 
 #if DEBUG
         [Description(@"Debug (show raw keys)")]

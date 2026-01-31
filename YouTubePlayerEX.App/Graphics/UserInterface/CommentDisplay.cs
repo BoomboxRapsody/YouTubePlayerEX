@@ -27,7 +27,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
     public partial class CommentDisplay : CompositeDrawable
     {
         private ProfileImage profileImage = null!;
-        private TruncatingSpriteText channelName = null!;
+        private AdaptiveTextFlowContainer channelName = null!;
         private TruncatingSpriteText commentText = null!;
         public Action<VideoMetadataDisplay> ClickEvent = null!;
         private AdaptiveSpriteText likeCount = null!, translateToText = null!;
@@ -94,9 +94,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                             },
                             Children = new Drawable[]
                             {
-                                channelName = new TruncatingSpriteText
+                                channelName = new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "SemiBold"))
                                 {
-                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "SemiBold"),
                                     RelativeSizeAxes = Axes.X,
                                     Text = "[channel name]",
                                     Colour = overlayColourProvider.Background1,
@@ -255,14 +254,11 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     DateTimeOffset? dateTime = commentData.Snippet.PublishedAtDateTimeOffset;
                     DateTimeOffset now = DateTime.Now;
                     Channel channelData = api.GetChannel(commentData.Snippet.AuthorChannelId.Value);
-                    Channel? channelData2 = null;
-
-                    if (replyReference != null)
-                        channelData2 = api.GetChannel(replyReference.Snippet.AuthorChannelId.Value);
 
                     Schedule(() =>
                     {
-                        channelName.Text = (channelData2 == null) ? api.GetLocalizedChannelTitle(channelData) : YTPlayerEXStrings.CommentReply(api.GetLocalizedChannelTitle(channelData), api.GetLocalizedChannelTitle(channelData2));
+                        channelName.Text = api.GetLocalizedChannelTitle(channelData);
+                        channelName.AddText(" ", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"));
                         commentText.Text = commentData.Snippet.TextOriginal;
                         likeCount.Text = Convert.ToInt32(commentData.Snippet.LikeCount).ToStandardFormattedString(0);
                         translateToText.Text = YTPlayerEXStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());

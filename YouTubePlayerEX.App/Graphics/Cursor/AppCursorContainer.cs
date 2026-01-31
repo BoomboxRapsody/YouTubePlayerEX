@@ -15,8 +15,10 @@ using osu.Framework.Graphics.Cursor;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Events;
+using osu.Framework.Platform;
 using osu.Framework.Utils;
 using osuTK;
+using YouTubePlayerEX.App.Config;
 
 namespace YouTubePlayerEX.App.Graphics.Cursor
 {
@@ -47,6 +49,8 @@ namespace YouTubePlayerEX.App.Graphics.Cursor
         private DragRotationState dragRotationState;
         private Vector2 positionMouseDown;
         private Vector2 lastMovePosition;
+
+        private Bindable<bool> cursorRotate = null!;
         private Sample tapSample = null!;
 
         private MouseInputDetector mouseInputDetector = null!;
@@ -54,8 +58,13 @@ namespace YouTubePlayerEX.App.Graphics.Cursor
         private bool visible;
 
         [BackgroundDependencyLoader]
-        private void load(AudioManager audio)
+        private void load(AudioManager audio, YTPlayerEXConfigManager config, ScreenshotManager? screenshotManager)
         {
+            cursorRotate = config.GetBindable<bool>(YTPlayerEXSetting.CursorRotation);
+
+            if (screenshotManager != null)
+                screenshotCursorVisibility.BindTo(screenshotManager.CursorVisibility);
+
             tapSample = audio.Samples.Get(@"cursor-tap");
 
             Add(mouseInputDetector = new MouseInputDetector());
@@ -175,7 +184,7 @@ namespace YouTubePlayerEX.App.Graphics.Cursor
                 activeCursor.AdditiveLayer.Alpha = 0;
                 activeCursor.AdditiveLayer.FadeInFromZero(800, Easing.OutQuint);
 
-                if (dragRotationState != DragRotationState.Rotating)
+                if (cursorRotate.Value && dragRotationState != DragRotationState.Rotating)
                 {
                     // if cursor is already rotating don't reset its rotate origin
                     dragRotationState = DragRotationState.DragStarted;

@@ -59,199 +59,199 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="aspect_ratio_method" xml:space="preserve">
-    <value>Метод соотношения сторон</value>
+    <value>Aspect ratio method</value>
   </data>
   <data name="audio" xml:space="preserve">
-    <value>Аудио</value>
+    <value>Audio</value>
   </data>
   <data name="audio_language" xml:space="preserve">
-    <value>Аудио треки (только доступно)</value>
+    <value>Audio tracks (only available)</value>
   </data>
   <data name="auto" xml:space="preserve">
-    <value>Авто</value>
+    <value>Auto</value>
   </data>
   <data name="caption_disabled" xml:space="preserve">
-    <value>Отключено</value>
+    <value>Disabled</value>
   </data>
   <data name="caption_language" xml:space="preserve">
-    <value>Закрытый язык субтитров (только доступно)</value>
+    <value>Closed caption language (only available)</value>
   </data>
   <data name="disabled" xml:space="preserve">
-    <value>Отключено</value>
+    <value>Disabled</value>
   </data>
   <data name="display" xml:space="preserve">
-    <value>Отображение</value>
+    <value>Display</value>
   </data>
   <data name="enabled" xml:space="preserve">
-    <value>Включено</value>
+    <value>Enabled</value>
   </data>
   <data name="error_noVideoId" xml:space="preserve">
-    <value>ID видео не должен быть пустым!</value>
+    <value>Video ID must not be empty!</value>
   </data>
   <data name="fill" xml:space="preserve">
-    <value>Заполнить</value>
+    <value>Fill</value>
   </data>
   <data name="frame_limiter" xml:space="preserve">
     <value>Frame limiter</value>
   </data>
   <data name="fullscreen_entered" xml:space="preserve">
-    <value>Нажмите F11 для выхода из полного экрана.</value>
+    <value>Press F11 to exit the full screen.</value>
   </data>
   <data name="general" xml:space="preserve">
-    <value>Общие положения</value>
+    <value>General</value>
   </data>
   <data name="google_translate" xml:space="preserve">
-    <value>Google Перевод</value>
+    <value>Google Translate</value>
   </data>
   <data name="graphics" xml:space="preserve">
-    <value>Графика</value>
+    <value>Graphics</value>
   </data>
   <data name="language" xml:space="preserve">
-    <value>Язык</value>
+    <value>Language</value>
   </data>
   <data name="letterbox" xml:space="preserve">
     <value>Letterbox</value>
   </data>
   <data name="load_from_video_id" xml:space="preserve">
-    <value>Загрузить из видео ID</value>
+    <value>Load from video ID</value>
   </data>
   <data name="load_video" xml:space="preserve">
-    <value>Загрузить видео</value>
+    <value>Load Video</value>
   </data>
   <data name="master_volume" xml:space="preserve">
-    <value>Общая громкость</value>
+    <value>Master volume</value>
   </data>
   <data name="minimise_on_focus_loss" xml:space="preserve">
-    <value>Свернуть проигрыватель видео при переключении в другое приложение</value>
+    <value>Minimise video player when switching to another app</value>
   </data>
   <data name="prefer_high_quality" xml:space="preserve">
-    <value>Предпочитают высокое качество</value>
+    <value>Prefer high quality</value>
   </data>
   <data name="adjust_pitch_on_speed_change" xml:space="preserve">
-    <value>Регулировка высоты при изменении скорости</value>
+    <value>Adjust pitch on speed change</value>
   </data>
   <data name="profile_image_tooltip" xml:space="preserve">
-    <value>{0} • Подписчики {1} • Нажмите, чтобы просмотреть канал через внешний веб-браузер.</value>
+    <value>{0} • {1} subscribers • Click to view channel via external web browser.</value>
   </data>
   <data name="screen_mode" xml:space="preserve">
-    <value>Режим экрана</value>
+    <value>Screen mode</value>
   </data>
   <data name="screen_resolution" xml:space="preserve">
-    <value>Разрешение экрана</value>
+    <value>Screen resolution</value>
   </data>
   <data name="selected_caption" xml:space="preserve">
-    <value>Выбранные подписи: {0}</value>
+    <value>Selected caption: {0}</value>
   </data>
   <data name="selected_caption_auto_gen" xml:space="preserve">
-    <value>Выбранное имя: {0} (автоматически сгенерировано)</value>
+    <value>Selected caption: {0} (auto-generated)</value>
   </data>
   <data name="settings" xml:space="preserve">
-    <value>Настройки</value>
+    <value>Settings</value>
   </data>
   <data name="sfx_volume" xml:space="preserve">
-    <value>Объём SFX</value>
+    <value>SFX volume</value>
   </data>
   <data name="ui_scaling" xml:space="preserve">
-    <value>Масштабирование интерфейса</value>
+    <value>UI scaling</value>
   </data>
   <data name="use_hardware_acceleration" xml:space="preserve">
-    <value>Использовать аппаратное ускорение</value>
+    <value>Use hardware acceleration</value>
   </data>
   <data name="video" xml:space="preserve">
-    <value>Видео</value>
+    <value>Video</value>
   </data>
   <data name="video_metadata_desc" xml:space="preserve">
-    <value>{0} • {1} просмотров • {2}</value>
+    <value>{0} • {1} views • {2}</value>
   </data>
   <data name="video_metadata_desc_without_channel_name" xml:space="preserve">
-    <value>{0} просмотров  {1}</value>
+    <value>{0} views  {1}</value>
   </data>
   <data name="video_metadata_translate_source" xml:space="preserve">
-    <value>Источник перевода видеометаданных</value>
+    <value>Video metadata translate source</value>
   </data>
   <data name="video_quality" xml:space="preserve">
-    <value>Качество видео</value>
+    <value>Video quality</value>
   </data>
   <data name="video_volume" xml:space="preserve">
-    <value>Громкость</value>
+    <value>Video volume</value>
   </data>
   <data name="comments" xml:space="preserve">
-    <value>Комментарии ({0})</value>
+    <value>Comments ({0})</value>
   </data>
   <data name="comments_without_count" xml:space="preserve">
-    <value>Комментарии</value>
+    <value>Comments</value>
   </data>
   <data name="dim" xml:space="preserve">
-    <value>Затемнение видео</value>
+    <value>Video dim level</value>
   </data>
   <data name="translate_to" xml:space="preserve">
-    <value>Перевести на {0}</value>
+    <value>Translate to {0}</value>
   </data>
   <data name="translate_view_original" xml:space="preserve">
-    <value>См. оригинал (перевод Google)</value>
+    <value>See original (Translated by Google)</value>
   </data>
   <data name="comment_reply" xml:space="preserve">
-    <value>{0} (Ответ {1})</value>
+    <value>{0} (Reply to {1})</value>
   </data>
   <data name="running_latest_release" xml:space="preserve">
-    <value>Вы используете последнюю версию ({0})</value>
+    <value>You are running the latest release ({0})</value>
   </data>
   <data name="updating" xml:space="preserve">
-    <value>Загрузка обновления... {0}%</value>
+    <value>Downloading update... {0}%</value>
   </data>
   <data name="restart_required" xml:space="preserve">
-    <value>Чтобы применить обновления, перезапустите приложение.</value>
+    <value>To apply updates, please restart the app.</value>
   </data>
   <data name="update_failed" xml:space="preserve">
-    <value>Обновление не удалось!</value>
+    <value>Update failed!</value>
   </data>
   <data name="checking_update" xml:space="preserve">
-    <value>Проверка обновления...</value>
+    <value>Checking for update...</value>
   </data>
   <data name="check_update" xml:space="preserve">
-    <value>Проверить обновления</value>
+    <value>Check for updates</value>
   </data>
   <data name="like_count_hidden" xml:space="preserve">
-    <value>Нравится счетчик скрыт от загрузчика</value>
+    <value>Like count hidden by uploader</value>
   </data>
   <data name="disabled_by_uploader" xml:space="preserve">
-    <value>Отключено загрузчиком</value>
+    <value>Disabled by uploader</value>
   </data>
   <data name="dislike_counter_credits" xml:space="preserve">
-    <value>Скидочные данные предоставляются через API Return YouTube Dislike API.</value>
+    <value>Dislike count data is provided by the Return YouTube Dislike API.</value>
   </data>
   <data name="common_default" xml:space="preserve">
-    <value>По умолчанию</value>
+    <value>Default</value>
   </data>
   <data name="show_fps" xml:space="preserve">
-    <value>Показать FPS</value>
+    <value>Show FPS</value>
   </data>
   <data name="cannot_play_private_videos" xml:space="preserve">
-    <value>Не удается воспроизвести личные видео.</value>
+    <value>Cannot play private videos.</value>
   </data>
   <data name="play" xml:space="preserve">
-    <value>Играть</value>
+    <value>Play</value>
   </data>
   <data name="pause" xml:space="preserve">
-    <value>Пауза</value>
+    <value>Pause</value>
   </data>
   <data name="playback_speed" xml:space="preserve">
-    <value>Скорость воспроизведения: {0}</value>
+    <value>Playback speed: {0}</value>
   </data>
   <data name="video_quality_8k_warning" xml:space="preserve">
-    <value>Установка качества видео на 8K может привести к ухудшению производительности, перегрузке GPU и сбоям драйверов на некоторых устройствах.</value>
+    <value>Setting the video quality to 8K may cause performance degradation, GPU overload, and driver crashes on some devices.</value>
   </data>
   <data name="renderer" xml:space="preserve">
-    <value>Рендерер</value>
+    <value>Renderer</value>
   </data>
   <data name="export_logs" xml:space="preserve">
-    <value>Экспорт журналов</value>
+    <value>Export logs</value>
   </data>
   <data name="logs_export_finished" xml:space="preserve">
-    <value>Экспортированные журналы!</value>
+    <value>Exported logs!</value>
   </data>
   <data name="revert_to_default" xml:space="preserve">
-    <value>Вернуть по умолчанию</value>
+    <value>Revert to default</value>
   </data>
   <data name="playback_speed_without_value" xml:space="preserve">
     <value>Playback speed</value>
@@ -261,5 +261,39 @@
   </data>
   <data name="caption_font" xml:space="preserve">
     <value>Closed caption font</value>
+  </data>
+  <data name="dislike_count_tooltip" xml:space="preserve">
+    <value>Estimated: {0} | Actual: {1}</value>
+  </data>
+  <data name="caption_auto_gen" xml:space="preserve">
+    <value>{0} (auto-generated)</value>
+  </data>
+  <data name="scale_video" xml:space="preserve">
+    <value>Video</value>
+    <comment>scale_video</comment>
+  </data>
+  <data name="scale_everything" xml:space="preserve">
+    <value>Everything</value>
+  </data>
+  <data name="scaling_off" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="screen_scaling" xml:space="preserve">
+    <value>Screen scaling</value>
+  </data>
+  <data name="horizontal_position" xml:space="preserve">
+    <value>Horizontal position</value>
+  </data>
+  <data name="vertical_position" xml:space="preserve">
+    <value>Vertical position</value>
+  </data>
+  <data name="horizontal_scale" xml:space="preserve">
+    <value>Horizontal scale</value>
+  </data>
+  <data name="vertical_scale" xml:space="preserve">
+    <value>Vertical scale</value>
+  </data>
+  <data name="thumbnail_dim" xml:space="preserve">
+    <value>Thumbnail dim</value>
   </data>
 </root>

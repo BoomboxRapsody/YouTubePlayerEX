@@ -2,6 +2,7 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using osu.Framework.Allocation;
 using osu.Framework.Audio.Sample;
@@ -27,6 +28,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private Sprite profileImage;
 
         private Google.Apis.YouTube.v3.Data.Channel channel;
+
+        private LoadingSpinner loading;
 
         [Resolved]
         private TextureStore textureStore { get; set; }
@@ -56,7 +59,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 profileImage = new Sprite
                 {
                     RelativeSizeAxes = Axes.Both,
-                }
+                },
+                loading = new LoadingLayer(true, false, true)
             };
         }
 
@@ -91,7 +95,10 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             Task.Run(async () =>
             {
                 channel = api.GetChannel(channelId);
-                profileImage.Texture = textureStore.Get(channel.Snippet.Thumbnails.High.Url);
+                _ = Task.Run(async () =>
+                {
+                    await GetProfileImage(channel.Snippet.Thumbnails.High.Url);
+                });
                 TooltipText = YTPlayerEXStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel), Convert.ToInt32(channel.Statistics.SubscriberCount).ToStandardFormattedString(0));
 
                 translationSource.BindValueChanged(locale =>
@@ -102,6 +109,16 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     });
                 }, true);
             });
+        }
+
+        private CancellationTokenSource profileImageCancellationSource = new CancellationTokenSource();
+
+        public async Task GetProfileImage(string url, CancellationToken cancellationToken = default)
+        {
+            Schedule(() => loading.Show());
+            Texture north = await textureStore.GetAsync(channel.Snippet.Thumbnails.High.Url, cancellationToken);
+            Schedule(() => { profileImage.Texture = north; });
+            Schedule(() => loading.Hide());
         }
     }
 }

@@ -34,10 +34,25 @@ namespace YouTubePlayerEX.App.Config
             SetDefault(YTPlayerEXSetting.ShowFpsDisplay, false);
             SetDefault(YTPlayerEXSetting.ClosedCaptionFont, ClosedCaptionFont.NotoSansCJK);
 
+            SetDefault(YTPlayerEXSetting.Scaling, ScalingMode.Off);
+            SetDefault(YTPlayerEXSetting.SafeAreaConsiderations, true);
+            SetDefault(YTPlayerEXSetting.ScalingBackgroundDim, 0.9f, 0.5f, 1f, 0.01f);
+
+            SetDefault(YTPlayerEXSetting.ScalingSizeX, 0.8f, 0.2f, 1f, 0.01f);
+            SetDefault(YTPlayerEXSetting.ScalingSizeY, 0.8f, 0.2f, 1f, 0.01f);
+
+            SetDefault(YTPlayerEXSetting.ScalingPositionX, 0.5f, 0f, 1f, 0.01f);
+            SetDefault(YTPlayerEXSetting.ScalingPositionY, 0.5f, 0f, 1f, 0.01f);
+
             if (RuntimeInfo.IsMobile)
                 SetDefault(YTPlayerEXSetting.UIScale, 1f, 0.8f, 1.1f, 0.01f);
             else
                 SetDefault(YTPlayerEXSetting.UIScale, 1f, 0.8f, 1.6f, 0.01f);
+
+            SetDefault(YTPlayerEXSetting.ScreenshotFormat, ScreenshotFormat.Jpg);
+            SetDefault(YTPlayerEXSetting.ScreenshotCaptureMenuCursor, false);
+
+            SetDefault(YTPlayerEXSetting.CursorRotation, true);
         }
 
         public YTPlayerEXConfigManager(Storage storage, IDictionary<YTPlayerEXSetting, object> defaultOverrides = null) : base(storage, defaultOverrides)
@@ -51,6 +66,13 @@ namespace YouTubePlayerEX.App.Config
             new TrackedSetting<bool>(YTPlayerEXSetting.AdjustPitchOnSpeedChange, v => new SettingDescription(v, YTPlayerEXStrings.AdjustPitchOnSpeedChange, v == true ? YTPlayerEXStrings.Enabled.ToLower() : YTPlayerEXStrings.Disabled.ToLower(), "Shift+P")),
             new TrackedSetting<float>(YTPlayerEXSetting.UIScale, v => new SettingDescription(v, YTPlayerEXStrings.UIScaling, $@"{v:0.##}x")),
             new TrackedSetting<bool>(YTPlayerEXSetting.ShowFpsDisplay, v => new SettingDescription(v, YTPlayerEXStrings.ShowFPS, v == true ? YTPlayerEXStrings.Enabled.ToLower() : YTPlayerEXStrings.Disabled.ToLower(), "Ctrl+P")),
+            new TrackedSetting<ScalingMode>(YTPlayerEXSetting.Scaling, scalingMode => new SettingDescription(
+                        rawValue: scalingMode,
+                        name: YTPlayerEXStrings.ScreenScaling,
+                        value: scalingMode.GetLocalisableDescription(),
+                        shortcut: "Ctrl+Shift+F5"
+                    )
+                ),
         };
     }
 
@@ -68,5 +90,17 @@ namespace YouTubePlayerEX.App.Config
         VideoDimLevel,
         ShowFpsDisplay,
         ClosedCaptionFont,
+        Scaling,
+        ScalingPositionX,
+        ScalingPositionY,
+        ScalingSizeX,
+        ScalingSizeY,
+        ScalingBackgroundDim,
+        SafeAreaConsiderations,
+
+        ScreenshotFormat,
+        ScreenshotCaptureMenuCursor,
+
+        CursorRotation,
     }
 }

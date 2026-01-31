@@ -15,6 +15,10 @@ namespace YouTubePlayerEX.App.Config
             SetDefault(Static.LastHoverSoundPlaybackTime, (double?)null);
 
             SetDefault(Static.IsControlVisible, false);
+
+            SetDefault(Static.IsVideoPlaying, false);
+            SetDefault(Static.CurrentThumbnailUrl, string.Empty);
+            SetDefault(Static.IsAnyOverlayOpen, false);
         }
     }
 
@@ -26,5 +30,8 @@ namespace YouTubePlayerEX.App.Config
         LastHoverSoundPlaybackTime,
 
         IsControlVisible,
+        IsVideoPlaying,
+        CurrentThumbnailUrl,
+        IsAnyOverlayOpen,
     }
 }

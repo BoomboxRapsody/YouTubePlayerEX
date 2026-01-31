@@ -64,8 +64,9 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         private Bindable<AspectRatioMethod> aspectRatioMethod = null!;
 
         [BackgroundDependencyLoader]
-        private void load(ITrackStore tracks, YTPlayerEXConfigManager config)
+        private void load(ITrackStore tracks, YTPlayerEXConfigManager config, ScreenshotManager screenshotManager)
         {
+            uiVisible = screenshotManager.CursorVisibility.GetBoundCopy();
             aspectRatioMethod = config.GetBindable<AspectRatioMethod>(YTPlayerEXSetting.AspectRatioMethod);
             track = tracks.GetFromStream(File.OpenRead(fileName_Audio), fileName_Audio);
             playbackSpeed = new Bindable<double>(1);
@@ -78,21 +79,26 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                 {
                     Clock = framedClock,
                 },
-                new DimmableContainer
+                new ScalingContainerNew(ScalingMode.Video)
                 {
-                    RelativeSizeAxes = Axes.Both,
-                    Child = video = new Video(fileName_Video, false)
-                    {
-                        RelativeSizeAxes = Axes.Both,
-                        FillMode = FillMode.Fit,
-                        Anchor = Anchor.Centre,
-                        Origin = Anchor.Centre,
-                        Clock = framedClock,
-                    },
-                },
-                keyBindingAnimations = new KeyBindingAnimations
-                {
-                    RelativeSizeAxes = Axes.Both,
+                    Children = new Drawable[] {
+                        new DimmableContainer
+                        {
+                            RelativeSizeAxes = Axes.Both,
+                            Child = video = new Video(fileName_Video, false)
+                            {
+                                RelativeSizeAxes = Axes.Both,
+                                FillMode = FillMode.Fit,
+                                Anchor = Anchor.Centre,
+                                Origin = Anchor.Centre,
+                                Clock = framedClock,
+                            },
+                        },
+                        keyBindingAnimations = new KeyBindingAnimations
+                        {
+                            RelativeSizeAxes = Axes.Both,
+                        },
+                    }
                 },
                 closedCaption = new ClosedCaptionContainer(this, captionTrack, captionLanguage)
             });
@@ -110,11 +116,30 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
             Play();
 
+            uiVisible.BindValueChanged(visible =>
+            {
+                Schedule(() =>
+                {
+                    if (visible.NewValue)
+                    {
+                        keyBindingAnimations.Show();
+                        closedCaption.Show();
+                    }
+                    else
+                    {
+                        keyBindingAnimations.Hide();
+                        closedCaption.Hide();
+                    }
+                });
+            }, true);
+
             aspectRatioMethod.BindValueChanged(value =>
             {
                 video.FillMode = value.NewValue == AspectRatioMethod.Letterbox ? FillMode.Fit : FillMode.Stretch;
             }, true);
         }
+
+        private IBindable<bool> uiVisible;
 
         private void trackCompleted()
         {
@@ -225,6 +250,9 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             if (isKeyboardAction)
                 keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.PlayPause, FontAwesome.Solid.Play);
         }
+
+        [Resolved]
+        private SessionStatics sessionStatics { get; set; } = null!;
 
         public void SetPlaybackSpeed(double speed)
         {

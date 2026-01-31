@@ -22,6 +22,7 @@ using YoutubeExplode;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics;
+using YouTubePlayerEX.App.Graphics.Containers;
 using YouTubePlayerEX.App.Graphics.Cursor;
 using YouTubePlayerEX.App.Graphics.UserInterface;
 using YouTubePlayerEX.App.Input.Binding;
@@ -226,13 +227,33 @@ namespace YouTubePlayerEX.App
 
             dependencies.CacheAs(overlayColourProvider = new OverlayColourProvider(OverlayColourScheme.Aquamarine));
 
+            /*
             // Ensure game and tests scale with window size and screen DPI.
-            base.Content.Add(globalBindings = new GlobalActionContainer(this)
-            {
-                Child = new DrawSizePreservingFillContainer
+            base.Content.Add(
+                new ScalingContainerNew(ScalingMode.Everything)
                 {
-                    // You may want to change TargetDrawSize to your "default" resolution, which will decide how things scale and position when using absolute coordinates.
-                    TargetDrawSize = new Vector2(1366, 768),
+                    Child = globalBindings = new GlobalActionContainer(this)
+                    {
+                        Children = new Drawable[]
+                        {
+                            (GlobalCursorDisplay = new GlobalCursorDisplay
+                            {
+                                RelativeSizeAxes = Axes.Both
+                            }).WithChild(content = new AdaptiveTooltipContainer(GlobalCursorDisplay.MenuCursor)
+                            {
+                                RelativeSizeAxes = Axes.Both
+                            }),
+                        }
+                    }
+            });
+            */
+
+            base.Content.Add(SafeAreaContainer = new SafeAreaContainer
+            {
+                SafeAreaOverrideEdges = SafeAreaOverrideEdges,
+                RelativeSizeAxes = Axes.Both,
+                Child = CreateScalingContainer().WithChild(globalBindings = new GlobalActionContainer(this)
+                {
                     Children = new Drawable[]
                     {
                         (GlobalCursorDisplay = new GlobalCursorDisplay
@@ -243,9 +264,19 @@ namespace YouTubePlayerEX.App
                             RelativeSizeAxes = Axes.Both
                         }),
                     }
-                }
+                })
             });
         }
+
+        protected virtual Container CreateScalingContainer() => new DrawSizePreservingFillContainer();
+
+        /// <summary>
+        /// The <see cref="Edges"/> that the game should be drawn over at a top level.
+        /// Defaults to <see cref="Edges.None"/>.
+        /// </summary>
+        protected virtual Edges SafeAreaOverrideEdges => Edges.None;
+
+        protected SafeAreaContainer SafeAreaContainer { get; private set; }
 
         private DependencyContainer dependencies;
 
@@ -297,6 +328,11 @@ namespace YouTubePlayerEX.App
             AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-BoldItalic");
             AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Black");
             AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-BlackItalic");
+
+            AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-Bold");
+            AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-Light");
+            AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-Regular");
+            AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-SemiBold");
 
             AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Basic");
             AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Bopomofo");

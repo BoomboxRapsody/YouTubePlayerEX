@@ -262,4 +262,38 @@
   <data name="caption_font" xml:space="preserve">
     <value>자막 글꼴</value>
   </data>
+  <data name="dislike_count_tooltip" xml:space="preserve">
+    <value>싫어요 수 추정치: {0} | 실제 싫어요 수: {1}</value>
+  </data>
+  <data name="caption_auto_gen" xml:space="preserve">
+    <value>{0} (자동 생성됨)</value>
+  </data>
+  <data name="scale_video" xml:space="preserve">
+    <value>동영상</value>
+    <comment>scale_video</comment>
+  </data>
+  <data name="scale_everything" xml:space="preserve">
+    <value>전체</value>
+  </data>
+  <data name="scaling_off" xml:space="preserve">
+    <value>끄기</value>
+  </data>
+  <data name="screen_scaling" xml:space="preserve">
+    <value>화면 크기 조정</value>
+  </data>
+  <data name="horizontal_position" xml:space="preserve">
+    <value>수평 위치</value>
+  </data>
+  <data name="vertical_position" xml:space="preserve">
+    <value>수직 위치</value>
+  </data>
+  <data name="horizontal_scale" xml:space="preserve">
+    <value>수평 비율</value>
+  </data>
+  <data name="vertical_scale" xml:space="preserve">
+    <value>수직 비율</value>
+  </data>
+  <data name="thumbnail_dim" xml:space="preserve">
+    <value>배경의 어두운 정도</value>
+  </data>
 </root>

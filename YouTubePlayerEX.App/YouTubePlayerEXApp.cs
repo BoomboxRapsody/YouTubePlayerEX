@@ -19,7 +19,9 @@ using osu.Framework.Localisation;
 using osu.Framework.Logging;
 using osu.Framework.Screens;
 using osu.Framework.Threading;
+using osuTK;
 using YouTubePlayerEX.App.Audio.Effects;
+using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics;
 using YouTubePlayerEX.App.Graphics.Containers;
@@ -45,6 +47,8 @@ namespace YouTubePlayerEX.App
         public const float UI_CORNER_RADIUS = 16f;
 
         private OnScreenDisplay onScreenDisplay;
+
+        private ScreenshotManager screenshotManager;
 
         [Resolved]
         private FrameworkConfigManager frameworkConfig { get; set; }
@@ -109,28 +113,26 @@ namespace YouTubePlayerEX.App
             // A screen stack and sample screen has been provided for convenience, but you can replace it if you don't want to use screens.
             AddRange(new Drawable[]
             {
-                new ScalingContainer
+                screenStack = new ScreenStack
                 {
-                    Children = new Drawable[] {
-                        screenStack = new ScreenStack
-                        {
-                            RelativeSizeAxes = Axes.Both
-                        },
-                        overlayContainer = new Container
-                        {
-                            RelativeSizeAxes = Axes.Both
-                        },
-                        topMostOverlayContent = new Container { RelativeSizeAxes = Axes.Both },
-                    }
+                    RelativeSizeAxes = Axes.Both
                 },
+                overlayContainer = new Container
+                {
+                    RelativeSizeAxes = Axes.Both
+                },
+                topMostOverlayContent = new Container { RelativeSizeAxes = Axes.Both },
             });
 
             onScreenDisplay = new OnScreenDisplay();
+            screenshotManager = new ScreenshotManager();
 
             onScreenDisplay.BeginTracking(this, frameworkConfig);
             onScreenDisplay.BeginTracking(this, LocalConfig);
 
             loadComponentSingleFile(onScreenDisplay, overlayContainer.Add, true);
+
+            loadComponentSingleFile(screenshotManager, Add, true);
 
             loadComponentSingleFile(fpsCounter = new FPSCounter
             {
@@ -138,7 +140,20 @@ namespace YouTubePlayerEX.App
                 Origin = Anchor.BottomRight,
                 Margin = new MarginPadding(5),
             }, topMostOverlayContent.Add);
+
+            applySafeAreaConsiderations = LocalConfig.GetBindable<bool>(YTPlayerEXSetting.SafeAreaConsiderations);
+            applySafeAreaConsiderations.BindValueChanged(apply => SafeAreaContainer.SafeAreaOverrideEdges = apply.NewValue ? SafeAreaOverrideEdges : Edges.All, true);
         }
+
+        private Bindable<bool> applySafeAreaConsiderations = null!;
+
+        /// <summary>
+        /// Adjust the globally applied <see cref="DrawSizePreservingFillContainer.TargetDrawSize"/> in every <see cref="ScalingContainerNew"/>.
+        /// Useful for changing how the game handles different aspect ratios.
+        /// </summary>
+        public virtual Vector2 ScalingContainerTargetDrawSize { get; } = new Vector2(1024, 768);
+
+        protected override Container CreateScalingContainer() => new ScalingContainerNew(ScalingMode.Everything);
 
         private Task asyncLoadStream;
 

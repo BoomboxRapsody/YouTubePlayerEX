@@ -67,7 +67,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 {
                     RelativeSizeAxes = Axes.Both,
                     Colour = overlayColourProvider.Background5,
-                    Alpha = 0.7f,
+                    Alpha = 1f,
                 },
                 hover = new Box
                 {

@@ -13,7 +13,7 @@ using osu.Framework.Allocation;
 
 namespace YouTubePlayerEX.App.Overlays.OSD
 {
-    public abstract partial class Toast : Container
+    public partial class Toast : Container
     {
         /// <summary>
         /// Extra text to be shown at the bottom of the toast. Usually a key binding if available.
@@ -37,7 +37,7 @@ namespace YouTubePlayerEX.App.Overlays.OSD
         [Resolved]
         private OverlayColourProvider overlayColourProvider { get; set; } = null!;
 
-        protected Toast(LocalisableString description, LocalisableString value)
+        public Toast(LocalisableString description, LocalisableString value)
         {
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
@@ -57,7 +57,7 @@ namespace YouTubePlayerEX.App.Overlays.OSD
                 background = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
-                    Alpha = 0.7f
+                    Alpha = 1f
                 },
                 content = new Container
                 {

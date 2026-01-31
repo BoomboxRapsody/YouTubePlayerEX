@@ -131,6 +131,11 @@ namespace YouTubePlayerEX.App.Localisation
         public static LocalisableString SelectedCaptionAutoGen(LocalisableString language) => new TranslatableString(getKey(@"selected_caption_auto_gen"), "Selected caption: {0} (auto-generated)", language);
 
         /// <summary>
+        /// "{0} (auto-generated)"
+        /// </summary>
+        public static LocalisableString CaptionAutoGen(LocalisableString language) => new TranslatableString(getKey(@"caption_auto_gen"), "{0} (auto-generated)", language);
+
+        /// <summary>
         /// "Fill"
         /// </summary>
         public static LocalisableString Fill => new TranslatableString(getKey(@"fill"), "Fill");
@@ -144,6 +149,11 @@ namespace YouTubePlayerEX.App.Localisation
         /// "Aspect ratio method"
         /// </summary>
         public static LocalisableString AspectRatioMethod => new TranslatableString(getKey(@"aspect_ratio_method"), "Aspect ratio method");
+
+        /// <summary>
+        /// "Estimated: {0} | Actual: {1}"
+        /// </summary>
+        public static LocalisableString DislikeCountTooltip(string estimated, string actual) => new TranslatableString(getKey(@"dislike_count_tooltip"), "Estimated: {0} | Actual: {1}", estimated, actual);
 
         /// <summary>
         /// "Video metadata translate source"
@@ -349,6 +359,91 @@ namespace YouTubePlayerEX.App.Localisation
         /// "Revert to default"
         /// </summary>
         public static LocalisableString RevertToDefault => new TranslatableString(getKey(@"revert_to_default"), @"Revert to default");
+
+        /// <summary>
+        /// "Everything"
+        /// </summary>
+        public static LocalisableString ScaleEverything => new TranslatableString(getKey(@"scale_everything"), @"Everything");
+
+        /// <summary>
+        /// "Video"
+        /// </summary>
+        public static LocalisableString ScaleVideo => new TranslatableString(getKey(@"scale_video"), @"Video");
+
+        /// <summary>
+        /// "Off"
+        /// </summary>
+        public static LocalisableString ScalingOff => new TranslatableString(getKey(@"scaling_off"), @"Off");
+
+        /// <summary>
+        /// "Screen scaling"
+        /// </summary>
+        public static LocalisableString ScreenScaling => new TranslatableString(getKey(@"screen_scaling"), @"Screen scaling");
+
+        /// <summary>
+        /// "Horizontal position"
+        /// </summary>
+        public static LocalisableString HorizontalPosition => new TranslatableString(getKey(@"horizontal_position"), @"Horizontal position");
+
+        /// <summary>
+        /// "Vertical position"
+        /// </summary>
+        public static LocalisableString VerticalPosition => new TranslatableString(getKey(@"vertical_position"), @"Vertical position");
+
+        /// <summary>
+        /// "Horizontal scale"
+        /// </summary>
+        public static LocalisableString HorizontalScale => new TranslatableString(getKey(@"horizontal_scale"), @"Horizontal scale");
+
+        /// <summary>
+        /// "Vertical scale"
+        /// </summary>
+        public static LocalisableString VerticalScale => new TranslatableString(getKey(@"vertical_scale"), @"Vertical scale");
+
+        /// <summary>
+        /// "Thumbnail dim"
+        /// </summary>
+        public static LocalisableString ThumbnailDim => new TranslatableString(getKey(@"thumbnail_dim"), @"Thumbnail dim");
+
+        /// <summary>
+        /// "Username display mode"
+        /// </summary>
+        public static LocalisableString UsernameDisplayMode => new TranslatableString(getKey(@"username_display_mode"), @"Username display mode");
+
+        /// <summary>
+        /// "Shrink app to avoid cameras and notches"
+        /// </summary>
+        public static LocalisableString ShrinkGameToSafeArea => new TranslatableString(getKey(@"shrink_game_to_safe_area"), @"Shrink app to avoid cameras and notches");
+
+        /// <summary>
+        /// "JPG (web-friendly)"
+        /// </summary>
+        public static LocalisableString Jpg => new TranslatableString(getKey(@"jpg_web_friendly"), @"JPG (web-friendly)");
+
+        /// <summary>
+        /// "PNG (lossless)"
+        /// </summary>
+        public static LocalisableString Png => new TranslatableString(getKey(@"png_lossless"), @"PNG (lossless)");
+
+        /// <summary>
+        /// "Screenshot saved!"
+        /// </summary>
+        public static LocalisableString ScreenshotSaved => new TranslatableString(getKey(@"screenshot_saved"), @"Screenshot saved!");
+
+        /// <summary>
+        /// "Screenshot"
+        /// </summary>
+        public static LocalisableString Screenshot => new TranslatableString(getKey(@"screenshot"), @"Screenshot");
+
+        /// <summary>
+        /// "Screenshot format"
+        /// </summary>
+        public static LocalisableString ScreenshotFormat => new TranslatableString(getKey(@"screenshot_format"), @"Screenshot format");
+
+        /// <summary>
+        /// "Show user interface in screenshots"
+        /// </summary>
+        public static LocalisableString ShowCursorInScreenshots => new TranslatableString(getKey(@"show_cursor_in_screenshots"), @"Show user interface in screenshots");
 
         private static string getKey(string key) => $@"{prefix}:{key}";
     }

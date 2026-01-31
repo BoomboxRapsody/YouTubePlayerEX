@@ -262,4 +262,38 @@
   <data name="caption_font" xml:space="preserve">
     <value>クローズドキャプションフォント</value>
   </data>
+  <data name="dislike_count_tooltip" xml:space="preserve">
+    <value>推定値：{0} |実際の値：{1}</value>
+  </data>
+  <data name="caption_auto_gen" xml:space="preserve">
+    <value>{0}（自動生成）</value>
+  </data>
+  <data name="scale_video" xml:space="preserve">
+    <value>Video</value>
+    <comment>scale_video</comment>
+  </data>
+  <data name="scale_everything" xml:space="preserve">
+    <value>Everything</value>
+  </data>
+  <data name="scaling_off" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="screen_scaling" xml:space="preserve">
+    <value>Screen scaling</value>
+  </data>
+  <data name="horizontal_position" xml:space="preserve">
+    <value>Horizontal position</value>
+  </data>
+  <data name="vertical_position" xml:space="preserve">
+    <value>Vertical position</value>
+  </data>
+  <data name="horizontal_scale" xml:space="preserve">
+    <value>Horizontal scale</value>
+  </data>
+  <data name="vertical_scale" xml:space="preserve">
+    <value>Vertical scale</value>
+  </data>
+  <data name="thumbnail_dim" xml:space="preserve">
+    <value>Thumbnail dim</value>
+  </data>
 </root>

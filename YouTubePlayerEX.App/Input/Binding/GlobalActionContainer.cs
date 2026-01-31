@@ -57,6 +57,7 @@ namespace YouTubePlayerEX.App.Input.Binding
 
             new KeyBinding(new[] { InputKey.Shift, InputKey.C }, GlobalAction.CycleCaptionLanguage),
             new KeyBinding(new[] { InputKey.Control, InputKey.F6 }, GlobalAction.CycleAspectRatio),
+            new KeyBinding(new[] { InputKey.Control, InputKey.Shift, InputKey.F5 }, GlobalAction.CycleScalingMode),
 
             new KeyBinding(new[] { InputKey.Control, InputKey.O }, GlobalAction.OpenSettings),
             new KeyBinding(new[] { InputKey.Control, InputKey.D }, GlobalAction.OpenDescription),
@@ -65,6 +66,8 @@ namespace YouTubePlayerEX.App.Input.Binding
             new KeyBinding(new[] { InputKey.Shift, InputKey.P }, GlobalAction.ToggleAdjustPitchOnSpeedChange),
 
             new KeyBinding(new[] { InputKey.Control, InputKey.P }, GlobalAction.ToggleFPSDisplay),
+
+            new KeyBinding(new[] { InputKey.F12 }, GlobalAction.TakeScreenshot),
         };
     }
 
@@ -84,11 +87,14 @@ namespace YouTubePlayerEX.App.Input.Binding
         ToggleFPSDisplay,
         CycleCaptionLanguage,
         CycleAspectRatio,
+        CycleScalingMode,
 
         DecreasePlaybackSpeed,
         IncreasePlaybackSpeed,
 
         OpenDescription,
         OpenComments,
+
+        TakeScreenshot,
     }
 }

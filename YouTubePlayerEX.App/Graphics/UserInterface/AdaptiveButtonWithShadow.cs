@@ -117,7 +117,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
                         RelativeSizeAxes = Axes.Both,
-                        Alpha = 0.7f,
+                        Alpha = 1f,
                     },
                     Hover = new Box
                     {

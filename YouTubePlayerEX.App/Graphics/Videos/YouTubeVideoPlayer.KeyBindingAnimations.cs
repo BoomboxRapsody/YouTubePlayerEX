@@ -117,7 +117,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                                             {
                                                 Left = 30,
                                             },
-                                            Font = YouTubePlayerEXApp.DefaultFont.With(size: 25),
+                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus", size: 25),
                                         },
                                     }
                                 }
@@ -160,7 +160,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                                             {
                                                 Right = 45,
                                             },
-                                            Font = YouTubePlayerEXApp.DefaultFont.With(size: 25),
+                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus", size: 25),
                                         },
                                     }
                                 }
@@ -185,7 +185,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                                     Child = new Box
                                     {
                                         RelativeSizeAxes = Axes.Both,
-                                        Alpha = 0.5f,
+                                        Alpha = 0.7f,
                                         Colour = Color4.Black,
                                     }
                                 },
@@ -266,8 +266,13 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                     }
                     else
                     {
-                        content.FadeOutFromOne(500);
-                        content.ScaleTo(new osuTK.Vector2(1)).ScaleTo(new osuTK.Vector2(1.5f), 500);
+                        content.FadeInFromZero(250);
+                        content.ScaleTo(new osuTK.Vector2(.9f)).ScaleTo(new osuTK.Vector2(1.5f), 250, Easing.OutQuint);
+                        using (BeginDelayedSequence(750))
+                        {
+                            content.FadeOut(250);
+                            content.ScaleTo(new osuTK.Vector2(.9f), 250, Easing.OutQuint);
+                        }
                     }
                 }
             }

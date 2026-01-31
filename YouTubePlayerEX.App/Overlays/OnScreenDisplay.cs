@@ -32,9 +32,11 @@ namespace YouTubePlayerEX.App.Overlays
         private const float height = 65;
 
         private Bindable<bool> controlsVisibleState = null!;
+        private Bindable<bool> videoPlaying = null!;
 
         public OnScreenDisplay()
         {
+            AlwaysPresent = true;
             RelativeSizeAxes = Axes.Both;
 
             Children = new Drawable[]
@@ -43,7 +45,7 @@ namespace YouTubePlayerEX.App.Overlays
                 {
                     Origin = Anchor.Centre,
                     RelativePositionAxes = Axes.Both,
-                    Position = new Vector2(0.5f, 0.8f),
+                    Position = new Vector2(0.5f, 0.07f),
                     Masking = true,
                     AutoSizeAxes = Axes.X,
                     Height = height,
@@ -65,12 +67,23 @@ namespace YouTubePlayerEX.App.Overlays
         private void load(SessionStatics sessionStatics)
         {
             controlsVisibleState = sessionStatics.GetBindable<bool>(Static.IsControlVisible);
+            isAnyOverlayOpen = sessionStatics.GetBindable<bool>(Static.IsAnyOverlayOpen);
+            videoPlaying = sessionStatics.GetBindable<bool>(Static.IsVideoPlaying);
 
+            /*
             controlsVisibleState.BindValueChanged(v =>
             {
-                box.MoveTo(new Vector2(0.5f, v.NewValue ? 0.8f : 0.935f), 500, Easing.OutQuint);
+                box.MoveTo(new Vector2(0.5f, v.NewValue ? (isAnyOverlayOpen.Value ? 0.935f : 0.8f) : 0.935f), 500, Easing.OutQuint);
             }, true);
+
+            isAnyOverlayOpen.BindValueChanged(v =>
+            {
+                box.MoveTo(new Vector2(0.5f, controlsVisibleState.Value ? (isAnyOverlayOpen.Value ? 0.935f : 0.8f) : 0.935f), 500, Easing.OutQuint);
+            }, true);
+            */
         }
+
+        private Bindable<bool> isAnyOverlayOpen;
 
         private readonly Dictionary<(object, IConfigManager), TrackedSettings> trackedConfigManagers = new Dictionary<(object, IConfigManager), TrackedSettings>();
 
@@ -142,7 +155,7 @@ namespace YouTubePlayerEX.App.Overlays
                     b => b.FadeOutFromOne(250, Easing.OutQuint),
                     b => b.ScaleTo(.9f, 250, Easing.OutQuint)
                 );
-            }, 1500);
+            }, videoPlaying.Value ? 1000 : 1500);
         }
     }
 }
