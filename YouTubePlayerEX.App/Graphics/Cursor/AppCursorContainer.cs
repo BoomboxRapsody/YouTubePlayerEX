@@ -86,6 +86,9 @@ namespace YouTubePlayerEX.App.Graphics.Cursor
 
             if (game != null)
             {
+                gameIdle.BindTo(game.IsIdle);
+                gameIdle.BindValueChanged(_ => updateState());
+
                 gameActive.BindTo(game.IsActive);
                 gameActive.BindValueChanged(_ => updateState());
             }

@@ -24,14 +24,14 @@ namespace YouTubePlayerEX.App.Online
         private FrameworkConfigManager frameworkConfig;
         private YTPlayerEXConfigManager appConfig;
 
-        public YouTubeAPI(FrameworkConfigManager frameworkConfig, GoogleTranslate translateApi, YTPlayerEXConfigManager appConfig)
+        public YouTubeAPI(FrameworkConfigManager frameworkConfig, GoogleTranslate translateApi, YTPlayerEXConfigManager appConfig, bool isTestClient)
         {
             this.frameworkConfig = frameworkConfig;
             this.translateApi = translateApi;
             this.appConfig = appConfig;
             youtubeService = new YouTubeService(new BaseClientService.Initializer()
             {
-                ApiKey = "AIzaSyDGpklqOVqNLzOuChi5hHKswhZIC9ocEIQ",
+                ApiKey = isTestClient ? "AIzaSyD5LrbcZIMxRYHxKPiYMknAoSWUDeWm67E" : "AIzaSyDGpklqOVqNLzOuChi5hHKswhZIC9ocEIQ",
                 ApplicationName = GetType().ToString()
             });
         }

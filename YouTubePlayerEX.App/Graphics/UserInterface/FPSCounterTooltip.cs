@@ -21,7 +21,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private GameHost gameHost { get; set; } = null!;
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(OverlayColourProvider overlayColourProvider)
         {
             AutoSizeAxes = Axes.Both;
 
@@ -32,7 +32,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             {
                 new Box
                 {
-                    Colour = Color4Extensions.FromHex(@"111"),
+                    Colour = overlayColourProvider.Background5,
                     Alpha = 1,
                     RelativeSizeAxes = Axes.Both,
                 },
@@ -45,6 +45,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     TextAnchor = Anchor.TopRight,
                     Margin = new MarginPadding { Left = 5, Vertical = 10 },
                     Text = string.Join('\n', gameHost.Threads.Select(t => t.Name)),
+                    Colour = overlayColourProvider.Content2,
                     ParagraphSpacing = 0,
                 },
                 textFlow = new AdaptiveTextFlowContainer(cp =>
@@ -57,6 +58,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     Margin = new MarginPadding { Left = 35, Right = 10, Vertical = 10 },
                     AutoSizeAxes = Axes.Y,
                     TextAnchor = Anchor.TopRight,
+                    Colour = overlayColourProvider.Content2,
                     ParagraphSpacing = 0,
                 },
             };

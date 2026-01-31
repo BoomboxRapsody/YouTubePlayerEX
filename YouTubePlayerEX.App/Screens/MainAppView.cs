@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Google.Apis.YouTube.v3.Data;
 using Humanizer;
+using NReco.VideoInfo;
 using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio.Sample;
@@ -73,7 +74,7 @@ namespace YouTubePlayerEX.App.Screens
         private IdleTracker idleTracker;
         private Container uiContainer;
         private Container uiGradientContainer;
-        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer;
+        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay;
         private AdaptiveButtonWithShadow loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton;
         private VideoMetadataDisplayWithoutProfile videoMetadataDisplay;
         private VideoMetadataDisplay videoMetadataDisplayDetails;
@@ -822,7 +823,7 @@ namespace YouTubePlayerEX.App.Screens
                                                         },
                                                         new SettingsItemV2(new FormEnumDropdown<Config.ScreenshotFormat>
                                                         {
-                                                            Caption = YTPlayerEXStrings.VideoQuality,
+                                                            Caption = YTPlayerEXStrings.ScreenshotFormat,
                                                             Current = appConfig.GetBindable<ScreenshotFormat>(YTPlayerEXSetting.ScreenshotFormat)
                                                         }),
                                                         new SettingsItemV2(new FormCheckBox
@@ -1247,6 +1248,66 @@ namespace YouTubePlayerEX.App.Screens
                                 }
                             }
                         },
+                        videoInfoExpertOverlay = new OverlayContainer
+                        {
+                            Size = new Vector2(0.7f),
+                            RelativeSizeAxes = Axes.Both,
+                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
+                            Masking = true,
+                            Origin = Anchor.Centre,
+                            Anchor = Anchor.Centre,
+                            EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                            {
+                                Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                Colour = Color4.Black.Opacity(0.25f),
+                                Offset = new Vector2(0, 2),
+                                Radius = 16,
+                            },
+                            Children = new Drawable[]
+                            {
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Colour = overlayColourProvider.Background5,
+                                },
+                                new AdaptiveSpriteText
+                                {
+                                    Origin = Anchor.TopLeft,
+                                    Anchor = Anchor.TopLeft,
+                                    Text = "Video info (Expert)",
+                                    Margin = new MarginPadding(16),
+                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
+                                    Colour = overlayColourProvider.Content2,
+                                },
+                                new Container
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Padding = new MarginPadding
+                                    {
+                                        Horizontal = 16,
+                                        Bottom = 16,
+                                        Top = 56,
+                                    },
+                                    Children = new Drawable[] {
+                                        new AdaptiveScrollContainer
+                                        {
+                                            RelativeSizeAxes = Axes.Both,
+                                            ScrollbarVisible = false,
+                                            Children = new Drawable[]
+                                            {
+                                                infoForNerds = new AdaptiveTextFlowContainer
+                                                {
+                                                    RelativeSizeAxes = Axes.X,
+                                                    AutoSizeAxes = Axes.Y,
+                                                    Colour = overlayColourProvider.Content2,
+                                                    AlwaysPresent = true,
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
                         new Container
                         {
                             RelativeSizeAxes = Axes.Both,
@@ -1267,6 +1328,7 @@ namespace YouTubePlayerEX.App.Screens
             settingsContainer.Hide();
             videoDescriptionContainer.Hide();
             commentsContainer.Hide();
+            videoInfoExpertOverlay.Hide();
 
             playPause.BackgroundColour = overlayColourProvider.Background3;
 
@@ -1282,6 +1344,18 @@ namespace YouTubePlayerEX.App.Screens
             overlayContainers.Add(settingsContainer);
             overlayContainers.Add(videoDescriptionContainer);
             overlayContainers.Add(commentsContainer);
+            overlayContainers.Add(videoInfoExpertOverlay);
+
+            infoForNerds.AddText("Codec: ");
+            infoForNerds.AddText("[unknown]", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(weight: "Bold"));
+            infoForNerds.AddText("\nWidth: ");
+            infoForNerds.AddText("[unknown]", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(weight: "Bold"));
+            infoForNerds.AddText("\nHeight: ");
+            infoForNerds.AddText("[unknown]", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(weight: "Bold"));
+            infoForNerds.AddText("\nFPS: ");
+            infoForNerds.AddText("[unknown]", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(weight: "Bold"));
+            infoForNerds.AddText("\nBitrate: ");
+            infoForNerds.AddText("[unknown]", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(weight: "Bold"));
 
             videoQuality.BindValueChanged(quality =>
             {
@@ -1449,6 +1523,8 @@ namespace YouTubePlayerEX.App.Screens
 
         [Resolved]
         private ScreenshotManager screenshotManager { get; set; }
+
+        private AdaptiveTextFlowContainer infoForNerds;
 
         private Bindable<float> scalingPositionX = null!;
         private Bindable<float> scalingPositionY = null!;
@@ -2272,7 +2348,7 @@ namespace YouTubePlayerEX.App.Screens
                     currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3", captionTrack, captionLanguage.Value, pausedTime)
                     {
                         RelativeSizeAxes = Axes.Both
-                    };
+                    }; 
 
                     spinnerShow = Scheduler.AddDelayed(spinner.Hide, 0);
 

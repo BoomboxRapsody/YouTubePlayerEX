@@ -52,6 +52,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private ThrottledFrameClock updateClock = null!;
         private ThrottledFrameClock inputClock = null!;
 
+        private Box focusLayer = null!;
+
         /// <summary>
         /// The last time value where the display was required (due to a significant change or hovering).
         /// </summary>
@@ -66,7 +68,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         }
 
         [BackgroundDependencyLoader]
-        private void load(YTPlayerEXConfigManager config, GameHost gameHost, ScreenshotManager screenshotManager)
+        private void load(YTPlayerEXConfigManager config, GameHost gameHost, ScreenshotManager screenshotManager, OverlayColourProvider overlayColourProvider)
         {
             uiVisible = screenshotManager.CursorVisibility.GetBoundCopy();
 
@@ -89,9 +91,13 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                             {
                                 new Box
                                 {
-                                    Colour =  Color4Extensions.FromHex(@"000"),
+                                    Colour = overlayColourProvider.Background5,
                                     RelativeSizeAxes = Axes.Both,
                                 },
+                                focusLayer = new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                }
                             }
                         },
                         counters = new Container
@@ -106,6 +112,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                     Anchor = Anchor.TopRight,
                                     Origin = Anchor.TopRight,
                                     Margin = new MarginPadding(1),
+                                    Colour = overlayColourProvider.Content2,
                                     Font = YouTubePlayerEXApp.DefaultFont.With(fixedWidth: true, size: 16, weight: "SemiBold"),
                                     Spacing = new Vector2(-1),
                                     Y = -2,
@@ -115,6 +122,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                     Anchor = Anchor.TopRight,
                                     Origin = Anchor.TopRight,
                                     Margin = new MarginPadding(2),
+                                    Colour = overlayColourProvider.Content2,
                                     Font = YouTubePlayerEXApp.DefaultFont.With(fixedWidth: true, size: 13, weight: "SemiBold"),
                                     Spacing = new Vector2(-2),
                                     Y = 10,
@@ -169,14 +177,14 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         protected override bool OnHover(HoverEvent e)
         {
-            background.FadeTo(1, 200);
+            focusLayer.FadeTo(.15f, 200);
             requestDisplay();
             return base.OnHover(e);
         }
 
         protected override void OnHoverLost(HoverLostEvent e)
         {
-            background.FadeTo(idle_background_alpha, 200);
+            focusLayer.FadeTo(0, 200);
             requestDisplay();
             base.OnHoverLost(e);
         }

@@ -25,6 +25,7 @@ using YouTubePlayerEX.App.Graphics;
 using YouTubePlayerEX.App.Graphics.Containers;
 using YouTubePlayerEX.App.Graphics.Cursor;
 using YouTubePlayerEX.App.Graphics.UserInterface;
+using YouTubePlayerEX.App.Input;
 using YouTubePlayerEX.App.Input.Binding;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
@@ -190,6 +191,13 @@ namespace YouTubePlayerEX.App
         private OverlayColourProvider overlayColourProvider;
         private AdaptiveColour colours = null!;
 
+        private IdleTracker idleTracker;
+
+        /// <summary>
+        /// Whether the user is currently in an idle state.
+        /// </summary>
+        public IBindable<bool> IsIdle => idleTracker.IsIdle;
+
         [BackgroundDependencyLoader]
         private void load(FrameworkConfigManager frameworkConfig)
         {
@@ -213,7 +221,7 @@ namespace YouTubePlayerEX.App
             dependencies.Cache(LocalConfig);
 
             dependencies.Cache(TranslateAPI = new GoogleTranslate(this, frameworkConfig));
-            dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig, TranslateAPI, LocalConfig));
+            dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig, TranslateAPI, LocalConfig, !IsDeployedBuild));
 
             dependencies.Cache(SessionStatics = new SessionStatics());
 
@@ -222,6 +230,8 @@ namespace YouTubePlayerEX.App
             AdaptiveMenuSamples menuSamples;
             dependencies.Cache(menuSamples = new AdaptiveMenuSamples());
             base.Content.Add(menuSamples);
+
+            dependencies.CacheAs(idleTracker = new AppIdleTracker(6000));
 
             dependencies.CacheAs(colours = new AdaptiveColour());
 

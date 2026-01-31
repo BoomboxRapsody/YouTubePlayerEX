@@ -26,6 +26,7 @@ using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics;
 using YouTubePlayerEX.App.Graphics.Containers;
 using YouTubePlayerEX.App.Graphics.UserInterface;
+using YouTubePlayerEX.App.Input;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Overlays;
 using YouTubePlayerEX.App.Screens;
