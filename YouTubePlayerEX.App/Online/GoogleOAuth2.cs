@@ -108,13 +108,13 @@ namespace YouTubePlayerEX.App.Online
         {
             UserCredential credential;
 
-            string credPath = "token.json";
+            string credPath = @"YouTubePlayerEX/OAuth2";
             credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                 getAuthConfig(),
                 new[] { "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/youtube.readonly", "https://www.googleapis.com/auth/youtube.force-ssl" },
                 "user",
                 CancellationToken.None,
-                new FileDataStore(credPath, true)
+                new FileDataStore(credPath, false)
             );
 
             return credential;
