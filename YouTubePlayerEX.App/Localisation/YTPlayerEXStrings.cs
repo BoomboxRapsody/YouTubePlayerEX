@@ -490,6 +490,11 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString SearchPlaceholder => new TranslatableString(getKey(@"search_placeholder"), "search...");
 
+        /// <summary>
+        /// "View latest versions"
+        /// </summary>
+        public static LocalisableString ViewLatestVersions => new TranslatableString(getKey(@"view_latest_versions"), "View latest versions");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

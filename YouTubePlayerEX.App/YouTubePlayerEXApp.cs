@@ -77,6 +77,8 @@ namespace YouTubePlayerEX.App
             return base.OnPressed(e);
         }
 
+        public UpdateManager UpdateManager;
+
         [BackgroundDependencyLoader]
         private void load()
         {
@@ -107,7 +109,12 @@ namespace YouTubePlayerEX.App
             Localisation.AddLocaleMappings(mappings);
 
             // dependency on notification overlay, dependent by settings overlay
-            loadComponentSingleFile(CreateUpdateManager(), Add, true);
+            loadComponentSingleFile(UpdateManager = CreateUpdateManager(), Add, true);
+
+            if (UpdateManager is NoActionUpdateManager)
+            {
+                UpdateManagerVersionText.Value = YTPlayerEXStrings.ViewLatestVersions;
+            }
 
             // Add your top-level game components here.
             // A screen stack and sample screen has been provided for convenience, but you can replace it if you don't want to use screens.

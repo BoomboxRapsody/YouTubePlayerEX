@@ -690,10 +690,17 @@ namespace YouTubePlayerEX.App.Screens
                                                             Text = app.Version,
                                                             ButtonIcon = FontAwesome.Solid.Sync,
                                                             Action = () => {
-                                                                if (game.RestartRequired.Value != true)
-                                                                    checkForUpdates().FireAndForget();
+                                                                if (game.UpdateManager is NoActionUpdateManager)
+                                                                {
+                                                                    host.OpenUrlExternally(@"https://github.com/BoomboxRapsody/YouTubePlayerEX/releases");
+                                                                }
                                                                 else
-                                                                    game.RestartAction.Invoke();
+                                                                {
+                                                                    if (game.RestartRequired.Value != true)
+                                                                        checkForUpdates().FireAndForget();
+                                                                    else
+                                                                        game.RestartAction.Invoke();
+                                                                }
                                                             },
                                                         }),
                                                         new AdaptiveSpriteText
@@ -1603,7 +1610,7 @@ namespace YouTubePlayerEX.App.Screens
                 IconScale = new Vector2(0.75f),
                 Origin = Anchor.Centre,
                 Anchor = Anchor.Centre,
-                ClickAction = _ => host.OpenUrlExternally("https://returnyoutubedislike.com/")
+                ClickAction = _ => host.OpenUrlExternally(@"https://returnyoutubedislike.com/")
             });
 
             audioLanguage.BindValueChanged(_ =>
