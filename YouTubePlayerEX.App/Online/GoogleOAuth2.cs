@@ -88,15 +88,19 @@ namespace YouTubePlayerEX.App.Online
             string str1 = !isTestClient_static ? "ZZLYQ+6EpclmaSSEKGqfVglCIf3Qhk9C744YKjGg8nZ6GkIq/S5v6NMRLEiTO0L/bp/dIZCP/oZGgsfZO1EF8ngylv7MYPJswUrQand0plM=" : "GkAYdCHFjxBARXzB9XFVpm2jNC9hMnyTECc1mo36Xb841Qomeo7RVLqz/bbBs9TadbhgkqbrEuYNMJHLklgae11ToWTmc3VtYOiyyELMy6Q=";
             string str2 = isTestClient_static ? "NKGBVZGTYD2i++0r+GzyNiK6nFEgiIqvBcgKIUqS844d6X4Js0U4tykxMMzFsZdG" : "Hmg9SjNCg5BT774C1H0VEwcFTi5JLiBhyP++dnYnAqZkiPXA7VwCyW7aPHZxfIYf";
 
-            using (AES aes = new AES("secrets"))
+            using (AES aes_1 = new AES("youtube-player-ex"))
             {
-                string decrypted_str1 = aes.Decrypt(str1);
-                string decrypted_str2 = aes.Decrypt(str2);
+                string decrypted_key = aes_1.Decrypt("MXvS9pkr+girnFMRjlUauQ==");
+                using (AES aes = new AES(decrypted_key))
+                {
+                    string decrypted_str1 = aes.Decrypt(str1);
+                    string decrypted_str2 = aes.Decrypt(str2);
 
-                wth.ClientId = decrypted_str1;
-                wth.ClientSecret = decrypted_str2;
+                    wth.ClientId = decrypted_str1;
+                    wth.ClientSecret = decrypted_str2;
 
-                return wth;
+                    return wth;
+                }
             }
         }
 

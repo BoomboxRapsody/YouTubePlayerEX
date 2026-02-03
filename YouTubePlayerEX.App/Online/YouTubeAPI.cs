@@ -34,15 +34,19 @@ namespace YouTubePlayerEX.App.Online
             this.googleOAuth2 = googleOAuth2;
             var apiKey = isTestClient ? "K/1395zhx/B49AZcHQpAUn5HZSBGtbLrAHnY3QGYieBQpx0gOkZdL5xDPUB7+BnM" : "3T8gSwQR7sprXV/OZDZyTCqbT9Qrt/j8xd7prlHrFMh4Y8Dsp4H2HG+eu+UJ7FOb";
 
-            using (AES aes = new AES("apiKey"))
+            using (AES aes_1 = new AES("youtube-player-ex"))
             {
-                string decryptedApiKey = aes.Decrypt(apiKey);
-
-                youtubeService = new YouTubeService(new BaseClientService.Initializer()
+                string decryptedKey = aes_1.Decrypt("faF4XblghnrR37EA3y5Aag==");
+                using (AES aes = new AES(decryptedKey))
                 {
-                    ApiKey = decryptedApiKey,
-                    ApplicationName = GetType().ToString()
-                });
+                    string decryptedApiKey = aes.Decrypt(apiKey);
+
+                    youtubeService = new YouTubeService(new BaseClientService.Initializer()
+                    {
+                        ApiKey = decryptedApiKey,
+                        ApplicationName = GetType().ToString()
+                    });
+                }
             }
         }
 
