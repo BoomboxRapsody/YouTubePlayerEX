@@ -4,11 +4,13 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Crypto.AES;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Oauth2.v2;
 using Google.Apis.Oauth2.v2.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
+using Google.Apis.YouTube.v3;
 using osu.Framework.Bindables;
 using osu.Framework.Logging;
 using YouTubePlayerEX.App.Config;
@@ -79,21 +81,37 @@ namespace YouTubePlayerEX.App.Online
             return credential?.Token?.AccessToken;
         }
 
+        private static ClientSecrets getAuthConfig()
+        {
+            ClientSecrets wth = new ClientSecrets();
+
+            string str1 = !isTestClient_static ? "ZZLYQ+6EpclmaSSEKGqfVglCIf3Qhk9C744YKjGg8nZ6GkIq/S5v6NMRLEiTO0L/bp/dIZCP/oZGgsfZO1EF8ngylv7MYPJswUrQand0plM=" : "GkAYdCHFjxBARXzB9XFVpm2jNC9hMnyTECc1mo36Xb841Qomeo7RVLqz/bbBs9TadbhgkqbrEuYNMJHLklgae11ToWTmc3VtYOiyyELMy6Q=";
+            string str2 = isTestClient_static ? "NKGBVZGTYD2i++0r+GzyNiK6nFEgiIqvBcgKIUqS844d6X4Js0U4tykxMMzFsZdG" : "Hmg9SjNCg5BT774C1H0VEwcFTi5JLiBhyP++dnYnAqZkiPXA7VwCyW7aPHZxfIYf";
+
+            using (AES aes = new AES("secrets"))
+            {
+                string decrypted_str1 = aes.Decrypt(str1);
+                string decrypted_str2 = aes.Decrypt(str2);
+
+                wth.ClientId = decrypted_str1;
+                wth.ClientSecret = decrypted_str2;
+
+                return wth;
+            }
+        }
+
         private static async Task<UserCredential> getUserCredentialAsync()
         {
             UserCredential credential;
 
-            using (var stream = new FileStream(isTestClient_static ? @"youtube-player-ex-development.json" : @"youtube-player-ex-production.json", FileMode.Open, FileAccess.Read))
-            {
-                string credPath = "token.json";
-                credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.FromStream(stream).Secrets,
-                    new[] { "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/youtube.readonly", "https://www.googleapis.com/auth/youtube.force-ssl" },
-                    "user",
-                    CancellationToken.None,
-                    new FileDataStore(credPath, true)
-                );
-            }
+            string credPath = "token.json";
+            credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                getAuthConfig(),
+                new[] { "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/youtube.readonly", "https://www.googleapis.com/auth/youtube.force-ssl" },
+                "user",
+                CancellationToken.None,
+                new FileDataStore(credPath, true)
+            );
 
             return credential;
         }
