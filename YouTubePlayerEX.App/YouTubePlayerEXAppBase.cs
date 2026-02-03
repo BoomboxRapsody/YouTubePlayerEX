@@ -50,6 +50,8 @@ namespace YouTubePlayerEX.App
 
         protected YouTubeAPI YouTubeService { get; set; }
 
+        protected GoogleOAuth2 GoogleOAuth2 { get; set; }
+
         protected GoogleTranslate TranslateAPI { get; set; }
 
         /// <summary>
@@ -220,8 +222,10 @@ namespace YouTubePlayerEX.App
 
             dependencies.Cache(LocalConfig);
 
+            dependencies.Cache(GoogleOAuth2 = new GoogleOAuth2(LocalConfig, !IsDeployedBuild));
+
             dependencies.Cache(TranslateAPI = new GoogleTranslate(this, frameworkConfig));
-            dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig, TranslateAPI, LocalConfig, !IsDeployedBuild));
+            dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig, TranslateAPI, LocalConfig, GoogleOAuth2, !IsDeployedBuild));
 
             dependencies.Cache(SessionStatics = new SessionStatics());
 

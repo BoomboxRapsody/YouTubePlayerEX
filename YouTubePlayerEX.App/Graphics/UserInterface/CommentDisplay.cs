@@ -6,6 +6,7 @@
 using System;
 using System.Threading.Tasks;
 using Google.Apis.YouTube.v3.Data;
+using Humanizer;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
@@ -48,6 +49,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private YTPlayerEXConfigManager appConfig { get; set; } = null!;
 
         private Bindable<string> localeBindable = new Bindable<string>();
+        private Bindable<UsernameDisplayMode> usernameDisplayMode = null!;
         private Bindable<VideoMetadataTranslateSource> translationSource = new Bindable<VideoMetadataTranslateSource>();
 
         public CommentDisplay(Comment comment)
@@ -64,6 +66,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private void load(OverlayColourProvider overlayColourProvider)
         {
             localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
+            usernameDisplayMode = appConfig.GetBindable<UsernameDisplayMode>(YTPlayerEXSetting.UsernameDisplayMode);
             translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource);
 
             CornerRadius = 12;
@@ -215,7 +218,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         private bool translated;
 
-        private Comment commentData, replyReference = null!;
+        private Comment commentData;
 
         private HoverSounds samples = new HoverClickSounds(HoverSampleSet.Default);
 
@@ -258,14 +261,27 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     Schedule(() =>
                     {
                         channelName.Text = api.GetLocalizedChannelTitle(channelData);
-                        channelName.AddText(" ", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"));
+                        channelName.AddText(" • ", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"));
+                        channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"));
                         commentText.Text = commentData.Snippet.TextOriginal;
                         likeCount.Text = Convert.ToInt32(commentData.Snippet.LikeCount).ToStandardFormattedString(0);
                         translateToText.Text = YTPlayerEXStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
                         profileImage.UpdateProfileImage(commentData.Snippet.AuthorChannelId.Value);
 
+                        usernameDisplayMode.BindValueChanged(locale =>
+                        {
+                            channelName.Text = string.Empty;
+                            channelName.Text = api.GetLocalizedChannelTitle(channelData);
+                            channelName.AddText(" • ", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"));
+                            channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"));
+                        }, true);
+
                         localeBindable.BindValueChanged(locale =>
                         {
+                            channelName.Text = string.Empty;
+                            channelName.Text = api.GetLocalizedChannelTitle(channelData);
+                            channelName.AddText(" • ", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"));
+                            channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"));
                             translateToText.Text = YTPlayerEXStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
                         }, true);
                     });

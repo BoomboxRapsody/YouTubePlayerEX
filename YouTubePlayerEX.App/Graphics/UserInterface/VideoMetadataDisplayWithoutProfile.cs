@@ -41,12 +41,14 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private YTPlayerEXConfigManager appConfig { get; set; }
 
         private Bindable<string> localeBindable = new Bindable<string>();
+        private Bindable<UsernameDisplayMode> usernameDisplayMode;
         private Bindable<VideoMetadataTranslateSource> translationSource = new Bindable<VideoMetadataTranslateSource>();
 
         [BackgroundDependencyLoader]
         private void load(OverlayColourProvider overlayColourProvider)
         {
             localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
+            usernameDisplayMode = appConfig.GetBindable<UsernameDisplayMode>(YTPlayerEXSetting.UsernameDisplayMode);
             translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource);
 
             CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS;
@@ -162,6 +164,14 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     Task.Run(async () =>
                     {
                         videoName.Text = api.GetLocalizedVideoTitle(videoData);
+                        desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
+                    });
+                }, true);
+
+                usernameDisplayMode.BindValueChanged(locale =>
+                {
+                    Task.Run(async () =>
+                    {
                         desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
                     });
                 }, true);

@@ -296,4 +296,55 @@
   <data name="thumbnail_dim" xml:space="preserve">
     <value>Thumbnail dim</value>
   </data>
+  <data name="shrink_game_to_safe_area" xml:space="preserve">
+    <value>Shrink app to avoid cameras and notches</value>
+  </data>
+  <data name="username_display_mode" xml:space="preserve">
+    <value>Username display mode</value>
+  </data>
+  <data name="jpg_web_friendly" xml:space="preserve">
+    <value>JPG (web-friendly)</value>
+  </data>
+  <data name="png_lossless" xml:space="preserve">
+    <value>PNG (lossless)</value>
+  </data>
+  <data name="screenshot_saved" xml:space="preserve">
+    <value>Screenshot saved!</value>
+  </data>
+  <data name="screenshot" xml:space="preserve">
+    <value>Screenshot</value>
+  </data>
+  <data name="screenshot_format" xml:space="preserve">
+    <value>Screenshot format</value>
+  </data>
+  <data name="show_cursor_in_screenshots" xml:space="preserve">
+    <value>Show user interface in screenshots</value>
+  </data>
+  <data name="username_display_mode_nickname" xml:space="preserve">
+    <value>Prefer display username (2005~2022)</value>
+  </data>
+  <data name="username_display_mode_handle" xml:space="preserve">
+    <value>Prefer display handle (2022~now)</value>
+  </data>
+  <data name="comment_added" xml:space="preserve">
+    <value>Comment added.</value>
+  </data>
+  <data name="comment_with" xml:space="preserve">
+    <value>Write comment with {0}</value>
+  </data>
+  <data name="signed_in" xml:space="preserve">
+    <value>Signed in to {0}</value>
+  </data>
+  <data name="signed_out" xml:space="preserve">
+    <value>Not logged in</value>
+  </data>
+  <data name="google_account" xml:space="preserve">
+    <value>Google account</value>
+  </data>
+  <data name="search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="search_placeholder" xml:space="preserve">
+    <value>search...</value>
+  </data>
 </root>

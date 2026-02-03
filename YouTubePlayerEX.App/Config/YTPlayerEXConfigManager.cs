@@ -22,7 +22,7 @@ namespace YouTubePlayerEX.App.Config
 
         protected override void InitialiseDefaults()
         {
-            SetDefault(YTPlayerEXSetting.PreferDisplayHandle, true);
+            SetDefault(YTPlayerEXSetting.UsernameDisplayMode, UsernameDisplayMode.Handle);
             SetDefault(YTPlayerEXSetting.ClosedCaptionLanguage, ClosedCaptionLanguage.Disabled);
             SetDefault(YTPlayerEXSetting.CaptionEnabled, false);
             SetDefault(YTPlayerEXSetting.AspectRatioMethod, AspectRatioMethod.Letterbox);
@@ -53,6 +53,8 @@ namespace YouTubePlayerEX.App.Config
             SetDefault(YTPlayerEXSetting.ScreenshotCaptureMenuCursor, false);
 
             SetDefault(YTPlayerEXSetting.CursorRotation, true);
+
+            SetDefault(YTPlayerEXSetting.FinalLoginState, false);
         }
 
         public YTPlayerEXConfigManager(Storage storage, IDictionary<YTPlayerEXSetting, object> defaultOverrides = null) : base(storage, defaultOverrides)
@@ -78,7 +80,7 @@ namespace YouTubePlayerEX.App.Config
 
     public enum YTPlayerEXSetting
     {
-        PreferDisplayHandle,
+        UsernameDisplayMode,
         ClosedCaptionLanguage,
         CaptionEnabled,
         AspectRatioMethod,
@@ -102,5 +104,7 @@ namespace YouTubePlayerEX.App.Config
         ScreenshotCaptureMenuCursor,
 
         CursorRotation,
+
+        FinalLoginState,
     }
 }

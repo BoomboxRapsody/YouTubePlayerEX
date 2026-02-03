@@ -445,6 +445,51 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString ShowCursorInScreenshots => new TranslatableString(getKey(@"show_cursor_in_screenshots"), @"Show user interface in screenshots");
 
+        /// <summary>
+        /// "Prefer display username (2005~2022)"
+        /// </summary>
+        public static LocalisableString UsernameDisplayMode_DisplayName => new TranslatableString(getKey(@"username_display_mode_nickname"), @"Prefer display username (2005~2022)");
+
+        /// <summary>
+        /// "Prefer display handle (2022~now)"
+        /// </summary>
+        public static LocalisableString UsernameDisplayMode_Handle => new TranslatableString(getKey(@"username_display_mode_handle"), @"Prefer display handle (2022~now)");
+
+        /// <summary>
+        /// "Comment added."
+        /// </summary>
+        public static LocalisableString CommentAdded => new TranslatableString(getKey(@"comment_added"), "Comment added.");
+
+        /// <summary>
+        /// "Write comment with {0}"
+        /// </summary>
+        public static LocalisableString CommentWith(string username) => new TranslatableString(getKey(@"comment_with"), "Write comment with {0}", username);
+
+        /// <summary>
+        /// "Signed in to {0}"
+        /// </summary>
+        public static LocalisableString SignedIn(string username) => new TranslatableString(getKey(@"signed_in"), "Signed in to {0}", username);
+
+        /// <summary>
+        /// "Not logged in"
+        /// </summary>
+        public static LocalisableString SignedOut => new TranslatableString(getKey(@"signed_out"), "Not logged in");
+
+        /// <summary>
+        /// "Google account"
+        /// </summary>
+        public static LocalisableString GoogleAccount => new TranslatableString(getKey(@"google_account"), "Google account");
+
+        /// <summary>
+        /// "Search"
+        /// </summary>
+        public static LocalisableString Search => new TranslatableString(getKey(@"search"), "Search");
+
+        /// <summary>
+        /// "search..."
+        /// </summary>
+        public static LocalisableString SearchPlaceholder => new TranslatableString(getKey(@"search_placeholder"), "search...");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

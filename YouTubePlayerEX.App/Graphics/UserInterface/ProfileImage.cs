@@ -69,6 +69,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         [BackgroundDependencyLoader]
         private void load(ISampleStore tracks)
         {
+            usernameDisplayMode = appConfig.GetBindable<UsernameDisplayMode>(YTPlayerEXSetting.UsernameDisplayMode);
             translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource);
             clickAudio = tracks.Get("button-select.wav");
         }
@@ -99,17 +100,19 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 {
                     await GetProfileImage(channel.Snippet.Thumbnails.High.Url);
                 });
-                TooltipText = YTPlayerEXStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel), Convert.ToInt32(channel.Statistics.SubscriberCount).ToStandardFormattedString(0));
+                TooltipText = YTPlayerEXStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel, true), Convert.ToInt32(channel.Statistics.SubscriberCount).ToStandardFormattedString(0));
 
                 translationSource.BindValueChanged(locale =>
                 {
                     Task.Run(async () =>
                     {
-                        TooltipText = YTPlayerEXStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel), Convert.ToInt32(channel.Statistics.SubscriberCount).ToStandardFormattedString(0));
+                        TooltipText = YTPlayerEXStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel, true), Convert.ToInt32(channel.Statistics.SubscriberCount).ToStandardFormattedString(0));
                     });
                 }, true);
             });
         }
+
+        private Bindable<UsernameDisplayMode> usernameDisplayMode;
 
         private CancellationTokenSource profileImageCancellationSource = new CancellationTokenSource();
 

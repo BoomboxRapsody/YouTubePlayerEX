@@ -2,27 +2,21 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using NUnit.Framework;
-using osu.Framework.Allocation;
 using YouTubePlayerEX.App.Graphics.UserInterface;
-using YouTubePlayerEX.App.Online;
 
 namespace YouTubePlayerEX.App.Tests.Visual.UserInterface
 {
     [TestFixture]
-    public partial class TestSceneCommentDisplay : YouTubePlayerEXTestScene
+    public partial class TestSceneYouTubeSearchResultView : YouTubePlayerEXTestScene
     {
         // Add visual tests to ensure correct behaviour of your game: https://github.com/ppy/osu-framework/wiki/Development-and-Testing
         // You can make changes to classes associated with the tests and they will recompile and update immediately.
 
-        private CommentDisplay videoMetadataDisplay;
+        private YouTubeSearchResultView videoMetadataDisplay;
 
-        [Resolved]
-        private YouTubeAPI api { get; set; }
-
-        [BackgroundDependencyLoader]
-        private void load()
+        public TestSceneYouTubeSearchResultView()
         {
-            Add(videoMetadataDisplay = new CommentDisplay(api.GetComment("UgyMERjWGh230ezjtuN4AaABAg")) { Width = 600 });
+            Add(videoMetadataDisplay = new YouTubeSearchResultView() { Width = 400 });
         }
     }
 }

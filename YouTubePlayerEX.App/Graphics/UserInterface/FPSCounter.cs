@@ -97,6 +97,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                 focusLayer = new Box
                                 {
                                     RelativeSizeAxes = Axes.Both,
+                                    Alpha = 0,
                                 }
                             }
                         },

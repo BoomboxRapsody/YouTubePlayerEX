@@ -59,8 +59,5 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 content,
             });
         }
-
-        protected override void ClearInternal(bool disposeChildren = true) =>
-            throw new InvalidOperationException($"Clearing {nameof(InternalChildren)} will cause critical failure. Use {nameof(Clear)} instead.");
     }
 }

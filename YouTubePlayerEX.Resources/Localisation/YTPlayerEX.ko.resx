@@ -296,4 +296,55 @@
   <data name="thumbnail_dim" xml:space="preserve">
     <value>배경의 어두운 정도</value>
   </data>
+  <data name="shrink_game_to_safe_area" xml:space="preserve">
+    <value>전면 노치 카메라를 피해 앱 화면 옮기기</value>
+  </data>
+  <data name="username_display_mode" xml:space="preserve">
+    <value>사용자 이름 표시 모드</value>
+  </data>
+  <data name="jpg_web_friendly" xml:space="preserve">
+    <value>JPG (웹 친화적)</value>
+  </data>
+  <data name="png_lossless" xml:space="preserve">
+    <value>PNG (무손실)</value>
+  </data>
+  <data name="screenshot_saved" xml:space="preserve">
+    <value>스크린샷이 저장되었습니다</value>
+  </data>
+  <data name="screenshot" xml:space="preserve">
+    <value>스크린샷</value>
+  </data>
+  <data name="screenshot_format" xml:space="preserve">
+    <value>스크린샷 포멧</value>
+  </data>
+  <data name="show_cursor_in_screenshots" xml:space="preserve">
+    <value>스크린샷에 사용자 인터페이스 표시</value>
+  </data>
+  <data name="username_display_mode_nickname" xml:space="preserve">
+    <value>사용자 이름으로 표시 (2005~2022)</value>
+  </data>
+  <data name="username_display_mode_handle" xml:space="preserve">
+    <value>핸들 (@username)으로 표시 (2022~지금)</value>
+  </data>
+  <data name="comment_added" xml:space="preserve">
+    <value>댓글이 추가되었습니다</value>
+  </data>
+  <data name="comment_with" xml:space="preserve">
+    <value>{0}으(로) 댓글 작성</value>
+  </data>
+  <data name="signed_in" xml:space="preserve">
+    <value>{0}으(로) 로그인함</value>
+  </data>
+  <data name="signed_out" xml:space="preserve">
+    <value>로그인 안 됨</value>
+  </data>
+  <data name="google_account" xml:space="preserve">
+    <value>Google 계정</value>
+  </data>
+  <data name="search" xml:space="preserve">
+    <value>검색</value>
+  </data>
+  <data name="search_placeholder" xml:space="preserve">
+    <value>검색...</value>
+  </data>
 </root>

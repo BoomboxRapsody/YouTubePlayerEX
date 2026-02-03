@@ -24,7 +24,7 @@ using YouTubePlayerEX.App.Graphics.UserInterface;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 {
-    public partial class FormCheckUpdateButton : CompositeDrawable, IFormControl
+    public partial class FormButton : CompositeDrawable, IFormControl
     {
         /// <summary>
         /// Caption describing this button, displayed on the left of it.
@@ -67,7 +67,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
         /// <summary>
         /// Sets a custom button icon. Not shown when <see cref="ButtonText"/> is set.
         /// </summary>
-        public IconUsage ButtonIcon { get; init; } = FontAwesome.Solid.Sync;
+        public IconUsage ButtonIcon { get; init; } = FontAwesome.Solid.ChevronRight;
 
         private FormControlBackground background = null!;
         private FormFieldCaption caption = null!;

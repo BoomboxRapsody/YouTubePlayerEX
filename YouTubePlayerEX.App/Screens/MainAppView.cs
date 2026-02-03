@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using System.Xml;
 using Google.Apis.YouTube.v3.Data;
 using Humanizer;
-using NReco.VideoInfo;
 using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio.Sample;
@@ -66,16 +65,16 @@ namespace YouTubePlayerEX.App.Screens
     public partial class MainAppView : YouTubePlayerEXScreen, IKeyBindingHandler<GlobalAction>
     {
         private BufferedContainer videoContainer;
-        private AdaptiveButton loadBtn;
-        private AdaptiveTextBox videoIdBox;
+        private AdaptiveButton loadBtn, commentSendButton, searchButton;
+        private AdaptiveTextBox videoIdBox, commentTextBox, searchTextBox;
         private LoadingSpinner spinner;
         private ScheduledDelegate spinnerShow;
         private AdaptiveAlertContainer alert;
         private IdleTracker idleTracker;
         private Container uiContainer;
         private Container uiGradientContainer;
-        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay;
-        private AdaptiveButtonWithShadow loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton;
+        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer;
+        private AdaptiveButtonWithShadow loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton, searchOpenButton;
         private VideoMetadataDisplayWithoutProfile videoMetadataDisplay;
         private VideoMetadataDisplay videoMetadataDisplayDetails;
         private RoundedButtonContainer commentOpenButtonDetails;
@@ -98,7 +97,10 @@ namespace YouTubePlayerEX.App.Screens
 
         private AdaptiveSpriteText videoLoadingProgress, videoInfoDetails, likeCount, dislikeCount, commentCount, commentsContainerTitle, currentTime, totalTime;
         private TextFlowContainer videoDescription;
-        private FillFlowContainer commentContainer;
+        private FillFlowContainer commentContainer, searchResultContainer;
+
+        [Resolved]
+        private GoogleOAuth2 googleOAuth2 { get; set; } = null!;
 
         private BindableNumber<double> videoProgress = new BindableNumber<double>()
         {
@@ -128,7 +130,7 @@ namespace YouTubePlayerEX.App.Screens
         private Bindable<Localisation.Language> audioLanguage;
         private Bindable<bool> adjustPitch;
         private Bindable<string> localeBindable = new Bindable<string>();
-        private FormCheckUpdateButton checkForUpdatesButton;
+        private FormButton checkForUpdatesButton, login;
         private ThumbnailContainerBackground thumbnailContainer;
         private AdaptiveSliderBar<double> seekbar;
         private Bindable<LocalisableString> updateInfomationText;
@@ -146,15 +148,22 @@ namespace YouTubePlayerEX.App.Screens
 
         private Bindable<float> scalingBackgroundDim = null!;
 
+        private AdaptiveTextFlowContainer dislikeCounterCredits;
+
+        private Bindable<bool> signedIn;
+
         [BackgroundDependencyLoader]
         private void load(ISampleStore sampleStore, FrameworkConfigManager config, YTPlayerEXConfigManager appConfig, GameHost host, Storage storage, OverlayColourProvider overlayColourProvider, TextureStore textures)
         {
             window = host.Window;
 
             uiVisible = screenshotManager.CursorVisibility.GetBoundCopy();
+            signedIn = googleOAuth2.SignedIn.GetBoundCopy();
 
             isAnyOverlayOpen = sessionStatics.GetBindable<bool>(Static.IsAnyOverlayOpen);
             videoPlaying = sessionStatics.GetBindable<bool>(Static.IsVideoPlaying);
+
+            usernameDisplayMode = appConfig.GetBindable<UsernameDisplayMode>(YTPlayerEXSetting.UsernameDisplayMode);
 
             var renderer = config.GetBindable<RendererType>(FrameworkSetting.Renderer);
             automaticRendererInUse = renderer.Value == RendererType.Automatic;
@@ -330,6 +339,20 @@ namespace YouTubePlayerEX.App.Screens
                                     Icon = FontAwesome.Regular.CommentAlt,
                                     IconScale = new Vector2(1.2f),
                                     TooltipText = YTPlayerEXStrings.CommentsWithoutCount,
+                                },
+                                searchOpenButton = new IconButtonWithShadow
+                                {
+                                    Enabled = { Value = true },
+                                    Margin = new MarginPadding
+                                    {
+                                        Right = 144,
+                                    },
+                                    Origin = Anchor.TopRight,
+                                    Anchor = Anchor.TopRight,
+                                    Size = new Vector2(40, 40),
+                                    Icon = FontAwesome.Solid.Search,
+                                    IconScale = new Vector2(1.2f),
+                                    TooltipText = YTPlayerEXStrings.Search,
                                 },
                                 new Container {
                                     Anchor = Anchor.BottomCentre,
@@ -641,10 +664,31 @@ namespace YouTubePlayerEX.App.Screens
                                                             Caption = YTPlayerEXStrings.VideoMetadataTranslateSource,
                                                             Current = appConfig.GetBindable<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource),
                                                         }),
-                                                        checkForUpdatesButtonCore = new SettingsItemV2(checkForUpdatesButton = new FormCheckUpdateButton
+                                                        new SettingsItemV2(new FormEnumDropdown<UsernameDisplayMode>
+                                                        {
+                                                            Caption = YTPlayerEXStrings.UsernameDisplayMode,
+                                                            Current = usernameDisplayMode,
+                                                        }),
+                                                        new SettingsItemV2(login = new FormButton
+                                                        {
+                                                            Caption = YTPlayerEXStrings.GoogleAccount,
+                                                            Text = YTPlayerEXStrings.SignedOut,
+                                                            Action = () => {
+                                                                if (!googleOAuth2.SignedIn.Value)
+                                                                {
+                                                                    Task.Run(() => googleOAuth2.SignIn());
+                                                                }
+                                                                else
+                                                                {
+                                                                    Task.Run(() => googleOAuth2.SignOut());
+                                                                }
+                                                            },
+                                                        }),
+                                                        checkForUpdatesButtonCore = new SettingsItemV2(checkForUpdatesButton = new FormButton
                                                         {
                                                             Caption = YTPlayerEXStrings.CheckUpdate,
                                                             Text = app.Version,
+                                                            ButtonIcon = FontAwesome.Solid.Sync,
                                                             Action = () => {
                                                                 if (game.RestartRequired.Value != true)
                                                                     checkForUpdates().FireAndForget();
@@ -921,7 +965,7 @@ namespace YouTubePlayerEX.App.Screens
                                                             TextAnchor = Anchor.Centre,
                                                             Colour = overlayColourProvider.Content2,
                                                         },
-                                                        new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 15))
+                                                        dislikeCounterCredits = new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 15))
                                                         {
                                                             RelativeSizeAxes = Axes.X,
                                                             AutoSizeAxes = Axes.Y,
@@ -1219,6 +1263,49 @@ namespace YouTubePlayerEX.App.Screens
                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
                                     Colour = overlayColourProvider.Content2,
                                 },
+                                new GridContainer
+                                {
+                                    Margin = new MarginPadding
+                                    {
+                                        Top = 56,
+                                    },
+                                    Padding = new MarginPadding
+                                    {
+                                        Horizontal = 16,
+                                    },
+                                    RelativeSizeAxes = Axes.X,
+                                    Height = 45,
+                                    ColumnDimensions = new[]
+                                    {
+                                        new Dimension(),
+                                        new Dimension(GridSizeMode.AutoSize),
+                                    },
+                                    Content = new []
+                                    {
+                                        new Drawable[]
+                                        {
+                                            commentTextBox = new AdaptiveTextBox
+                                            {
+                                                RelativeSizeAxes = Axes.X,
+                                                Size = new Vector2(0.97f, 1f),
+                                                Text = "",
+                                                FontSize = 20,
+                                                Height = 45,
+                                            },
+                                            commentSendButton = new IconButton
+                                            {
+                                                Origin = Anchor.Centre,
+                                                Anchor = Anchor.Centre,
+                                                Icon = FontAwesome.Solid.PaperPlane,
+                                                Width = 50,
+                                                Height = 45,
+                                                AlwaysPresent = true,
+                                                Enabled = { Value = true },
+                                                BackgroundColour = overlayColourProvider.Background3,
+                                            },
+                                        },
+                                    },
+                                },
                                 new Container
                                 {
                                     RelativeSizeAxes = Axes.Both,
@@ -1226,7 +1313,7 @@ namespace YouTubePlayerEX.App.Screens
                                     {
                                         Horizontal = 16,
                                         Bottom = 16,
-                                        Top = 56,
+                                        Top = (56 * 2),
                                     },
                                     Children = new Drawable[] {
                                         new AdaptiveScrollContainer
@@ -1308,6 +1395,109 @@ namespace YouTubePlayerEX.App.Screens
                                 }
                             }
                         },
+                        searchContainer = new OverlayContainer
+                        {
+                            Size = new Vector2(0.7f),
+                            RelativeSizeAxes = Axes.Both,
+                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
+                            Masking = true,
+                            Origin = Anchor.Centre,
+                            Anchor = Anchor.Centre,
+                            EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                            {
+                                Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                Colour = Color4.Black.Opacity(0.25f),
+                                Offset = new Vector2(0, 2),
+                                Radius = 16,
+                            },
+                            Children = new Drawable[]
+                            {
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Colour = overlayColourProvider.Background5,
+                                },
+                                new AdaptiveSpriteText
+                                {
+                                    Origin = Anchor.TopLeft,
+                                    Anchor = Anchor.TopLeft,
+                                    Text = YTPlayerEXStrings.Search,
+                                    Margin = new MarginPadding(16),
+                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
+                                    Colour = overlayColourProvider.Content2,
+                                },
+                                new GridContainer
+                                {
+                                    Margin = new MarginPadding
+                                    {
+                                        Top = 56,
+                                    },
+                                    Padding = new MarginPadding
+                                    {
+                                        Horizontal = 16,
+                                    },
+                                    RelativeSizeAxes = Axes.X,
+                                    Height = 45,
+                                    ColumnDimensions = new[]
+                                    {
+                                        new Dimension(),
+                                        new Dimension(GridSizeMode.AutoSize),
+                                    },
+                                    Content = new []
+                                    {
+                                        new Drawable[]
+                                        {
+                                            searchTextBox = new AdaptiveTextBox
+                                            {
+                                                RelativeSizeAxes = Axes.X,
+                                                Size = new Vector2(0.97f, 1f),
+                                                Text = "",
+                                                PlaceholderText = YTPlayerEXStrings.SearchPlaceholder,
+                                                FontSize = 20,
+                                                Height = 45,
+                                            },
+                                            searchButton = new IconButton
+                                            {
+                                                Origin = Anchor.Centre,
+                                                Anchor = Anchor.Centre,
+                                                Icon = FontAwesome.Solid.Search,
+                                                Width = 50,
+                                                Height = 45,
+                                                AlwaysPresent = true,
+                                                Enabled = { Value = true },
+                                            },
+                                        },
+                                    },
+                                },
+                                new Container
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Padding = new MarginPadding
+                                    {
+                                        Horizontal = 16,
+                                        Bottom = 16,
+                                        Top = (56 * 2),
+                                    },
+                                    Children = new Drawable[] {
+                                        new AdaptiveScrollContainer
+                                        {
+                                            RelativeSizeAxes = Axes.Both,
+                                            ScrollbarVisible = false,
+                                            Children = new Drawable[]
+                                            {
+                                                searchResultContainer = new FillFlowContainer
+                                                {
+                                                    RelativeSizeAxes = Axes.X,
+                                                    AutoSizeAxes = Axes.Y,
+                                                    Spacing = new Vector2(0, 4),
+                                                    AlwaysPresent = true,
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
                         new Container
                         {
                             RelativeSizeAxes = Axes.Both,
@@ -1328,9 +1518,38 @@ namespace YouTubePlayerEX.App.Screens
             settingsContainer.Hide();
             videoDescriptionContainer.Hide();
             commentsContainer.Hide();
+            searchContainer.Hide();
             videoInfoExpertOverlay.Hide();
 
-            playPause.BackgroundColour = overlayColourProvider.Background3;
+            signedIn.BindValueChanged(loginBool =>
+            {
+                if (loginBool.NewValue)
+                {
+                    Channel wth = api.GetMineChannel();
+                    login.Text = YTPlayerEXStrings.SignedIn(api.GetLocalizedChannelTitle(wth, true));
+
+                    if (api.TryToGetMineChannel() != null)
+                        commentTextBox.PlaceholderText = YTPlayerEXStrings.CommentWith(api.GetLocalizedChannelTitle(api.GetMineChannel()));
+                }
+                else
+                {
+                    login.Text = YTPlayerEXStrings.SignedOut;
+
+                    commentTextBox.PlaceholderText = string.Empty;
+                }
+            }, true);
+            /*
+            if (googleOAuth2.SignedIn.Value)
+            {
+                login.Text = "Signed in";
+            }
+            else
+            {
+                login.Text = "Not logged in";
+            }
+            */
+
+            playPause.BackgroundColour = searchButton.BackgroundColour = commentSendButton.BackgroundColour = overlayColourProvider.Background3;
 
             hwAccelCheckbox.Current.Default = hardwareVideoDecoder.Default != HardwareVideoDecoder.None;
             hwAccelCheckbox.Current.Value = hardwareVideoDecoder.Value != HardwareVideoDecoder.None;
@@ -1345,6 +1564,7 @@ namespace YouTubePlayerEX.App.Screens
             overlayContainers.Add(videoDescriptionContainer);
             overlayContainers.Add(commentsContainer);
             overlayContainers.Add(videoInfoExpertOverlay);
+            overlayContainers.Add(searchContainer);
 
             infoForNerds.AddText("Codec: ");
             infoForNerds.AddText("[unknown]", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(weight: "Bold"));
@@ -1372,6 +1592,18 @@ namespace YouTubePlayerEX.App.Screens
             adjustPitch.BindValueChanged(value =>
             {
                 currentVideoSource?.UpdatePreservePitch(value.NewValue);
+            });
+
+            dislikeCounterCredits.AddArbitraryDrawable(new IconButton
+            {
+                Width = 15,
+                Height = 15,
+                Margin = new MarginPadding { Left = 2 },
+                Icon = FontAwesome.Solid.InfoCircle,
+                IconScale = new Vector2(0.75f),
+                Origin = Anchor.Centre,
+                Anchor = Anchor.Centre,
+                ClickAction = _ => host.OpenUrlExternally("https://returnyoutubedislike.com/")
             });
 
             audioLanguage.BindValueChanged(_ =>
@@ -1759,7 +1991,7 @@ namespace YouTubePlayerEX.App.Screens
         [Resolved]
         private YouTubePlayerEXAppBase app { get; set; }
 
-        [Resolved]
+        [Resolved(canBeNull: true)]
         private UpdateManager updateManager { get; set; }
 
         private YouTubeVideoPlayer currentVideoSource;
@@ -1770,9 +2002,47 @@ namespace YouTubePlayerEX.App.Screens
         [Resolved]
         private YouTubeAPI api { get; set; }
 
+        public void Search()
+        {
+            foreach (var item in searchResultContainer.Children)
+            {
+                item.Expire();
+            }
+
+            IList<SearchResult> searchResults = api.GetSearchResult(searchTextBox.Text);
+            foreach (SearchResult item in searchResults)
+            {
+                if (item.Id.Kind == "youtube#video")
+                {
+                    YouTubeSearchResultView wth = new YouTubeSearchResultView()
+                    {
+                        RelativeSizeAxes = Axes.X,
+                    };
+
+                    searchResultContainer.Add(wth);
+
+                    wth.ClickAction = async _ =>
+                    {
+                        await SetVideoSource(item.Id.VideoId);
+                    };
+
+                    wth.Enabled.Value = true;
+
+                    wth.Data = item;
+
+                    wth.UpdateData();
+                }
+            }
+        }
+
         protected override void LoadComplete()
         {
             base.LoadComplete();
+
+            if (appGlobalConfig.Get<bool>(YTPlayerEXSetting.FinalLoginState) == true)
+            {
+                Task.Run(async () => await googleOAuth2.SignIn());
+            }
 
             if (!game.IsDeployedBuild)
                 checkForUpdatesButtonCore.Hide();
@@ -1794,6 +2064,19 @@ namespace YouTubePlayerEX.App.Screens
             loadBtn.ClickAction = async _ =>
             {
                 await SetVideoSource(videoIdBox.Text);
+            };
+
+            searchButton.ClickAction = _ =>
+            {
+                Search();
+            };
+
+            searchOpenButton.ClickAction = _ =>
+            {
+                if (!commentsDisabled)
+                {
+                    showOverlayContainer(searchContainer);
+                }
             };
 
             commentOpenButton.ClickAction = _ =>
@@ -2134,6 +2417,20 @@ namespace YouTubePlayerEX.App.Screens
                 commentsContainerTitle.Text = YTPlayerEXStrings.Comments(videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : YTPlayerEXStrings.Disabled);
                 videoInfoDetails.Text = YTPlayerEXStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
 
+                Schedule(() =>
+                {
+                    commentSendButton.ClickAction = _ =>
+                    {
+                        if (!googleOAuth2.SignedIn.Value)
+                            return;
+
+                        Toast toast = new Toast(YTPlayerEXStrings.General, YTPlayerEXStrings.CommentAdded);
+                        api.SendComment(videoId, commentTextBox.Text);
+                        Schedule(() => onScreenDisplay.Display(toast));
+                        commentTextBox.Text = string.Empty;
+                    };
+                });
+
                 // comments area
                 IList<CommentThread> commentThreadData = api.GetCommentThread(videoId);
                 foreach (CommentThread item in commentThreadData)
@@ -2155,6 +2452,15 @@ namespace YouTubePlayerEX.App.Screens
                     }
                 }
 
+                usernameDisplayMode.BindValueChanged(locale =>
+                {
+                    Schedule(() =>
+                    {
+                        if (api.TryToGetMineChannel() != null)
+                            commentTextBox.PlaceholderText = YTPlayerEXStrings.CommentWith(api.GetLocalizedChannelTitle(api.GetMineChannel()));
+                    });
+                }, true);
+
                 localeBindable.BindValueChanged(locale =>
                 {
                     Task.Run(async () =>
@@ -2175,6 +2481,8 @@ namespace YouTubePlayerEX.App.Screens
                 }
             });
         }
+
+        private Bindable<UsernameDisplayMode> usernameDisplayMode;
 
         private void addVideoToScreen()
         {
@@ -2226,6 +2534,10 @@ namespace YouTubePlayerEX.App.Screens
             if (loadVideoContainer.IsVisible == true)
             {
                 Schedule(() => hideOverlayContainer(loadVideoContainer));
+            }
+            if (searchContainer.IsVisible == true)
+            {
+                Schedule(() => hideOverlayContainer(searchContainer));
             }
             videoIdBox.Text = string.Empty;
 
