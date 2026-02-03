@@ -83,7 +83,7 @@ namespace YouTubePlayerEX.App.Online
         {
             UserCredential credential;
 
-            using (var stream = new FileStream(isTestClient_static ? @"OAuthClients\youtube-player-ex-development.json" : @"OAuthClients\youtube-player-ex-production.json", FileMode.Open, FileAccess.Read))
+            using (var stream = new FileStream(isTestClient_static ? @"youtube-player-ex-development.json" : @"youtube-player-ex-production.json", FileMode.Open, FileAccess.Read))
             {
                 string credPath = "token.json";
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
