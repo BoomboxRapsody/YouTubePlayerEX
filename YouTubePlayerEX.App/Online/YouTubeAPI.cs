@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Crypto.AES;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
@@ -31,11 +32,18 @@ namespace YouTubePlayerEX.App.Online
             this.translateApi = translateApi;
             this.appConfig = appConfig;
             this.googleOAuth2 = googleOAuth2;
-            youtubeService = new YouTubeService(new BaseClientService.Initializer()
+            var apiKey = isTestClient ? "K/1395zhx/B49AZcHQpAUn5HZSBGtbLrAHnY3QGYieBQpx0gOkZdL5xDPUB7+BnM" : "3T8gSwQR7sprXV/OZDZyTCqbT9Qrt/j8xd7prlHrFMh4Y8Dsp4H2HG+eu+UJ7FOb";
+
+            using (AES aes = new AES("apiKey"))
             {
-                ApiKey = isTestClient ? "AIzaSyD5LrbcZIMxRYHxKPiYMknAoSWUDeWm67E" : "AIzaSyDGpklqOVqNLzOuChi5hHKswhZIC9ocEIQ",
-                ApplicationName = GetType().ToString()
-            });
+                string decryptedApiKey = aes.Decrypt(apiKey);
+
+                youtubeService = new YouTubeService(new BaseClientService.Initializer()
+                {
+                    ApiKey = decryptedApiKey,
+                    ApplicationName = GetType().ToString()
+                });
+            }
         }
 
         public Channel GetChannel(string channelId)
