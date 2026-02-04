@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Crypto.AES;
@@ -12,6 +13,8 @@ using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using osu.Framework.Configuration;
+using osu.Framework.Extensions;
+using osu.Framework.Logging;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Localisation;
 
@@ -64,7 +67,7 @@ namespace YouTubePlayerEX.App.Online
             return result;
         }
 
-        public Channel TryToGetMineChannel()
+        public Channel? TryToGetMineChannel()
         {
             if (!googleOAuth2.SignedIn.Value)
                 return null;
@@ -112,6 +115,135 @@ namespace YouTubePlayerEX.App.Online
             request.AccessToken = googleOAuth2.GetAccessToken();
 
             request.Execute();
+        }
+
+        public IList<VideoAbuseReportReasonItem>? TryToGetVideoAbuseReportReasons()
+        {
+            if (!googleOAuth2.SignedIn.Value)
+                return null;
+
+            return GetVideoAbuseReportReasons();
+        }
+
+        public void ReportAbuse(string videoID, string reasonId, string? secondaryReasonId = null, string? comments = null)
+        {
+            if (!googleOAuth2.SignedIn.Value)
+                return;
+
+            if (secondaryReasonId != null)
+            {
+                if (comments != null)
+                {
+                    var request = youtubeService.Videos.ReportAbuse(new VideoAbuseReport
+                    {
+                        VideoId = videoID,
+                        ReasonId = reasonId,
+                        SecondaryReasonId = secondaryReasonId,
+                        Comments = comments,
+                        Language = CultureInfo.CurrentCulture.Name,
+                    });
+
+                    request.AccessToken = googleOAuth2.GetAccessToken();
+                    request.Execute();
+                }
+                else
+                {
+                    var request = youtubeService.Videos.ReportAbuse(new VideoAbuseReport
+                    {
+                        VideoId = videoID,
+                        ReasonId = reasonId,
+                        SecondaryReasonId = secondaryReasonId,
+                        Language = CultureInfo.CurrentCulture.Name,
+                    });
+
+                    request.AccessToken = googleOAuth2.GetAccessToken();
+                    request.Execute();
+                }
+            }
+            else
+            {
+                if (comments != null)
+                {
+                    var request = youtubeService.Videos.ReportAbuse(new VideoAbuseReport
+                    {
+                        VideoId = videoID,
+                        ReasonId = reasonId,
+                        Comments = comments,
+                        Language = CultureInfo.CurrentCulture.Name,
+                    });
+
+                    request.AccessToken = googleOAuth2.GetAccessToken();
+                    request.Execute();
+                }
+                else
+                {
+                    var request = youtubeService.Videos.ReportAbuse(new VideoAbuseReport
+                    {
+                        VideoId = videoID,
+                        ReasonId = reasonId,
+                        Language = CultureInfo.CurrentCulture.Name,
+                    });
+
+                    request.AccessToken = googleOAuth2.GetAccessToken();
+                    request.Execute();
+                }
+            }
+        }
+
+        public IList<VideoAbuseReportReasonItem> GetVideoAbuseReportReasons()
+        {
+            var part = "snippet";
+            var request = youtubeService.VideoAbuseReportReasons.List(part);
+
+            request.AccessToken = googleOAuth2.GetAccessToken();
+            request.Hl = CultureInfo.CurrentCulture.Name;
+
+            Logger.Log($"Using access token {googleOAuth2.GetAccessToken()}");
+            Logger.Log($"called GetVideoAbuseReportReasons()");
+
+            var response = request.Execute();
+
+            IList<VideoAbuseReportReasonItem> result = new List<VideoAbuseReportReasonItem>();
+
+            try
+            {
+                foreach (VideoAbuseReportReason videoAbuseReportReason in response.Items)
+                {
+                    VideoAbuseReportReasonItem item = new VideoAbuseReportReasonItem
+                    {
+                        Id = videoAbuseReportReason.Id,
+                        Label = videoAbuseReportReason.Snippet.Label,
+                        ContainsSecondaryReasons = (videoAbuseReportReason.Snippet.SecondaryReasons != null)
+                    };
+                    Logger.Log($"Created new item instance: (Id: {videoAbuseReportReason.Id}, Label: {videoAbuseReportReason.Snippet.Label})");
+
+                    if (videoAbuseReportReason.Snippet.SecondaryReasons != null)
+                    {
+                        foreach (VideoAbuseReportSecondaryReason item1 in videoAbuseReportReason.Snippet.SecondaryReasons)
+                        {
+                            VideoAbuseReportReasonItem item2 = new VideoAbuseReportReasonItem
+                            {
+                                Id = item1.Id,
+                                Label = item1.Label
+                            };
+                            Logger.Log($"Created new sub item instance: (Id: {item1.Id}, Label: {item1.Label})");
+
+                            item.SecondaryReasons.Add(item2);
+                            Logger.Log($"SecondaryReasons added: {item1.Label}");
+                        }
+                    }
+
+                    result.Add(item);
+                    Logger.Log($"Reasons added: {item.Label}");
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, e.GetDescription());
+            }
+
+            Logger.Log($"Reasons all added!");
+            return result;
         }
 
         public IList<CommentThread> GetCommentThread(string videoId, CommentThreadsResource.ListRequest.OrderEnum orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Time)

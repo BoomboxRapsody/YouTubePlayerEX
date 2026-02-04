@@ -19,7 +19,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
     /// <summary>
     /// A button with added default sound effects.
     /// </summary>
-    public abstract partial class AdaptiveButtonV2 : Button
+    public partial class AdaptiveButtonV2 : Button
     {
         public LocalisableString Text
         {
@@ -73,7 +73,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         private readonly Box flashLayer;
 
-        protected AdaptiveButtonV2(HoverSampleSet? hoverSounds = HoverSampleSet.Button)
+        public AdaptiveButtonV2(HoverSampleSet? hoverSounds = HoverSampleSet.Button)
         {
             Height = 40;
 

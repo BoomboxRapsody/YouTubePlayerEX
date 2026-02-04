@@ -495,6 +495,86 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString ViewLatestVersions => new TranslatableString(getKey(@"view_latest_versions"), "View latest versions");
 
+        /// <summary>
+        /// "Report"
+        /// </summary>
+        public static LocalisableString Report => new TranslatableString(getKey(@"report"), "Report");
+
+        /// <summary>
+        /// "What's going on?"
+        /// </summary>
+        public static LocalisableString WhatsGoingOn => new TranslatableString(getKey(@"whats_going_on"), "What's going on?");
+
+        /// <summary>
+        /// "We'll check for all Community Guidelines, so don't worry about making the perfect choice."
+        /// </summary>
+        public static LocalisableString ReportDesc => new TranslatableString(getKey(@"report_desc"), "We'll check for all Community Guidelines, so don't worry about making the perfect choice.");
+
+        /// <summary>
+        /// "Reason"
+        /// </summary>
+        public static LocalisableString ReportReason => new TranslatableString(getKey(@"report_reason"), "Reason");
+
+        /// <summary>
+        /// "Detailed reason"
+        /// </summary>
+        public static LocalisableString ReportSubReason => new TranslatableString(getKey(@"report_sub_reason"), "Detailed reason");
+
+        /// <summary>
+        /// "Submit"
+        /// </summary>
+        public static LocalisableString Submit => new TranslatableString(getKey(@"submit"), "Submit");
+
+        /// <summary>
+        /// "Thank you for your submission."
+        /// </summary>
+        public static LocalisableString ReportSuccess => new TranslatableString(getKey(@"report_success"), "Thank you for your submission.");
+
+        /// <summary>
+        /// "Description"
+        /// </summary>
+        public static LocalisableString Description => new TranslatableString(getKey(@"description"), "Description");
+
+        /// <summary>
+        /// "Windowed"
+        /// </summary>
+        public static LocalisableString Windowed => new TranslatableString(getKey(@"windowed"), "Windowed");
+
+        /// <summary>
+        /// "Borderless"
+        /// </summary>
+        public static LocalisableString Borderless => new TranslatableString(getKey(@"borderless"), "Borderless");
+
+        /// <summary>
+        /// "Fullscreen"
+        /// </summary>
+        public static LocalisableString Fullscreen => new TranslatableString(getKey(@"fullscreen"), "Fullscreen");
+
+        /// <summary>
+        /// "VSync"
+        /// </summary>
+        public static LocalisableString VSync => new TranslatableString(getKey(@"vertical_sync"), "VSync");
+
+        /// <summary>
+        /// "2x refresh rate"
+        /// </summary>
+        public static LocalisableString RefreshRate2X => new TranslatableString(getKey(@"refresh_rate_2x"), "2x refresh rate");
+
+        /// <summary>
+        /// "4x refresh rate"
+        /// </summary>
+        public static LocalisableString RefreshRate4X => new TranslatableString(getKey(@"refresh_rate_4x"), "4x refresh rate");
+
+        /// <summary>
+        /// "8x refresh rate"
+        /// </summary>
+        public static LocalisableString RefreshRate8X => new TranslatableString(getKey(@"refresh_rate_8x"), "8x refresh rate");
+
+        /// <summary>
+        /// "Basically unlimited"
+        /// </summary>
+        public static LocalisableString Unlimited => new TranslatableString(getKey(@"unlimited"), "Basically unlimited");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

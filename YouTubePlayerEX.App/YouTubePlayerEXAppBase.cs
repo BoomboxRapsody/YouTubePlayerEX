@@ -72,6 +72,7 @@ namespace YouTubePlayerEX.App
 
         protected YouTubePlayerEXAppBase()
         {
+            Name = "YouTube Player EX";
         }
 
         protected Storage Storage { get; set; }

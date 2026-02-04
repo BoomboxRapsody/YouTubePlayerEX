@@ -139,12 +139,14 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             }, true);
         }
 
-        private IBindable<bool> uiVisible;
+        private IBindable<bool> uiVisible = null!;
 
         private void trackCompleted()
         {
             trackFinished = true;
-            Pause();
+            drawableTrack?.Stop();
+            framedClock.Stop();
+            SeekTo(0);
         }
 
         public void UpdatePreservePitch(bool value)

@@ -254,12 +254,148 @@
     <value>Revenir à la valeur par défaut</value>
   </data>
   <data name="playback_speed_without_value" xml:space="preserve">
-    <value>Playback speed</value>
+    <value>Vitesse de lecture</value>
   </data>
   <data name="quick_action" xml:space="preserve">
-    <value>Quick Action</value>
+    <value>Action Rapide</value>
   </data>
   <data name="caption_font" xml:space="preserve">
-    <value>Closed caption font</value>
+    <value>Police de légende fermée</value>
+  </data>
+  <data name="dislike_count_tooltip" xml:space="preserve">
+    <value>Estimé : {0} | Réel: {1}</value>
+  </data>
+  <data name="caption_auto_gen" xml:space="preserve">
+    <value>{0} (génération automatique)</value>
+  </data>
+  <data name="scale_video" xml:space="preserve">
+    <value>Vidéo</value>
+    <comment>scale_video</comment>
+  </data>
+  <data name="scale_everything" xml:space="preserve">
+    <value>Tout</value>
+  </data>
+  <data name="scaling_off" xml:space="preserve">
+    <value>Désactivé</value>
+  </data>
+  <data name="screen_scaling" xml:space="preserve">
+    <value>Mise à l'échelle de l'écran</value>
+  </data>
+  <data name="horizontal_position" xml:space="preserve">
+    <value>Position horizontale</value>
+  </data>
+  <data name="vertical_position" xml:space="preserve">
+    <value>Position verticale</value>
+  </data>
+  <data name="horizontal_scale" xml:space="preserve">
+    <value>Échelle horizontale</value>
+  </data>
+  <data name="vertical_scale" xml:space="preserve">
+    <value>Échelle verticale</value>
+  </data>
+  <data name="thumbnail_dim" xml:space="preserve">
+    <value>Thumbnail dim</value>
+  </data>
+  <data name="shrink_game_to_safe_area" xml:space="preserve">
+    <value>Réduire l'application pour éviter les caméras et les encoches</value>
+  </data>
+  <data name="username_display_mode" xml:space="preserve">
+    <value>Mode d'affichage du nom d'utilisateur</value>
+  </data>
+  <data name="jpg_web_friendly" xml:space="preserve">
+    <value>JPG (convivial)</value>
+  </data>
+  <data name="png_lossless" xml:space="preserve">
+    <value>PNG (sans perte)</value>
+  </data>
+  <data name="screenshot_saved" xml:space="preserve">
+    <value>Capture d'écran enregistrée !</value>
+  </data>
+  <data name="screenshot" xml:space="preserve">
+    <value>Capture d'écran</value>
+  </data>
+  <data name="screenshot_format" xml:space="preserve">
+    <value>Format de capture d'écran</value>
+  </data>
+  <data name="show_cursor_in_screenshots" xml:space="preserve">
+    <value>Afficher l'interface utilisateur dans les captures d'écran</value>
+  </data>
+  <data name="username_display_mode_nickname" xml:space="preserve">
+    <value>Préférer afficher le nom d'utilisateur (2005~2022)</value>
+  </data>
+  <data name="username_display_mode_handle" xml:space="preserve">
+    <value>Préférer la poignée d'affichage (2022~maintenant)</value>
+  </data>
+  <data name="comment_added" xml:space="preserve">
+    <value>Commentaire ajouté.</value>
+  </data>
+  <data name="comment_with" xml:space="preserve">
+    <value>Écrire un commentaire avec {0}</value>
+  </data>
+  <data name="signed_in" xml:space="preserve">
+    <value>Connecté à {0}</value>
+  </data>
+  <data name="signed_out" xml:space="preserve">
+    <value>Non connecté</value>
+  </data>
+  <data name="google_account" xml:space="preserve">
+    <value>Compte Google</value>
+  </data>
+  <data name="search" xml:space="preserve">
+    <value>Chercher</value>
+  </data>
+  <data name="search_placeholder" xml:space="preserve">
+    <value>recherche...</value>
+  </data>
+  <data name="view_latest_versions" xml:space="preserve">
+    <value>Voir les dernières versions</value>
+  </data>
+  <data name="report" xml:space="preserve">
+    <value>Rapporter</value>
+  </data>
+  <data name="whats_going_on" xml:space="preserve">
+    <value>Que se passe-t-il ?</value>
+  </data>
+  <data name="report_desc" xml:space="preserve">
+    <value>Nous allons vérifier toutes les directives de la communauté, donc ne vous inquiétez pas de faire le choix parfait.</value>
+  </data>
+  <data name="submit" xml:space="preserve">
+    <value>Soumettre</value>
+  </data>
+  <data name="report_success" xml:space="preserve">
+    <value>Merci pour votre soumission.</value>
+  </data>
+  <data name="description" xml:space="preserve">
+    <value>Libellé</value>
+  </data>
+  <data name="report_reason" xml:space="preserve">
+    <value>Raison</value>
+  </data>
+  <data name="report_sub_reason" xml:space="preserve">
+    <value>Raison détaillée</value>
+  </data>
+  <data name="windowed" xml:space="preserve">
+    <value>Fenêtre</value>
+  </data>
+  <data name="borderless" xml:space="preserve">
+    <value>Sans frontières</value>
+  </data>
+  <data name="fullscreen" xml:space="preserve">
+    <value>Plein écran</value>
+  </data>
+  <data name="vertical_sync" xml:space="preserve">
+    <value>Synchronisation VSync</value>
+  </data>
+  <data name="refresh_rate_2x" xml:space="preserve">
+    <value>Taux de rafraîchissement x2</value>
+  </data>
+  <data name="refresh_rate_4x" xml:space="preserve">
+    <value>Taux de rafraîchissement 4x</value>
+  </data>
+  <data name="refresh_rate_8x" xml:space="preserve">
+    <value>Taux de rafraîchissement de 8 x</value>
+  </data>
+  <data name="unlimited" xml:space="preserve">
+    <value>Fondamentalement illimité</value>
   </data>
 </root>

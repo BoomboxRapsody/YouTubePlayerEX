@@ -59,292 +59,343 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="aspect_ratio_method" xml:space="preserve">
-    <value>Aspect ratio method</value>
+    <value>Seitenverhältnis Methode</value>
   </data>
   <data name="audio" xml:space="preserve">
     <value>Audio</value>
   </data>
   <data name="audio_language" xml:space="preserve">
-    <value>Audio tracks (only available)</value>
+    <value>Audiospuren (nur verfügbar)</value>
   </data>
   <data name="auto" xml:space="preserve">
     <value>Auto</value>
   </data>
   <data name="caption_disabled" xml:space="preserve">
-    <value>Disabled</value>
+    <value>Deaktiviert</value>
   </data>
   <data name="caption_language" xml:space="preserve">
-    <value>Closed caption language (only available)</value>
+    <value>Unterschriftssprache (nur verfügbar)</value>
   </data>
   <data name="disabled" xml:space="preserve">
-    <value>Disabled</value>
+    <value>Deaktiviert</value>
   </data>
   <data name="display" xml:space="preserve">
-    <value>Display</value>
+    <value>Anzeige</value>
   </data>
   <data name="enabled" xml:space="preserve">
-    <value>Enabled</value>
+    <value>Aktiviert</value>
   </data>
   <data name="error_noVideoId" xml:space="preserve">
-    <value>Video ID must not be empty!</value>
+    <value>Video-ID darf nicht leer sein!</value>
   </data>
   <data name="fill" xml:space="preserve">
-    <value>Fill</value>
+    <value>Füllen</value>
   </data>
   <data name="frame_limiter" xml:space="preserve">
     <value>Frame limiter</value>
   </data>
   <data name="fullscreen_entered" xml:space="preserve">
-    <value>Press F11 to exit the full screen.</value>
+    <value>Drücken Sie F11, um den Vollbildmodus zu verlassen.</value>
   </data>
   <data name="general" xml:space="preserve">
-    <value>General</value>
+    <value>Allgemein</value>
   </data>
   <data name="google_translate" xml:space="preserve">
-    <value>Google Translate</value>
+    <value>Google übersetzen</value>
   </data>
   <data name="graphics" xml:space="preserve">
-    <value>Graphics</value>
+    <value>Grafik</value>
   </data>
   <data name="language" xml:space="preserve">
-    <value>Language</value>
+    <value>Sprache</value>
   </data>
   <data name="letterbox" xml:space="preserve">
     <value>Letterbox</value>
   </data>
   <data name="load_from_video_id" xml:space="preserve">
-    <value>Load from video ID</value>
+    <value>Von Video-ID laden</value>
   </data>
   <data name="load_video" xml:space="preserve">
-    <value>Load Video</value>
+    <value>Video laden</value>
   </data>
   <data name="master_volume" xml:space="preserve">
-    <value>Master volume</value>
+    <value>Hauptlautstärke</value>
   </data>
   <data name="minimise_on_focus_loss" xml:space="preserve">
-    <value>Minimise video player when switching to another app</value>
+    <value>Video-Player beim Wechsel zu einer anderen App minimieren</value>
   </data>
   <data name="prefer_high_quality" xml:space="preserve">
-    <value>Prefer high quality</value>
+    <value>Bevorzuge hohe Qualität</value>
   </data>
   <data name="adjust_pitch_on_speed_change" xml:space="preserve">
-    <value>Adjust pitch on speed change</value>
+    <value>Pitch bei Geschwindigkeitsänderung anpassen</value>
   </data>
   <data name="profile_image_tooltip" xml:space="preserve">
-    <value>{0} • {1} subscribers • Click to view channel via external web browser.</value>
+    <value>{0} • {1} Abonnenten • Klicken, um den Kanal über einen externen Webbrowser anzuzeigen.</value>
   </data>
   <data name="screen_mode" xml:space="preserve">
-    <value>Screen mode</value>
+    <value>Bildschirmmodus</value>
   </data>
   <data name="screen_resolution" xml:space="preserve">
-    <value>Screen resolution</value>
+    <value>Bildschirmauflösung</value>
   </data>
   <data name="selected_caption" xml:space="preserve">
-    <value>Selected caption: {0}</value>
+    <value>Ausgewählter Titel: {0}</value>
   </data>
   <data name="selected_caption_auto_gen" xml:space="preserve">
-    <value>Selected caption: {0} (auto-generated)</value>
+    <value>Ausgewählte Unterschrift: {0} (automatisch generiert)</value>
   </data>
   <data name="settings" xml:space="preserve">
-    <value>Settings</value>
+    <value>Einstellungen</value>
   </data>
   <data name="sfx_volume" xml:space="preserve">
-    <value>SFX volume</value>
+    <value>SFX-Lautstärke</value>
   </data>
   <data name="ui_scaling" xml:space="preserve">
-    <value>UI scaling</value>
+    <value>UI-Skalierung</value>
   </data>
   <data name="use_hardware_acceleration" xml:space="preserve">
-    <value>Use hardware acceleration</value>
+    <value>Hardwarebeschleunigung verwenden</value>
   </data>
   <data name="video" xml:space="preserve">
     <value>Video</value>
   </data>
   <data name="video_metadata_desc" xml:space="preserve">
-    <value>{0} • {1} views • {2}</value>
+    <value>{0} • {1} Ansichten • {2}</value>
   </data>
   <data name="video_metadata_desc_without_channel_name" xml:space="preserve">
-    <value>{0} views  {1}</value>
+    <value>{0} Ansichten  {1}</value>
   </data>
   <data name="video_metadata_translate_source" xml:space="preserve">
-    <value>Video metadata translate source</value>
+    <value>Quelle der Video-Metadaten übersetzen</value>
   </data>
   <data name="video_quality" xml:space="preserve">
-    <value>Video quality</value>
+    <value>Videoqualität</value>
   </data>
   <data name="video_volume" xml:space="preserve">
-    <value>Video volume</value>
+    <value>Videolautstärke</value>
   </data>
   <data name="comments" xml:space="preserve">
-    <value>Comments ({0})</value>
+    <value>Kommentare ({0})</value>
   </data>
   <data name="comments_without_count" xml:space="preserve">
-    <value>Comments</value>
+    <value>Kommentare</value>
   </data>
   <data name="dim" xml:space="preserve">
-    <value>Video dim level</value>
+    <value>Video-Dimmenlevel</value>
   </data>
   <data name="translate_to" xml:space="preserve">
-    <value>Translate to {0}</value>
+    <value>Übersetzen nach {0}</value>
   </data>
   <data name="translate_view_original" xml:space="preserve">
-    <value>See original (Translated by Google)</value>
+    <value>Siehe Original (übersetzt von Google)</value>
   </data>
   <data name="comment_reply" xml:space="preserve">
-    <value>{0} (Reply to {1})</value>
+    <value>{0} (Antwort auf {1})</value>
   </data>
   <data name="running_latest_release" xml:space="preserve">
-    <value>You are running the latest release ({0})</value>
+    <value>Sie verwenden die neueste Version ({0})</value>
   </data>
   <data name="updating" xml:space="preserve">
-    <value>Downloading update... {0}%</value>
+    <value>Update wird heruntergeladen... {0}%</value>
   </data>
   <data name="restart_required" xml:space="preserve">
-    <value>To apply updates, please restart the app.</value>
+    <value>Um Updates zu übernehmen, starten Sie bitte die App neu.</value>
   </data>
   <data name="update_failed" xml:space="preserve">
-    <value>Update failed!</value>
+    <value>Update fehlgeschlagen!</value>
   </data>
   <data name="checking_update" xml:space="preserve">
-    <value>Checking for update...</value>
+    <value>Suche nach Update...</value>
   </data>
   <data name="check_update" xml:space="preserve">
-    <value>Check for updates</value>
+    <value>Nach Updates suchen</value>
   </data>
   <data name="like_count_hidden" xml:space="preserve">
-    <value>Like count hidden by uploader</value>
+    <value>Wie durch Uploader versteckt</value>
   </data>
   <data name="disabled_by_uploader" xml:space="preserve">
-    <value>Disabled by uploader</value>
+    <value>Vom Uploader deaktiviert</value>
   </data>
   <data name="dislike_counter_credits" xml:space="preserve">
-    <value>Dislike count data is provided by the Return YouTube Dislike API.</value>
+    <value>Dislike count Daten werden von der Return YouTube Dislike API zur Verfügung gestellt.</value>
   </data>
   <data name="common_default" xml:space="preserve">
-    <value>Default</value>
+    <value>Standard</value>
   </data>
   <data name="show_fps" xml:space="preserve">
-    <value>Show FPS</value>
+    <value>FPS anzeigen</value>
   </data>
   <data name="cannot_play_private_videos" xml:space="preserve">
-    <value>Cannot play private videos.</value>
+    <value>Kann private Videos nicht abspielen.</value>
   </data>
   <data name="play" xml:space="preserve">
-    <value>Play</value>
+    <value>Abspielen</value>
   </data>
   <data name="pause" xml:space="preserve">
     <value>Pause</value>
   </data>
   <data name="playback_speed" xml:space="preserve">
-    <value>Playback speed: {0}</value>
+    <value>Wiedergabegeschwindigkeit: {0}</value>
   </data>
   <data name="video_quality_8k_warning" xml:space="preserve">
-    <value>Setting the video quality to 8K may cause performance degradation, GPU overload, and driver crashes on some devices.</value>
+    <value>Das Einstellen der Videoqualität auf 8K kann zu Leistungsverschlechterungen, GPU-Überlastung und zu einem Absturz des Treibers auf einigen Geräten führen.</value>
   </data>
   <data name="renderer" xml:space="preserve">
     <value>Renderer</value>
   </data>
   <data name="export_logs" xml:space="preserve">
-    <value>Export logs</value>
+    <value>Logs exportieren</value>
   </data>
   <data name="logs_export_finished" xml:space="preserve">
-    <value>Exported logs!</value>
+    <value>Exportierte Logs!</value>
   </data>
   <data name="revert_to_default" xml:space="preserve">
-    <value>Revert to default</value>
+    <value>Auf Standard zurücksetzen</value>
   </data>
   <data name="playback_speed_without_value" xml:space="preserve">
-    <value>Playback speed</value>
+    <value>Wiedergabegeschwindigkeit</value>
   </data>
   <data name="quick_action" xml:space="preserve">
-    <value>Quick Action</value>
+    <value>Schnelle Aktion</value>
   </data>
   <data name="caption_font" xml:space="preserve">
-    <value>Closed caption font</value>
+    <value>Beschriftungsschriftart</value>
   </data>
   <data name="dislike_count_tooltip" xml:space="preserve">
-    <value>Estimated: {0} | Actual: {1}</value>
+    <value>Geschätzt: {0} | Aktuell: {1}</value>
   </data>
   <data name="caption_auto_gen" xml:space="preserve">
-    <value>{0} (auto-generated)</value>
+    <value>{0} (automatisch generiert)</value>
   </data>
   <data name="scale_video" xml:space="preserve">
     <value>Video</value>
     <comment>scale_video</comment>
   </data>
   <data name="scale_everything" xml:space="preserve">
-    <value>Everything</value>
+    <value>Alles</value>
   </data>
   <data name="scaling_off" xml:space="preserve">
-    <value>Off</value>
+    <value>Aus</value>
   </data>
   <data name="screen_scaling" xml:space="preserve">
-    <value>Screen scaling</value>
+    <value>Bildschirmskalierung</value>
   </data>
   <data name="horizontal_position" xml:space="preserve">
-    <value>Horizontal position</value>
+    <value>Horizontale Position</value>
   </data>
   <data name="vertical_position" xml:space="preserve">
-    <value>Vertical position</value>
+    <value>Vertikale Position</value>
   </data>
   <data name="horizontal_scale" xml:space="preserve">
-    <value>Horizontal scale</value>
+    <value>Horizontale Skala</value>
   </data>
   <data name="vertical_scale" xml:space="preserve">
-    <value>Vertical scale</value>
+    <value>Vertikale Skala</value>
   </data>
   <data name="thumbnail_dim" xml:space="preserve">
     <value>Thumbnail dim</value>
   </data>
   <data name="shrink_game_to_safe_area" xml:space="preserve">
-    <value>Shrink app to avoid cameras and notches</value>
+    <value>Schrumpf-App, um Kameras und Nocken zu vermeiden</value>
   </data>
   <data name="username_display_mode" xml:space="preserve">
-    <value>Username display mode</value>
+    <value>Anzeigemodus für Benutzername</value>
   </data>
   <data name="jpg_web_friendly" xml:space="preserve">
-    <value>JPG (web-friendly)</value>
+    <value>JPG (web-freundlich)</value>
   </data>
   <data name="png_lossless" xml:space="preserve">
-    <value>PNG (lossless)</value>
+    <value>PNG (verlustfrei)</value>
   </data>
   <data name="screenshot_saved" xml:space="preserve">
-    <value>Screenshot saved!</value>
+    <value>Screenshot gespeichert!</value>
   </data>
   <data name="screenshot" xml:space="preserve">
     <value>Screenshot</value>
   </data>
   <data name="screenshot_format" xml:space="preserve">
-    <value>Screenshot format</value>
+    <value>Screenshot-Format</value>
   </data>
   <data name="show_cursor_in_screenshots" xml:space="preserve">
-    <value>Show user interface in screenshots</value>
+    <value>Benutzeroberfläche in Screenshots anzeigen</value>
   </data>
   <data name="username_display_mode_nickname" xml:space="preserve">
-    <value>Prefer display username (2005~2022)</value>
+    <value>Bevorzuge Anzeige-Benutzername (2005~2022)</value>
   </data>
   <data name="username_display_mode_handle" xml:space="preserve">
-    <value>Prefer display handle (2022~now)</value>
+    <value>Anzeigegriff bevorzugen (2022~jetzt)</value>
   </data>
   <data name="comment_added" xml:space="preserve">
-    <value>Comment added.</value>
+    <value>Kommentar hinzugefügt.</value>
   </data>
   <data name="comment_with" xml:space="preserve">
-    <value>Write comment with {0}</value>
+    <value>Kommentar mit {0} schreiben</value>
   </data>
   <data name="signed_in" xml:space="preserve">
-    <value>Signed in to {0}</value>
+    <value>Angemeldet bei {0}</value>
   </data>
   <data name="signed_out" xml:space="preserve">
-    <value>Not logged in</value>
+    <value>Nicht angemeldet</value>
   </data>
   <data name="google_account" xml:space="preserve">
-    <value>Google account</value>
+    <value>Google-Konto</value>
   </data>
   <data name="search" xml:space="preserve">
-    <value>Search</value>
+    <value>Suchen</value>
   </data>
   <data name="search_placeholder" xml:space="preserve">
-    <value>search...</value>
+    <value>suchen...</value>
+  </data>
+  <data name="view_latest_versions" xml:space="preserve">
+    <value>Aktuelle Versionen anzeigen</value>
+  </data>
+  <data name="report" xml:space="preserve">
+    <value>Bericht</value>
+  </data>
+  <data name="whats_going_on" xml:space="preserve">
+    <value>Was geht vor?</value>
+  </data>
+  <data name="report_desc" xml:space="preserve">
+    <value>Wir werden nach allen Community Guidelines überprüfen, also machen Sie sich keine Sorgen um die perfekte Wahl.</value>
+  </data>
+  <data name="submit" xml:space="preserve">
+    <value>Absenden</value>
+  </data>
+  <data name="report_success" xml:space="preserve">
+    <value>Vielen Dank für Ihre Einreichung.</value>
+  </data>
+  <data name="description" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="report_reason" xml:space="preserve">
+    <value>Grund</value>
+  </data>
+  <data name="report_sub_reason" xml:space="preserve">
+    <value>Detaillierter Grund</value>
+  </data>
+  <data name="windowed" xml:space="preserve">
+    <value>Fenstermodus</value>
+  </data>
+  <data name="borderless" xml:space="preserve">
+    <value>Grenzenlos</value>
+  </data>
+  <data name="fullscreen" xml:space="preserve">
+    <value>Vollbild</value>
+  </data>
+  <data name="vertical_sync" xml:space="preserve">
+    <value>VSync</value>
+  </data>
+  <data name="refresh_rate_2x" xml:space="preserve">
+    <value>2x Aktualisierungsrate</value>
+  </data>
+  <data name="refresh_rate_4x" xml:space="preserve">
+    <value>4x Aktualisierungsrate</value>
+  </data>
+  <data name="refresh_rate_8x" xml:space="preserve">
+    <value>8x Aktualisierungsrate</value>
+  </data>
+  <data name="unlimited" xml:space="preserve">
+    <value>Grundsätzlich unbegrenzt</value>
   </data>
 </root>

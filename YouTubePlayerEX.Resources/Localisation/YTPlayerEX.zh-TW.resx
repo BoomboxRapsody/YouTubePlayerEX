@@ -347,4 +347,55 @@
   <data name="search_placeholder" xml:space="preserve">
     <value>search...</value>
   </data>
+  <data name="view_latest_versions" xml:space="preserve">
+    <value>View latest versions</value>
+  </data>
+  <data name="report" xml:space="preserve">
+    <value>Report</value>
+  </data>
+  <data name="whats_going_on" xml:space="preserve">
+    <value>What's going on?</value>
+  </data>
+  <data name="report_desc" xml:space="preserve">
+    <value>We'll check for all Community Guidelines, so don't worry about making the perfect choice.</value>
+  </data>
+  <data name="submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="report_success" xml:space="preserve">
+    <value>Thank you for your submission.</value>
+  </data>
+  <data name="description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="report_reason" xml:space="preserve">
+    <value>Reason</value>
+  </data>
+  <data name="report_sub_reason" xml:space="preserve">
+    <value>Detailed reason</value>
+  </data>
+  <data name="windowed" xml:space="preserve">
+    <value>Windowed</value>
+  </data>
+  <data name="borderless" xml:space="preserve">
+    <value>Borderless</value>
+  </data>
+  <data name="fullscreen" xml:space="preserve">
+    <value>Fullscreen</value>
+  </data>
+  <data name="vertical_sync" xml:space="preserve">
+    <value>VSync</value>
+  </data>
+  <data name="refresh_rate_2x" xml:space="preserve">
+    <value>2x refresh rate</value>
+  </data>
+  <data name="refresh_rate_4x" xml:space="preserve">
+    <value>4x refresh rate</value>
+  </data>
+  <data name="refresh_rate_8x" xml:space="preserve">
+    <value>8x refresh rate</value>
+  </data>
+  <data name="unlimited" xml:space="preserve">
+    <value>Basically unlimited</value>
+  </data>
 </root>

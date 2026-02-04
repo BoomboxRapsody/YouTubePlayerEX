@@ -63,6 +63,7 @@ namespace YouTubePlayerEX.App.Input.Binding
             new KeyBinding(new[] { InputKey.Control, InputKey.O }, GlobalAction.OpenSettings),
             new KeyBinding(new[] { InputKey.Control, InputKey.D }, GlobalAction.OpenDescription),
             new KeyBinding(new[] { InputKey.Control, InputKey.E }, GlobalAction.OpenComments),
+            new KeyBinding(new[] { InputKey.R }, GlobalAction.ReportAbuse),
 
             new KeyBinding(new[] { InputKey.Shift, InputKey.P }, GlobalAction.ToggleAdjustPitchOnSpeedChange),
 
@@ -97,5 +98,6 @@ namespace YouTubePlayerEX.App.Input.Binding
         OpenComments,
 
         TakeScreenshot,
+        ReportAbuse,
     }
 }

@@ -269,82 +269,133 @@
     <value>{0}（自動生成）</value>
   </data>
   <data name="scale_video" xml:space="preserve">
-    <value>Video</value>
+    <value>ビデオ</value>
     <comment>scale_video</comment>
   </data>
   <data name="scale_everything" xml:space="preserve">
-    <value>Everything</value>
+    <value>すべて</value>
   </data>
   <data name="scaling_off" xml:space="preserve">
-    <value>Off</value>
+    <value>オフ</value>
   </data>
   <data name="screen_scaling" xml:space="preserve">
-    <value>Screen scaling</value>
+    <value>画面の拡大縮小</value>
   </data>
   <data name="horizontal_position" xml:space="preserve">
-    <value>Horizontal position</value>
+    <value>水平方向の位置</value>
   </data>
   <data name="vertical_position" xml:space="preserve">
-    <value>Vertical position</value>
+    <value>垂直位置</value>
   </data>
   <data name="horizontal_scale" xml:space="preserve">
-    <value>Horizontal scale</value>
+    <value>水平方向のスケール</value>
   </data>
   <data name="vertical_scale" xml:space="preserve">
-    <value>Vertical scale</value>
+    <value>垂直方向のスケール</value>
   </data>
   <data name="thumbnail_dim" xml:space="preserve">
     <value>Thumbnail dim</value>
   </data>
   <data name="shrink_game_to_safe_area" xml:space="preserve">
-    <value>Shrink app to avoid cameras and notches</value>
+    <value>カメラやノッチを避けるためにアプリを縮小する</value>
   </data>
   <data name="username_display_mode" xml:space="preserve">
-    <value>Username display mode</value>
+    <value>ユーザー名表示モード</value>
   </data>
   <data name="jpg_web_friendly" xml:space="preserve">
-    <value>JPG (web-friendly)</value>
+    <value>JPG (ウェブフレンドリー)</value>
   </data>
   <data name="png_lossless" xml:space="preserve">
-    <value>PNG (lossless)</value>
+    <value>PNG (ロスレス)</value>
   </data>
   <data name="screenshot_saved" xml:space="preserve">
-    <value>Screenshot saved!</value>
+    <value>スクリーンショットを保存しました！</value>
   </data>
   <data name="screenshot" xml:space="preserve">
-    <value>Screenshot</value>
+    <value>スクリーンショット</value>
   </data>
   <data name="screenshot_format" xml:space="preserve">
-    <value>Screenshot format</value>
+    <value>スクリーンショットの形式</value>
   </data>
   <data name="show_cursor_in_screenshots" xml:space="preserve">
-    <value>Show user interface in screenshots</value>
+    <value>スクリーンショットにユーザーインターフェイスを表示する</value>
   </data>
   <data name="username_display_mode_nickname" xml:space="preserve">
-    <value>Prefer display username (2005~2022)</value>
+    <value>ユーザー名を優先（2005年~2022年）</value>
   </data>
   <data name="username_display_mode_handle" xml:space="preserve">
-    <value>Prefer display handle (2022~now)</value>
+    <value>ディスプレイハンドルを優先 (2022~今)</value>
   </data>
   <data name="comment_added" xml:space="preserve">
-    <value>Comment added.</value>
+    <value>コメントを追加しました。</value>
   </data>
   <data name="comment_with" xml:space="preserve">
-    <value>Write comment with {0}</value>
+    <value>{0} でコメントを書く</value>
   </data>
   <data name="signed_in" xml:space="preserve">
-    <value>Signed in to {0}</value>
+    <value>{0} にサインインしました</value>
   </data>
   <data name="signed_out" xml:space="preserve">
-    <value>Not logged in</value>
+    <value>ログインしていません</value>
   </data>
   <data name="google_account" xml:space="preserve">
-    <value>Google account</value>
+    <value>Google アカウント</value>
   </data>
   <data name="search" xml:space="preserve">
-    <value>Search</value>
+    <value>検索</value>
   </data>
   <data name="search_placeholder" xml:space="preserve">
-    <value>search...</value>
+    <value>検索...</value>
+  </data>
+  <data name="view_latest_versions" xml:space="preserve">
+    <value>最新バージョンを表示</value>
+  </data>
+  <data name="report" xml:space="preserve">
+    <value>レポート</value>
+  </data>
+  <data name="whats_going_on" xml:space="preserve">
+    <value>何が起きているのか？</value>
+  </data>
+  <data name="report_desc" xml:space="preserve">
+    <value>すべてのコミュニティガイドラインをチェックしますので、最適な選択を心配する必要はありません。</value>
+  </data>
+  <data name="submit" xml:space="preserve">
+    <value>送信</value>
+  </data>
+  <data name="report_success" xml:space="preserve">
+    <value>提出ありがとうございます。</value>
+  </data>
+  <data name="description" xml:space="preserve">
+    <value>説明</value>
+  </data>
+  <data name="report_reason" xml:space="preserve">
+    <value>理由：</value>
+  </data>
+  <data name="report_sub_reason" xml:space="preserve">
+    <value>詳細な理由</value>
+  </data>
+  <data name="windowed" xml:space="preserve">
+    <value>ウィンドウ</value>
+  </data>
+  <data name="borderless" xml:space="preserve">
+    <value>ボーダレス</value>
+  </data>
+  <data name="fullscreen" xml:space="preserve">
+    <value>全画面</value>
+  </data>
+  <data name="vertical_sync" xml:space="preserve">
+    <value>VSync</value>
+  </data>
+  <data name="refresh_rate_2x" xml:space="preserve">
+    <value>リフレッシュレート</value>
+  </data>
+  <data name="refresh_rate_4x" xml:space="preserve">
+    <value>リフレッシュレート</value>
+  </data>
+  <data name="refresh_rate_8x" xml:space="preserve">
+    <value>8x リフレッシュレート</value>
+  </data>
+  <data name="unlimited" xml:space="preserve">
+    <value>基本的に無制限です</value>
   </data>
 </root>

@@ -59,292 +59,343 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="aspect_ratio_method" xml:space="preserve">
-    <value>Aspect ratio method</value>
+    <value>宽高比方法</value>
   </data>
   <data name="audio" xml:space="preserve">
-    <value>Audio</value>
+    <value>音频</value>
   </data>
   <data name="audio_language" xml:space="preserve">
-    <value>Audio tracks (only available)</value>
+    <value>音轨 (仅可用)</value>
   </data>
   <data name="auto" xml:space="preserve">
-    <value>Auto</value>
+    <value>自动操作</value>
   </data>
   <data name="caption_disabled" xml:space="preserve">
-    <value>Disabled</value>
+    <value>已禁用</value>
   </data>
   <data name="caption_language" xml:space="preserve">
-    <value>Closed caption language (only available)</value>
+    <value>隐藏字幕语言 (仅限可用)</value>
   </data>
   <data name="disabled" xml:space="preserve">
-    <value>Disabled</value>
+    <value>已禁用</value>
   </data>
   <data name="display" xml:space="preserve">
-    <value>Display</value>
+    <value>显示</value>
   </data>
   <data name="enabled" xml:space="preserve">
-    <value>Enabled</value>
+    <value>已启用</value>
   </data>
   <data name="error_noVideoId" xml:space="preserve">
-    <value>Video ID must not be empty!</value>
+    <value>视频 ID 不能为空！</value>
   </data>
   <data name="fill" xml:space="preserve">
-    <value>Fill</value>
+    <value>填充</value>
   </data>
   <data name="frame_limiter" xml:space="preserve">
     <value>Frame limiter</value>
   </data>
   <data name="fullscreen_entered" xml:space="preserve">
-    <value>Press F11 to exit the full screen.</value>
+    <value>按 F11 键退出全屏。</value>
   </data>
   <data name="general" xml:space="preserve">
-    <value>General</value>
+    <value>A. 概况</value>
   </data>
   <data name="google_translate" xml:space="preserve">
-    <value>Google Translate</value>
+    <value>谷歌翻译</value>
   </data>
   <data name="graphics" xml:space="preserve">
-    <value>Graphics</value>
+    <value>图形</value>
   </data>
   <data name="language" xml:space="preserve">
-    <value>Language</value>
+    <value>语言</value>
   </data>
   <data name="letterbox" xml:space="preserve">
     <value>Letterbox</value>
   </data>
   <data name="load_from_video_id" xml:space="preserve">
-    <value>Load from video ID</value>
+    <value>从视频 ID 加载</value>
   </data>
   <data name="load_video" xml:space="preserve">
-    <value>Load Video</value>
+    <value>加载视频</value>
   </data>
   <data name="master_volume" xml:space="preserve">
-    <value>Master volume</value>
+    <value>主音量</value>
   </data>
   <data name="minimise_on_focus_loss" xml:space="preserve">
-    <value>Minimise video player when switching to another app</value>
+    <value>切换到另一个应用程序时最小化视频播放器</value>
   </data>
   <data name="prefer_high_quality" xml:space="preserve">
-    <value>Prefer high quality</value>
+    <value>偏爱高质量</value>
   </data>
   <data name="adjust_pitch_on_speed_change" xml:space="preserve">
-    <value>Adjust pitch on speed change</value>
+    <value>调整速度变化时的音调</value>
   </data>
   <data name="profile_image_tooltip" xml:space="preserve">
-    <value>{0} • {1} subscribers • Click to view channel via external web browser.</value>
+    <value>{0} • {1} 订阅者 • 点击通过外部网络浏览器查看频道。</value>
   </data>
   <data name="screen_mode" xml:space="preserve">
-    <value>Screen mode</value>
+    <value>屏幕模式</value>
   </data>
   <data name="screen_resolution" xml:space="preserve">
-    <value>Screen resolution</value>
+    <value>屏幕分辨率</value>
   </data>
   <data name="selected_caption" xml:space="preserve">
-    <value>Selected caption: {0}</value>
+    <value>选定的标题： {0}</value>
   </data>
   <data name="selected_caption_auto_gen" xml:space="preserve">
-    <value>Selected caption: {0} (auto-generated)</value>
+    <value>选定的标题： {0} (自动生成)</value>
   </data>
   <data name="settings" xml:space="preserve">
-    <value>Settings</value>
+    <value>设置</value>
   </data>
   <data name="sfx_volume" xml:space="preserve">
-    <value>SFX volume</value>
+    <value>SFX 音量</value>
   </data>
   <data name="ui_scaling" xml:space="preserve">
-    <value>UI scaling</value>
+    <value>界面缩放</value>
   </data>
   <data name="use_hardware_acceleration" xml:space="preserve">
-    <value>Use hardware acceleration</value>
+    <value>使用硬件加速度</value>
   </data>
   <data name="video" xml:space="preserve">
-    <value>Video</value>
+    <value>视频</value>
   </data>
   <data name="video_metadata_desc" xml:space="preserve">
-    <value>{0} • {1} views • {2}</value>
+    <value>{0} • {1} 视图 • {2}</value>
   </data>
   <data name="video_metadata_desc_without_channel_name" xml:space="preserve">
-    <value>{0} views  {1}</value>
+    <value>{0} 视图  {1}</value>
   </data>
   <data name="video_metadata_translate_source" xml:space="preserve">
-    <value>Video metadata translate source</value>
+    <value>视频元数据翻译源</value>
   </data>
   <data name="video_quality" xml:space="preserve">
-    <value>Video quality</value>
+    <value>视频质量</value>
   </data>
   <data name="video_volume" xml:space="preserve">
-    <value>Video volume</value>
+    <value>视频音量</value>
   </data>
   <data name="comments" xml:space="preserve">
-    <value>Comments ({0})</value>
+    <value>评论({0})</value>
   </data>
   <data name="comments_without_count" xml:space="preserve">
-    <value>Comments</value>
+    <value>评论</value>
   </data>
   <data name="dim" xml:space="preserve">
-    <value>Video dim level</value>
+    <value>视频变暗级别</value>
   </data>
   <data name="translate_to" xml:space="preserve">
-    <value>Translate to {0}</value>
+    <value>翻译为 {0}</value>
   </data>
   <data name="translate_view_original" xml:space="preserve">
-    <value>See original (Translated by Google)</value>
+    <value>查看原始(由 Google翻译)</value>
   </data>
   <data name="comment_reply" xml:space="preserve">
-    <value>{0} (Reply to {1})</value>
+    <value>{0} (回复 {1})</value>
   </data>
   <data name="running_latest_release" xml:space="preserve">
-    <value>You are running the latest release ({0})</value>
+    <value>您正在运行最新版本({0})</value>
   </data>
   <data name="updating" xml:space="preserve">
-    <value>Downloading update... {0}%</value>
+    <value>正在下载更新... {0}%</value>
   </data>
   <data name="restart_required" xml:space="preserve">
-    <value>To apply updates, please restart the app.</value>
+    <value>若要应用更新，请重启应用程序。</value>
   </data>
   <data name="update_failed" xml:space="preserve">
-    <value>Update failed!</value>
+    <value>更新失败！</value>
   </data>
   <data name="checking_update" xml:space="preserve">
-    <value>Checking for update...</value>
+    <value>正在检查更新...</value>
   </data>
   <data name="check_update" xml:space="preserve">
-    <value>Check for updates</value>
+    <value>检查更新</value>
   </data>
   <data name="like_count_hidden" xml:space="preserve">
-    <value>Like count hidden by uploader</value>
+    <value>喜欢上传器隐藏的计数</value>
   </data>
   <data name="disabled_by_uploader" xml:space="preserve">
-    <value>Disabled by uploader</value>
+    <value>被上传器禁用</value>
   </data>
   <data name="dislike_counter_credits" xml:space="preserve">
-    <value>Dislike count data is provided by the Return YouTube Dislike API.</value>
+    <value>折扣数数据由返回 YouTube Dislike API提供。</value>
   </data>
   <data name="common_default" xml:space="preserve">
-    <value>Default</value>
+    <value>默认设置</value>
   </data>
   <data name="show_fps" xml:space="preserve">
-    <value>Show FPS</value>
+    <value>显示 FPS</value>
   </data>
   <data name="cannot_play_private_videos" xml:space="preserve">
-    <value>Cannot play private videos.</value>
+    <value>无法播放隐私视频。</value>
   </data>
   <data name="play" xml:space="preserve">
-    <value>Play</value>
+    <value>播放</value>
   </data>
   <data name="pause" xml:space="preserve">
-    <value>Pause</value>
+    <value>暂停</value>
   </data>
   <data name="playback_speed" xml:space="preserve">
-    <value>Playback speed: {0}</value>
+    <value>回放速度: {0}</value>
   </data>
   <data name="video_quality_8k_warning" xml:space="preserve">
-    <value>Setting the video quality to 8K may cause performance degradation, GPU overload, and driver crashes on some devices.</value>
+    <value>将视频质量设置为 8K可能会导致性能退化，GPU 过载和某些设备上的驱动程序崩溃。</value>
   </data>
   <data name="renderer" xml:space="preserve">
-    <value>Renderer</value>
+    <value>渲染器</value>
   </data>
   <data name="export_logs" xml:space="preserve">
-    <value>Export logs</value>
+    <value>导出日志</value>
   </data>
   <data name="logs_export_finished" xml:space="preserve">
-    <value>Exported logs!</value>
+    <value>导出日志！</value>
   </data>
   <data name="revert_to_default" xml:space="preserve">
-    <value>Revert to default</value>
+    <value>恢复为默认值</value>
   </data>
   <data name="playback_speed_without_value" xml:space="preserve">
-    <value>Playback speed</value>
+    <value>播放速度</value>
   </data>
   <data name="quick_action" xml:space="preserve">
-    <value>Quick Action</value>
+    <value>快速操作</value>
   </data>
   <data name="caption_font" xml:space="preserve">
-    <value>Closed caption font</value>
+    <value>隐藏字幕</value>
   </data>
   <data name="dislike_count_tooltip" xml:space="preserve">
-    <value>Estimated: {0} | Actual: {1}</value>
+    <value>估计数: {0} | 实际: {1}</value>
   </data>
   <data name="caption_auto_gen" xml:space="preserve">
-    <value>{0} (auto-generated)</value>
+    <value>{0} (自动生成)</value>
   </data>
   <data name="scale_video" xml:space="preserve">
-    <value>Video</value>
+    <value>视频</value>
     <comment>scale_video</comment>
   </data>
   <data name="scale_everything" xml:space="preserve">
-    <value>Everything</value>
+    <value>全部内容</value>
   </data>
   <data name="scaling_off" xml:space="preserve">
-    <value>Off</value>
+    <value>关闭</value>
   </data>
   <data name="screen_scaling" xml:space="preserve">
-    <value>Screen scaling</value>
+    <value>屏幕缩放</value>
   </data>
   <data name="horizontal_position" xml:space="preserve">
-    <value>Horizontal position</value>
+    <value>水平位置</value>
   </data>
   <data name="vertical_position" xml:space="preserve">
-    <value>Vertical position</value>
+    <value>垂直位置</value>
   </data>
   <data name="horizontal_scale" xml:space="preserve">
-    <value>Horizontal scale</value>
+    <value>水平缩放</value>
   </data>
   <data name="vertical_scale" xml:space="preserve">
-    <value>Vertical scale</value>
+    <value>垂直缩放</value>
   </data>
   <data name="thumbnail_dim" xml:space="preserve">
     <value>Thumbnail dim</value>
   </data>
   <data name="shrink_game_to_safe_area" xml:space="preserve">
-    <value>Shrink app to avoid cameras and notches</value>
+    <value>收缩应用以避免摄像头和节点的使用</value>
   </data>
   <data name="username_display_mode" xml:space="preserve">
-    <value>Username display mode</value>
+    <value>用户名显示模式</value>
   </data>
   <data name="jpg_web_friendly" xml:space="preserve">
-    <value>JPG (web-friendly)</value>
+    <value>JPG (网络友好)</value>
   </data>
   <data name="png_lossless" xml:space="preserve">
-    <value>PNG (lossless)</value>
+    <value>PNG (无损)</value>
   </data>
   <data name="screenshot_saved" xml:space="preserve">
-    <value>Screenshot saved!</value>
+    <value>屏幕截图已保存！</value>
   </data>
   <data name="screenshot" xml:space="preserve">
-    <value>Screenshot</value>
+    <value>屏幕截图</value>
   </data>
   <data name="screenshot_format" xml:space="preserve">
-    <value>Screenshot format</value>
+    <value>截图格式</value>
   </data>
   <data name="show_cursor_in_screenshots" xml:space="preserve">
-    <value>Show user interface in screenshots</value>
+    <value>在屏幕截图中显示用户界面</value>
   </data>
   <data name="username_display_mode_nickname" xml:space="preserve">
-    <value>Prefer display username (2005~2022)</value>
+    <value>偏好显示用户名(2005~2022)</value>
   </data>
   <data name="username_display_mode_handle" xml:space="preserve">
-    <value>Prefer display handle (2022~now)</value>
+    <value>喜欢显示句柄(2022~现在)</value>
   </data>
   <data name="comment_added" xml:space="preserve">
-    <value>Comment added.</value>
+    <value>评论已添加。</value>
   </data>
   <data name="comment_with" xml:space="preserve">
-    <value>Write comment with {0}</value>
+    <value>使用 {0} 写评论</value>
   </data>
   <data name="signed_in" xml:space="preserve">
-    <value>Signed in to {0}</value>
+    <value>登录到 {0}</value>
   </data>
   <data name="signed_out" xml:space="preserve">
-    <value>Not logged in</value>
+    <value>未登录</value>
   </data>
   <data name="google_account" xml:space="preserve">
-    <value>Google account</value>
+    <value>Google账户</value>
   </data>
   <data name="search" xml:space="preserve">
-    <value>Search</value>
+    <value>搜索</value>
   </data>
   <data name="search_placeholder" xml:space="preserve">
-    <value>search...</value>
+    <value>搜索...</value>
+  </data>
+  <data name="view_latest_versions" xml:space="preserve">
+    <value>查看最新版本</value>
+  </data>
+  <data name="report" xml:space="preserve">
+    <value>报告</value>
+  </data>
+  <data name="whats_going_on" xml:space="preserve">
+    <value>怎么办？</value>
+  </data>
+  <data name="report_desc" xml:space="preserve">
+    <value>我们将检查所有的社区指南，因此不要担心做出完美的选择。</value>
+  </data>
+  <data name="submit" xml:space="preserve">
+    <value>提交</value>
+  </data>
+  <data name="report_success" xml:space="preserve">
+    <value>感谢您的提交。</value>
+  </data>
+  <data name="description" xml:space="preserve">
+    <value>描述</value>
+  </data>
+  <data name="report_reason" xml:space="preserve">
+    <value>原因</value>
+  </data>
+  <data name="report_sub_reason" xml:space="preserve">
+    <value>详细原因</value>
+  </data>
+  <data name="windowed" xml:space="preserve">
+    <value>窗口化</value>
+  </data>
+  <data name="borderless" xml:space="preserve">
+    <value>无边框</value>
+  </data>
+  <data name="fullscreen" xml:space="preserve">
+    <value>全屏</value>
+  </data>
+  <data name="vertical_sync" xml:space="preserve">
+    <value>VSync</value>
+  </data>
+  <data name="refresh_rate_2x" xml:space="preserve">
+    <value>2倍刷新率</value>
+  </data>
+  <data name="refresh_rate_4x" xml:space="preserve">
+    <value>4倍刷新率</value>
+  </data>
+  <data name="refresh_rate_8x" xml:space="preserve">
+    <value>8倍刷新率</value>
+  </data>
+  <data name="unlimited" xml:space="preserve">
+    <value>基本无限制</value>
   </data>
 </root>

@@ -44,7 +44,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         protected bool DrawBorder { get; init; } = true;
 
-        private OsuCaret? caret;
+        private AdaptiveCaret? caret;
 
         private bool selectionStarted;
         private double sampleLastPlaybackTime;
@@ -282,7 +282,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             Child = new AdaptiveSpriteText { Text = c.ToString(), Font = YouTubePlayerEXApp.DefaultFont.With(size: FontSize) },
         };
 
-        protected override Caret CreateCaret() => caret = new OsuCaret
+        protected override Caret CreateCaret() => caret = new AdaptiveCaret
         {
             CaretWidth = CaretWidth,
             SelectionColour = SelectionColour,
@@ -317,13 +317,13 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             sampleLastPlaybackTime = Time.Current;
         });
 
-        private partial class OsuCaret : Caret
+        private partial class AdaptiveCaret : Caret
         {
             private const float caret_move_time = 60;
 
             private readonly CaretContainer beatSync;
 
-            public OsuCaret()
+            public AdaptiveCaret()
             {
                 Colour = Color4.Transparent;
 

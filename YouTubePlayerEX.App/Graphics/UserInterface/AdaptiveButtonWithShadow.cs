@@ -182,7 +182,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         private void trigger()
         {
-            ClickAction?.Invoke(this);
+            if (Enabled.Value)
+                ClickAction?.Invoke(this);
         }
 
         protected override bool OnClick(ClickEvent e)
