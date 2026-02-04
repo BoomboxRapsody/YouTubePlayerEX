@@ -82,4 +82,8 @@ If you wish to help with localisation efforts, head over to [crowdin](https://cr
 
 ## Licence
 
+This app uses `spine-csharp` (located as Spine in the source code) the C# Spine Runtime.
+
+* [Spine Runtimes License](https://esotericsoftware.com/spine-runtimes-license).
+
 *YouTube Player EX*'s code and framework are licensed under the [MIT licence](https://opensource.org/licenses/MIT). Please see [the licence file](LICENCE) for more information. [tl;dr](https://tldrlegal.com/license/mit-license) you can do whatever you want as long as you include the original copyright and license notice in any copy of the software/source.
