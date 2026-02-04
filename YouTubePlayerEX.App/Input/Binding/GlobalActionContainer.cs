@@ -56,6 +56,9 @@ namespace YouTubePlayerEX.App.Input.Binding
             new KeyBinding(InputKey.A, GlobalAction.DecreasePlaybackSpeed),
             new KeyBinding(InputKey.D, GlobalAction.IncreasePlaybackSpeed),
 
+            new KeyBinding(new[] { InputKey.Shift, InputKey.A }, GlobalAction.DecreasePlaybackSpeed2),
+            new KeyBinding(new[] { InputKey.Shift, InputKey.D }, GlobalAction.IncreasePlaybackSpeed2),
+
             new KeyBinding(new[] { InputKey.Shift, InputKey.C }, GlobalAction.CycleCaptionLanguage),
             new KeyBinding(new[] { InputKey.Control, InputKey.F6 }, GlobalAction.CycleAspectRatio),
             new KeyBinding(new[] { InputKey.Control, InputKey.Shift, InputKey.F5 }, GlobalAction.CycleScalingMode),
@@ -93,6 +96,9 @@ namespace YouTubePlayerEX.App.Input.Binding
 
         DecreasePlaybackSpeed,
         IncreasePlaybackSpeed,
+
+        DecreasePlaybackSpeed2,
+        IncreasePlaybackSpeed2,
 
         OpenDescription,
         OpenComments,

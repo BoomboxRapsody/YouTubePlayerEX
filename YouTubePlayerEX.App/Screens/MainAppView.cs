@@ -2084,6 +2084,7 @@ namespace YouTubePlayerEX.App.Screens
         {
             MinValue = 0.1,
             MaxValue = 4,
+            Precision = 0.01,
         };
 
         private partial class DisplaySettingsDropdown : FormDropdown<Display>
@@ -2359,6 +2360,16 @@ namespace YouTubePlayerEX.App.Screens
 
                 case GlobalAction.IncreasePlaybackSpeed:
                     playbackSpeed.Value += 0.05;
+                    osd.Display(new SpeedChangeToast(playbackSpeed.Value));
+                    return true;
+
+                case GlobalAction.DecreasePlaybackSpeed2:
+                    playbackSpeed.Value -= 0.01;
+                    osd.Display(new SpeedChangeToast(playbackSpeed.Value));
+                    return true;
+
+                case GlobalAction.IncreasePlaybackSpeed2:
+                    playbackSpeed.Value += 0.01;
                     osd.Display(new SpeedChangeToast(playbackSpeed.Value));
                     return true;
             }
