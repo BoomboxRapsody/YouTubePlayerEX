@@ -13,6 +13,7 @@ using osu.Framework.Configuration;
 using osu.Framework.Development;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Textures;
 using osu.Framework.IO.Stores;
 using osu.Framework.Localisation;   
 using osu.Framework.Logging;
@@ -27,6 +28,7 @@ using YouTubePlayerEX.App.Graphics.Cursor;
 using YouTubePlayerEX.App.Graphics.UserInterface;
 using YouTubePlayerEX.App.Input;
 using YouTubePlayerEX.App.Input.Binding;
+using YouTubePlayerEX.App.IO.Stores;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
 using YouTubePlayerEX.App.Updater;
@@ -210,6 +212,14 @@ namespace YouTubePlayerEX.App
 
             //Logger.Log(Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath("videoId") + @"\video.mp4");
             Resources.AddStore(new DllResourceStore(typeof(YouTubePlayerEXResources).Assembly));
+
+            Resources.AddStore(new NamespacedResourceStore<byte[]>(new ShaderResourceStore(), "Resources"));
+
+            // For some atlases, its recommended to use LargeTextureStore. e.g: mipmapping, incorrect positioning due to the atlas scale adjust, etc
+            IResourceStore<TextureUpload> texUpload = Host.CreateTextureLoaderStore(Resources);
+            LargeTextureStore largeTs = new(Host.Renderer, texUpload);
+            largeTs.AddTextureSource(texUpload);
+            dependencies.CacheAs(largeTs);
 
             frameworkLocale = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
             frameworkLocale.BindValueChanged(_ => updateLanguage());

@@ -91,6 +91,22 @@ namespace YouTubePlayerEX.App.Online
             return result;
         }
 
+        public async Task<Channel> GetMineChannelAsync()
+        {
+            var part = "statistics,snippet,brandingSettings,id,localizations";
+            var request = youtubeService.Channels.List(part);
+
+            request.AccessToken = googleOAuth2.GetAccessToken();
+
+            request.Mine = true;
+
+            var response = await request.ExecuteAsync();
+
+            var result = response.Items.First();
+
+            return result;
+        }
+
         public void SendComment(string videoId, string commentText)
         {
             if (!googleOAuth2.SignedIn.Value)

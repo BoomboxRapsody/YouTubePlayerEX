@@ -21,6 +21,7 @@ using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Shaders;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
@@ -43,6 +44,7 @@ using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics;
 using YouTubePlayerEX.App.Graphics.Containers;
+using YouTubePlayerEX.App.Graphics.Shaders;
 using YouTubePlayerEX.App.Graphics.Sprites;
 using YouTubePlayerEX.App.Graphics.UserInterface;
 using YouTubePlayerEX.App.Graphics.UserInterfaceV2;
@@ -79,6 +81,8 @@ namespace YouTubePlayerEX.App.Screens
         private VideoMetadataDisplay videoMetadataDisplayDetails;
         private RoundedButtonContainer commentOpenButtonDetails;
 
+        private SettingsItemV2 pixel_shader_size_adjust, AudioLanguageItem;
+
         private Sample overlayShowSample;
         private Sample overlayHideSample;
         private AdaptiveButtonV2 reportButton;
@@ -98,7 +102,7 @@ namespace YouTubePlayerEX.App.Screens
         }
 
         private AdaptiveSpriteText videoLoadingProgress, videoInfoDetails, likeCount, dislikeCount, commentCount, commentsContainerTitle, currentTime, totalTime;
-        private TextFlowContainer videoDescription;
+        private LinkFlowContainer videoDescription;
         private FillFlowContainer commentContainer, searchResultContainer;
 
         [Resolved]
@@ -115,6 +119,7 @@ namespace YouTubePlayerEX.App.Screens
         private Bindable<double> windowedPositionX = null!;
         private Bindable<double> windowedPositionY = null!;
         private Bindable<WindowMode> windowMode = null!;
+        private Bindable<List<InternalShader>> appliedEffects = new Bindable<List<InternalShader>>();
 
         private Bindable<ClosedCaptionLanguage> captionLanguage = null!;
         private bool isControlVisible = true;
@@ -145,6 +150,8 @@ namespace YouTubePlayerEX.App.Screens
 
         private Container userInterfaceContainer;
 
+        private Bindable<bool> alwaysUseOriginalAudio;
+
         [Resolved]
         private AdaptiveColour colours { get; set; } = null!;
 
@@ -152,14 +159,35 @@ namespace YouTubePlayerEX.App.Screens
 
         private Bindable<float> scalingBackgroundDim = null!;
 
-        private AdaptiveTextFlowContainer dislikeCounterCredits;
+        private LinkFlowContainer dislikeCounterCredits;
 
         private Bindable<bool> signedIn;
+
+        [Resolved]
+        private ShaderManager shaderManager { get; set; } = null!;
+
+        private FormCheckBox crt_shader, pixel_shader = null!;
+
+        private PixelShader pixelShader = null!;
+        private CrtShader crtShader = null!;
+        private Bindable<float> pixelShaderSize = new BindableFloat(5)
+        {
+            MaxValue = 30,
+            MinValue = 2,
+        };
+        private Bindable<Color4> crtBackgroundBindable = new Bindable<Color4>(Color4.Black);
+
+        protected T GetShaderByType<T>() where T : InternalShader, new()
+            => shaderManager.LocalInternalShader<T>();
 
         [BackgroundDependencyLoader]
         private void load(ISampleStore sampleStore, FrameworkConfigManager config, YTPlayerEXConfigManager appConfig, GameHost host, Storage storage, OverlayColourProvider overlayColourProvider, TextureStore textures)
         {
+            appliedEffects.Value = new List<InternalShader>();
             window = host.Window;
+
+            pixelShader = GetShaderByType<PixelShader>();
+            crtShader = GetShaderByType<CrtShader>();
 
             uiVisible = screenshotManager.CursorVisibility.GetBoundCopy();
             signedIn = googleOAuth2.SignedIn.GetBoundCopy();
@@ -178,6 +206,7 @@ namespace YouTubePlayerEX.App.Screens
             scalingPositionX = appConfig.GetBindable<float>(YTPlayerEXSetting.ScalingPositionX);
             scalingPositionY = appConfig.GetBindable<float>(YTPlayerEXSetting.ScalingPositionY);
             scalingBackgroundDim = appConfig.GetBindable<float>(YTPlayerEXSetting.ScalingBackgroundDim);
+            alwaysUseOriginalAudio = appConfig.GetBindable<bool>(YTPlayerEXSetting.AlwaysUseOriginalAudio);
 
             exportStorage = storage.GetStorageForDirectory(@"exports");
 
@@ -200,6 +229,11 @@ namespace YouTubePlayerEX.App.Screens
             aspectRatioMethod = appConfig.GetBindable<AspectRatioMethod>(YTPlayerEXSetting.AspectRatioMethod);
 
             windowedResolution.Value = sizeWindowed.Value;
+
+            appliedEffects.BindValueChanged(shaders =>
+            {
+                currentVideoSource?.ApplyShaders(shaders.NewValue);
+            }, true);
 
             if (window != null)
             {
@@ -916,7 +950,12 @@ namespace YouTubePlayerEX.App.Screens
                                                             Caption = YTPlayerEXStrings.VideoQuality,
                                                             Current = videoQuality,
                                                         }),
-                                                        new SettingsItemV2(new FormEnumDropdown<Localisation.Language>
+                                                        new SettingsItemV2(new FormCheckBox
+                                                        {
+                                                            Caption = YTPlayerEXStrings.AlwaysUseOriginalAudio,
+                                                            Current = alwaysUseOriginalAudio,
+                                                        }),
+                                                        AudioLanguageItem = new SettingsItemV2(new FormEnumDropdown<Localisation.Language>
                                                         {
                                                             Caption = YTPlayerEXStrings.AudioLanguage,
                                                             Current = audioLanguage,
@@ -955,6 +994,35 @@ namespace YouTubePlayerEX.App.Screens
                                                             Current = config.GetBindable<double>(FrameworkSetting.VolumeEffect),
                                                             DisplayAsPercentage = true,
                                                         }),
+                                                        new AdaptiveSpriteText
+                                                        {
+                                                            Font = YouTubePlayerEXApp.DefaultFont.With(size: 30),
+                                                            Text = YTPlayerEXStrings.MochaChanLabs,
+                                                            Padding = new MarginPadding { Horizontal = 30, Top = 12 },
+                                                            Colour = overlayColourProvider.Content2,
+                                                        },
+                                                        new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 17, weight: "Regular"))
+                                                        {
+                                                            RelativeSizeAxes = Axes.X,
+                                                            AutoSizeAxes = Axes.Y,
+                                                            Text = YTPlayerEXStrings.MochaChanLabsDesc,
+                                                            Colour = overlayColourProvider.Background1,
+                                                            Padding = new MarginPadding { Horizontal = 30, Bottom = 12 },
+                                                        },
+                                                        new SettingsItemV2(crt_shader = new FormCheckBox
+                                                        {
+                                                            Caption = YTPlayerEXStrings.CRTEffect,
+                                                        }),
+                                                        new SettingsItemV2(pixel_shader = new FormCheckBox
+                                                        {
+                                                            Caption = YTPlayerEXStrings.PixelEffect,
+                                                        }),
+                                                        pixel_shader_size_adjust = new SettingsItemV2(new FormSliderBar<float>
+                                                        {
+                                                            Caption = YTPlayerEXStrings.PixelSize,
+                                                            Current = pixelShaderSize,
+                                                            LabelFormat = v => $"{v:N2}px",
+                                                        }),
                                                         new Container
                                                         {
                                                             RelativeSizeAxes = Axes.X,
@@ -990,11 +1058,10 @@ namespace YouTubePlayerEX.App.Screens
                                                             TextAnchor = Anchor.Centre,
                                                             Colour = overlayColourProvider.Content2,
                                                         },
-                                                        dislikeCounterCredits = new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 15))
+                                                        dislikeCounterCredits = new LinkFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 15))
                                                         {
                                                             RelativeSizeAxes = Axes.X,
                                                             AutoSizeAxes = Axes.Y,
-                                                            Text = YTPlayerEXStrings.DislikeCounterCredits,
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             TextAnchor = Anchor.Centre,
                                                             Colour = overlayColourProvider.Content2,
@@ -1241,7 +1308,7 @@ namespace YouTubePlayerEX.App.Screens
                                                                 Colour = overlayColourProvider.Content2,
                                                                 AlwaysPresent = true,
                                                             },
-                                                            videoDescription = new TextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont)
+                                                            videoDescription = new LinkFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont)
                                                             {
                                                                 RelativeSizeAxes = Axes.X,
                                                                 AutoSizeAxes = Axes.Y,
@@ -1525,8 +1592,9 @@ namespace YouTubePlayerEX.App.Screens
                         },
                         reportAbuseOverlay = new OverlayContainer
                         {
-                            Size = new Vector2(0.7f),
-                            RelativeSizeAxes = Axes.Both,
+                            Size = new Vector2(0.7f, 1f),
+                            Height = 276,
+                            RelativeSizeAxes = Axes.X,
                             CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
                             Masking = true,
                             Origin = Anchor.Centre,
@@ -1645,6 +1713,8 @@ namespace YouTubePlayerEX.App.Screens
             videoInfoExpertOverlay.Hide();
             reportAbuseOverlay.Hide();
 
+            pixel_shader_size_adjust.Hide();
+
             signedIn.BindValueChanged(loginBool =>
             {
                 if (loginBool.NewValue)
@@ -1686,6 +1756,46 @@ namespace YouTubePlayerEX.App.Screens
             }
             */
 
+            pixelShaderSize.BindValueChanged(size =>
+            {
+                pixelShader.Size = new Vector2(size.NewValue);
+            }, true);
+
+            crtBackgroundBindable.BindValueChanged(colour =>
+            {
+                crtShader.BackgroundColour = colour.NewValue;
+            }, true);
+
+            pixel_shader.Current.BindValueChanged(enabled =>
+            {
+                if (enabled.NewValue)
+                {
+                    appliedEffects.Value.Add(pixelShader);
+                    currentVideoSource?.ApplyShaders(appliedEffects.Value);
+                    pixel_shader_size_adjust.Show();
+                }
+                else
+                {
+                    appliedEffects.Value.Remove(pixelShader);
+                    currentVideoSource?.ApplyShaders(appliedEffects.Value);
+                    pixel_shader_size_adjust.Hide();
+                }
+            });
+
+            crt_shader.Current.BindValueChanged(enabled =>
+            {
+                if (enabled.NewValue)
+                {
+                    appliedEffects.Value.Add(crtShader);
+                    currentVideoSource?.ApplyShaders(appliedEffects.Value);
+                }
+                else
+                {
+                    appliedEffects.Value.Remove(crtShader);
+                    currentVideoSource?.ApplyShaders(appliedEffects.Value);
+                }
+            });
+
             reportReason.Current.BindValueChanged(value =>
             {
                 try
@@ -1700,7 +1810,8 @@ namespace YouTubePlayerEX.App.Screens
                     {
                         reportSubReason.Hide();
                     }
-                } catch
+                }
+                catch
                 {
                     reportSubReason.Hide();
                 }
@@ -1749,22 +1860,34 @@ namespace YouTubePlayerEX.App.Screens
                 }
             });
 
+            alwaysUseOriginalAudio.BindValueChanged(enabled =>
+            {
+                if (enabled.NewValue)
+                {
+                    AudioLanguageItem.Hide();
+                }
+                else
+                {
+                    AudioLanguageItem.Show();
+                }
+
+                if (currentVideoSource != null)
+                {
+                    Task.Run(async () =>
+                    {
+                        await SetVideoSource(videoId, true);
+                    });
+                }
+            }, true);
+
             adjustPitch.BindValueChanged(value =>
             {
                 currentVideoSource?.UpdatePreservePitch(value.NewValue);
             });
 
-            dislikeCounterCredits.AddArbitraryDrawable(new IconButton
-            {
-                Width = 15,
-                Height = 15,
-                Margin = new MarginPadding { Left = 2 },
-                Icon = FontAwesome.Solid.InfoCircle,
-                IconScale = new Vector2(0.75f),
-                Origin = Anchor.Centre,
-                Anchor = Anchor.Centre,
-                ClickAction = _ => host.OpenUrlExternally(@"https://returnyoutubedislike.com/")
-            });
+            dislikeCounterCredits.AddText(YTPlayerEXStrings.DislikeCounterCredits_1);
+            dislikeCounterCredits.AddLink("Return YouTube Dislike API", "https://returnyoutubedislike.com/");
+            dislikeCounterCredits.AddText(YTPlayerEXStrings.DislikeCounterCredits_2);
 
             audioLanguage.BindValueChanged(_ =>
             {
@@ -1906,7 +2029,8 @@ namespace YouTubePlayerEX.App.Screens
                             item.CanBeShown.Value = scalingMode.Value != ScalingMode.Off;
                         }
                     }
-                } catch
+                }
+                catch
                 {
 
                 }
@@ -2045,7 +2169,8 @@ namespace YouTubePlayerEX.App.Screens
             if (host.Window?.SafeAreaPadding.Value.Total != Vector2.Zero)
             {
                 safeAreaConsiderationsCanBeShown.Show();
-            } else
+            }
+            else
             {
                 safeAreaConsiderationsCanBeShown.Hide();
             }
@@ -2568,10 +2693,46 @@ namespace YouTubePlayerEX.App.Screens
 
         private bool commentsDisabled = false;
 
+        /*
+        public void GetLocalizedVideoDescriptionRemake(Google.Apis.YouTube.v3.Data.Video videoData)
+        {
+            string[] splitArg = new string[] { " " };
+
+            string str = api.GetLocalizedVideoDescription(videoData);
+            string pattern = @"https?://[^\s/$.?#].[^\s]*"; // Basic URL pattern
+
+            videoDescription.Text = "";
+
+            MatchCollection matches = Regex.Matches(str, pattern);
+            foreach (Match match in matches)
+            {
+                Logger.Log($"Found URL: {match.Value}");
+                // To get the end part of a specific match:
+                string url = match.Value;
+                string lastSegment = url.Split('/').Last();
+                if (url.Contains("https://"))
+                {
+                    videoDescription.AddText(str[..str.IndexOf(url)]);
+                    videoDescription.AddLink(str[str.IndexOf("https://")..(url.Length + str.IndexOf("https://"))], str[str.IndexOf("https://")..(url.Length + str.IndexOf("https://"))]);
+                    videoDescription.AddText(str[(url.Length + str.IndexOf("https://"))..]);
+                }
+                else
+                {
+                    videoDescription.AddText(str[..str.IndexOf("http://")]);
+                    videoDescription.AddLink(str[str.IndexOf("http://")..(url.Length + str.IndexOf("https://"))], str[str.IndexOf("http://")..(url.Length + str.IndexOf("https://"))]);
+                    videoDescription.AddText(str[(url.Length + str.IndexOf("https://"))..]);
+                }
+            }
+        }
+        */
+
         private partial class PlaybackSpeedSliderBar : RoundedSliderBar<double>
         {
             public override LocalisableString TooltipText => YTPlayerEXStrings.PlaybackSpeed(Current.Value);
         }
+
+        [Resolved]
+        private OverlayColourProvider overlayColourProvider1 { get; set; }
 
         private void updateVideoMetadata(string videoId)
         {
@@ -2598,11 +2759,29 @@ namespace YouTubePlayerEX.App.Screens
 
                 DateTimeOffset? dateTime = videoData.Snippet.PublishedAtDateTimeOffset;
                 DateTime now = DateTime.Now;
-                Schedule(() => videoDescription.Text = api.GetLocalizedVideoDescription(videoData));
+                if (!string.IsNullOrEmpty(api.GetLocalizedVideoDescription(videoData)))
+                {
+                    Schedule(() => videoDescription.Text = api.GetLocalizedVideoDescription(videoData));
+                }
+                else
+                {
+                    Schedule(() => videoDescription.AddText(YTPlayerEXStrings.NoDescription, text =>
+                    {
+                        text.Font = YouTubePlayerEXApp.DefaultFont.With(weight: "SemiBold", italics: true);
+                        text.Colour = overlayColourProvider1.Background1;
+                    }));
+                }
                 sessionStatics.GetBindable<string>(Static.CurrentThumbnailUrl).Value = videoData.Snippet.Thumbnails.High.Url;
                 commentCount.Text = videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : YTPlayerEXStrings.DisabledByUploader;
-                dislikeCount.Text = ReturnYouTubeDislike.GetDislikes(videoId).Dislikes > 0 ? ReturnYouTubeDislike.GetDislikes(videoId).Dislikes.ToStandardFormattedString(0) : ReturnYouTubeDislike.GetDislikes(videoId).RawDislikes.ToStandardFormattedString(0);
-                dislikeCountTooltip.TooltipText = YTPlayerEXStrings.DislikeCountTooltip(ReturnYouTubeDislike.GetDislikes(videoId).Dislikes.ToStandardFormattedString(0), ReturnYouTubeDislike.GetDislikes(videoId).RawDislikes.ToStandardFormattedString(0));
+                try
+                {
+                    dislikeCount.Text = ReturnYouTubeDislike.GetDislikes(videoId).Dislikes > 0 ? ReturnYouTubeDislike.GetDislikes(videoId).Dislikes.ToStandardFormattedString(0) : ReturnYouTubeDislike.GetDislikes(videoId).RawDislikes.ToStandardFormattedString(0);
+                    dislikeCountTooltip.TooltipText = YTPlayerEXStrings.DislikeCountTooltip(ReturnYouTubeDislike.GetDislikes(videoId).Dislikes.ToStandardFormattedString(0), ReturnYouTubeDislike.GetDislikes(videoId).RawDislikes.ToStandardFormattedString(0));
+                }
+                catch
+                {
+                    dislikeCount.Text = "0";
+                }
                 likeCount.Text = videoData.Statistics.LikeCount != null ? Convert.ToInt32(videoData.Statistics.LikeCount).ToStandardFormattedString(0) : ReturnYouTubeDislike.GetDislikes(videoId).RawLikes.ToStandardFormattedString(0);
                 commentsContainerTitle.Text = YTPlayerEXStrings.Comments(videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : YTPlayerEXStrings.Disabled);
                 videoInfoDetails.Text = YTPlayerEXStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
@@ -2630,7 +2809,35 @@ namespace YouTubePlayerEX.App.Screens
 
                         Toast toast = new Toast(YTPlayerEXStrings.General, YTPlayerEXStrings.CommentAdded);
                         api.SendComment(videoId, commentTextBox.Text);
+
+                        Task.Run(async () =>
+                        {
+                            Channel myChannel = await api.GetMineChannelAsync();
+
+                            Comment dummy = new Comment();
+
+                            CommentSnippet wth = new CommentSnippet
+                            {
+                                PublishedAtDateTimeOffset = DateTimeOffset.Now,
+                                AuthorChannelId = { Value = myChannel.Id },
+                                TextDisplay = commentTextBox.Text,
+                                TextOriginal = commentTextBox.Text,
+                                LikeCount = 0,
+                            };
+
+                            dummy.Snippet = wth;
+
+                            Schedule(() =>
+                            {
+                                commentContainer.Add(new CommentDisplay(dummy)
+                                {
+                                    RelativeSizeAxes = Axes.X,
+                                });
+                            });
+                        });
+
                         Schedule(() => onScreenDisplay.Display(toast));
+
                         commentTextBox.Text = string.Empty;
                     };
                 });
@@ -2732,7 +2939,7 @@ namespace YouTubePlayerEX.App.Screens
         {
             this.videoId = videoId;
             pausedTime = clearCache ? currentVideoSource.VideoProgress.Value : 0;
-            currentVideoSource?.Expire();
+            Schedule(() => currentVideoSource?.Expire());
             if (loadVideoContainer.IsVisible == true)
             {
                 Schedule(() => hideOverlayContainer(loadVideoContainer));
@@ -2745,7 +2952,7 @@ namespace YouTubePlayerEX.App.Screens
 
             foreach (var item in commentContainer.Children)
             {
-                item.Expire();
+                Schedule(() => item.Expire());
             }
 
             if (clearCache == true)
@@ -2764,9 +2971,12 @@ namespace YouTubePlayerEX.App.Screens
 
                 if (videoData.Status.PrivacyStatus == "private")
                 {
-                    Toast toast = new Toast(YTPlayerEXStrings.General, YTPlayerEXStrings.CannotPlayPrivateVideos);
+                    Schedule(() =>
+                    {
+                        Toast toast = new Toast(YTPlayerEXStrings.General, YTPlayerEXStrings.CannotPlayPrivateVideos);
 
-                    onScreenDisplay.Display(toast);
+                        onScreenDisplay.Display(toast);
+                    });
                     return;
                 }
 
@@ -2775,15 +2985,15 @@ namespace YouTubePlayerEX.App.Screens
 
                 spinnerShow = Scheduler.AddDelayed(spinner.Show, 0);
 
-                videoProgress.MaxValue = 1;
+                Schedule(() => videoProgress.MaxValue = 1);
                 videoUrl = $"https://youtube.com/watch?v={videoId}";
 
                 spinnerShow = Scheduler.AddDelayed(() => updateVideoMetadata(videoId), 0);
-                thumbnailContainer.Show();
+                Schedule(() => thumbnailContainer.Show());
 
                 if (!File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3") || !File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4"))
                 {
-                    videoQuality.Disabled = audioLanguage.Disabled = true;
+                    Schedule(() => videoQuality.Disabled = audioLanguage.Disabled = alwaysUseOriginalAudio.Disabled = true);
 
                     Directory.CreateDirectory(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}"));
 
@@ -2793,18 +3003,32 @@ namespace YouTubePlayerEX.App.Screens
 
                     try
                     {
-                        // Select best audio stream (highest bitrate)
-                        audioStreamInfo = streamManifest
-                            .GetAudioOnlyStreams()
-                            .Where(s => s.AudioLanguage.Value.Code == appGlobalConfig.Get<Language>(YTPlayerEXSetting.AudioLanguage).ToString()) //Fix black screen on some videos
-                            .GetWithHighestBitrate();
+                        if (alwaysUseOriginalAudio.Value == true)
+                        {
+                            Logger.Log($"Preferred audio language is: {videoData.Snippet.DefaultLanguage}");
+                            // Select best audio stream (highest bitrate)
+                            audioStreamInfo = streamManifest
+                                .GetAudioOnlyStreams()
+                                .Where(s => s.AudioLanguage.Value.Code == videoData.Snippet.DefaultLanguage)
+                                .TryGetWithHighestBitrate();
+                        }
+                        else
+                        {
+                            Logger.Log($"Preferred audio language is: {appGlobalConfig.Get<Language>(YTPlayerEXSetting.AudioLanguage).ToString()}");
+                            // Select best audio stream (highest bitrate)
+                            audioStreamInfo = streamManifest
+                                .GetAudioOnlyStreams()
+                                .Where(s => s.AudioLanguage.Value.Code.Contains(appGlobalConfig.Get<Language>(YTPlayerEXSetting.AudioLanguage).ToString()))
+                                .TryGetWithHighestBitrate();
+                        }
                     }
-                    catch
+                    catch (Exception e)
                     {
                         // Select best audio stream (highest bitrate)
                         audioStreamInfo = streamManifest
                             .GetAudioOnlyStreams()
-                            .GetWithHighestBitrate();
+                            .TryGetWithHighestBitrate();
+                        Logger.Error(e, e.GetDescription());
                     }
 
                     IVideoStreamInfo videoStreamInfo;
@@ -2816,7 +3040,7 @@ namespace YouTubePlayerEX.App.Screens
                             .GetVideoOnlyStreams()
                             .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
                             .Where(s => s.VideoCodec.Contains("avc1")) //Fix black screen on some videos
-                            .GetWithHighestVideoQuality();
+                            .TryGetWithHighestVideoQuality();
                     }
                     else
                     {
@@ -2826,7 +3050,7 @@ namespace YouTubePlayerEX.App.Screens
                             .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
                             .Where(s => s.VideoCodec.Contains("avc1")) //Fix black screen on some videos
                             .Where(s => s.VideoQuality.Label.Contains(app.ParseVideoQuality()))
-                            .GetWithHighestVideoQuality();
+                            .TryGetWithHighestVideoQuality();
                     }
 
                     var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
@@ -2862,16 +3086,19 @@ namespace YouTubePlayerEX.App.Screens
                     currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3", captionTrack, captionLanguage.Value, pausedTime)
                     {
                         RelativeSizeAxes = Axes.Both
-                    }; 
+                    };
+
+                    if (appliedEffects.Value.Count > 0)
+                        Schedule(() => currentVideoSource?.ApplyShaders(appliedEffects.Value));
 
                     spinnerShow = Scheduler.AddDelayed(spinner.Hide, 0);
 
                     spinnerShow = Scheduler.AddDelayed(addVideoToScreen, 0);
 
                     spinnerShow = Scheduler.AddDelayed(() => playVideo(), 0);
-                    thumbnailContainer.Hide();
+                    Schedule(() => thumbnailContainer.Hide());
 
-                    videoQuality.Disabled = audioLanguage.Disabled = false;
+                    Schedule(() => videoQuality.Disabled = audioLanguage.Disabled = alwaysUseOriginalAudio.Disabled = false);
                 }
                 else
                 {
@@ -2901,12 +3128,15 @@ namespace YouTubePlayerEX.App.Screens
                         RelativeSizeAxes = Axes.Both
                     };
 
+                    if (appliedEffects.Value.Count > 0)
+                        Schedule(() => currentVideoSource?.ApplyShaders(appliedEffects.Value));
+
                     spinnerShow = Scheduler.AddDelayed(spinner.Hide, 0);
 
                     spinnerShow = Scheduler.AddDelayed(addVideoToScreen, 0);
 
                     spinnerShow = Scheduler.AddDelayed(() => playVideo(), 0);
-                    thumbnailContainer.Hide();
+                    Schedule(() => thumbnailContainer.Hide());
                 }
             }
             else

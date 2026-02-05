@@ -3,6 +3,7 @@
 
 #nullable enable
 
+using System.Collections.Generic;
 using System.IO;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -18,6 +19,7 @@ using YoutubeExplode.Videos.ClosedCaptions;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Graphics.Caption;
 using YouTubePlayerEX.App.Graphics.Containers;
+using YouTubePlayerEX.App.Graphics.Shaders;
 
 namespace YouTubePlayerEX.App.Graphics.Videos
 {
@@ -63,6 +65,8 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         private ClosedCaptionContainer closedCaption = null!;
         private Bindable<AspectRatioMethod> aspectRatioMethod = null!;
 
+        private VideoShaderContainer shaderContainer = null!;
+
         [BackgroundDependencyLoader]
         private void load(ITrackStore tracks, YTPlayerEXConfigManager config, ScreenshotManager screenshotManager)
         {
@@ -85,13 +89,20 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                         new DimmableContainer
                         {
                             RelativeSizeAxes = Axes.Both,
-                            Child = video = new Video(fileName_Video, false)
+                            Child = shaderContainer = new VideoShaderContainer
                             {
                                 RelativeSizeAxes = Axes.Both,
-                                FillMode = FillMode.Fit,
-                                Anchor = Anchor.Centre,
-                                Origin = Anchor.Centre,
-                                Clock = framedClock,
+                                Child = new BufferedContainer {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Child = video = new Video(fileName_Video, false)
+                                    {
+                                        RelativeSizeAxes = Axes.Both,
+                                        FillMode = FillMode.Fit,
+                                        Anchor = Anchor.Centre,
+                                        Origin = Anchor.Centre,
+                                        Clock = framedClock,
+                                    }
+                                }
                             },
                         },
                         keyBindingAnimations = new KeyBindingAnimations
@@ -197,6 +208,19 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             }
         }
 
+        public void ApplyShaders(List<InternalShader> shaders)
+        {
+            try
+            {
+                if (shaders != null)
+                    shaderContainer.Shaders = shaders;
+            }
+            catch
+            {
+                // Ignore errors applying shaders
+            }
+        }
+
         public void SeekTo(double pos)
         {
             double pos2 = pos;
@@ -204,53 +228,68 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             if (pos2 < 0)
                 pos2 = 0;
 
-            drawableTrack?.Seek(pos2);
-            video?.Seek(pos2);
+            if (drawableTrack != null)
+            {
+                drawableTrack?.Seek(pos2);
+                video?.Seek(pos2);
+            }
         }
 
         public void FastForward10Sec()
         {
-            if ((drawableTrack.CurrentTime + 10000) >= drawableTrack.Length)
+            if (drawableTrack != null)
             {
-                SeekTo(drawableTrack.Length);
-                trackFinished = true;
-                Pause();
-            }
+                if ((drawableTrack.CurrentTime + 10000) >= drawableTrack.Length)
+                {
+                    SeekTo(drawableTrack.Length);
+                    trackFinished = true;
+                    Pause();
+                }
 
-            SeekTo(drawableTrack.CurrentTime + 10000);
-            keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.FastForward10sec, FontAwesome.Solid.Box);
+                SeekTo(drawableTrack.CurrentTime + 10000);
+                keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.FastForward10sec, FontAwesome.Solid.Box);
+            }
         }
 
         public void FastRewind10Sec()
         {
-            SeekTo(drawableTrack.CurrentTime - 10000);
-            keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.FastRewind10sec, FontAwesome.Solid.Box);
+            if (drawableTrack != null)
+            {
+                SeekTo(drawableTrack.CurrentTime - 10000);
+                keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.FastRewind10sec, FontAwesome.Solid.Box);
+            }
         }
 
         public void Pause(bool isKeyboardAction = false)
         {
-            drawableTrack?.Stop();
-            framedClock.Stop();
+            if (drawableTrack != null)
+            {
+                drawableTrack?.Stop();
+                framedClock.Stop();
 
-            if (isKeyboardAction)
-                keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.PlayPause, FontAwesome.Solid.Pause);
+                if (isKeyboardAction)
+                    keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.PlayPause, FontAwesome.Solid.Pause);
+            }
         }
 
         public void Play(bool isKeyboardAction = false)
         {
-            if (trackFinished)
+            if (drawableTrack != null)
             {
-                if (drawableTrack.CurrentTime == drawableTrack.Length)
-                    SeekTo(0);
+                if (trackFinished)
+                {
+                    if (drawableTrack.CurrentTime == drawableTrack.Length)
+                        SeekTo(0);
 
-                trackFinished = false;
+                    trackFinished = false;
+                }
+
+                drawableTrack?.Start();
+                framedClock.Start();
+
+                if (isKeyboardAction)
+                    keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.PlayPause, FontAwesome.Solid.Play);
             }
-
-            drawableTrack?.Start();
-            framedClock.Start();
-
-            if (isKeyboardAction)
-                keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.PlayPause, FontAwesome.Solid.Play);
         }
 
         [Resolved]

@@ -398,4 +398,10 @@
   <data name="unlimited" xml:space="preserve">
     <value>무제한</value>
   </data>
+  <data name="dislike_counter_credits_1" xml:space="preserve">
+    <value>싫어요 수의 데이터는 </value>
+  </data>
+  <data name="dislike_counter_credits_2" xml:space="preserve">
+    <value>에 의해 제공됩니다.</value>
+  </data>
 </root>

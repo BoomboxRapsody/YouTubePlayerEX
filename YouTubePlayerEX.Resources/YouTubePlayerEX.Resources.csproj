@@ -8,5 +8,6 @@
     <EmbeddedResource Include="Shaders\**\*" />
     <EmbeddedResource Include="Textures\**\*" />
     <EmbeddedResource Include="Tracks\**\*" />
+    <EmbeddedResource Include="Spine\**\*" />
   </ItemGroup>
 </Project>

@@ -17,8 +17,8 @@ namespace YouTubePlayerEX.App.Localisation
         [Description(@"Nederlands")]
         nl,
 
-        [Description(@"Deutsch")]
-        de,
+        [Description(@"Español")]
+        es,
 
         [Description(@"Italiano")]
         it,
@@ -40,9 +40,6 @@ namespace YouTubePlayerEX.App.Localisation
 
         [Description(@"Русский")]
         ru,
-
-        [Description(@"español")]
-        es,
 
         [Description(@"Türkçe")]
         tr,

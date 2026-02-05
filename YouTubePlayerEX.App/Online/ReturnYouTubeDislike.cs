@@ -13,6 +13,9 @@ using osu.Framework.Logging;
 
 namespace YouTubePlayerEX.App.Online
 {
+    /**
+     * Handles fetching and creation/replacing of RYD dislike text spans.
+     **/
     public class ReturnYouTubeDislike
     {
         public static ReturnYouTubeDislikesResponse GetDislikes(string videoId)
