@@ -425,4 +425,14 @@
   <data name="no_description" xml:space="preserve">
     <value>이 동영상에 추가된 설명이 없습니다.</value>
   </data>
+  <data name="view_version_desc" xml:space="preserve">
+    <value>{0}에 대한 변경 내용 보기</value>
+    <comment>view_version_desc</comment>
+  </data>
+  <data name="render_type_automatic" xml:space="preserve">
+    <value>시스템이 자동으로 결정</value>
+  </data>
+  <data name="render_type_automatic_is_use" xml:space="preserve">
+    <value>시스템이 자동으로 결정 ({0})</value>
+  </data>
 </root>

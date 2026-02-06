@@ -425,4 +425,14 @@
   <data name="no_description" xml:space="preserve">
     <value>未添加描述到此视频。</value>
   </data>
+  <data name="view_version_desc" xml:space="preserve">
+    <value>View changelog for {0}</value>
+    <comment>view_version_desc</comment>
+  </data>
+  <data name="render_type_automatic" xml:space="preserve">
+    <value>Automatic</value>
+  </data>
+  <data name="render_type_automatic_is_use" xml:space="preserve">
+    <value>Automatic ({0})</value>
+  </data>
 </root>
