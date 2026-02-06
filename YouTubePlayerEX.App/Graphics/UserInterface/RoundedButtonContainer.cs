@@ -4,12 +4,11 @@
 #nullable enable
 
 using System;
-using osu.Framework.Graphics.Containers;
 using osu.Framework.Input.Events;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
-    public partial class RoundedButtonContainer : Container
+    public partial class RoundedButtonContainer : AdaptiveClickableContainer
     {
         public Action<RoundedButtonContainer>? ClickAction { get; set; }
 

@@ -615,6 +615,21 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString NoDescription => new TranslatableString(getKey(@"no_description"), "No description has been added to this video.");
 
+        /// <summary>
+        /// "View changelog for {0}"
+        /// </summary>
+        public static LocalisableString ViewChangelog(string version) => new TranslatableString(getKey(@"view_version_desc"), "View changelog for {0}", version);
+
+        /// <summary>
+        /// "Automatic"
+        /// </summary>
+        public static LocalisableString RenderTypeAutomatic => new TranslatableString(getKey(@"render_type_automatic"), "Automatic");
+
+        /// <summary>
+        /// "Automatic ({0})"
+        /// </summary>
+        public static LocalisableString RenderTypeAutomaticIsUse(string rendererName) => new TranslatableString(getKey(@"render_type_automatic_is_use"), "Automatic ({0})", rendererName);
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

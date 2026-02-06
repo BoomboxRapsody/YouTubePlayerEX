@@ -399,9 +399,30 @@
     <value>Basicamente ilimitado</value>
   </data>
   <data name="dislike_counter_credits_1" xml:space="preserve">
-    <value>Dislike count data is provided by the </value>
+    <value>Dados de contagem de desgosto são fornecidos pelo </value>
   </data>
   <data name="dislike_counter_credits_2" xml:space="preserve">
     <value>.</value>
+  </data>
+  <data name="mocha_chan_labs" xml:space="preserve">
+    <value>Laboratório de Mocha-chan</value>
+  </data>
+  <data name="crt_effect" xml:space="preserve">
+    <value>Efeito CRT</value>
+  </data>
+  <data name="pixel_effect" xml:space="preserve">
+    <value>Efeito de Pixel</value>
+  </data>
+  <data name="mocha_chan_labs_desc" xml:space="preserve">
+    <value>Os seguintes recursos são experimentais e podem ser removidos ou movidos no futuro.</value>
+  </data>
+  <data name="pixel_size" xml:space="preserve">
+    <value>Tamanho do Pixel</value>
+  </data>
+  <data name="always_use_original_audio" xml:space="preserve">
+    <value>Sempre usar áudio original</value>
+  </data>
+  <data name="no_description" xml:space="preserve">
+    <value>Nenhuma descrição foi adicionada a este vídeo.</value>
   </data>
 </root>

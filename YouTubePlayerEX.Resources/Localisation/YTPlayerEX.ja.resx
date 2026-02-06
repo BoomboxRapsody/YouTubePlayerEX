@@ -404,4 +404,25 @@
   <data name="dislike_counter_credits_2" xml:space="preserve">
     <value>によって提供されています。</value>
   </data>
+  <data name="mocha_chan_labs" xml:space="preserve">
+    <value>モカちゃん研究所</value>
+  </data>
+  <data name="crt_effect" xml:space="preserve">
+    <value>CRTエフェクト</value>
+  </data>
+  <data name="pixel_effect" xml:space="preserve">
+    <value>Pixel エフェクト</value>
+  </data>
+  <data name="mocha_chan_labs_desc" xml:space="preserve">
+    <value>以下の機能は実験的なもので、将来的に削除または移動される可能性があります。</value>
+  </data>
+  <data name="pixel_size" xml:space="preserve">
+    <value>ピクセルサイズ</value>
+  </data>
+  <data name="always_use_original_audio" xml:space="preserve">
+    <value>常に元の音声を使用する</value>
+  </data>
+  <data name="no_description" xml:space="preserve">
+    <value>この動画に説明が追加されていません。</value>
+  </data>
 </root>

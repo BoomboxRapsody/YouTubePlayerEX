@@ -64,7 +64,7 @@ namespace YouTubePlayerEX.App.Graphics.Containers
         public void AddLink(LocalisableString text, string url, Action<SpriteText> creationParameters = null) =>
             createLink(CreateChunkFor(text, true, CreateSpriteText, creationParameters), new LinkDetails(url), url);
 
-        public void AddLink(LocalisableString text, object argument, string tooltipText = null, Action<SpriteText> creationParameters = null)
+        public void AddLink(LocalisableString text, object argument, LocalisableString tooltipText, Action<SpriteText> creationParameters = null)
             => createLink(CreateChunkFor(text, true, CreateSpriteText, creationParameters), new LinkDetails(argument), tooltipText);
 
         private void createLink(ITextPart textPart, LinkDetails link, LocalisableString tooltipText, Action action = null)

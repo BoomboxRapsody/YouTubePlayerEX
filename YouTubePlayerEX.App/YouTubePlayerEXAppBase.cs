@@ -1,4 +1,4 @@
-// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
+﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
@@ -206,6 +206,7 @@ namespace YouTubePlayerEX.App
         [BackgroundDependencyLoader]
         private void load(FrameworkConfigManager frameworkConfig)
         {
+            Logger.Log($"------------------------------------------------\nYouTube Player EX by BoomboxRapsody\n------------------------------------------------\nApp version is: {Version}\nApp version hash is: {VersionHash}\n------------------------------------------------\ngood luck ^^\n------------------------------------------------");
             RestartRequired.Value = false;
             UpdateManagerVersionText.Value = Version;
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -252,6 +253,8 @@ namespace YouTubePlayerEX.App
 
             dependencies.CacheAs(overlayColourProvider = new OverlayColourProvider(OverlayColourScheme.Aquamarine));
 
+            Logger.Log($"🎨 OverlayColourProvider loaded");
+
             /*
             // Ensure game and tests scale with window size and screen DPI.
             base.Content.Add(
@@ -291,6 +294,8 @@ namespace YouTubePlayerEX.App
                     }
                 })
             });
+
+            Logger.Log($"Scaling container loaded");
         }
 
         protected virtual Container CreateScalingContainer() => new DrawSizePreservingFillContainer();
@@ -341,6 +346,8 @@ namespace YouTubePlayerEX.App
             AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-Black");
             AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-BlackItalic");
 
+            Logger.Log($"Font family loaded: Pretendard");
+
             AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Regular");
             AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-RegularItalic");
             AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Medium");
@@ -354,10 +361,14 @@ namespace YouTubePlayerEX.App
             AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Black");
             AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-BlackItalic");
 
+            Logger.Log($"Font family loaded: NotoSansKR");
+
             AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-Bold");
             AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-Light");
             AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-Regular");
             AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-SemiBold");
+
+            Logger.Log($"Font family loaded: Torus");
 
             AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Basic");
             AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Bopomofo");
@@ -366,7 +377,11 @@ namespace YouTubePlayerEX.App
             AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Hangul");
             AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Thai");
 
+            Logger.Log($"Font family loaded: Noto");
+
             Fonts.AddStore(new EmojiStore(Host.Renderer, Resources));
+
+            Logger.Log($"❤️👏 Colored emoji loaded");
         }
     }
 }

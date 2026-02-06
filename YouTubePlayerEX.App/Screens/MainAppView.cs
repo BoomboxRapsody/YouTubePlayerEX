@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Humanizer;
 using osu.Framework;
@@ -79,7 +80,7 @@ namespace YouTubePlayerEX.App.Screens
         private AdaptiveButtonWithShadow loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton, searchOpenButton, reportOpenButton;
         private VideoMetadataDisplayWithoutProfile videoMetadataDisplay;
         private VideoMetadataDisplay videoMetadataDisplayDetails;
-        private RoundedButtonContainer commentOpenButtonDetails;
+        private RoundedButtonContainer commentOpenButtonDetails, likeButton;
 
         private SettingsItemV2 pixel_shader_size_adjust, AudioLanguageItem;
 
@@ -89,7 +90,7 @@ namespace YouTubePlayerEX.App.Screens
         private FormTextBox reportComment;
 
         private Container overlayFadeContainer;
-        private ContainerWithTooltip dislikeCountTooltip;
+        private RoundedButtonContainer dislikeButton;
 
         protected override void Dispose(bool isDisposing)
         {
@@ -102,7 +103,7 @@ namespace YouTubePlayerEX.App.Screens
         }
 
         private AdaptiveSpriteText videoLoadingProgress, videoInfoDetails, likeCount, dislikeCount, commentCount, commentsContainerTitle, currentTime, totalTime;
-        private LinkFlowContainer videoDescription;
+        private LinkFlowContainer videoDescription, gameVersion;
         private FillFlowContainer commentContainer, searchResultContainer;
 
         [Resolved]
@@ -147,6 +148,9 @@ namespace YouTubePlayerEX.App.Screens
         private Bindable<AspectRatioMethod> aspectRatioMethod;
 
         private BufferedContainer videoScalingContainer;
+
+        private Box likeButtonBackground, dislikeButtonBackground, likeButtonBackgroundSelected, dislikeButtonBackgroundSelected;
+        private FillFlowContainer likeButtonForeground, dislikeButtonForeground;
 
         private Container userInterfaceContainer;
 
@@ -1050,6 +1054,13 @@ namespace YouTubePlayerEX.App.Screens
                                                             TextAnchor = Anchor.Centre,
                                                             Colour = overlayColourProvider.Content2,
                                                         },
+                                                        gameVersion = new LinkFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 15))
+                                                        {
+                                                            RelativeSizeAxes = Axes.X,
+                                                            AutoSizeAxes = Axes.Y,
+                                                            TextAnchor = Anchor.Centre,
+                                                            Colour = overlayColourProvider.Content2,
+                                                        },
                                                         new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 15))
                                                         {
                                                             RelativeSizeAxes = Axes.X,
@@ -1120,7 +1131,7 @@ namespace YouTubePlayerEX.App.Screens
                                             Spacing = new Vector2(4, 0),
                                             Children = new Drawable[]
                                             {
-                                                new Container
+                                                likeButton = new RoundedButtonContainer
                                                 {
                                                     AutoSizeAxes = Axes.X,
                                                     Height = 32,
@@ -1133,20 +1144,29 @@ namespace YouTubePlayerEX.App.Screens
                                                         {
                                                             RelativeSizeAxes = Axes.Both,
                                                             CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
-                                                            Child = new Box
-                                                            {
-                                                                RelativeSizeAxes = Axes.Both,
-                                                                Colour = overlayColourProvider.Background4,
-                                                                Alpha = 0.7f,
+                                                            Children = new Drawable[] {
+                                                                likeButtonBackground = new Box
+                                                                {
+                                                                    RelativeSizeAxes = Axes.Both,
+                                                                    Colour = overlayColourProvider.Background4,
+                                                                    Alpha = 0.7f,
+                                                                },
+                                                                likeButtonBackgroundSelected = new Box
+                                                                {
+                                                                    RelativeSizeAxes = Axes.Both,
+                                                                    Colour = overlayColourProvider.Content2,
+                                                                    Alpha = 0f,
+                                                                },
                                                             },
                                                         },
-                                                        new FillFlowContainer
+                                                        likeButtonForeground = new FillFlowContainer
                                                         {
                                                             AutoSizeAxes = Axes.X,
                                                             RelativeSizeAxes = Axes.Y,
                                                             Direction = FillDirection.Horizontal,
                                                             Spacing = new Vector2(4, 0),
                                                             Padding = new MarginPadding(8),
+                                                            Colour = overlayColourProvider.Content2,
                                                             Children = new Drawable[]
                                                             {
                                                                 new SpriteIcon
@@ -1154,18 +1174,16 @@ namespace YouTubePlayerEX.App.Screens
                                                                     Width = 15,
                                                                     Height = 15,
                                                                     Icon = FontAwesome.Solid.ThumbsUp,
-                                                                    Colour = overlayColourProvider.Content2,
                                                                 },
                                                                 likeCount = new AdaptiveSpriteText
                                                                 {
                                                                     Text = "[no metadata]",
-                                                                    Colour = overlayColourProvider.Content2,
                                                                 },
                                                             }
                                                         }
                                                     }
                                                 },
-                                                dislikeCountTooltip = new ContainerWithTooltip
+                                                dislikeButton = new RoundedButtonContainer
                                                 {
                                                     AutoSizeAxes = Axes.X,
                                                     Height = 32,
@@ -1178,20 +1196,29 @@ namespace YouTubePlayerEX.App.Screens
                                                         {
                                                             RelativeSizeAxes = Axes.Both,
                                                             CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
-                                                            Child = new Box
-                                                            {
-                                                                RelativeSizeAxes = Axes.Both,
-                                                                Colour = overlayColourProvider.Background4,
-                                                                Alpha = 0.7f,
+                                                            Children = new Drawable[] {
+                                                                dislikeButtonBackground = new Box
+                                                                {
+                                                                    RelativeSizeAxes = Axes.Both,
+                                                                    Colour = overlayColourProvider.Background4,
+                                                                    Alpha = 0.7f,
+                                                                },
+                                                                dislikeButtonBackgroundSelected = new Box
+                                                                {
+                                                                    RelativeSizeAxes = Axes.Both,
+                                                                    Colour = overlayColourProvider.Content2,
+                                                                    Alpha = 0f,
+                                                                },
                                                             },
                                                         },
-                                                        new FillFlowContainer
+                                                        dislikeButtonForeground = new FillFlowContainer
                                                         {
                                                             AutoSizeAxes = Axes.X,
                                                             RelativeSizeAxes = Axes.Y,
                                                             Direction = FillDirection.Horizontal,
                                                             Spacing = new Vector2(4, 0),
                                                             Padding = new MarginPadding(8),
+                                                            Colour = overlayColourProvider.Content2,
                                                             Children = new Drawable[]
                                                             {
                                                                 new SpriteIcon
@@ -1199,12 +1226,10 @@ namespace YouTubePlayerEX.App.Screens
                                                                     Width = 15,
                                                                     Height = 15,
                                                                     Icon = FontAwesome.Solid.ThumbsDown,
-                                                                    Colour = overlayColourProvider.Content2,
                                                                 },
                                                                 dislikeCount = new AdaptiveSpriteText
                                                                 {
                                                                     Text = "[no metadata]",
-                                                                    Colour = overlayColourProvider.Content2,
                                                                 },
                                                             }
                                                         }
@@ -1983,6 +2008,15 @@ namespace YouTubePlayerEX.App.Screens
                 });
             }, true);
 
+            if (game.IsDeployedBuild)
+            {
+                gameVersion.AddLink(game.Version, "https://github.com/BoomboxRapsody/YouTubePlayerEX/releases/latest", tooltipText: YTPlayerEXStrings.ViewChangelog(game.Version));
+            }
+            else
+            {
+                gameVersion.AddText(game.Version);
+            }
+
             updateInfomationText.BindValueChanged(text =>
             {
                 checkForUpdatesButton.Text = text.NewValue;
@@ -2731,6 +2765,168 @@ namespace YouTubePlayerEX.App.Screens
             public override LocalisableString TooltipText => YTPlayerEXStrings.PlaybackSpeed(Current.Value);
         }
 
+        private void updateRatingButtons(string videoId, bool ratingButtonsEnabled)
+        {
+            if (!googleOAuth2.SignedIn.Value)
+                return;
+
+            Task.Run(async () =>
+            {
+                VideosResource.RateRequest.RatingEnum things = await api.GetVideoRating(videoId);
+
+                switch (things)
+                {
+                    case VideosResource.RateRequest.RatingEnum.None:
+                    {
+                        Schedule(() =>
+                        {
+                            dislikeButtonBackgroundSelected.Hide();
+                            likeButtonBackgroundSelected.Hide();
+                            likeButtonForeground.Colour = dislikeButtonForeground.Colour = overlayColourProvider1.Content2;
+
+                            if (ratingButtonsEnabled)
+                            {
+                                likeButton.ClickAction = async _ =>
+                                {
+                                    await api.RateVideo(videoId, VideosResource.RateRequest.RatingEnum.Like);
+                                    Schedule(() =>
+                                    {
+                                        dislikeButtonBackgroundSelected.Hide();
+                                        likeButtonBackgroundSelected.Show();
+                                        likeButtonForeground.Colour = overlayColourProvider1.Background4;
+                                        dislikeButtonForeground.Colour = overlayColourProvider1.Content2;
+                                    });
+                                };
+
+                                dislikeButton.ClickAction = async _ =>
+                                {
+                                    await api.RateVideo(videoId, VideosResource.RateRequest.RatingEnum.Dislike);
+                                    Schedule(() =>
+                                    {
+                                        dislikeButtonBackgroundSelected.Show();
+                                        likeButtonBackgroundSelected.Hide();
+                                        likeButtonForeground.Colour = overlayColourProvider1.Content2;
+                                        dislikeButtonForeground.Colour = overlayColourProvider1.Background4;
+                                    });
+                                };
+                            }
+                            else
+                            {
+                                likeButton.ClickAction = async _ =>
+                                {
+
+                                };
+
+                                dislikeButton.ClickAction = async _ =>
+                                {
+
+                                };
+                            }
+                        });
+                        break;
+                    }
+                    case VideosResource.RateRequest.RatingEnum.Like:
+                    {
+                        Schedule(() =>
+                        {
+                            dislikeButtonBackgroundSelected.Hide();
+                            likeButtonBackgroundSelected.Show();
+                            likeButtonForeground.Colour = overlayColourProvider1.Background4;
+                            dislikeButtonForeground.Colour = overlayColourProvider1.Content2;
+
+                            if (ratingButtonsEnabled)
+                            {
+                                likeButton.ClickAction = async _ =>
+                                {
+                                    await api.RateVideo(videoId, VideosResource.RateRequest.RatingEnum.None);
+                                    Schedule(() =>
+                                    {
+                                        dislikeButtonBackgroundSelected.Hide();
+                                        likeButtonBackgroundSelected.Hide();
+                                        likeButtonForeground.Colour = dislikeButtonForeground.Colour = overlayColourProvider1.Content2;
+                                    });
+                                };
+
+                                dislikeButton.ClickAction = async _ =>
+                                {
+                                    await api.RateVideo(videoId, VideosResource.RateRequest.RatingEnum.Dislike);
+                                    Schedule(() =>
+                                    {
+                                        dislikeButtonBackgroundSelected.Show();
+                                        likeButtonBackgroundSelected.Hide();
+                                        likeButtonForeground.Colour = overlayColourProvider1.Content2;
+                                        dislikeButtonForeground.Colour = overlayColourProvider1.Background4;
+                                    });
+                                };
+                            }
+                            else
+                            {
+                                likeButton.ClickAction = async _ =>
+                                {
+
+                                };
+
+                                dislikeButton.ClickAction = async _ =>
+                                {
+
+                                };
+                            }
+                        });
+                        break;
+                    }
+                    case VideosResource.RateRequest.RatingEnum.Dislike:
+                    {
+                        Schedule(() =>
+                        {
+                            dislikeButtonBackgroundSelected.Show();
+                            likeButtonBackgroundSelected.Hide();
+                            likeButtonForeground.Colour = overlayColourProvider1.Content2;
+                            dislikeButtonForeground.Colour = overlayColourProvider1.Background4;
+
+                            if (ratingButtonsEnabled)
+                            {
+                                likeButton.ClickAction = async _ =>
+                                {
+                                    await api.RateVideo(videoId, VideosResource.RateRequest.RatingEnum.Like);
+                                    Schedule(() =>
+                                    {
+                                        dislikeButtonBackgroundSelected.Hide();
+                                        likeButtonBackgroundSelected.Show();
+                                        likeButtonForeground.Colour = overlayColourProvider1.Background4;
+                                        dislikeButtonForeground.Colour = overlayColourProvider1.Content2;
+                                    });
+                                };
+
+                                dislikeButton.ClickAction = async _ =>
+                                {
+                                    await api.RateVideo(videoId, VideosResource.RateRequest.RatingEnum.None);
+                                    Schedule(() =>
+                                    {
+                                        dislikeButtonBackgroundSelected.Hide();
+                                        likeButtonBackgroundSelected.Hide();
+                                        likeButtonForeground.Colour = dislikeButtonForeground.Colour = overlayColourProvider1.Content2;
+                                    });
+                                };
+                            }
+                            else
+                            {
+                                likeButton.ClickAction = async _ =>
+                                {
+
+                                };
+
+                                dislikeButton.ClickAction = async _ =>
+                                {
+
+                                };
+                            }
+                        });
+                        break;
+                    }
+                }
+            });
+        }
+
         [Resolved]
         private OverlayColourProvider overlayColourProvider1 { get; set; }
 
@@ -2742,6 +2938,7 @@ namespace YouTubePlayerEX.App.Screens
             {
                 // metadata area
                 Google.Apis.YouTube.v3.Data.Video videoData = api.GetVideo(videoId);
+                updateRatingButtons(videoId, videoData.Statistics.LikeCount != null);
 
                 Schedule(() => commentOpenButton.Enabled.Value = videoData.Statistics.CommentCount != null);
 
@@ -2776,7 +2973,7 @@ namespace YouTubePlayerEX.App.Screens
                 try
                 {
                     dislikeCount.Text = ReturnYouTubeDislike.GetDislikes(videoId).Dislikes > 0 ? ReturnYouTubeDislike.GetDislikes(videoId).Dislikes.ToStandardFormattedString(0) : ReturnYouTubeDislike.GetDislikes(videoId).RawDislikes.ToStandardFormattedString(0);
-                    dislikeCountTooltip.TooltipText = YTPlayerEXStrings.DislikeCountTooltip(ReturnYouTubeDislike.GetDislikes(videoId).Dislikes.ToStandardFormattedString(0), ReturnYouTubeDislike.GetDislikes(videoId).RawDislikes.ToStandardFormattedString(0));
+                    dislikeButton.TooltipText = YTPlayerEXStrings.DislikeCountTooltip(ReturnYouTubeDislike.GetDislikes(videoId).Dislikes.ToStandardFormattedString(0), ReturnYouTubeDislike.GetDislikes(videoId).RawDislikes.ToStandardFormattedString(0));
                 }
                 catch
                 {
@@ -3009,7 +3206,7 @@ namespace YouTubePlayerEX.App.Screens
                             // Select best audio stream (highest bitrate)
                             audioStreamInfo = streamManifest
                                 .GetAudioOnlyStreams()
-                                .Where(s => s.AudioLanguage.Value.Code == videoData.Snippet.DefaultLanguage)
+                                .Where(s => s.AudioLanguage.Value.Code.Contains(videoData.Snippet.DefaultLanguage))
                                 .TryGetWithHighestBitrate();
                         }
                         else
@@ -3024,11 +3221,23 @@ namespace YouTubePlayerEX.App.Screens
                     }
                     catch (Exception e)
                     {
-                        // Select best audio stream (highest bitrate)
-                        audioStreamInfo = streamManifest
-                            .GetAudioOnlyStreams()
-                            .TryGetWithHighestBitrate();
-                        Logger.Error(e, e.GetDescription());
+                        try
+                        {
+                            // Select best audio stream (highest bitrate)
+                            audioStreamInfo = streamManifest
+                                .GetAudioOnlyStreams()
+                                .Where(s => s.AudioLanguage.Value.Code.Contains(videoData.Snippet.DefaultLanguage))
+                                .TryGetWithHighestBitrate();
+                            Logger.Error(e, e.GetDescription());
+                            Logger.Log($"Prefer default audio language: {videoData.Snippet.DefaultLanguage}");
+                        } catch
+                        {
+                            Logger.Log($"Prefer default audio language failed.\nFalling back to default audio language.");
+                            // Select best audio stream (highest bitrate)
+                            audioStreamInfo = streamManifest
+                                .GetAudioOnlyStreams()
+                                .TryGetWithHighestBitrate();
+                        }
                     }
 
                     IVideoStreamInfo videoStreamInfo;
@@ -3039,7 +3248,7 @@ namespace YouTubePlayerEX.App.Screens
                         videoStreamInfo = streamManifest
                             .GetVideoOnlyStreams()
                             .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
-                            .Where(s => s.VideoCodec.Contains("avc1")) //Fix black screen on some videos
+                            .Where(s => s.VideoCodec.Contains("avc1")) //osu!framework needs support for vp9 or av1 codec
                             .TryGetWithHighestVideoQuality();
                     }
                     else
@@ -3048,7 +3257,7 @@ namespace YouTubePlayerEX.App.Screens
                         videoStreamInfo = streamManifest
                             .GetVideoOnlyStreams()
                             .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
-                            .Where(s => s.VideoCodec.Contains("avc1")) //Fix black screen on some videos
+                            .Where(s => s.VideoCodec.Contains("avc1")) //osu!framework needs support for vp9 or av1 codec
                             .Where(s => s.VideoQuality.Label.Contains(app.ParseVideoQuality()))
                             .TryGetWithHighestVideoQuality();
                     }
@@ -3253,7 +3462,12 @@ namespace YouTubePlayerEX.App.Screens
             protected override LocalisableString GenerateItemText(RendererType item)
             {
                 if (item == RendererType.Automatic && automaticRendererInUse)
-                    return LocalisableString.Interpolate($"{base.GenerateItemText(item)} ({hostResolvedRenderer.GetDescription()})");
+                    return YTPlayerEXStrings.RenderTypeAutomaticIsUse(hostResolvedRenderer.GetDescription());
+
+                if (item == RendererType.Automatic)
+                {
+                    return YTPlayerEXStrings.RenderTypeAutomatic;
+                }
 
                 return base.GenerateItemText(item);
             }

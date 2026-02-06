@@ -51,6 +51,8 @@ namespace YouTubePlayerEX.App.Online
                     });
                 }
             }
+
+            Logger.Log($"Google Translate, YouTube API loaded");
         }
 
         public Channel GetChannel(string channelId)
@@ -473,6 +475,52 @@ namespace YouTubePlayerEX.App.Online
             var result = response.Items.First();
 
             return result;
+        }
+
+        public async Task<VideosResource.RateRequest.RatingEnum> GetVideoRating(string videoId)
+        {
+            if (!googleOAuth2.SignedIn.Value)
+                return VideosResource.RateRequest.RatingEnum.None;
+
+            var request = youtubeService.Videos.GetRating(videoId);
+
+            request.AccessToken = googleOAuth2.GetAccessToken();
+
+            var response = await request.ExecuteAsync();
+
+            var result = response.Items.First();
+
+            switch (result.Rating)
+            {
+                case "none":
+                {
+                    return VideosResource.RateRequest.RatingEnum.None;
+                }
+                case "like":
+                {
+                    return VideosResource.RateRequest.RatingEnum.Like;
+                }
+                case "dislike":
+                {
+                    return VideosResource.RateRequest.RatingEnum.Dislike;
+                }
+                default:
+                {
+                    return VideosResource.RateRequest.RatingEnum.None;
+                }
+            }
+        }
+
+        public async Task RateVideo(string videoId, VideosResource.RateRequest.RatingEnum videoRating)
+        {
+            if (!googleOAuth2.SignedIn.Value)
+                return;
+
+            var request = youtubeService.Videos.Rate(videoId, videoRating);
+
+            request.AccessToken = googleOAuth2.GetAccessToken();
+
+            await request.ExecuteAsync();
         }
     }
 }

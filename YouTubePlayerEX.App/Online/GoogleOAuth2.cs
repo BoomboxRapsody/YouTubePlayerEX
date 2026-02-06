@@ -33,6 +33,8 @@ namespace YouTubePlayerEX.App.Online
         {
             this.appConfig = appConfig;
             this.isTestClient = isTestClient;
+
+            Logger.Log($"🗝️ Google OAuth system loaded");
         }
 
         public BindableBool SignedIn { get; private set; } = new BindableBool();

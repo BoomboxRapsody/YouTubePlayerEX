@@ -399,9 +399,30 @@
     <value>В основном неограниченно</value>
   </data>
   <data name="dislike_counter_credits_1" xml:space="preserve">
-    <value>Dislike count data is provided by the </value>
+    <value>Данные о количестве скидок предоставляются </value>
   </data>
   <data name="dislike_counter_credits_2" xml:space="preserve">
     <value>.</value>
+  </data>
+  <data name="mocha_chan_labs" xml:space="preserve">
+    <value>Лаборатория Мочана</value>
+  </data>
+  <data name="crt_effect" xml:space="preserve">
+    <value>Эффект ЭЛТ</value>
+  </data>
+  <data name="pixel_effect" xml:space="preserve">
+    <value>Эффект пикселя</value>
+  </data>
+  <data name="mocha_chan_labs_desc" xml:space="preserve">
+    <value>Следующие функции экспериментальны и могут быть удалены или перемещены в будущем.</value>
+  </data>
+  <data name="pixel_size" xml:space="preserve">
+    <value>Размер пикселя</value>
+  </data>
+  <data name="always_use_original_audio" xml:space="preserve">
+    <value>Всегда использовать оригинальный звук</value>
+  </data>
+  <data name="no_description" xml:space="preserve">
+    <value>Не было добавлено описание к этому видео.</value>
   </data>
 </root>

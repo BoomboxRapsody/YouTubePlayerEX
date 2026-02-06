@@ -404,4 +404,25 @@
   <data name="dislike_counter_credits_2" xml:space="preserve">
     <value>.</value>
   </data>
+  <data name="mocha_chan_labs" xml:space="preserve">
+    <value>Mocha-chan's Labs</value>
+  </data>
+  <data name="crt_effect" xml:space="preserve">
+    <value>CRT Effect</value>
+  </data>
+  <data name="pixel_effect" xml:space="preserve">
+    <value>Pixel Effect</value>
+  </data>
+  <data name="mocha_chan_labs_desc" xml:space="preserve">
+    <value>The following features are experimental and may be removed or moved in the future.</value>
+  </data>
+  <data name="pixel_size" xml:space="preserve">
+    <value>Pixel Size</value>
+  </data>
+  <data name="always_use_original_audio" xml:space="preserve">
+    <value>Always use original audio</value>
+  </data>
+  <data name="no_description" xml:space="preserve">
+    <value>No description has been added to this video.</value>
+  </data>
 </root>
