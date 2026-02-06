@@ -1,6 +1,8 @@
 // Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -82,7 +84,7 @@ namespace YouTubePlayerEX.App.Screens
         private VideoMetadataDisplay videoMetadataDisplayDetails;
         private RoundedButtonContainer commentOpenButtonDetails, likeButton;
 
-        private SettingsItemV2 pixel_shader_size_adjust, AudioLanguageItem;
+        private SettingsItemV2 pixel_shader_size_adjust, audioLanguageItem;
 
         private Sample overlayShowSample;
         private Sample overlayHideSample;
@@ -954,7 +956,7 @@ namespace YouTubePlayerEX.App.Screens
                                                             Caption = YTPlayerEXStrings.AlwaysUseOriginalAudio,
                                                             Current = alwaysUseOriginalAudio,
                                                         }),
-                                                        AudioLanguageItem = new SettingsItemV2(new FormEnumDropdown<Localisation.Language>
+                                                        audioLanguageItem = new SettingsItemV2(new FormEnumDropdown<Localisation.Language>
                                                         {
                                                             Caption = YTPlayerEXStrings.AudioLanguage,
                                                             Current = audioLanguage,
@@ -1884,11 +1886,11 @@ namespace YouTubePlayerEX.App.Screens
             {
                 if (enabled.NewValue)
                 {
-                    AudioLanguageItem.Hide();
+                    audioLanguageItem.Hide();
                 }
                 else
                 {
-                    AudioLanguageItem.Show();
+                    audioLanguageItem.Show();
                 }
 
                 if (currentVideoSource != null)

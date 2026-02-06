@@ -1,6 +1,8 @@
 ﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+#nullable disable
+
 using System;
 using System.Linq;
 using System.Reflection;
@@ -29,7 +31,7 @@ using YouTubePlayerEX.App.Input.Binding;
 using YouTubePlayerEX.App.IO.Stores;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
-using YouTubePlayerEX.Resources;
+using YouTubePlayerEX.App.Resources;
 
 namespace YouTubePlayerEX.App
 {
