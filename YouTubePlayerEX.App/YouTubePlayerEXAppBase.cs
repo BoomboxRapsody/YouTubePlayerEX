@@ -347,21 +347,6 @@ namespace YouTubePlayerEX.App
 
             Logger.Log($"Font family loaded: Pretendard");
 
-            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Regular");
-            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-RegularItalic");
-            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Medium");
-            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-MediumItalic");
-            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Light");
-            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-LightItalic");
-            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-SemiBold");
-            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-SemiBoldItalic");
-            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Bold");
-            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-BoldItalic");
-            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Black");
-            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-BlackItalic");
-
-            Logger.Log($"Font family loaded: NotoSansKR");
-
             AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-Bold");
             AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-Light");
             AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-Regular");

@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubePlayerEX.App", "YouT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubePlayerEX.App.Tests", "YouTubePlayerEX.App.Tests\YouTubePlayerEX.App.Tests.csproj", "{0A9CA1A5-5147-4AA8-9B9D-87178DE5A78D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubePlayerEX.Resources", "YouTubePlayerEX.Resources\YouTubePlayerEX.Resources.csproj", "{31D3872C-3A4F-437E-9655-3EF58DD62F46}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9AF9C164-2A9E-4958-BB12-0FEDC40F58EC}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -80,18 +78,6 @@ Global
 		{0A9CA1A5-5147-4AA8-9B9D-87178DE5A78D}.Release|iPhone.Build.0 = Release|Any CPU
 		{0A9CA1A5-5147-4AA8-9B9D-87178DE5A78D}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{0A9CA1A5-5147-4AA8-9B9D-87178DE5A78D}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{31D3872C-3A4F-437E-9655-3EF58DD62F46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{31D3872C-3A4F-437E-9655-3EF58DD62F46}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{31D3872C-3A4F-437E-9655-3EF58DD62F46}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{31D3872C-3A4F-437E-9655-3EF58DD62F46}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{31D3872C-3A4F-437E-9655-3EF58DD62F46}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{31D3872C-3A4F-437E-9655-3EF58DD62F46}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{31D3872C-3A4F-437E-9655-3EF58DD62F46}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{31D3872C-3A4F-437E-9655-3EF58DD62F46}.Release|Any CPU.Build.0 = Release|Any CPU
-		{31D3872C-3A4F-437E-9655-3EF58DD62F46}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{31D3872C-3A4F-437E-9655-3EF58DD62F46}.Release|iPhone.Build.0 = Release|Any CPU
-		{31D3872C-3A4F-437E-9655-3EF58DD62F46}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{31D3872C-3A4F-437E-9655-3EF58DD62F46}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{F4375DB2-4D7E-D1DB-89EB-E1F65D6458AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F4375DB2-4D7E-D1DB-89EB-E1F65D6458AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4375DB2-4D7E-D1DB-89EB-E1F65D6458AD}.Debug|iPhone.ActiveCfg = Debug|Any CPU

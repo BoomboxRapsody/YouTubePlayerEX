@@ -8,7 +8,7 @@ namespace YouTubePlayerEX.App.Localisation
 {
     public static class YTPlayerEXStrings
     {
-        private const string prefix = @"YouTubePlayerEX.Resources.Localisation.YTPlayerEX";
+        private const string prefix = @"YouTubePlayerEX.App.Resources.Localisation.YTPlayerEX";
 
         /// <summary>
         /// "{0} • {1} views • {2}"

@@ -76,28 +76,11 @@ namespace YouTubePlayerEX.App.Graphics.Caption
                     },
                     spriteText = new AdaptiveSpriteText(false)
                     {
-                        Font = YouTubePlayerEXApp.DefaultFont.With(family: "NotoSansKR", size: 24),
+                        Font = YouTubePlayerEXApp.DefaultFont.With(size: 24),
                         Margin = new MarginPadding(4),
                     }
                 }
             });
-
-            closedCaptionFont.BindValueChanged(font =>
-            {
-                switch (font.NewValue)
-                {
-                    case ClosedCaptionFont.NotoSansCJK:
-                    {
-                        spriteText.Font = YouTubePlayerEXApp.DefaultFont.With(family: "NotoSansKR", size: 24);
-                        break;
-                    }
-                    case ClosedCaptionFont.Pretendard:
-                    {
-                        spriteText.Font = YouTubePlayerEXApp.DefaultFont.With(size: 24);
-                        break;
-                    }
-                }
-            }, true);
 
             controlsVisibleState.BindValueChanged(v =>
             {
