@@ -18,12 +18,10 @@ using osu.Framework.IO.Stores;
 using osu.Framework.Localisation;   
 using osu.Framework.Logging;
 using osu.Framework.Platform;
-using osuTK;
 using YoutubeExplode;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics;
-using YouTubePlayerEX.App.Graphics.Containers;
 using YouTubePlayerEX.App.Graphics.Cursor;
 using YouTubePlayerEX.App.Graphics.UserInterface;
 using YouTubePlayerEX.App.Input;
@@ -31,7 +29,6 @@ using YouTubePlayerEX.App.Input.Binding;
 using YouTubePlayerEX.App.IO.Stores;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
-using YouTubePlayerEX.App.Updater;
 using YouTubePlayerEX.Resources;
 
 namespace YouTubePlayerEX.App
@@ -123,6 +120,8 @@ namespace YouTubePlayerEX.App
 
             switch (videoQuality)
             {
+                case VideoQuality.Quality_8K:
+                    return "4320p";
                 case VideoQuality.Quality_4K:
                     return "2160p";
                 case VideoQuality.Quality_1440p:
@@ -251,7 +250,7 @@ namespace YouTubePlayerEX.App
 
             dependencies.CacheAs(colours = new AdaptiveColour());
 
-            dependencies.CacheAs(overlayColourProvider = new OverlayColourProvider(OverlayColourScheme.Aquamarine));
+            dependencies.CacheAs(overlayColourProvider = new OverlayColourProvider(OverlayColourScheme.Pink));
 
             Logger.Log($"🎨 OverlayColourProvider loaded");
 

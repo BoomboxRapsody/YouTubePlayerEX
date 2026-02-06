@@ -1875,7 +1875,7 @@ namespace YouTubePlayerEX.App.Screens
 
             videoQuality.BindValueChanged(quality =>
             {
-                //videoQualityWarning.Value = (quality.NewValue == Config.VideoQuality.Quality_8K) ? new SettingsNote.Data(YTPlayerEXStrings.VideoQuality8KWarning, SettingsNote.Type.Warning) : null;
+                videoQualityWarning.Value = (quality.NewValue == Config.VideoQuality.Quality_8K) ? new SettingsNote.Data(YTPlayerEXStrings.VideoQuality8KWarning, SettingsNote.Type.Warning) : null;
                 if (currentVideoSource != null)
                 {
                     Task.Run(async () =>
@@ -3248,7 +3248,6 @@ namespace YouTubePlayerEX.App.Screens
                         videoStreamInfo = streamManifest
                             .GetVideoOnlyStreams()
                             .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
-                            .Where(s => s.VideoCodec.Contains("avc1")) //osu!framework needs support for vp9 or av1 codec
                             .TryGetWithHighestVideoQuality();
                     }
                     else
@@ -3257,7 +3256,6 @@ namespace YouTubePlayerEX.App.Screens
                         videoStreamInfo = streamManifest
                             .GetVideoOnlyStreams()
                             .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
-                            .Where(s => s.VideoCodec.Contains("avc1")) //osu!framework needs support for vp9 or av1 codec
                             .Where(s => s.VideoQuality.Label.Contains(app.ParseVideoQuality()))
                             .TryGetWithHighestVideoQuality();
                     }

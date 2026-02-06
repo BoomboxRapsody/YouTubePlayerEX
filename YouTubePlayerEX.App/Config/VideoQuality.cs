@@ -12,6 +12,9 @@ namespace YouTubePlayerEX.App.Config
         [LocalisableDescription(typeof(YTPlayerEXStrings), nameof(YTPlayerEXStrings.PreferHighQuality))]
         PreferHighQuality,
 
+        [Description("4320p (8K)")]
+        Quality_8K,
+
         [Description("2160p (4K)")]
         Quality_4K,
 
