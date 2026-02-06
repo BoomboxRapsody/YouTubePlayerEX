@@ -1175,6 +1175,7 @@ namespace YouTubePlayerEX.App.Screens
                                                                 likeCount = new AdaptiveSpriteText
                                                                 {
                                                                     Text = "[no metadata]",
+                                                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 18),
                                                                 },
                                                             }
                                                         }
@@ -1227,6 +1228,7 @@ namespace YouTubePlayerEX.App.Screens
                                                                 dislikeCount = new AdaptiveSpriteText
                                                                 {
                                                                     Text = "[no metadata]",
+                                                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 18),
                                                                 },
                                                             }
                                                         }

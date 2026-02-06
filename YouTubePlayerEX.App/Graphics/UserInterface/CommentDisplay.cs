@@ -146,7 +146,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                                 {
                                                     Text = "[no metadata]",
                                                     Colour = overlayColourProvider.Content2,
-                                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 12.5f, weight: "Regular"),
+                                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 13.5f, weight: "Regular"),
                                                 },
                                             }
                                         }
@@ -201,7 +201,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                                         {
                                                             Text = "[no metadata]",
                                                             Colour = overlayColourProvider.Content2,
-                                                            Font = YouTubePlayerEXApp.DefaultFont.With(size: 12.5f, weight: "Regular"),
+                                                            Font = YouTubePlayerEXApp.DefaultFont.With(size: 13.5f, weight: "Regular"),
                                                         },
                                                     }
                                                 }

@@ -334,6 +334,7 @@ namespace YouTubePlayerEX.App
 
         protected virtual void InitialiseFonts()
         {
+            /*
             AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-Regular");
             AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-RegularItalic");
             AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-Medium");
@@ -348,6 +349,7 @@ namespace YouTubePlayerEX.App
             AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-BlackItalic");
 
             Logger.Log($"Font family loaded: Pretendard");
+            */
 
             AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-Bold");
             AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-Light");

@@ -38,7 +38,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         protected override SpriteText CreatePlaceholder() => new AdaptiveSpriteText
         {
-            Font = YouTubePlayerEXApp.DefaultFont.With(italics: true),
+            Font = YouTubePlayerEXApp.DefaultFont,
             Margin = new MarginPadding { Left = 2 },
         };
 

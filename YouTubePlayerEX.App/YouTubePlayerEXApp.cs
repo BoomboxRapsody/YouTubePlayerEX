@@ -1,6 +1,8 @@
 ﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -38,7 +40,7 @@ namespace YouTubePlayerEX.App
     {
         private ScreenStack screenStack;
 
-        public static FontUsage DefaultFont = FontUsage.Default.With("Pretendard", 16, "Regular");
+        public static FontUsage DefaultFont = FontUsage.Default.With("Torus", 16, "Regular");
 
         private BindableNumber<double> sampleVolume = null!;
         private FPSCounter fpsCounter;
