@@ -356,6 +356,11 @@ namespace YouTubePlayerEX.App
             AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-Regular");
             AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-SemiBold");
 
+            AddFont(Resources, @"Fonts/UIFonts/Torus-Alternate/Torus-Alternate-Bold");
+            AddFont(Resources, @"Fonts/UIFonts/Torus-Alternate/Torus-Alternate-Light");
+            AddFont(Resources, @"Fonts/UIFonts/Torus-Alternate/Torus-Alternate-Regular");
+            AddFont(Resources, @"Fonts/UIFonts/Torus-Alternate/Torus-Alternate-SemiBold");
+
             Logger.Log($"Font family loaded: Torus");
 
             AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Basic");

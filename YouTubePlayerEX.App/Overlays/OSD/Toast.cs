@@ -69,14 +69,14 @@ namespace YouTubePlayerEX.App.Overlays.OSD
                 {
                     Padding = new MarginPadding { Horizontal = 22, Vertical = 15 },
                     Name = "Description",
-                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 20, weight: "Bold"),
+                    Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 20, weight: "Bold"),
                     Anchor = Anchor.TopLeft,
                     Origin = Anchor.TopLeft,
                     Text = description
                 },
                 ValueSpriteText = new AdaptiveSpriteText
                 {
-                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 24, weight: "Light"),
+                    Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 24, weight: "Light"),
                     Padding = new MarginPadding { Horizontal = 22, Vertical = 15 },
                     Name = "Value",
                     Anchor = Anchor.CentreRight,
