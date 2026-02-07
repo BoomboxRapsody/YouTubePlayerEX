@@ -610,6 +610,26 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString UseSystemCursor => new TranslatableString(getKey(@"use_system_cursor"), "Always use system cursor");
 
+        /// <summary>
+        /// "Use experimental audio mode"
+        /// </summary>
+        public static LocalisableString WasapiLabel => new TranslatableString(getKey(@"wasapi_label"), @"Use experimental audio mode");
+
+        /// <summary>
+        /// "This will attempt to initialise the audio engine in a lower latency mode."
+        /// </summary>
+        public static LocalisableString WasapiTooltip => new TranslatableString(getKey(@"wasapi_tooltip"), @"This will attempt to initialise the audio engine in a lower latency mode.");
+
+        /// <summary>
+        /// "Output device"
+        /// </summary>
+        public static LocalisableString OutputDevice => new TranslatableString(getKey(@"output_device"), @"Output device");
+
+        /// <summary>
+        /// "Volume"
+        /// </summary>
+        public static LocalisableString Volume => new TranslatableString(getKey(@"volume"), @"Volume");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

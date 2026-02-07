@@ -14,14 +14,15 @@ using System.Threading.Tasks;
 using System.Xml;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
-using Humanizer;
 using osu.Framework;
 using osu.Framework.Allocation;
+using osu.Framework.Audio;
 using osu.Framework.Audio.Sample;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
 using osu.Framework.Extensions;
 using osu.Framework.Extensions.Color4Extensions;
+using osu.Framework.Extensions.ObjectExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
@@ -29,6 +30,7 @@ using osu.Framework.Graphics.Shaders;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
+using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Graphics.Video;
 using osu.Framework.Input.Bindings;
 using osu.Framework.Input.Events;
@@ -87,7 +89,7 @@ namespace YouTubePlayerEX.App.Screens
 
         private LinkFlowContainer madeByText;
 
-        private SettingsItemV2 audioLanguageItem;
+        private SettingsItemV2 audioLanguageItem, wasapiExperimentalItem;
 
         private Sample overlayShowSample;
         private Sample overlayHideSample;
@@ -105,7 +107,49 @@ namespace YouTubePlayerEX.App.Screens
             // This is automatic for DrawableTrack.
             overlayShowSample.Dispose();
             overlayHideSample.Dispose();
+
+            if (audio.IsNotNull())
+            {
+                audio.OnNewDevice -= onAudioDeviceChanged;
+                audio.OnLostDevice -= onAudioDeviceChanged;
+            }
         }
+
+        private void onAudioDeviceChanged(string _)
+        {
+            updateAudioDeviceItems();
+        }
+
+        private void updateAudioDeviceItems()
+        {
+            var deviceItems = new List<string> { string.Empty };
+            deviceItems.AddRange(audio.AudioDeviceNames);
+
+            string preferredDeviceName = audio.AudioDevice.Value;
+            if (deviceItems.All(kv => kv != preferredDeviceName))
+                deviceItems.Add(preferredDeviceName);
+
+            // The option dropdown for audio device selection lists all audio
+            // device names. Dropdowns, however, may not have multiple identical
+            // keys. Thus, we remove duplicate audio device names from
+            // the dropdown. BASS does not give us a simple mechanism to select
+            // specific audio devices in such a case anyways. Such
+            // functionality would require involved OS-specific code.
+            audioDeviceDropdown.Items = deviceItems
+                             // Dropdown doesn't like null items. Somehow we are seeing some arrive here (see https://github.com/ppy/osu/issues/21271)
+                             .Where(i => i.IsNotNull())
+                             .Distinct()
+                             .ToList();
+        }
+
+        [Resolved]
+        private AudioManager audio { get; set; } = null!;
+
+        private AudioDeviceDropdown audioDeviceDropdown = null!;
+
+#nullable enable
+        private FormCheckBox? wasapiExperimental;
+#nullable disable
 
         private AdaptiveSpriteText videoLoadingProgress, videoInfoDetails, likeCount, dislikeCount, commentCount, commentsContainerTitle, currentTime, totalTime;
         private LinkFlowContainer videoDescription, gameVersion;
@@ -969,12 +1013,29 @@ namespace YouTubePlayerEX.App.Screens
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             Colour = overlayColourProvider.Content2,
                                                         },
+                                                        new SettingsItemV2(audioDeviceDropdown = new AudioDeviceDropdown
+                                                        {
+                                                            Caption = YTPlayerEXStrings.OutputDevice,
+                                                        }),
+                                                        wasapiExperimentalItem = new SettingsItemV2(wasapiExperimental = new FormCheckBox
+                                                        {
+                                                            Caption = YTPlayerEXStrings.WasapiLabel,
+                                                            HintText = YTPlayerEXStrings.WasapiTooltip,
+                                                            Current = audio.UseExperimentalWasapi,
+                                                        }),
                                                         new SettingsItemV2(new FormCheckBox
                                                         {
                                                             Caption = YTPlayerEXStrings.AdjustPitchOnSpeedChange,
                                                             Current = adjustPitch,
                                                             Hotkey = new Hotkey(GlobalAction.ToggleAdjustPitchOnSpeedChange),
                                                         }),
+                                                        new AdaptiveSpriteText
+                                                        {
+                                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30),
+                                                            Text = YTPlayerEXStrings.Volume,
+                                                            Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
+                                                            Colour = overlayColourProvider.Content2,
+                                                        },
                                                         new SettingsItemV2(new FormSliderBar<double>
                                                         {
                                                             Caption = YTPlayerEXStrings.MasterVolume,
@@ -1779,6 +1840,11 @@ namespace YouTubePlayerEX.App.Screens
                 hardwareVideoDecoder.Value = val.NewValue ? HardwareVideoDecoder.Any : HardwareVideoDecoder.None;
             });
 
+            if (RuntimeInfo.OS != RuntimeInfo.Platform.Windows)
+            {
+                wasapiExperimentalItem.Hide();
+            }
+
             overlayContainers.Add(loadVideoContainer);
             overlayContainers.Add(settingsContainer);
             overlayContainers.Add(videoDescriptionContainer);
@@ -1797,6 +1863,12 @@ namespace YouTubePlayerEX.App.Screens
             infoForNerds.AddText("[unknown]", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(weight: "Bold"));
             infoForNerds.AddText("\nBitrate: ");
             infoForNerds.AddText("[unknown]", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(weight: "Bold"));
+
+            audio.OnNewDevice += onAudioDeviceChanged;
+            audio.OnLostDevice += onAudioDeviceChanged;
+            audioDeviceDropdown.Current = audio.AudioDevice;
+
+            onAudioDeviceChanged(string.Empty);
 
             videoQuality.BindValueChanged(quality =>
             {
@@ -2952,11 +3024,9 @@ namespace YouTubePlayerEX.App.Screens
                     dislikeCount.Text = "0";
                 }
 
-                DateTime uploadDate;
-
                 string uploadDateRaw = videoData.Snippet.PublishedAtRaw;
 
-                DateTime.TryParseExact(uploadDateRaw, @"yyyy-MM-dd\THH:mm:ss\Z", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out uploadDate);
+                DateTime.TryParseExact(uploadDateRaw, @"yyyy-MM-dd\THH:mm:ss\Z", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var uploadDate);
 
                 likeCount.Text = videoData.Statistics.LikeCount != null ? Convert.ToInt32(videoData.Statistics.LikeCount).ToStandardFormattedString(0) : ReturnYouTubeDislike.GetDislikes(videoId).RawLikes.ToStandardFormattedString(0);
                 commentsContainerTitle.Text = YTPlayerEXStrings.Comments(videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : YTPlayerEXStrings.Disabled);
@@ -3549,6 +3619,12 @@ namespace YouTubePlayerEX.App.Screens
                 }
                 return base.GenerateItemText(item);
             }
+        }
+
+        private partial class AudioDeviceDropdown : FormDropdown<string>
+        {
+            protected override LocalisableString GenerateItemText(string item)
+                => string.IsNullOrEmpty(item) ? YTPlayerEXStrings.Default : base.GenerateItemText(item);
         }
 
         private partial class FrameSyncDropdown : FormEnumDropdown<FrameSync>
