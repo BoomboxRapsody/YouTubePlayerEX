@@ -86,7 +86,7 @@ namespace YouTubePlayerEX.App.Screens
 
         private LinkFlowContainer madeByText;
 
-        private SettingsItemV2 pixel_shader_size_adjust, audioLanguageItem;
+        private SettingsItemV2 audioLanguageItem;
 
         private Sample overlayShowSample;
         private Sample overlayHideSample;
@@ -174,17 +174,6 @@ namespace YouTubePlayerEX.App.Screens
         [Resolved]
         private ShaderManager shaderManager { get; set; } = null!;
 
-        private FormCheckBox crt_shader, pixel_shader = null!;
-
-        private PixelShader pixelShader = null!;
-        private CrtShader crtShader = null!;
-        private Bindable<float> pixelShaderSize = new BindableFloat(5)
-        {
-            MaxValue = 30,
-            MinValue = 2,
-        };
-        private Bindable<Color4> crtBackgroundBindable = new Bindable<Color4>(Color4.Black);
-
         private Bindable<double> videoVolume;
 
         protected T GetShaderByType<T>() where T : InternalShader, new()
@@ -197,9 +186,6 @@ namespace YouTubePlayerEX.App.Screens
             window = host.Window;
 
             videoVolume = config.GetBindable<double>(FrameworkSetting.VolumeMusic);
-
-            pixelShader = GetShaderByType<PixelShader>();
-            crtShader = GetShaderByType<CrtShader>();
 
             uiVisible = screenshotManager.CursorVisibility.GetBoundCopy();
             signedIn = googleOAuth2.SignedIn.GetBoundCopy();
@@ -1006,35 +992,6 @@ namespace YouTubePlayerEX.App.Screens
                                                             Current = config.GetBindable<double>(FrameworkSetting.VolumeEffect),
                                                             DisplayAsPercentage = true,
                                                         }),
-                                                        new AdaptiveSpriteText
-                                                        {
-                                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30),
-                                                            Text = YTPlayerEXStrings.MochaChanLabs,
-                                                            Padding = new MarginPadding { Horizontal = 30, Top = 12 },
-                                                            Colour = overlayColourProvider.Content2,
-                                                        },
-                                                        new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 17, weight: "Regular"))
-                                                        {
-                                                            RelativeSizeAxes = Axes.X,
-                                                            AutoSizeAxes = Axes.Y,
-                                                            Text = YTPlayerEXStrings.MochaChanLabsDesc,
-                                                            Colour = overlayColourProvider.Background1,
-                                                            Padding = new MarginPadding { Horizontal = 30, Bottom = 12 },
-                                                        },
-                                                        new SettingsItemV2(crt_shader = new FormCheckBox
-                                                        {
-                                                            Caption = YTPlayerEXStrings.CRTEffect,
-                                                        }),
-                                                        new SettingsItemV2(pixel_shader = new FormCheckBox
-                                                        {
-                                                            Caption = YTPlayerEXStrings.PixelEffect,
-                                                        }),
-                                                        pixel_shader_size_adjust = new SettingsItemV2(new FormSliderBar<float>
-                                                        {
-                                                            Caption = YTPlayerEXStrings.PixelSize,
-                                                            Current = pixelShaderSize,
-                                                            LabelFormat = v => $"{v:N2}px",
-                                                        }),
                                                         new Container
                                                         {
                                                             RelativeSizeAxes = Axes.X,
@@ -1748,8 +1705,6 @@ namespace YouTubePlayerEX.App.Screens
             madeByText.AddText("made by ");
             madeByText.AddLink("BoomboxRapsody", "https://github.com/BoomboxRapsody");
 
-            pixel_shader_size_adjust.Hide();
-
             signedIn.BindValueChanged(loginBool =>
             {
                 if (loginBool.NewValue)
@@ -1789,46 +1744,6 @@ namespace YouTubePlayerEX.App.Screens
                 login.Text = "Not logged in";
             }
             */
-
-            pixelShaderSize.BindValueChanged(size =>
-            {
-                pixelShader.Size = new Vector2(size.NewValue);
-            }, true);
-
-            crtBackgroundBindable.BindValueChanged(colour =>
-            {
-                crtShader.BackgroundColour = colour.NewValue;
-            }, true);
-
-            pixel_shader.Current.BindValueChanged(enabled =>
-            {
-                if (enabled.NewValue)
-                {
-                    appliedEffects.Value.Add(pixelShader);
-                    currentVideoSource?.ApplyShaders(appliedEffects.Value);
-                    pixel_shader_size_adjust.Show();
-                }
-                else
-                {
-                    appliedEffects.Value.Remove(pixelShader);
-                    currentVideoSource?.ApplyShaders(appliedEffects.Value);
-                    pixel_shader_size_adjust.Hide();
-                }
-            });
-
-            crt_shader.Current.BindValueChanged(enabled =>
-            {
-                if (enabled.NewValue)
-                {
-                    appliedEffects.Value.Add(crtShader);
-                    currentVideoSource?.ApplyShaders(appliedEffects.Value);
-                }
-                else
-                {
-                    appliedEffects.Value.Remove(crtShader);
-                    currentVideoSource?.ApplyShaders(appliedEffects.Value);
-                }
-            });
 
             reportReason.Current.BindValueChanged(value =>
             {

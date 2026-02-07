@@ -8,6 +8,7 @@ using osu.Framework.Allocation;
 using osu.Framework.Audio.Sample;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Audio;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Cursor;
 using osu.Framework.Graphics.Shapes;
@@ -72,6 +73,12 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             usernameDisplayMode = appConfig.GetBindable<UsernameDisplayMode>(YTPlayerEXSetting.UsernameDisplayMode);
             translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource);
             clickAudio = tracks.Get("button-select.wav");
+        }
+
+        protected override void Dispose(bool isDisposing)
+        {
+            base.Dispose(isDisposing);
+            profileImage.Dispose();
         }
 
         public void PlayClickAudio()
