@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
@@ -99,6 +100,8 @@ namespace YouTubePlayerEX.App
             return true;
         }
 
+        public Bindable<bool> UseSystemCursor = null!;
+
         public override void SetHost(GameHost host)
         {
             base.SetHost(host);
@@ -106,14 +109,31 @@ namespace YouTubePlayerEX.App
             // may be non-null for certain tests
             Storage ??= host.Storage;
 
-            if (host.Window != null)
-            {
-                host.Window.CursorState |= CursorState.Hidden;
-            }
-
             LocalConfig ??= new YTPlayerEXConfigManager(Storage);
 
+            UseSystemCursor = LocalConfig.GetBindable<bool>(YTPlayerEXSetting.UseSystemCursor);
+
+            UseSystemCursor.BindValueChanged(enabled =>
+            {
+                SetCursorVisibility(enabled.NewValue);
+            }, true);
+
             host.ExceptionThrown += onExceptionThrown;
+        }
+
+        public void SetCursorVisibility(bool visible)
+        {
+            if (Host.Window != null)
+            {
+                if (visible)
+                {
+                    Host.Window.CursorState = CursorState.Default;
+                }
+                else
+                {
+                    Host.Window.CursorState |= CursorState.Hidden;
+                }
+            }
         }
 
         public string ParseVideoQuality()

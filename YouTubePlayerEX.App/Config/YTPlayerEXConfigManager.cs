@@ -59,6 +59,8 @@ namespace YouTubePlayerEX.App.Config
             SetDefault(YTPlayerEXSetting.FinalLoginState, false);
 
             SetDefault(YTPlayerEXSetting.AlwaysUseOriginalAudio, false);
+
+            SetDefault(YTPlayerEXSetting.UseSystemCursor, false);
         }
 
         public YTPlayerEXConfigManager(Storage storage, IDictionary<YTPlayerEXSetting, object> defaultOverrides = null) : base(storage, defaultOverrides)
@@ -112,5 +114,6 @@ namespace YouTubePlayerEX.App.Config
         FinalLoginState,
 
         AlwaysUseOriginalAudio,
+        UseSystemCursor,
     }
 }

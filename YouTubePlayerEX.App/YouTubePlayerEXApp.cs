@@ -245,6 +245,13 @@ namespace YouTubePlayerEX.App
             screenStack.Push(new Loader());
         }
 
+        protected override void UpdateAfterChildren()
+        {
+            base.UpdateAfterChildren();
+
+            GlobalCursorDisplay.ShowCursor = (UseSystemCursor.Value == false) ? ((screenStack.CurrentScreen as IYouTubePlayerEXScreen)?.CursorVisible ?? false) : false;
+        }
+
         private readonly List<DuckParameters> duckOperations = new List<DuckParameters>();
         private readonly BindableDouble audioDuckVolume = new BindableDouble(1);
         private AudioFilter audioDuckFilter = null!;

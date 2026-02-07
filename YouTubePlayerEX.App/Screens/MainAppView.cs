@@ -14,7 +14,6 @@ using System.Xml;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Humanizer;
-using NUnit.Framework.Constraints;
 using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio.Sample;
@@ -852,6 +851,11 @@ namespace YouTubePlayerEX.App.Screens
                                                             Caption = YTPlayerEXStrings.ShowFPS,
                                                             Current = fpsDisplay,
                                                             Hotkey = new Hotkey(GlobalAction.ToggleFPSDisplay),
+                                                        }),
+                                                        new SettingsItemV2(new FormCheckBox
+                                                        {
+                                                            Caption = YTPlayerEXStrings.UseSystemCursor,
+                                                            Current = appConfig.GetBindable<bool>(YTPlayerEXSetting.UseSystemCursor),
                                                         }),
                                                         safeAreaConsiderationsCanBeShown = new SettingsItemV2(new FormCheckBox
                                                         {
@@ -2165,6 +2169,8 @@ namespace YouTubePlayerEX.App.Screens
             }
         }
 
+        public override bool CursorVisible => (isControlVisible || isAnyOverlayOpen.Value);
+
         private SettingsItemV2 resolutionFullscreenDropdownCore, resolutionWindowedDropdownCore, displayDropdownCore, minimiseOnFocusLossCheckboxCore, checkForUpdatesButtonCore;
 
         private FormCheckBox hwAccelCheckbox;
@@ -2747,6 +2753,11 @@ namespace YouTubePlayerEX.App.Screens
         protected override void Update()
         {
             base.Update();
+
+            if (game.UseSystemCursor.Value == true)
+            {
+                game.SetCursorVisibility(CursorVisible);
+            }
 
             if (currentVideoSource != null)
             {

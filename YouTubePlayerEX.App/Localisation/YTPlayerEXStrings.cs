@@ -630,6 +630,11 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString RenderTypeAutomaticIsUse(string rendererName) => new TranslatableString(getKey(@"render_type_automatic_is_use"), "Automatic ({0})", rendererName);
 
+        /// <summary>
+        /// "Always use system cursor"
+        /// </summary>
+        public static LocalisableString UseSystemCursor => new TranslatableString(getKey(@"use_system_cursor"), "Always use system cursor");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }
