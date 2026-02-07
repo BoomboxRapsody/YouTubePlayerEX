@@ -7,7 +7,7 @@ namespace YouTubePlayerEX.App.Input
 {
     public partial class AppIdleTracker : IdleTracker
     {
-        private InputManager inputManager;
+        private InputManager inputManager = null!;
 
         public AppIdleTracker(int time)
             : base(time)

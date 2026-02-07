@@ -262,7 +262,9 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     {
                         channelName.Text = api.GetLocalizedChannelTitle(channelData);
                         channelName.AddText(" • ", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"));
+#pragma warning disable CS8629 // Nullable 값 형식이 null일 수 있습니다.
                         channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"));
+#pragma warning restore CS8629 // Nullable 값 형식이 null일 수 있습니다.
                         commentText.Text = commentData.Snippet.TextOriginal;
                         likeCount.Text = Convert.ToInt32(commentData.Snippet.LikeCount).ToStandardFormattedString(0);
                         translateToText.Text = YTPlayerEXStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());

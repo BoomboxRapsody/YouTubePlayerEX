@@ -1,6 +1,8 @@
 ﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
+#nullable disable
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -56,7 +58,7 @@ namespace YouTubePlayerEX.App.Localisation
                         }
 
                         int lastIndex = Math.Max(0, assemblyName.LastIndexOf('.'));
-                        assemblyName = assemblyName.Substring(0, lastIndex);
+                        assemblyName = assemblyName[..lastIndex];
                     }
                 }
 

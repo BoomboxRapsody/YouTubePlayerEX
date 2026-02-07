@@ -1,7 +1,8 @@
 ﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using System.IO;
+#nullable disable
+
 using System.Threading;
 using System.Threading.Tasks;
 using Crypto.AES;
@@ -10,7 +11,6 @@ using Google.Apis.Oauth2.v2;
 using Google.Apis.Oauth2.v2.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
-using Google.Apis.YouTube.v3;
 using osu.Framework.Bindables;
 using osu.Framework.Logging;
 using YouTubePlayerEX.App.Config;
