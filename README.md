@@ -4,6 +4,7 @@
 
 # YouTube Player EX
 
+[![Build status](https://github.com/BoomboxRapsody/YouTubePlayerEX/actions/workflows/ci.yml/badge.svg?branch=master&event=push)](https://github.com/BoomboxRapsody/YouTubePlayerEX/actions/workflows/ci.yml)
 [![GitHub release](https://img.shields.io/github/release/BoomboxRapsody/YouTubePlayerEX.svg)](https://github.com/BoomboxRapsody/YouTubePlayerEX/releases/latest)
 [![CodeFactor](https://www.codefactor.io/repository/github/boomboxrapsody/youtubeplayerex/badge)](https://www.codefactor.io/repository/github/boomboxrapsody/youtubeplayerex)
 [![Crowdin](https://badges.crowdin.net/youtube-player-ex/localized.svg)](https://crowdin.com/project/youtube-player-ex)
