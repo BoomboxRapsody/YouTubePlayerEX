@@ -466,9 +466,9 @@ namespace YouTubePlayerEX.App.Localisation
         public static LocalisableString CommentAdded => new TranslatableString(getKey(@"comment_added"), "Comment added.");
 
         /// <summary>
-        /// "Write comment with {0}"
+        /// "Write comment as {0}"
         /// </summary>
-        public static LocalisableString CommentWith(string username) => new TranslatableString(getKey(@"comment_with"), "Write comment with {0}", username);
+        public static LocalisableString CommentWith(string username) => new TranslatableString(getKey(@"comment_with"), "Write comment as {0}", username);
 
         /// <summary>
         /// "Signed in to {0}"
