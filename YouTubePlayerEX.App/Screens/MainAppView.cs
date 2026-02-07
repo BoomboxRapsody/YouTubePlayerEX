@@ -2011,7 +2011,7 @@ namespace YouTubePlayerEX.App.Screens
 
             if (game.IsDeployedBuild)
             {
-                gameVersion.AddLink(game.Version, "https://github.com/BoomboxRapsody/YouTubePlayerEX/releases/latest", tooltipText: YTPlayerEXStrings.ViewChangelog(game.Version));
+                gameVersion.AddLink(game.Version, $"https://github.com/BoomboxRapsody/YouTubePlayerEX/releases/{game.Version}", tooltipText: YTPlayerEXStrings.ViewChangelog(game.Version));
             }
             else
             {
