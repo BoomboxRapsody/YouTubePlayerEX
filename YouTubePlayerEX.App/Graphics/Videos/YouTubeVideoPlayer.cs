@@ -125,6 +125,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
             drawableTrack.Completed += trackCompleted;
 
+            SeekTo(resumeFromTime * 1000);
             Play();
 
             uiVisible.BindValueChanged(visible =>
@@ -192,9 +193,6 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         protected override void LoadComplete()
         {
             base.LoadComplete();
-
-            if (resumeFromTime != 0)
-                SeekTo(resumeFromTime);
         }
 
         protected override void Update()
