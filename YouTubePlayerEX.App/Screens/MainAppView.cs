@@ -14,6 +14,7 @@ using System.Xml;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Humanizer;
+using NUnit.Framework.Constraints;
 using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio.Sample;
@@ -1745,16 +1746,15 @@ namespace YouTubePlayerEX.App.Screens
             {
                 if (loginBool.NewValue)
                 {
-                    IList<VideoAbuseReportReasonItem> wth2 = api.GetVideoAbuseReportReasons();
+                    GetReportReasons();
 
-                    foreach (VideoAbuseReportReasonItem wthhh in wth2)
+                    localeBindable.BindValueChanged(locale =>
                     {
-                        Schedule(() =>
+                        Task.Run(async () =>
                         {
-                            reportReason.AddDropdownItem(wthhh);
-                            reportReason.Current.Value = wth2[0];
+                            GetReportReasons();
                         });
-                    }
+                    }, true);
 
                     Schedule(() => commentSendButton.Enabled.Value = true);
                     Channel wth = api.GetMineChannel();
@@ -2069,6 +2069,23 @@ namespace YouTubePlayerEX.App.Screens
                 {
 
                 }
+            }
+        }
+
+        public void GetReportReasons()
+        {
+            if (googleOAuth2.SignedIn.Value == false)
+                return;
+
+            IList<VideoAbuseReportReasonItem> wth2 = api.GetVideoAbuseReportReasons();
+
+            foreach (VideoAbuseReportReasonItem wthhh in wth2)
+            {
+                Schedule(() =>
+                {
+                    reportReason.AddDropdownItem(wthhh);
+                    reportReason.Current.Value = wth2[0];
+                });
             }
         }
 

@@ -214,7 +214,7 @@ namespace YouTubePlayerEX.App.Online
             var request = youtubeService.VideoAbuseReportReasons.List(part);
 
             request.AccessToken = googleOAuth2.GetAccessToken();
-            request.Hl = CultureInfo.CurrentCulture.Name;
+            request.Hl = frameworkConfig.Get<string>(FrameworkSetting.Locale);
 
             Logger.Log($"Using access token {googleOAuth2.GetAccessToken()}");
             Logger.Log($"called GetVideoAbuseReportReasons()");
