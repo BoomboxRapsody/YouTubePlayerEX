@@ -2954,7 +2954,9 @@ namespace YouTubePlayerEX.App.Screens
 
                 DateTime uploadDate;
 
-                DateTime.TryParseExact(videoData.Snippet.PublishedAtRaw, "yyyy. MM. dd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out uploadDate);
+                string uploadDateRaw = videoData.Snippet.PublishedAtRaw;
+
+                DateTime.TryParseExact(uploadDateRaw, @"yyyy-MM-dd\THH:mm:ss\Z", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out uploadDate);
 
                 likeCount.Text = videoData.Statistics.LikeCount != null ? Convert.ToInt32(videoData.Statistics.LikeCount).ToStandardFormattedString(0) : ReturnYouTubeDislike.GetDislikes(videoId).RawLikes.ToStandardFormattedString(0);
                 commentsContainerTitle.Text = YTPlayerEXStrings.Comments(videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : YTPlayerEXStrings.Disabled);
