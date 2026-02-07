@@ -581,31 +581,6 @@ namespace YouTubePlayerEX.App.Localisation
         public static LocalisableString Unlimited => new TranslatableString(getKey(@"unlimited"), "Basically unlimited");
 
         /// <summary>
-        /// "Mocha-chan's Labs"
-        /// </summary>
-        public static LocalisableString MochaChanLabs => new TranslatableString(getKey(@"mocha_chan_labs"), "Mocha-chan's Labs");
-
-        /// <summary>
-        /// "CRT Effect"
-        /// </summary>
-        public static LocalisableString CRTEffect => new TranslatableString(getKey(@"crt_effect"), "CRT Effect");
-
-        /// <summary>
-        /// "Pixel Effect"
-        /// </summary>
-        public static LocalisableString PixelEffect => new TranslatableString(getKey(@"pixel_effect"), "Pixel Effect");
-
-        /// <summary>
-        /// "The following features are experimental and may be removed or moved in the future."
-        /// </summary>
-        public static LocalisableString MochaChanLabsDesc => new TranslatableString(getKey(@"mocha_chan_labs_desc"), "The following features are experimental and may be removed or moved in the future.");
-
-        /// <summary>
-        /// "Pixel Size"
-        /// </summary>
-        public static LocalisableString PixelSize => new TranslatableString(getKey(@"pixel_size"), "Pixel Size");
-
-        /// <summary>
         /// "Always use original audio"
         /// </summary>
         public static LocalisableString AlwaysUseOriginalAudio => new TranslatableString(getKey(@"always_use_original_audio"), "Always use original audio");
