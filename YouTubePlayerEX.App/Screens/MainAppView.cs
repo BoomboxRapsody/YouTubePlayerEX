@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -1717,7 +1718,7 @@ namespace YouTubePlayerEX.App.Screens
                         {
                             GetReportReasons();
                         });
-                    }, true);
+                    });
 
                     Schedule(() => commentSendButton.Enabled.Value = true);
                     Channel wth = api.GetMineChannel();
@@ -2950,9 +2951,14 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     dislikeCount.Text = "0";
                 }
+
+                DateTime uploadDate;
+
+                DateTime.TryParseExact(videoData.Snippet.PublishedAtRaw, "yyyy. MM. dd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out uploadDate);
+
                 likeCount.Text = videoData.Statistics.LikeCount != null ? Convert.ToInt32(videoData.Statistics.LikeCount).ToStandardFormattedString(0) : ReturnYouTubeDislike.GetDislikes(videoId).RawLikes.ToStandardFormattedString(0);
                 commentsContainerTitle.Text = YTPlayerEXStrings.Comments(videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : YTPlayerEXStrings.Disabled);
-                videoInfoDetails.Text = YTPlayerEXStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
+                videoInfoDetails.Text = YTPlayerEXStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), uploadDate.ToString());
 
                 Schedule(() =>
                 {
@@ -3045,9 +3051,9 @@ namespace YouTubePlayerEX.App.Screens
                     Task.Run(async () =>
                     {
                         Schedule(() => videoDescription.Text = api.GetLocalizedVideoDescription(videoData));
-                        videoInfoDetails.Text = YTPlayerEXStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
+                        videoInfoDetails.Text = YTPlayerEXStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), uploadDate.ToString());
                     });
-                }, true);
+                });
 
                 TimeSpan duration = XmlConvert.ToTimeSpan(videoData.ContentDetails.Duration);
                 if (duration.Hours > 0)
@@ -3239,6 +3245,10 @@ namespace YouTubePlayerEX.App.Screens
                             .GetVideoOnlyStreams()
                             .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
                             .TryGetWithHighestVideoQuality();
+
+                        Toast toast = new Toast(YTPlayerEXStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
+
+                        onScreenDisplay.Display(toast);
                     }
                     else
                     {
@@ -3248,6 +3258,10 @@ namespace YouTubePlayerEX.App.Screens
                             .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
                             .Where(s => s.VideoQuality.Label.Contains(app.ParseVideoQuality()))
                             .TryGetWithHighestVideoQuality();
+
+                        Toast toast = new Toast(YTPlayerEXStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
+
+                        onScreenDisplay.Display(toast);
                     }
 
                     var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
@@ -3316,6 +3330,36 @@ namespace YouTubePlayerEX.App.Screens
                 }
                 else
                 {
+                    var streamManifest = await app.YouTubeClient.Videos.Streams.GetManifestAsync(videoUrl);
+
+                    IVideoStreamInfo videoStreamInfo;
+
+                    if (videoQuality.Value == Config.VideoQuality.PreferHighQuality)
+                    {
+                        // Select best video stream (1080p60 in this example)
+                        videoStreamInfo = streamManifest
+                            .GetVideoOnlyStreams()
+                            .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
+                            .TryGetWithHighestVideoQuality();
+
+                        Toast toast = new Toast(YTPlayerEXStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
+
+                        onScreenDisplay.Display(toast);
+                    }
+                    else
+                    {
+                        // Select best video stream (1080p60 in this example)
+                        videoStreamInfo = streamManifest
+                            .GetVideoOnlyStreams()
+                            .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
+                            .Where(s => s.VideoQuality.Label.Contains(app.ParseVideoQuality()))
+                            .TryGetWithHighestVideoQuality();
+
+                        Toast toast = new Toast(YTPlayerEXStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
+
+                        onScreenDisplay.Display(toast);
+                    }
+
                     var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
 
                     var trackInfo = trackManifest.TryGetByLanguage(api.ParseCaptionLanguage(captionLanguage.Value));

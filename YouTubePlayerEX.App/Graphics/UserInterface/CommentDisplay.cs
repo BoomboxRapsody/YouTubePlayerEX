@@ -285,7 +285,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                             channelName.AddText(" • ", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"));
                             channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "Regular"));
                             translateToText.Text = YTPlayerEXStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
-                        }, true);
+                        });
                     });
                 }
                 catch

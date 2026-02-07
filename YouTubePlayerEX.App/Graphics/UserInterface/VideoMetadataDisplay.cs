@@ -162,7 +162,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                         videoName.Text = api.GetLocalizedVideoTitle(videoData);
                         desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
                     });
-                }, true);
+                });
 
                 usernameDisplayMode.BindValueChanged(locale =>
                 {

@@ -254,7 +254,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                             channelNameText.Text = api.GetLocalizedChannelTitle(channelData, true);
                             videoNameText.Text = api.GetLocalizedVideoTitle(videoData);
                             viewsText.Text = YTPlayerEXStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
-                        }, true);
+                        });
                     });
 
                     await GetThumbnail(Data.Snippet.Thumbnails.High.Url);
