@@ -1889,7 +1889,7 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     Task.Run(async () =>
                     {
-                        await SetVideoSource(videoId, true);
+                        await SetVideoSource(videoId, true, LoadType.VideoOnly);
                     });
                 }
             });
@@ -1909,7 +1909,7 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     Task.Run(async () =>
                     {
-                        await SetVideoSource(videoId, true);
+                        await SetVideoSource(videoId, true, LoadType.AudioOnly);
                     });
                 }
             }, true);
@@ -1929,7 +1929,7 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     Task.Run(async () =>
                     {
-                        await SetVideoSource(videoId, true);
+                        await SetVideoSource(videoId, true, LoadType.AudioOnly);
                     });
                 }
             });
@@ -3188,7 +3188,7 @@ namespace YouTubePlayerEX.App.Screens
         [Resolved]
         private YTPlayerEXConfigManager appGlobalConfig { get; set; }
 
-        public async Task SetVideoSource(string videoId, bool clearCache = false)
+        public async Task SetVideoSource(string videoId, bool clearCache = false, LoadType loadType = LoadType.Full)
         {
             this.videoId = videoId;
             pausedTime = clearCache ? currentVideoSource.VideoProgress.Value : 0;
@@ -3211,11 +3211,27 @@ namespace YouTubePlayerEX.App.Screens
             if (clearCache == true)
             {
                 await Task.Delay(1000); // Wait for any ongoing operations to complete
-                foreach (var cacheItem in Directory.GetFiles(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}")))
+                switch (loadType)
                 {
-                    File.Delete(cacheItem);
+                    case LoadType.Full:
+                    {
+                        foreach (var cacheItem in Directory.GetFiles(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}")))
+                        {
+                            File.Delete(cacheItem);
+                        }
+                        break;
+                    }
+                    case LoadType.VideoOnly:
+                    {
+                        File.Delete(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4");
+                        break;
+                    }
+                    case LoadType.AudioOnly:
+                    {
+                        File.Delete(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3");
+                        break;
+                    }
                 }
-                Directory.Delete(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}"));
             }
 
             if (videoId.Length != 0)
@@ -3248,7 +3264,8 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     Schedule(() => videoQuality.Disabled = audioLanguage.Disabled = alwaysUseOriginalAudio.Disabled = true);
 
-                    Directory.CreateDirectory(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}"));
+                    if (loadType == LoadType.Full)
+                        Directory.CreateDirectory(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}"));
 
                     var streamManifest = await app.YouTubeClient.Videos.Streams.GetManifestAsync(videoUrl);
 
@@ -3343,8 +3360,25 @@ namespace YouTubePlayerEX.App.Screens
                         captionTrack = await game.YouTubeClient.Videos.ClosedCaptions.GetAsync(trackInfo);
                     }
 
-                    await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3").Build(), audioDownloadProgress);
-                    await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4").Build(), videoDownloadProgress);
+                    switch (loadType)
+                    {
+                        case LoadType.Full:
+                        {
+                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3").Build(), audioDownloadProgress);
+                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4").Build(), videoDownloadProgress);
+                            break;
+                        }
+                        case LoadType.AudioOnly:
+                        {
+                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3").Build(), audioDownloadProgress);
+                            break;
+                        }
+                        case LoadType.VideoOnly:
+                        {
+                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4").Build(), videoDownloadProgress);
+                            break;
+                        }
+                    }
 
                     currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3", captionTrack, captionLanguage.Value, pausedTime)
                     {
@@ -3577,6 +3611,13 @@ namespace YouTubePlayerEX.App.Screens
                 }
                 return base.GenerateItemText(item);
             }
+        }
+
+        public enum LoadType
+        {
+            Full,
+            VideoOnly,
+            AudioOnly,
         }
     }
 }
