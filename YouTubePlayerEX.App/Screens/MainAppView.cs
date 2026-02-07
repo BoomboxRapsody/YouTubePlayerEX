@@ -2087,14 +2087,11 @@ namespace YouTubePlayerEX.App.Screens
 
             IList<VideoAbuseReportReasonItem> wth2 = api.GetVideoAbuseReportReasons();
 
-            foreach (VideoAbuseReportReasonItem wthhh in wth2)
+            Schedule(() =>
             {
-                Schedule(() =>
-                {
-                    reportReason.AddDropdownItem(wthhh);
-                    reportReason.Current.Value = wth2[0];
-                });
-            }
+                reportReason.Items = wth2;
+                reportReason.Current.Value = wth2[0];
+            });
         }
 
         [Resolved]
