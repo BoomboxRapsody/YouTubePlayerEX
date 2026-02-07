@@ -186,6 +186,8 @@ namespace YouTubePlayerEX.App.Screens
         };
         private Bindable<Color4> crtBackgroundBindable = new Bindable<Color4>(Color4.Black);
 
+        private Bindable<double> videoVolume;
+
         protected T GetShaderByType<T>() where T : InternalShader, new()
             => shaderManager.LocalInternalShader<T>();
 
@@ -194,6 +196,8 @@ namespace YouTubePlayerEX.App.Screens
         {
             appliedEffects.Value = new List<InternalShader>();
             window = host.Window;
+
+            videoVolume = config.GetBindable<double>(FrameworkSetting.VolumeMusic);
 
             pixelShader = GetShaderByType<PixelShader>();
             crtShader = GetShaderByType<CrtShader>();
@@ -989,7 +993,7 @@ namespace YouTubePlayerEX.App.Screens
                                                         new SettingsItemV2(new FormSliderBar<double>
                                                         {
                                                             Caption = YTPlayerEXStrings.VideoVolume,
-                                                            Current = config.GetBindable<double>(FrameworkSetting.VolumeMusic),
+                                                            Current = videoVolume,
                                                             DisplayAsPercentage = true,
                                                         }),
                                                         new SettingsItemV2(new FormSliderBar<double>
@@ -2138,18 +2142,26 @@ namespace YouTubePlayerEX.App.Screens
 
                 if (!foundUpdate)
                 {
+                    /*
                     alert.Text = YTPlayerEXStrings.RunningLatestRelease(game.Version);
                     alert.Show();
+                    */
+                    Toast toast = new Toast(YTPlayerEXStrings.General, YTPlayerEXStrings.RunningLatestRelease(game.Version));
+
+                    onScreenDisplay.Display(toast);
+
+                    game.UpdateManagerVersionText.Value = game.Version;
+                    checkForUpdatesButton.Enabled.Value = true;
                     spinnerShow = Scheduler.AddDelayed(alert.Hide, 3000);
                 }
             }
             catch
             {
+                game.UpdateManagerVersionText.Value = game.Version;
+                checkForUpdatesButton.Enabled.Value = true;
             }
             finally
             {
-                game.UpdateManagerVersionText.Value = game.Version;
-                checkForUpdatesButton.Enabled.Value = true;
             }
         }
 
@@ -2539,6 +2551,24 @@ namespace YouTubePlayerEX.App.Screens
                     playbackSpeed.Value += 0.05;
                     osd.Display(new SpeedChangeToast(playbackSpeed.Value));
                     return true;
+
+                case GlobalAction.DecreaseVideoVolume:
+                {
+                    videoVolume.Value -= 0.05;
+                    Toast toast = new Toast(YTPlayerEXStrings.VideoVolume, videoVolume.Value.ToStandardFormattedString(5, true));
+
+                    osd.Display(toast);
+                    return true;
+                }
+
+                case GlobalAction.IncreaseVideoVolume:
+                {
+                    videoVolume.Value += 0.05;
+                    Toast toast = new Toast(YTPlayerEXStrings.VideoVolume, videoVolume.Value.ToStandardFormattedString(5, true));
+
+                    osd.Display(toast);
+                    return true;
+                }
 
                 case GlobalAction.DecreasePlaybackSpeed2:
                     playbackSpeed.Value -= 0.01;
@@ -2982,7 +3012,7 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     Schedule(() => videoDescription.AddText(YTPlayerEXStrings.NoDescription, text =>
                     {
-                        text.Font = YouTubePlayerEXApp.DefaultFont.With(weight: "SemiBold", italics: true);
+                        text.Font = YouTubePlayerEXApp.DefaultFont.With(weight: "SemiBold");
                         text.Colour = overlayColourProvider1.Background1;
                     }));
                 }

@@ -56,6 +56,9 @@ namespace YouTubePlayerEX.App.Input.Binding
             new KeyBinding(InputKey.A, GlobalAction.DecreasePlaybackSpeed),
             new KeyBinding(InputKey.D, GlobalAction.IncreasePlaybackSpeed),
 
+            new KeyBinding(InputKey.Down, GlobalAction.DecreaseVideoVolume),
+            new KeyBinding(InputKey.Up, GlobalAction.IncreaseVideoVolume),
+
             new KeyBinding(new[] { InputKey.Shift, InputKey.A }, GlobalAction.DecreasePlaybackSpeed2),
             new KeyBinding(new[] { InputKey.Shift, InputKey.D }, GlobalAction.IncreasePlaybackSpeed2),
 
@@ -105,5 +108,8 @@ namespace YouTubePlayerEX.App.Input.Binding
 
         TakeScreenshot,
         ReportAbuse,
+
+        DecreaseVideoVolume,
+        IncreaseVideoVolume,
     }
 }
