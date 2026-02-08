@@ -2455,10 +2455,7 @@ namespace YouTubePlayerEX.App.Screens
 
             searchOpenButton.ClickAction = _ =>
             {
-                if (!commentsDisabled)
-                {
-                    showOverlayContainer(searchContainer);
-                }
+                showOverlayContainer(searchContainer);
             };
 
             reportOpenButton.ClickAction = _ =>
