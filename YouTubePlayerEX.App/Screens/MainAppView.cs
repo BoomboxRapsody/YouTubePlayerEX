@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -196,6 +197,8 @@ namespace YouTubePlayerEX.App.Screens
         private Bindable<bool> updateButtonEnabled, fpsDisplay;
         private Bindable<AspectRatioMethod> aspectRatioMethod;
 
+        private FormEnumDropdown<GCLatencyMode> latencyModeDropdown;
+
         private BufferedContainer videoScalingContainer;
 
         private Box likeButtonBackground, dislikeButtonBackground, likeButtonBackgroundSelected, dislikeButtonBackgroundSelected;
@@ -225,7 +228,7 @@ namespace YouTubePlayerEX.App.Screens
             => shaderManager.LocalInternalShader<T>();
 
         [BackgroundDependencyLoader]
-        private void load(ISampleStore sampleStore, FrameworkConfigManager config, YTPlayerEXConfigManager appConfig, GameHost host, Storage storage, OverlayColourProvider overlayColourProvider, TextureStore textures)
+        private void load(ISampleStore sampleStore, FrameworkConfigManager config, YTPlayerEXConfigManager appConfig, GameHost host, Storage storage, OverlayColourProvider overlayColourProvider, TextureStore textures, FrameworkDebugConfigManager debugConfig)
         {
             appliedEffects.Value = new List<InternalShader>();
             window = host.Window;
@@ -715,18 +718,6 @@ namespace YouTubePlayerEX.App.Screens
                                                             BackgroundColour = colours.YellowDarker.Darken(0.5f),
                                                             Action = () => Task.Run(exportLogs),
                                                         },
-                                                        new SettingsButtonV2
-                                                        {
-                                                            Text = @"Clear all caches",
-                                                            Padding = new MarginPadding { Horizontal = 30 },
-                                                            Action = () =>
-                                                            {
-                                                                host.Collect();
-
-                                                                // host.Collect() uses GCCollectionMode.Optimized, but we should be as aggressive as possible here.
-                                                                GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
-                                                            }
-                                                        },
                                                         new AdaptiveSpriteText
                                                         {
                                                             Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30),
@@ -1054,6 +1045,39 @@ namespace YouTubePlayerEX.App.Screens
                                                             Current = config.GetBindable<double>(FrameworkSetting.VolumeEffect),
                                                             DisplayAsPercentage = true,
                                                         }),
+                                                        new AdaptiveSpriteText
+                                                        {
+                                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30),
+                                                            Text = YTPlayerEXStrings.Debug,
+                                                            Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
+                                                            Colour = overlayColourProvider.Content2,
+                                                        },
+                                                        new SettingsItemV2(new FormCheckBox
+                                                        {
+                                                            Caption = YTPlayerEXStrings.ShowLogOverlay,
+                                                            Current = config.GetBindable<bool>(FrameworkSetting.ShowLogOverlay)
+                                                        }),
+                                                        new SettingsItemV2(new FormCheckBox
+                                                        {
+                                                            Caption = YTPlayerEXStrings.BypassFTBRenderPass,
+                                                            Current = debugConfig.GetBindable<bool>(DebugSetting.BypassFrontToBackPass)
+                                                        }),
+                                                        new SettingsItemV2(latencyModeDropdown = new FormEnumDropdown<GCLatencyMode>
+                                                        {
+                                                            Caption = YTPlayerEXStrings.GC_Mode,
+                                                        }),
+                                                        new SettingsButtonV2
+                                                        {
+                                                            Text = YTPlayerEXStrings.ClearAllCaches,
+                                                            Padding = new MarginPadding { Horizontal = 30 },
+                                                            Action = () =>
+                                                            {
+                                                                host.Collect();
+
+                                                                // host.Collect() uses GCCollectionMode.Optimized, but we should be as aggressive as possible here.
+                                                                GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
+                                                            }
+                                                        },
                                                         new Container
                                                         {
                                                             RelativeSizeAxes = Axes.X,
@@ -1767,6 +1791,23 @@ namespace YouTubePlayerEX.App.Screens
             madeByText.AddText("made by ");
             madeByText.AddLink("BoomboxRapsody", "https://github.com/BoomboxRapsody");
 
+            latencyModeDropdown.Current.BindValueChanged(mode =>
+            {
+                Logger.Log($"Changing latency mode: {mode.NewValue}");
+
+                switch (mode.NewValue)
+                {
+                    case GCLatencyMode.Default:
+                        // https://github.com/ppy/osu-framework/blob/1d5301018dfed1a28702be56e1d53c4835b199f2/osu.Framework/Platform/GameHost.cs#L703
+                        GCSettings.LatencyMode = System.Runtime.GCLatencyMode.SustainedLowLatency;
+                        break;
+
+                    case GCLatencyMode.Interactive:
+                        GCSettings.LatencyMode = System.Runtime.GCLatencyMode.Interactive;
+                        break;
+                }
+            });
+
             signedIn.BindValueChanged(loginBool =>
             {
                 if (loginBool.NewValue)
@@ -1826,7 +1867,7 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     reportSubReason.Hide();
                 }
-            }, true);
+            });
 
             commentsDisabled = true;
 
@@ -2523,6 +2564,9 @@ namespace YouTubePlayerEX.App.Screens
 
         public bool OnPressed(KeyBindingPressEvent<GlobalAction> e)
         {
+            if (e.Target is TextBox)
+                return false;
+
             switch (e.Action)
             {
                 case GlobalAction.FastForward_10sec:
@@ -3522,6 +3566,12 @@ namespace YouTubePlayerEX.App.Screens
 
         [Resolved]
         private YouTubePlayerEXApp game { get; set; }
+
+        private enum GCLatencyMode
+        {
+            Default,
+            Interactive,
+        }
 
         public void OnReleased(KeyBindingReleaseEvent<GlobalAction> e)
         {

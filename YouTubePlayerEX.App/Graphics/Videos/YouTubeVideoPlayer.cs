@@ -156,9 +156,11 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         private void trackCompleted()
         {
             trackFinished = true;
+            /*
             drawableTrack?.Stop();
             framedClock.Stop();
             SeekTo(0);
+            */ // fix app freezing on track completed
         }
 
         public void UpdatePreservePitch(bool value)

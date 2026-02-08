@@ -630,6 +630,31 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString Volume => new TranslatableString(getKey(@"volume"), @"Volume");
 
+        /// <summary>
+        /// "Debug"
+        /// </summary>
+        public static LocalisableString Debug => new TranslatableString(getKey(@"debug"), @"Debug");
+
+        /// <summary>
+        /// "Show log overlay"
+        /// </summary>
+        public static LocalisableString ShowLogOverlay => new TranslatableString(getKey(@"show_log_overlay"), @"Show log overlay");
+
+        /// <summary>
+        /// "Bypass front-to-back render pass"
+        /// </summary>
+        public static LocalisableString BypassFTBRenderPass => new TranslatableString(getKey(@"bypass_ftb_render_pass"), @"Bypass front-to-back render pass");
+
+        /// <summary>
+        /// "GC mode"
+        /// </summary>
+        public static LocalisableString GC_Mode => new TranslatableString(getKey(@"gc_mode"), @"GC mode");
+
+        /// <summary>
+        /// "Clear all caches"
+        /// </summary>
+        public static LocalisableString ClearAllCaches => new TranslatableString(getKey(@"clear_all_caches"), @"Clear all caches");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

@@ -52,7 +52,7 @@ namespace YouTubePlayerEX.App.Config
                 SetDefault(YTPlayerEXSetting.UIScale, 1f, 0.8f, 1.6f, 0.01f);
 
             SetDefault(YTPlayerEXSetting.ScreenshotFormat, ScreenshotFormat.Jpg);
-            SetDefault(YTPlayerEXSetting.ScreenshotCaptureMenuCursor, false);
+            SetDefault(YTPlayerEXSetting.ScreenshotCaptureMenuCursor, true);
 
             SetDefault(YTPlayerEXSetting.CursorRotation, true);
 
@@ -60,7 +60,7 @@ namespace YouTubePlayerEX.App.Config
 
             SetDefault(YTPlayerEXSetting.AlwaysUseOriginalAudio, false);
 
-            SetDefault(YTPlayerEXSetting.UseSystemCursor, false);
+            SetDefault(YTPlayerEXSetting.UseSystemCursor, true);
         }
 
         public YTPlayerEXConfigManager(Storage storage, IDictionary<YTPlayerEXSetting, object> defaultOverrides = null) : base(storage, defaultOverrides)
