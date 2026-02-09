@@ -15,28 +15,52 @@
     <ProjectReference Include="..\YouTubePlayerEX.App\YouTubePlayerEX.App.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="FFmpeg\x64\avcodec-61.dll">
+    <None Update="FFmpeg\linux-x64\libavcodec.so.61">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="FFmpeg\x64\avdevice-61.dll">
+    <None Update="FFmpeg\linux-x64\libavdevice.so.61">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="FFmpeg\x64\avfilter-10.dll">
+    <None Update="FFmpeg\linux-x64\libavfilter.so.10">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="FFmpeg\x64\avformat-61.dll">
+    <None Update="FFmpeg\linux-x64\libavformat.so.61">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="FFmpeg\x64\avutil-59.dll">
+    <None Update="FFmpeg\linux-x64\libavutil.so.59">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="FFmpeg\x64\postproc-58.dll">
+    <None Update="FFmpeg\linux-x64\libpostproc.so.58">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="FFmpeg\x64\swresample-5.dll">
+    <None Update="FFmpeg\linux-x64\libswresample.so.5">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="FFmpeg\x64\swscale-8.dll">
+    <None Update="FFmpeg\linux-x64\libswscale.so.8">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FFmpeg\windows-x64\avcodec-61.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FFmpeg\windows-x64\avdevice-61.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FFmpeg\windows-x64\avfilter-10.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FFmpeg\windows-x64\avformat-61.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FFmpeg\windows-x64\avutil-59.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FFmpeg\windows-x64\postproc-58.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FFmpeg\windows-x64\swresample-5.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FFmpeg\windows-x64\swscale-8.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
