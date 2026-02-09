@@ -217,6 +217,8 @@ namespace YouTubePlayerEX.App.Screens
 
         private Bindable<float> scalingBackgroundDim = null!;
 
+        private SpriteIcon volumeIcon;
+
         private LinkFlowContainer dislikeCounterCredits, playlistAuthor;
 
         private Bindable<bool> signedIn;
@@ -627,6 +629,58 @@ namespace YouTubePlayerEX.App.Screens
                                                                             KeyboardStep = 0.05f,
                                                                             PlaySamplesOnAdjust = true,
                                                                             Current = { BindTarget = playbackSpeed },
+                                                                        },
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        new Container
+                                                        {
+                                                            AutoSizeAxes = Axes.X,
+                                                            Height = 30,
+                                                            Masking = true,
+                                                            CornerRadius = 15,
+                                                            Children = new Drawable[]
+                                                            {
+                                                                new Box
+                                                                {
+                                                                    RelativeSizeAxes = Axes.Both,
+                                                                    Colour = overlayColourProvider.Background3,
+                                                                    Alpha = 0.7f,
+                                                                },
+                                                                new FillFlowContainer
+                                                                {
+                                                                    AutoSizeAxes = Axes.Both,
+                                                                    Spacing = new Vector2(8, 0),
+                                                                    Direction = FillDirection.Horizontal,
+                                                                    Padding = new MarginPadding
+                                                                    {
+                                                                        Horizontal = 8
+                                                                    },
+                                                                    Children = new Drawable[]
+                                                                    {
+                                                                        volumeIcon = new SpriteIcon
+                                                                        {
+                                                                            Icon = FontAwesome.Solid.VolumeUp,
+                                                                            Width = 16,
+                                                                            Height = 16,
+                                                                            Margin = new MarginPadding
+                                                                            {
+                                                                                Top = 8,
+                                                                            },
+                                                                            Colour = overlayColourProvider.Content2,
+                                                                        },
+                                                                        new RoundedSliderBar<double>
+                                                                        {
+                                                                            Width = 200,
+                                                                            Margin = new MarginPadding
+                                                                            {
+                                                                                Top = 8,
+                                                                            },
+                                                                            KeyboardStep = 0.05f,
+                                                                            PlaySamplesOnAdjust = true,
+                                                                            DisplayAsPercentage = true,
+                                                                            Current = videoVolume,
                                                                         },
                                                                     }
                                                                 }
@@ -2140,6 +2194,22 @@ namespace YouTubePlayerEX.App.Screens
                     });
                 }
             });
+
+            videoVolume.BindValueChanged(volume =>
+            {
+                if (volume.NewValue > 0.5)
+                {
+                    volumeIcon.Icon = FontAwesome.Solid.VolumeUp;
+                }
+                else if (volume.NewValue >= 0.01)
+                {
+                    volumeIcon.Icon = FontAwesome.Solid.VolumeDown;
+                }
+                else
+                {
+                    volumeIcon.Icon = FontAwesome.Solid.VolumeMute;
+                }
+            }, true);
 
             alwaysUseOriginalAudio.BindValueChanged(enabled =>
             {
