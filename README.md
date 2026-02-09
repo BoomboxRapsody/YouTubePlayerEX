@@ -34,14 +34,14 @@ When working with the codebase, we recommend using an IDE with intelligent code 
 Clone the repository:
 
 ```shell
-git clone https://github.com/BoomboxRapsody/YouTubePlayerEX
+git clone --recurse-submodules https://github.com/BoomboxRapsody/YouTubePlayerEX
 cd YouTubePlayerEX
 ```
 
 To update the source code to the latest commit, run the following command inside the `YouTubePlayerEX` directory:
 
 ```shell
-git pull
+git pull --recurse-submodules
 ```
 
 ### Building
