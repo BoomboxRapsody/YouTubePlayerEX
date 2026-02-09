@@ -88,4 +88,4 @@ If you wish to help with localisation efforts, head over to [crowdin](https://cr
 **Note:** FFmpeg binaries are distributed under their original licenses (GPL/LGPL) from the source.
 Please refer to [FFmpeg License](https://www.ffmpeg.org/legal.html) for details.
 
-Please also note that game resources are covered by a separate licence. Please see the [BoomboxRapsody/YouTubePlayerEX-resources](https://github.com/BoomboxRapsody/YouTubePlayerEX-resources) repository for clarifications.
+Please also note that app resources are covered by a separate licence. Please see the [BoomboxRapsody/YouTubePlayerEX-resources](https://github.com/BoomboxRapsody/YouTubePlayerEX-resources) repository for clarifications.
