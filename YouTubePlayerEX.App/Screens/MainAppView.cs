@@ -685,7 +685,7 @@ namespace YouTubePlayerEX.App.Screens
                                                                     }
                                                                 }
                                                             }
-                                                        }
+                                                        },
                                                     }
                                                 }
                                             }
