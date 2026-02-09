@@ -655,6 +655,31 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString ClearAllCaches => new TranslatableString(getKey(@"clear_all_caches"), @"Clear all caches");
 
+        /// <summary>
+        /// "Load from playlist ID"
+        /// </summary>
+        public static LocalisableString LoadFromPlaylistId => new TranslatableString(getKey(@"load_from_playlist_id"), "Load from playlist ID");
+
+        /// <summary>
+        /// "Load Playlist"
+        /// </summary>
+        public static LocalisableString LoadPlaylist => new TranslatableString(getKey(@"load_playlist"), "Load Playlist");
+
+        /// <summary>
+        /// "Playlists"
+        /// </summary>
+        public static LocalisableString Playlists => new TranslatableString(getKey(@"playlists"), "Playlists");
+
+        /// <summary>
+        /// "Previous video"
+        /// </summary>
+        public static LocalisableString PreviousVideo => new TranslatableString(getKey(@"previous_video"), "Previous video");
+
+        /// <summary>
+        /// "Next video"
+        /// </summary>
+        public static LocalisableString NextVideo => new TranslatableString(getKey(@"next_video"), "Next video");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

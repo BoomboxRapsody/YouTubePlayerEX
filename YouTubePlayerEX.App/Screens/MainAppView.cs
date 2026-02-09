@@ -64,6 +64,7 @@ using YouTubePlayerEX.App.Overlays;
 using YouTubePlayerEX.App.Overlays.OSD;
 using YouTubePlayerEX.App.Updater;
 using YouTubePlayerEX.App.Utils;
+using static System.Net.Mime.MediaTypeNames;
 using static YouTubePlayerEX.App.YouTubePlayerEXApp;
 using Container = osu.Framework.Graphics.Containers.Container;
 using Language = YouTubePlayerEX.App.Localisation.Language;
@@ -74,16 +75,17 @@ namespace YouTubePlayerEX.App.Screens
     public partial class MainAppView : YouTubePlayerEXScreen, IKeyBindingHandler<GlobalAction>
     {
         private BufferedContainer videoContainer;
-        private AdaptiveButton loadBtn, commentSendButton, searchButton;
-        private AdaptiveTextBox videoIdBox, commentTextBox, searchTextBox;
+        private AdaptiveButton loadBtn, commentSendButton, searchButton, loadPlaylistBtn, loadPlaylistOpenButton, prevVideoButton, nextVideoButton;
+        private AdaptiveTextBox videoIdBox, commentTextBox, searchTextBox, playlistIdBox;
         private LoadingSpinner spinner;
         private ScheduledDelegate spinnerShow;
         private AdaptiveAlertContainer alert;
         private IdleTracker idleTracker;
         private Container uiContainer;
         private Container uiGradientContainer;
-        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer, reportAbuseOverlay;
-        private AdaptiveButtonWithShadow loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton, searchOpenButton, reportOpenButton;
+        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer, reportAbuseOverlay, loadPlaylistContainer;
+        private SideOverlayContainer playlistOverlay;
+        private AdaptiveButtonWithShadow loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton, searchOpenButton, reportOpenButton, playlistOpenButton;
         private VideoMetadataDisplayWithoutProfile videoMetadataDisplay;
         private VideoMetadataDisplay videoMetadataDisplayDetails;
         private RoundedButtonContainer commentOpenButtonDetails, likeButton;
@@ -152,9 +154,9 @@ namespace YouTubePlayerEX.App.Screens
         private FormCheckBox? wasapiExperimental;
 #nullable disable
 
-        private AdaptiveSpriteText videoLoadingProgress, videoInfoDetails, likeCount, dislikeCount, commentCount, commentsContainerTitle, currentTime, totalTime;
+        private AdaptiveSpriteText videoLoadingProgress, videoInfoDetails, likeCount, dislikeCount, commentCount, commentsContainerTitle, currentTime, totalTime, playlistName;
         private LinkFlowContainer videoDescription, gameVersion;
-        private FillFlowContainer commentContainer, searchResultContainer;
+        private FillFlowContainer commentContainer, searchResultContainer, playlistItemsView;
 
         [Resolved]
         private GoogleOAuth2 googleOAuth2 { get; set; } = null!;
@@ -215,7 +217,7 @@ namespace YouTubePlayerEX.App.Screens
 
         private Bindable<float> scalingBackgroundDim = null!;
 
-        private LinkFlowContainer dislikeCounterCredits;
+        private LinkFlowContainer dislikeCounterCredits, playlistAuthor;
 
         private Bindable<bool> signedIn;
 
@@ -452,6 +454,20 @@ namespace YouTubePlayerEX.App.Screens
                                     IconScale = new Vector2(1.2f),
                                     TooltipText = YTPlayerEXStrings.Report,
                                 },
+                                playlistOpenButton = new IconButtonWithShadow
+                                {
+                                    Enabled = { Value = true },
+                                    Margin = new MarginPadding
+                                    {
+                                        Right = 240,
+                                    },
+                                    Origin = Anchor.TopRight,
+                                    Anchor = Anchor.TopRight,
+                                    Size = new Vector2(40, 40),
+                                    Icon = FontAwesome.Solid.List,
+                                    IconScale = new Vector2(1.2f),
+                                    TooltipText = YTPlayerEXStrings.Playlists,
+                                },
                                 new Container {
                                     Anchor = Anchor.BottomCentre,
                                     Origin = Anchor.BottomCentre,
@@ -514,6 +530,23 @@ namespace YouTubePlayerEX.App.Screens
                                                     Spacing = new Vector2(8, 0),
                                                     Children = new Drawable[]
                                                     {
+                                                        prevVideoButton = new IconButton
+                                                        {
+                                                            Enabled = { Value = false },
+                                                            Icon = FontAwesome.Solid.FastBackward,
+                                                            TooltipText = YTPlayerEXStrings.PreviousVideo,
+                                                            IconColour = overlayColourProvider.Content2,
+                                                            ClickAction = async _ =>
+                                                            {
+                                                                if (playlists.Count > 0)
+                                                                {
+                                                                    if (playlistItemIndex != 0)
+                                                                        playlistItemIndex--;
+
+                                                                    await SetVideoSource(playlists[playlistItemIndex].Snippet.ResourceId.VideoId);
+                                                                }
+                                                            }
+                                                        },
                                                         playPause = new IconButton
                                                         {
                                                             Enabled = { Value = true },
@@ -528,6 +561,23 @@ namespace YouTubePlayerEX.App.Screens
                                                                         currentVideoSource.Pause();
                                                                     else
                                                                         currentVideoSource.Play();
+                                                                }
+                                                            }
+                                                        },
+                                                        nextVideoButton = new IconButton
+                                                        {
+                                                            Enabled = { Value = false },
+                                                            Icon = FontAwesome.Solid.FastForward,
+                                                            TooltipText = YTPlayerEXStrings.NextVideo,
+                                                            IconColour = overlayColourProvider.Content2,
+                                                            ClickAction = async _ =>
+                                                            {
+                                                                if (playlists.Count > 0)
+                                                                {
+                                                                    if (playlistItemIndex != playlists.Count - 1)
+                                                                        playlistItemIndex++;
+
+                                                                    await SetVideoSource(playlists[playlistItemIndex].Snippet.ResourceId.VideoId);
                                                                 }
                                                             }
                                                         },
@@ -1764,6 +1814,167 @@ namespace YouTubePlayerEX.App.Screens
                                 }
                             }
                         },
+                        playlistOverlay = new SideOverlayContainer
+                        {
+                            Size = new Vector2(1f, .95f),
+                            Width = 400,
+                            RelativeSizeAxes = Axes.Y,
+                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
+                            Masking = true,
+                            Origin = Anchor.CentreRight,
+                            Anchor = Anchor.CentreRight,
+                            Margin = new MarginPadding
+                            {
+                                Right = 16,
+                            },
+                            EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                            {
+                                Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                Colour = Color4.Black.Opacity(0.25f),
+                                Offset = new Vector2(0, 2),
+                                Radius = 16,
+                            },
+                            Children = new Drawable[]
+                            {
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Colour = overlayColourProvider.Background5,
+                                },
+                                new AdaptiveSpriteText
+                                {
+                                    Origin = Anchor.TopLeft,
+                                    Anchor = Anchor.TopLeft,
+                                    Text = YTPlayerEXStrings.Playlists,
+                                    Margin = new MarginPadding(16),
+                                    Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30, weight: "Bold"),
+                                    Colour = overlayColourProvider.Content2,
+                                },
+                                loadPlaylistOpenButton = new IconButton
+                                {
+                                    Enabled = { Value = true },
+                                    Origin = Anchor.TopRight,
+                                    Anchor = Anchor.TopRight,
+                                    Size = new Vector2(40, 40),
+                                    Icon = FontAwesome.Regular.FolderOpen,
+                                    Margin = new MarginPadding(16),
+                                    IconScale = new Vector2(1.2f),
+                                    TooltipText = YTPlayerEXStrings.LoadFromPlaylistId,
+                                },
+                                new Container
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Padding = new MarginPadding
+                                    {
+                                        Horizontal = 16,
+                                        Bottom = 16,
+                                        Top = 56,
+                                    },
+                                    Children = new Drawable[] {
+                                        new AdaptiveScrollContainer
+                                        {
+                                            RelativeSizeAxes = Axes.Both,
+                                            ScrollbarVisible = false,
+                                            Children = new Drawable[]
+                                            {
+                                                new FillFlowContainer
+                                                {
+                                                    RelativeSizeAxes = Axes.X,
+                                                    AutoSizeAxes = Axes.Y,
+                                                    Direction = FillDirection.Vertical,
+                                                    Spacing = new Vector2(4),
+                                                    Children = new Drawable[]
+                                                    {
+                                                        playlistName = new TruncatingSpriteText
+                                                        {
+                                                            Origin = Anchor.TopLeft,
+                                                            Anchor = Anchor.TopLeft,
+                                                            Text = "[playlist name]",
+                                                            RelativeSizeAxes = Axes.X,
+                                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30, weight: "Bold"),
+                                                            Colour = overlayColourProvider.Content2,
+                                                        },
+                                                        playlistAuthor = new LinkFlowContainer(f =>
+                                                        {
+                                                            f.Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 16, weight: "SemiBold");
+                                                            f.Colour = overlayColourProvider.Background1;
+                                                        })
+                                                        {
+                                                            Origin = Anchor.TopLeft,
+                                                            Anchor = Anchor.TopLeft,
+                                                            RelativeSizeAxes = Axes.X,
+                                                            AutoSizeAxes = Axes.Y,
+                                                            Text = "[channel name]",
+                                                        },
+                                                        playlistItemsView = new FillFlowContainer
+                                                        {
+                                                            RelativeSizeAxes = Axes.X,
+                                                            AutoSizeAxes = Axes.Y,
+                                                            Direction = FillDirection.Vertical,
+                                                            Spacing = new Vector2(4),
+                                                            Children = new Drawable[]
+                                                            {
+                                                            }
+                                                        },
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        loadPlaylistContainer = new OverlayContainer
+                        {
+                            Width = 400,
+                            Height = 200,
+                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
+                            Masking = true,
+                            Origin = Anchor.Centre,
+                            Anchor = Anchor.Centre,
+                            EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                            {
+                                Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                Colour = Color4.Black.Opacity(0.25f),
+                                Offset = new Vector2(0, 2),
+                                Radius = 16,
+                            },
+                            Children = new Drawable[]
+                            {
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Colour = overlayColourProvider.Background5,
+                                },
+                                new AdaptiveSpriteText
+                                {
+                                    Origin = Anchor.TopLeft,
+                                    Anchor = Anchor.TopLeft,
+                                    Text = YTPlayerEXStrings.LoadFromPlaylistId,
+                                    Margin = new MarginPadding(16),
+                                    Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30, weight: "Bold"),
+                                    Colour = overlayColourProvider.Content2,
+                                },
+                                loadPlaylistBtn = new AdaptiveButton
+                                {
+                                    Enabled = { Value = true },
+                                    Origin = Anchor.BottomRight,
+                                    Anchor = Anchor.BottomRight,
+                                    Text = YTPlayerEXStrings.LoadPlaylist,
+                                    Size = new Vector2(200, 60),
+                                    Margin = new MarginPadding(8),
+                                },
+                                playlistIdBox = new AdaptiveTextBox
+                                {
+                                    Origin = Anchor.CentreRight,
+                                    Anchor = Anchor.CentreRight,
+                                    Text = "",
+                                    FontSize = 30,
+                                    Size = new Vector2(385, 60),
+                                    Margin = new MarginPadding(8),
+                                },
+                            }
+                        },
                         new Container
                         {
                             RelativeSizeAxes = Axes.Both,
@@ -1787,6 +1998,8 @@ namespace YouTubePlayerEX.App.Screens
             searchContainer.Hide();
             videoInfoExpertOverlay.Hide();
             reportAbuseOverlay.Hide();
+            playlistOverlay.Hide();
+            loadPlaylistContainer.Hide();
 
             madeByText.AddText("made by ");
             madeByText.AddLink("BoomboxRapsody", "https://github.com/BoomboxRapsody");
@@ -1871,7 +2084,7 @@ namespace YouTubePlayerEX.App.Screens
 
             commentsDisabled = true;
 
-            playPause.BackgroundColour = searchButton.BackgroundColour = commentSendButton.BackgroundColour = overlayColourProvider.Background3;
+            playPause.BackgroundColour = searchButton.BackgroundColour = commentSendButton.BackgroundColour = nextVideoButton.BackgroundColour = prevVideoButton.BackgroundColour = loadPlaylistOpenButton.BackgroundColour = overlayColourProvider.Background3;
 
             hwAccelCheckbox.Current.Default = hardwareVideoDecoder.Default != HardwareVideoDecoder.None;
             hwAccelCheckbox.Current.Value = hardwareVideoDecoder.Value != HardwareVideoDecoder.None;
@@ -1893,6 +2106,11 @@ namespace YouTubePlayerEX.App.Screens
             overlayContainers.Add(videoInfoExpertOverlay);
             overlayContainers.Add(searchContainer);
             overlayContainers.Add(reportAbuseOverlay);
+            overlayContainers.Add(playlistOverlay);
+            overlayContainers.Add(loadPlaylistContainer);
+
+            playlistName.Text = "please choose a playlist!";
+            playlistAuthor.Text = "[no metadata available]";
 
             infoForNerds.AddText("Codec: ");
             infoForNerds.AddText("[unknown]", f => f.Font = YouTubePlayerEXApp.DefaultFont.With(weight: "Bold"));
@@ -2339,29 +2557,59 @@ namespace YouTubePlayerEX.App.Screens
                 DuckDuration = 100,
                 RestoreDuration = 100,
             });
-            isAnyOverlayOpen.Value = true;
-            overlayContent.IsVisible = true;
-            videoScalingContainer?.BlurTo(new Vector2(4), 250, Easing.OutQuart);
-            videoContainer?.BlurTo(new Vector2(4), 250, Easing.OutQuart);
-            overlayFadeContainer.FadeTo(0.5f, 250, Easing.OutQuart);
-            overlayContent.Show();
-            overlayContent.ScaleTo(0.8f);
-            overlayContent.ScaleTo(1f, 750, Easing.OutElastic);
-            overlayContent.FadeInFromZero(250, Easing.OutQuart);
-            overlayShowSample.Play();
+            if (overlayContent is SideOverlayContainer)
+            {
+                isAnyOverlayOpen.Value = true;
+                overlayContent.IsVisible = true;
+                videoScalingContainer?.BlurTo(new Vector2(4), 250, Easing.OutQuart);
+                videoContainer?.BlurTo(new Vector2(4), 250, Easing.OutQuart);
+                overlayFadeContainer.FadeTo(0.5f, 250, Easing.OutQuart);
+                overlayContent.Show();
+                overlayContent.MoveToX(500);
+                overlayContent.MoveToX(0, 500, Easing.OutQuint);
+                overlayContent.FadeInFromZero(250, Easing.OutQuart);
+                overlayShowSample.Play();
+            }
+            else
+            {
+                isAnyOverlayOpen.Value = true;
+                overlayContent.IsVisible = true;
+                videoScalingContainer?.BlurTo(new Vector2(4), 250, Easing.OutQuart);
+                videoContainer?.BlurTo(new Vector2(4), 250, Easing.OutQuart);
+                overlayFadeContainer.FadeTo(0.5f, 250, Easing.OutQuart);
+                overlayContent.Show();
+                overlayContent.ScaleTo(0.8f);
+                overlayContent.ScaleTo(1f, 750, Easing.OutElastic);
+                overlayContent.FadeInFromZero(250, Easing.OutQuart);
+                overlayShowSample.Play();
+            }
         }
 
         private void hideOverlayContainer(OverlayContainer overlayContent)
         {
             duckOperation?.Dispose();
-            overlayContent.IsVisible = false;
-            isAnyOverlayOpen.Value = false;
-            overlayHideSample.Play();
-            videoScalingContainer?.BlurTo(new Vector2(0), 250, Easing.OutQuart);
-            videoContainer?.BlurTo(new Vector2(0), 250, Easing.OutQuart);
-            overlayFadeContainer.FadeTo(0f, 250, Easing.OutQuart);
-            overlayContent.ScaleTo(0.8f, 250, Easing.OutQuart);
-            overlayContent.FadeOutFromOne(250, Easing.OutQuart);
+            if (overlayContent is SideOverlayContainer)
+            {
+                overlayContent.IsVisible = false;
+                isAnyOverlayOpen.Value = false;
+                overlayHideSample.Play();
+                videoScalingContainer?.BlurTo(new Vector2(0), 250, Easing.OutQuart);
+                videoContainer?.BlurTo(new Vector2(0), 250, Easing.OutQuart);
+                overlayFadeContainer.FadeTo(0f, 250, Easing.OutQuart);
+                overlayContent.MoveToX(500, 500, Easing.OutQuart);
+                overlayContent.FadeOutFromOne(250, Easing.OutQuart);
+            }
+            else
+            {
+                overlayContent.IsVisible = false;
+                isAnyOverlayOpen.Value = false;
+                overlayHideSample.Play();
+                videoScalingContainer?.BlurTo(new Vector2(0), 250, Easing.OutQuart);
+                videoContainer?.BlurTo(new Vector2(0), 250, Easing.OutQuart);
+                overlayFadeContainer.FadeTo(0f, 250, Easing.OutQuart);
+                overlayContent.ScaleTo(0.8f, 250, Easing.OutQuart);
+                overlayContent.FadeOutFromOne(250, Easing.OutQuart);
+            }
         }
 
         private bool isLoadVideoContainerVisible = false;
@@ -2414,6 +2662,26 @@ namespace YouTubePlayerEX.App.Screens
 
                     wth.UpdateData();
                 }
+                else if (item.Id.Kind == "youtube#playlist")
+                {
+                    YouTubeSearchResultView wth = new YouTubeSearchResultView()
+                    {
+                        RelativeSizeAxes = Axes.X,
+                    };
+
+                    searchResultContainer.Add(wth);
+
+                    wth.ClickAction = async _ =>
+                    {
+                        SetPlaylist(item.Id.PlaylistId).FireAndForget();
+                    };
+
+                    wth.Enabled.Value = true;
+
+                    wth.Data = item;
+
+                    wth.UpdateData();
+                }
             }
         }
 
@@ -2422,7 +2690,8 @@ namespace YouTubePlayerEX.App.Screens
             base.LoadComplete();
 
             //check updates for LoadComplete
-            checkForUpdates().FireAndForget();
+            if (game.IsDeployedBuild)
+                checkForUpdates().FireAndForget();
 
             if (appGlobalConfig.Get<bool>(YTPlayerEXSetting.FinalLoginState) == true)
             {
@@ -2448,7 +2717,13 @@ namespace YouTubePlayerEX.App.Screens
 
             loadBtn.ClickAction = async _ =>
             {
+                ClearPlaylistItems();
                 await SetVideoSource(videoIdBox.Text);
+            };
+
+            loadPlaylistBtn.ClickAction = async _ =>
+            {
+                SetPlaylist(playlistIdBox.Text).FireAndForget();
             };
 
             searchButton.ClickAction = _ =>
@@ -2464,6 +2739,17 @@ namespace YouTubePlayerEX.App.Screens
             reportOpenButton.ClickAction = _ =>
             {
                 showOverlayContainer(reportAbuseOverlay);
+            };
+
+            playlistOpenButton.ClickAction = _ =>
+            {
+                showOverlayContainer(playlistOverlay);
+            };
+
+            loadPlaylistOpenButton.ClickAction = _ =>
+            {
+                hideOverlays();
+                showOverlayContainer(loadPlaylistContainer);
             };
 
             commentOpenButton.ClickAction = _ =>
@@ -2558,6 +2844,20 @@ namespace YouTubePlayerEX.App.Screens
                     hideOverlayContainer(item);
                 }
             }
+        }
+
+        public async Task SetPlaylist(string playlistId)
+        {
+            Schedule(async () =>
+            {
+                Playlist playlist = api.GetPlaylistInfo(playlistId);
+                IList<PlaylistItem> playlistItems = await api.GetPlaylistItems(playlistId);
+
+                SetPlaylistInfo(playlist);
+                await SetPlaylistItems(playlistItems);
+
+                playlistIdBox.Text = string.Empty;
+            });
         }
 
         private List<OverlayContainer> overlayContainers = new List<OverlayContainer>();
@@ -2669,6 +2969,17 @@ namespace YouTubePlayerEX.App.Screens
 
                     return true;
 
+                case GlobalAction.OpenPlaylist:
+                    if (!playlistOverlay.IsVisible)
+                    {
+                        hideOverlays();
+                        showOverlayContainer(playlistOverlay);
+                    }
+                    else
+                        hideOverlayContainer(playlistOverlay);
+
+                    return true;
+
                 case GlobalAction.Select:
                     if (isLoadVideoContainerVisible)
                     {
@@ -2693,6 +3004,32 @@ namespace YouTubePlayerEX.App.Screens
                             currentVideoSource.Pause(true);
                         else
                             currentVideoSource.Play(true);
+                    }
+                    return true;
+
+                case GlobalAction.PrevVideo:
+                    if (currentVideoSource != null)
+                    {
+                        if (playlists.Count > 0)
+                        {
+                            if (playlistItemIndex != 0)
+                                playlistItemIndex--;
+
+                            Task.Run(async () => await SetVideoSource(playlists[playlistItemIndex].Snippet.ResourceId.VideoId));
+                        }
+                    }
+                    return true;
+
+                case GlobalAction.NextVideo:
+                    if (currentVideoSource != null)
+                    {
+                        if (playlists.Count > 0)
+                        {
+                            if (playlistItemIndex != playlists.Count - 1)
+                                playlistItemIndex++;
+
+                            Task.Run(async () => await SetVideoSource(playlists[playlistItemIndex].Snippet.ResourceId.VideoId));
+                        }
                     }
                     return true;
 
@@ -2723,6 +3060,8 @@ namespace YouTubePlayerEX.App.Screens
         [Resolved]
         private OnScreenDisplay osd { get; set; } = null!;
 
+        private int playlistItemIndex = 0;
+
         protected void CycleCaptionLanguage()
         {
             switch (captionLanguage.Value)
@@ -2743,6 +3082,81 @@ namespace YouTubePlayerEX.App.Screens
                     captionLanguage.Value = ClosedCaptionLanguage.Disabled;
                     break;
             }
+        }
+
+        private IList<PlaylistItem> playlists = new List<PlaylistItem>();
+        private List<PlaylistItemView> playlistItemViews = new List<PlaylistItemView>();
+
+        public void ClearPlaylistItems()
+        {
+            playlists.Clear();
+            playlistItemViews.Clear();
+
+            foreach (var item in playlistItemsView.Children)
+            {
+                Schedule(() => item.Expire());
+            }
+
+            playlistName.Text = "please choose a playlist!";
+            playlistAuthor.Text = "[no metadata available]";
+
+            if (playlists.Count > 0)
+            {
+                Schedule(() => prevVideoButton.Enabled.Value = false);
+                Schedule(() => nextVideoButton.Enabled.Value = false);
+            }
+        }
+
+        public async Task SetPlaylistItems(IList<PlaylistItem> playlists)
+        {
+            this.playlists = playlists;
+
+            playlistItemViews.Clear();
+
+            foreach (var item in playlistItemsView.Children)
+            {
+                Schedule(() => item.Expire());
+            }
+
+            foreach (var item in playlists)
+            {
+                Google.Apis.YouTube.v3.Data.Video videoData = api.GetVideo(item.Snippet.ResourceId.VideoId);
+
+                PlaylistItemView playlistItemView = new PlaylistItemView(playlists.IndexOf(item))
+                {
+                    RelativeSizeAxes = Axes.X,
+                    Enabled = { Value = true },
+                    ClickAction = async v =>
+                    {
+                        Schedule(async () =>
+                        {
+                            playlistItemIndex = playlists.IndexOf(item);
+                            await SetVideoSource(item.Snippet.ResourceId.VideoId);
+                        });
+                    },
+                };
+
+                playlistItemViews.Add(playlistItemView);
+
+                Schedule(() =>
+                {
+                    playlistItemView.Data = videoData;
+                    playlistItemsView.Add(playlistItemView);
+                    playlistItemView.UpdateData();
+                });
+            }
+
+            await SetVideoSource(playlists[0].Snippet.ResourceId.VideoId);
+        }
+
+        public void SetPlaylistInfo(Playlist playlist)
+        {
+            Schedule(() =>
+            {
+                playlistName.Text = playlist.Snippet.Title;
+                playlistAuthor.Text = string.Empty;
+                playlistAuthor.AddLink(playlist.Snippet.ChannelTitle, $"https://www.youtube.com/channel/{playlist.Snippet.ChannelId}");
+            });
         }
 
         protected void CycleScalingMode()
@@ -3201,6 +3615,17 @@ namespace YouTubePlayerEX.App.Screens
             {
                 setPlaybackSpeed(speed.NewValue);
             }, true);
+
+            if (playlists.Count > 0)
+            {
+                currentVideoSource.OnVideoCompleted = async () =>
+                {
+                    if (playlistItemIndex != playlists.Count - 1)
+                        playlistItemIndex++;
+                    
+                    await SetVideoSource(playlists[playlistItemIndex].Snippet.ResourceId.VideoId);
+                };
+            }
         }
 
         private void seekTo(double pos)
@@ -3238,6 +3663,46 @@ namespace YouTubePlayerEX.App.Screens
             {
                 Schedule(() => hideOverlayContainer(searchContainer));
             }
+            if (loadPlaylistContainer.IsVisible == true)
+            {
+                Schedule(() => hideOverlayContainer(loadPlaylistContainer));
+            }
+            if (playlistOverlay.IsVisible == true)
+            {
+                Schedule(() => hideOverlayContainer(playlistOverlay));
+            }
+
+            if (playlists.Count > 0)
+            {
+                if (playlistItemIndex == playlists.Count - 1)
+                {
+                    Schedule(() => nextVideoButton.Enabled.Value = false);
+                }
+                else
+                {
+                    Schedule(() => nextVideoButton.Enabled.Value = true);
+                }
+
+                if (playlistItemIndex == 0)
+                {
+                    Schedule(() => prevVideoButton.Enabled.Value = false);
+                }
+                else
+                {
+                    Schedule(() => prevVideoButton.Enabled.Value = true);
+                }
+            }
+
+            if (playlistItemViews.Count > 0)
+            {
+                foreach (PlaylistItemView playlistItemView in playlistItemViews)
+                {
+                    playlistItemView.UpdateState(false);
+                }
+
+                playlistItemViews[playlistItemIndex].UpdateState(true);
+            }
+
             videoIdBox.Text = string.Empty;
 
             foreach (var item in commentContainer.Children)

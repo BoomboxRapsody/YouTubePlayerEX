@@ -62,6 +62,9 @@ namespace YouTubePlayerEX.App.Input.Binding
             new KeyBinding(new[] { InputKey.Shift, InputKey.A }, GlobalAction.DecreasePlaybackSpeed2),
             new KeyBinding(new[] { InputKey.Shift, InputKey.D }, GlobalAction.IncreasePlaybackSpeed2),
 
+            new KeyBinding(new[] { InputKey.Shift, InputKey.P }, GlobalAction.PrevVideo),
+            new KeyBinding(new[] { InputKey.Shift, InputKey.N }, GlobalAction.NextVideo),
+
             new KeyBinding(new[] { InputKey.Shift, InputKey.C }, GlobalAction.CycleCaptionLanguage),
             new KeyBinding(new[] { InputKey.Control, InputKey.F6 }, GlobalAction.CycleAspectRatio),
             new KeyBinding(new[] { InputKey.Control, InputKey.Shift, InputKey.F5 }, GlobalAction.CycleScalingMode),
@@ -69,9 +72,10 @@ namespace YouTubePlayerEX.App.Input.Binding
             new KeyBinding(new[] { InputKey.Control, InputKey.O }, GlobalAction.OpenSettings),
             new KeyBinding(new[] { InputKey.Control, InputKey.D }, GlobalAction.OpenDescription),
             new KeyBinding(new[] { InputKey.Control, InputKey.E }, GlobalAction.OpenComments),
+            new KeyBinding(new[] { InputKey.P }, GlobalAction.OpenPlaylist),
             new KeyBinding(new[] { InputKey.R }, GlobalAction.ReportAbuse),
 
-            new KeyBinding(new[] { InputKey.Shift, InputKey.P }, GlobalAction.ToggleAdjustPitchOnSpeedChange),
+            new KeyBinding(new[] { InputKey.Alt, InputKey.P }, GlobalAction.ToggleAdjustPitchOnSpeedChange),
 
             new KeyBinding(new[] { InputKey.Control, InputKey.P }, GlobalAction.ToggleFPSDisplay),
 
@@ -111,5 +115,10 @@ namespace YouTubePlayerEX.App.Input.Binding
 
         DecreaseVideoVolume,
         IncreaseVideoVolume,
+
+        OpenPlaylist,
+
+        PrevVideo,
+        NextVideo
     }
 }

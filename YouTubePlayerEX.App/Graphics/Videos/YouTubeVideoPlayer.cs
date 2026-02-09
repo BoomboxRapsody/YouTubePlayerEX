@@ -3,6 +3,7 @@
 
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using osu.Framework.Allocation;
@@ -39,6 +40,8 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         private Bindable<double> playbackSpeed = null!;
         private double resumeFromTime;
         private bool trackFinished = false;
+
+        public Action? OnVideoCompleted = null!;
 
         public YouTubeVideoPlayer(string fileName_Video, string fileName_Audio, ClosedCaptionTrack captionTrack, ClosedCaptionLanguage captionLanguage, double resumeFromTime)
         {
@@ -156,6 +159,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         private void trackCompleted()
         {
             trackFinished = true;
+            OnVideoCompleted?.Invoke();
             /*
             drawableTrack?.Stop();
             framedClock.Stop();

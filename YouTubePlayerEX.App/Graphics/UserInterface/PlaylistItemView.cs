@@ -12,7 +12,9 @@ using Humanizer;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
@@ -28,13 +30,14 @@ using YouTubePlayerEX.App.Online;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
-    public partial class YouTubeSearchResultView : AdaptiveClickableContainer
+    public partial class PlaylistItemView : AdaptiveClickableContainer
     {
         private Sprite thumbnail = null!;
-        private AdaptiveTextFlowContainer videoNameText = null!;
+        private TruncatingSpriteText videoNameText = null!;
         private TruncatingSpriteText channelNameText = null!;
-        public Action<YouTubeSearchResultView> ClickEvent = null!;
+        public Action<PlaylistItemView> ClickEvent = null!;
         private AdaptiveSpriteText viewsText = null!;
+        private AdaptiveSpriteText indexText = null!;
 
         private Box bgLayer = null!;
 
@@ -52,8 +55,11 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         private Bindable<string> localeBindable = new Bindable<string>();
 
-        public YouTubeSearchResultView()
+        private int index;
+
+        public PlaylistItemView(int index)
         {
+            this.index = index;
             Height = 110;
         }
 
@@ -61,10 +67,11 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private TextureStore textureStore { get; set; } = null!;
 
         [BackgroundDependencyLoader]
-        private void load(OverlayColourProvider overlayColourProvider)
+        private void load(OverlayColourProvider overlayColourProvider, AdaptiveColour colour)
         {
             localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
 
+            BorderColour = overlayColourProvider?.Highlight1 ?? colour.Yellow;
             CornerRadius = 12;
             Masking = true;
             Children = new Drawable[]
@@ -108,6 +115,20 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                     RelativeSizeAxes = Axes.Both,
                                     FillMode = FillMode.Stretch,
                                 },
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.X,
+                                    Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0.75f), Color4.Black.Opacity(0)),
+                                    Height = 50,
+                                },
+                                indexText = new TruncatingSpriteText
+                                {
+                                    RelativeSizeAxes = Axes.X,
+                                    Padding = new MarginPadding(8),
+                                    Text = $"#{index + 1}",
+                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 17, weight: "Regular"),
+                                    Colour = overlayColourProvider.Content2,
+                                },
                                 loading = new LoadingLayer(true, false, false)
                             },
                         },
@@ -123,10 +144,11 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                             },
                             Children = new Drawable[]
                             {
-                                videoNameText = new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 17, weight: "Regular"))
+                                videoNameText = new TruncatingSpriteText
                                 {
                                     RelativeSizeAxes = Axes.X,
                                     Text = "[text]",
+                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 17, weight: "Regular"),
                                     Colour = overlayColourProvider.Content2,
                                 },
                                 channelNameText = new TruncatingSpriteText
@@ -152,7 +174,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             };
         }
 
-        public SearchResult Data = null!;
+        public Video Data = null!;
 
         private HoverSounds samples = new HoverClickSounds(HoverSampleSet.Default);
 
@@ -192,6 +214,17 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             base.OnMouseUp(e);
         }
 
+        public void UpdateState(bool isCurrentItem)
+        {
+            if (isCurrentItem)
+            {
+                Schedule(() => { BorderThickness = 3; });
+            } else
+            {
+                Schedule(() => { BorderThickness = 0; });
+            }
+        }
+
         protected override void OnHoverLost(HoverLostEvent e)
         {
             base.OnHoverLost(e);
@@ -220,7 +253,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 ClickAction?.Invoke(this);
         }
 
-        public Action<YouTubeSearchResultView>? ClickAction { get; set; }
+        public Action<PlaylistItemView>? ClickAction { get; set; }
 
         protected override bool OnClick(ClickEvent e)
         {
@@ -239,50 +272,26 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             {
                 try
                 {
-                    if (Data.Id.Kind == "youtube#video")
-                    {
-                        DateTimeOffset? dateTime = Data.Snippet.PublishedAtDateTimeOffset;
-                        DateTime now = DateTime.Now;
-                        Channel channelData = api.GetChannel(Data.Snippet.ChannelId);
-                        Video videoData = api.GetVideo(Data.Id.VideoId);
+                    DateTimeOffset? dateTime = Data.Snippet.PublishedAtDateTimeOffset;
+                    DateTime now = DateTime.Now;
+                    Channel channelData = api.GetChannel(Data.Snippet.ChannelId);
+                    Video videoData = api.GetVideo(Data.Id);
 
-                        Schedule(() =>
-                        {
-                            channelNameText.Text = api.GetLocalizedChannelTitle(channelData, true);
-                            videoNameText.Text = api.GetLocalizedVideoTitle(videoData);
+                    Schedule(() =>
+                    {
+                        channelNameText.Text = api.GetLocalizedChannelTitle(channelData);
+                        videoNameText.Text = api.GetLocalizedVideoTitle(videoData);
 #pragma warning disable CS8629 // Nullable 값 형식이 null일 수 있습니다.
-                            viewsText.Text = YTPlayerEXStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
+                        viewsText.Text = YTPlayerEXStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
 #pragma warning restore CS8629 // Nullable 값 형식이 null일 수 있습니다.
 
-                            localeBindable.BindValueChanged(locale =>
-                            {
-                                channelNameText.Text = api.GetLocalizedChannelTitle(channelData, true);
-                                videoNameText.Text = api.GetLocalizedVideoTitle(videoData);
-                                viewsText.Text = YTPlayerEXStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
-                            });
-                        });
-                    }
-                    else if (Data.Id.Kind == "youtube#playlist")
-                    {
-                        DateTimeOffset? dateTime = Data.Snippet.PublishedAtDateTimeOffset;
-                        DateTime now = DateTime.Now;
-                        Playlist playlistData = api.GetPlaylistInfo(Data.Id.PlaylistId);
-                        Channel channelData = api.GetChannel(playlistData.Snippet.ChannelId);
-
-                        Schedule(() =>
+                        localeBindable.BindValueChanged(locale =>
                         {
-                            channelNameText.Text = api.GetLocalizedChannelTitle(channelData, true);
-                            videoNameText.Text = playlistData.Snippet.Title;
-                            viewsText.Text = string.Empty;
-
-                            localeBindable.BindValueChanged(locale =>
-                            {
-                                channelNameText.Text = api.GetLocalizedChannelTitle(channelData, true);
-                                videoNameText.Text = playlistData.Snippet.Title;
-                                viewsText.Text = string.Empty;
-                            });
+                            channelNameText.Text = api.GetLocalizedChannelTitle(channelData);
+                            videoNameText.Text = api.GetLocalizedVideoTitle(videoData);
+                            viewsText.Text = YTPlayerEXStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
                         });
-                    }
+                    });
 
                     await GetThumbnail(Data.Snippet.Thumbnails.High.Url);
                 }

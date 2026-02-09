@@ -477,6 +477,35 @@ namespace YouTubePlayerEX.App.Online
             return result;
         }
 
+        public Playlist GetPlaylistInfo(string playlistId)
+        {
+            var part = "snippet";
+            var request = youtubeService.Playlists.List(part);
+
+            request.Id = playlistId;
+
+            var response = request.Execute();
+
+            var result = response.Items.First();
+
+            return result;
+        }
+
+        public async Task<IList<PlaylistItem>> GetPlaylistItems(string playlistId)
+        {
+            var part = "snippet,contentDetails";
+            var request = youtubeService.PlaylistItems.List(part);
+
+            request.MaxResults = 50; // <------ why 50? dues to quota limits
+            request.PlaylistId = playlistId;
+
+            var response = await request.ExecuteAsync();
+
+            var result = response.Items;
+
+            return result;
+        }
+
         public async Task<VideosResource.RateRequest.RatingEnum> GetVideoRating(string videoId)
         {
             if (!googleOAuth2.SignedIn.Value)

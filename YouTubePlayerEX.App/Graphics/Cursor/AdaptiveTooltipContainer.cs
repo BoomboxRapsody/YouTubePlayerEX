@@ -16,7 +16,7 @@ namespace YouTubePlayerEX.App.Graphics.Cursor
 {
     public partial class AdaptiveTooltipContainer : TooltipContainer
     {
-        protected override ITooltip CreateTooltip() => new OsuTooltip();
+        protected override ITooltip CreateTooltip() => new AdaptiveTooltip();
 
         public AdaptiveTooltipContainer(CursorContainer cursor)
             : base(cursor)
@@ -25,7 +25,7 @@ namespace YouTubePlayerEX.App.Graphics.Cursor
 
         protected override double AppearDelay => (1 - CurrentTooltip.Alpha) * base.AppearDelay; // reduce appear delay if the tooltip is already partly visible.
 
-        public partial class OsuTooltip : Tooltip
+        public partial class AdaptiveTooltip : Tooltip
         {
             private const float max_width = 500;
 
@@ -53,7 +53,7 @@ namespace YouTubePlayerEX.App.Graphics.Cursor
                 lastContent = content;
             }
 
-            public OsuTooltip()
+            public AdaptiveTooltip()
             {
                 AutoSizeEasing = Easing.OutQuint;
 
