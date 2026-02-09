@@ -2057,12 +2057,12 @@ namespace YouTubePlayerEX.App.Screens
 
             updateInfomationText.BindValueChanged(text =>
             {
-                checkForUpdatesButton.Text = text.NewValue;
+                Schedule(() => checkForUpdatesButton.Text = text.NewValue);
             });
 
             updateButtonEnabled.BindValueChanged(enabled =>
             {
-                checkForUpdatesButton.Enabled.Value = enabled.NewValue;
+                Schedule(() => checkForUpdatesButton.Enabled.Value = enabled.NewValue);
             });
 
             renderer.BindValueChanged(r =>
@@ -2420,6 +2420,9 @@ namespace YouTubePlayerEX.App.Screens
         protected override void LoadComplete()
         {
             base.LoadComplete();
+
+            //check updates for LoadComplete
+            checkForUpdates().FireAndForget();
 
             if (appGlobalConfig.Get<bool>(YTPlayerEXSetting.FinalLoginState) == true)
             {
