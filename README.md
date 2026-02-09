@@ -90,3 +90,13 @@ If you wish to help with localisation efforts, head over to [crowdin](https://cr
 Please refer to [FFmpeg License](https://www.ffmpeg.org/legal.html) for details.
 
 Please also note that app resources are covered by a separate licence. Please see the [BoomboxRapsody/YouTubePlayerEX-resources](https://github.com/BoomboxRapsody/YouTubePlayerEX-resources) repository for clarifications.
+
+## Star History
+
+<a href="https://www.star-history.com/#BoomboxRapsody/YouTubePlayerEX&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=BoomboxRapsody/YouTubePlayerEX&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=BoomboxRapsody/YouTubePlayerEX&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=BoomboxRapsody/YouTubePlayerEX&type=date&legend=top-left" />
+ </picture>
+</a>
