@@ -3170,7 +3170,7 @@ namespace YouTubePlayerEX.App.Screens
             playlistName.Text = "please choose a playlist!";
             playlistAuthor.Text = "[no metadata available]";
 
-            if (playlists.Count > 0)
+            if (playlists.Count == 0)
             {
                 Schedule(() => prevVideoButton.Enabled.Value = false);
                 Schedule(() => nextVideoButton.Enabled.Value = false);
@@ -3761,6 +3761,10 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     Schedule(() => prevVideoButton.Enabled.Value = true);
                 }
+            } else
+            {
+                Schedule(() => prevVideoButton.Enabled.Value = false);
+                Schedule(() => nextVideoButton.Enabled.Value = false);
             }
 
             if (playlistItemViews.Count > 0)

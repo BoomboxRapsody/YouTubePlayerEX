@@ -6,6 +6,7 @@ using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Cursor;
+using osu.Framework.Input.Events;
 using osu.Framework.Localisation;
 using osuTK;
 
@@ -17,7 +18,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         private readonly Container content = new Container { RelativeSizeAxes = Axes.Both };
 
-        private HoverSounds samples = null!;
+        protected HoverSounds Samples = null!;
 
         public override bool ReceivePositionalInputAt(Vector2 screenSpacePos) =>
             // base call is checked for cases when `OsuClickableContainer` has masking applied to it directly (ie. externally in object initialisation).
@@ -39,7 +40,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             TriggerClick();
 
             // TriggerClick doesn't recursively fire the event so we need to manually do this.
-            (samples as HoverClickSounds)?.PlayClickSample();
+            (Samples as HoverClickSounds)?.PlayClickSample();
         }
 
         public virtual LocalisableString TooltipText { get; set; }
@@ -55,7 +56,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
             AddRangeInternal(new Drawable[]
             {
-                samples = CreateHoverSounds(sampleSet),
+                Samples = CreateHoverSounds(sampleSet),
                 content,
             });
         }

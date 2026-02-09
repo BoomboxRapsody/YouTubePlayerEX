@@ -4,6 +4,7 @@
 #nullable disable
 
 using System;
+using System.Drawing;
 using System.Threading.Tasks;
 using Google.Apis.YouTube.v3.Data;
 using Humanizer;
@@ -12,16 +13,20 @@ using osu.Framework.Bindables;
 using osu.Framework.Configuration;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Input.Events;
 using osuTK;
 using osuTK.Graphics;
+using PaletteNet;
+using SixLabors.ImageSharp.PixelFormats;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics.Sprites;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
+using YouTubePlayerEX.App.Utils;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
@@ -84,7 +89,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     RelativeSizeAxes = Axes.Both,
                     Padding = new MarginPadding(7),
                     Children = new Drawable[]
-                    {   
+                    {
                         new Container
                         {
                             RelativeSizeAxes = Axes.Both,
@@ -150,6 +155,40 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             (samples as HoverClickSounds).Enabled.Value = (ClickEvent != null);
         }
 
+        [Resolved]
+        private YouTubePlayerEXAppBase app { get; set; }
+
+        public void GetPalette()
+        {
+            Task.Run(async () =>
+            {
+                var cachePath = app.Host.CacheStorage.GetStorageForDirectory("videoThumbnailCache").GetFullPath($"{videoData.Id}-2.png");
+
+                using (var httpClient = new System.Net.Http.HttpClient())
+                {
+                    var imageBytes = await httpClient.GetByteArrayAsync(videoData.Snippet.Thumbnails.High.Url);
+                    await System.IO.File.WriteAllBytesAsync(cachePath, imageBytes);
+                }
+
+                SixLabors.ImageSharp.Image<Rgba32> bitmap = SixLabors.ImageSharp.Image.Load<Rgba32>(app.Host.CacheStorage.GetStorageForDirectory("videoThumbnailCache").GetFullPath($"{videoData.Id}-2.png"));
+
+                IBitmapHelper bitmapHelper = new BitmapHelper(bitmap);
+                PaletteBuilder paletteBuilder = new PaletteBuilder();
+                Palette palette = paletteBuilder.Generate(bitmapHelper);
+                int? rgbColor = palette.MutedSwatch.Rgb;
+                int? rgbTextColor = palette.MutedSwatch.TitleTextColor;
+
+                if (rgbColor != null && rgbTextColor != null)
+                {
+                    Color4 bgColor = Color.FromArgb((int)rgbColor);
+                    Color4 textColor = Color.FromArgb((int)rgbTextColor);
+                    bgLayer.Colour = ColourInfo.GradientHorizontal(bgColor, bgColor.Darken(1f));
+                    videoName.Colour = (textColor);
+                    desc.Colour = (textColor);
+                }
+            });
+        }
+
         public void UpdateVideo(string videoId)
         {
             Task.Run(async () =>
@@ -160,6 +199,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 Channel channelData = api.GetChannel(videoData.Snippet.ChannelId);
                 videoName.Text = api.GetLocalizedVideoTitle(videoData);
                 desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
+
+                GetPalette();
 
                 localeBindable.BindValueChanged(locale =>
                 {

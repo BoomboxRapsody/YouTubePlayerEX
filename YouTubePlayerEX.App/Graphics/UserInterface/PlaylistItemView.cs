@@ -4,6 +4,7 @@
 #nullable enable
 
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,11 +23,14 @@ using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Events;
 using osuTK;
 using osuTK.Graphics;
+using PaletteNet;
+using SixLabors.ImageSharp.PixelFormats;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics.Sprites;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
+using YouTubePlayerEX.App.Utils;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
@@ -58,6 +62,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private int index;
 
         public PlaylistItemView(int index)
+            : base(HoverSampleSet.Default)
         {
             this.index = index;
             Height = 110;
@@ -67,16 +72,17 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private TextureStore textureStore { get; set; } = null!;
 
         [BackgroundDependencyLoader]
-        private void load(OverlayColourProvider overlayColourProvider, AdaptiveColour colour)
+        private void load(OverlayColourProvider? overlayColourProvider, AdaptiveColour colour)
         {
             localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
 
             BorderColour = overlayColourProvider?.Highlight1 ?? colour.Yellow;
-            CornerRadius = 12;
+            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS;
             Masking = true;
-            Children = new Drawable[]
+
+#pragma warning disable CS8602 // null 가능 참조에 대한 역참조입니다.
+            base.Content.AddRange(new Drawable[]
             {
-                samples,
                 bgLayer = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
@@ -168,21 +174,18 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                     Colour = overlayColourProvider.Background1,
                                 },
                             }
-                        }
+                        },
                     }
                 }
-            };
+            });
+#pragma warning restore CS8602 // null 가능 참조에 대한 역참조입니다.
         }
 
         public Video Data = null!;
 
-        private HoverSounds samples = new HoverClickSounds(HoverSampleSet.Default);
-
         protected override void LoadComplete()
         {
             base.LoadComplete();
-            if (samples is HoverClickSounds hoverClickSounds)
-                hoverClickSounds.Enabled.Value = (ClickEvent != null);
         }
 
         public async Task GetThumbnail(string url, CancellationToken cancellationToken = default)
@@ -266,6 +269,42 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             return base.OnClick(e);
         }
 
+        public void GetPalette()
+        {
+            Task.Run(async () =>
+            {
+                var cachePath = app.Host.CacheStorage.GetStorageForDirectory("videoThumbnailCache").GetFullPath($"{Data.Id}-PlaylistItemView.png");
+
+                using (var httpClient = new System.Net.Http.HttpClient())
+                {
+                    var imageBytes = await httpClient.GetByteArrayAsync(Data.Snippet.Thumbnails.High.Url);
+                    await System.IO.File.WriteAllBytesAsync(cachePath, imageBytes);
+                }
+
+                SixLabors.ImageSharp.Image<Rgba32> bitmap = SixLabors.ImageSharp.Image.Load<Rgba32>(cachePath);
+
+                IBitmapHelper bitmapHelper = new BitmapHelper(bitmap);
+                PaletteBuilder paletteBuilder = new PaletteBuilder();
+                Palette palette = paletteBuilder.Generate(bitmapHelper);
+#pragma warning disable CS8602 // null 가능 참조에 대한 역참조입니다.
+                int? rgbColor = palette.MutedSwatch.Rgb;
+#pragma warning restore CS8602 // null 가능 참조에 대한 역참조입니다.
+                int? rgbTextColor = palette.MutedSwatch.TitleTextColor;
+
+                if (rgbColor != null && rgbTextColor != null)
+                {
+                    Color4 bgColor = Color.FromArgb((int)rgbColor);
+                    Color4 textColor = Color.FromArgb((int)rgbTextColor);
+
+                    bgLayer.Alpha = 1;
+                    bgLayer.Colour = ColourInfo.GradientHorizontal(bgColor, bgColor.Darken(1f));
+                    videoNameText.Colour = (textColor);
+                    channelNameText.Colour = (textColor);
+                    viewsText.Colour = (textColor);
+                }
+            });
+        }
+
         public void UpdateData()
         {
             Task.Run(async () =>
@@ -279,6 +318,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
                     Schedule(() =>
                     {
+                        GetPalette();
+
                         channelNameText.Text = api.GetLocalizedChannelTitle(channelData);
                         videoNameText.Text = api.GetLocalizedVideoTitle(videoData);
 #pragma warning disable CS8629 // Nullable 값 형식이 null일 수 있습니다.

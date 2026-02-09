@@ -53,6 +53,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private Bindable<string> localeBindable = new Bindable<string>();
 
         public YouTubeSearchResultView()
+            : base(HoverSampleSet.Default)
         {
             Height = 110;
         }
@@ -65,11 +66,10 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         {
             localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
 
-            CornerRadius = 12;
+            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS;
             Masking = true;
-            Children = new Drawable[]
+            base.Content.AddRange(new Drawable[]
             {
-                samples,
                 bgLayer = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
@@ -146,21 +146,17 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                     Colour = overlayColourProvider.Background1,
                                 },
                             }
-                        }
+                        },
                     }
                 }
-            };
+            });
         }
 
         public SearchResult Data = null!;
 
-        private HoverSounds samples = new HoverClickSounds(HoverSampleSet.Default);
-
         protected override void LoadComplete()
         {
             base.LoadComplete();
-            if (samples is HoverClickSounds hoverClickSounds)
-                hoverClickSounds.Enabled.Value = (ClickEvent != null);
         }
 
         public async Task GetThumbnail(string url, CancellationToken cancellationToken = default)

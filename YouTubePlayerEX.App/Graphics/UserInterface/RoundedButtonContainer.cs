@@ -12,9 +12,19 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
     {
         public Action<RoundedButtonContainer>? ClickAction { get; set; }
 
+        public RoundedButtonContainer()
+        {
+            Enabled.Value = true;
+        }
+
         private void trigger()
         {
             ClickAction?.Invoke(this);
+        }
+
+        protected override bool OnHover(HoverEvent e)
+        {
+            return base.OnHover(e);
         }
 
         protected override bool OnClick(ClickEvent e)

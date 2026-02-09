@@ -126,8 +126,6 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
             UpdatePreservePitch(config.Get<bool>(YTPlayerEXSetting.AdjustPitchOnSpeedChange));
 
-            drawableTrack.Completed += trackCompleted;
-
             SeekTo(resumeFromTime * 1000);
             Play();
 
@@ -152,6 +150,8 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             {
                 video.FillMode = value.NewValue == AspectRatioMethod.Letterbox ? FillMode.Fit : FillMode.Stretch;
             }, true);
+
+            drawableTrack.Completed += trackCompleted;
         }
 
         private IBindable<bool> uiVisible = null!;
