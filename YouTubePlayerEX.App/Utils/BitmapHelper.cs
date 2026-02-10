@@ -2,9 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 using PaletteNet;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
