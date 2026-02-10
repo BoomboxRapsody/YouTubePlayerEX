@@ -384,7 +384,7 @@ namespace YouTubePlayerEX.App.Screens
                             {
                                 videoMetadataDisplay = new VideoMetadataDisplayWithoutProfile
                                 {
-                                    Width = 400,
+                                    Width = 500,
                                     Height = 60,
                                     Origin = Anchor.TopLeft,
                                     Anchor = Anchor.TopLeft,
