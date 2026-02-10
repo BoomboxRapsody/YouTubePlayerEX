@@ -838,11 +838,6 @@ namespace YouTubePlayerEX.App.Screens
                                                             ShowRevertToDefaultButton = false,
                                                             CanBeShown = { BindTarget = displayDropdownCanBeShown }
                                                         },
-                                                        new SettingsItemV2(new FormEnumDropdown<UIFont>
-                                                        {
-                                                            Caption = YTPlayerEXStrings.UIFont,
-                                                            Current = appConfig.GetBindable<UIFont>(YTPlayerEXSetting.UIFont)
-                                                        }),
                                                         new SettingsItemV2(new FormEnumDropdown<ClosedCaptionLanguage>
                                                         {
                                                             Caption = YTPlayerEXStrings.CaptionLanguage,
