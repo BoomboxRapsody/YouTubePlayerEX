@@ -108,9 +108,9 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                             {
                                 videoName = new TruncatingSpriteText
                                 {
-                                    Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 20, weight: "Bold"),
+                                    Font = YouTubePlayerEXApp.TorusAlternate.With(size: 20, weight: "Bold"),
                                     RelativeSizeAxes = Axes.X,
-                                    Text = "please enter a video id!",
+                                    Text = "please choose a video!",
                                     Colour = overlayColourProvider.Content2,
                                 },
                                 desc = new TruncatingSpriteText

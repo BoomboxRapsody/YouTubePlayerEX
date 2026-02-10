@@ -5,12 +5,12 @@ using System.ComponentModel;
 
 namespace YouTubePlayerEX.App.Config
 {
-    public enum ClosedCaptionFont
+    public enum UIFont
     {
-        [Description("Noto Sans CJK")]
-        NotoSansCJK,
+        [Description("Torus")]
+        Torus,
 
-        [Description("Pretendard")]
-        Pretendard,
+        [Description("Cafe24 Syongsyong")]
+        Cafe24Syongsyong,
     }
 }

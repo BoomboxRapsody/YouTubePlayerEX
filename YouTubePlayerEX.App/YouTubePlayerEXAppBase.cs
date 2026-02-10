@@ -353,6 +353,7 @@ namespace YouTubePlayerEX.App
 
         protected virtual void InitialiseFonts()
         {
+            Logger.Log($"Initialising fonts to render fonts.");
             /*
             AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-Regular");
             AddFont(Resources, @"Fonts/UIFonts/Pretendard/Pretendard-RegularItalic");

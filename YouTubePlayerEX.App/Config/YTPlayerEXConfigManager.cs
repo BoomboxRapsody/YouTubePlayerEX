@@ -34,7 +34,7 @@ namespace YouTubePlayerEX.App.Config
             SetDefault(YTPlayerEXSetting.AdjustPitchOnSpeedChange, false);
             SetDefault(YTPlayerEXSetting.VideoDimLevel, 0, 0, .8, 0.01);
             SetDefault(YTPlayerEXSetting.ShowFpsDisplay, false);
-            SetDefault(YTPlayerEXSetting.ClosedCaptionFont, ClosedCaptionFont.NotoSansCJK);
+            SetDefault(YTPlayerEXSetting.UIFont, UIFont.Torus);
 
             SetDefault(YTPlayerEXSetting.Scaling, ScalingMode.Off);
             SetDefault(YTPlayerEXSetting.SafeAreaConsiderations, true);
@@ -97,7 +97,7 @@ namespace YouTubePlayerEX.App.Config
         AdjustPitchOnSpeedChange,
         VideoDimLevel,
         ShowFpsDisplay,
-        ClosedCaptionFont,
+        UIFont,
         Scaling,
         ScalingPositionX,
         ScalingPositionY,

@@ -732,7 +732,7 @@ namespace YouTubePlayerEX.App.Screens
                                     Anchor = Anchor.TopLeft,
                                     Text = YTPlayerEXStrings.LoadFromVideoId,
                                     Margin = new MarginPadding(16),
-                                    Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30, weight: "Bold"),
+                                    Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30, weight: "Bold"),
                                     Colour = overlayColourProvider.Content2,
                                 },
                                 loadBtn = new AdaptiveButton
@@ -783,7 +783,7 @@ namespace YouTubePlayerEX.App.Screens
                                     Anchor = Anchor.TopLeft,
                                     Text = YTPlayerEXStrings.Settings,
                                     Margin = new MarginPadding(16),
-                                    Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30, weight: "Bold"),
+                                    Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30, weight: "Bold"),
                                     Colour = overlayColourProvider.Content2,
                                 },
                                 new Container
@@ -810,7 +810,7 @@ namespace YouTubePlayerEX.App.Screens
                                                     Children = new Drawable[] {
                                                         new AdaptiveSpriteText
                                                         {
-                                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30),
+                                                            Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30),
                                                             Text = YTPlayerEXStrings.QuickAction,
                                                             Padding = new MarginPadding { Horizontal = 30, Bottom = 12 },
                                                             Colour = overlayColourProvider.Content2,
@@ -824,7 +824,7 @@ namespace YouTubePlayerEX.App.Screens
                                                         },
                                                         new AdaptiveSpriteText
                                                         {
-                                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30),
+                                                            Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30),
                                                             Text = YTPlayerEXStrings.General,
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             Colour = overlayColourProvider.Content2,
@@ -838,6 +838,11 @@ namespace YouTubePlayerEX.App.Screens
                                                             ShowRevertToDefaultButton = false,
                                                             CanBeShown = { BindTarget = displayDropdownCanBeShown }
                                                         },
+                                                        new SettingsItemV2(new FormEnumDropdown<UIFont>
+                                                        {
+                                                            Caption = YTPlayerEXStrings.UIFont,
+                                                            Current = appConfig.GetBindable<UIFont>(YTPlayerEXSetting.UIFont)
+                                                        }),
                                                         new SettingsItemV2(new FormEnumDropdown<ClosedCaptionLanguage>
                                                         {
                                                             Caption = YTPlayerEXStrings.CaptionLanguage,
@@ -890,7 +895,7 @@ namespace YouTubePlayerEX.App.Screens
                                                         }),
                                                         new AdaptiveSpriteText
                                                         {
-                                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30),
+                                                            Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30),
                                                             Text = YTPlayerEXStrings.Graphics,
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             Colour = overlayColourProvider.Content2,
@@ -1057,7 +1062,7 @@ namespace YouTubePlayerEX.App.Screens
                                                         },
                                                         new AdaptiveSpriteText
                                                         {
-                                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30),
+                                                            Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30),
                                                             Text = YTPlayerEXStrings.Screenshot,
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             Colour = overlayColourProvider.Content2,
@@ -1074,7 +1079,7 @@ namespace YouTubePlayerEX.App.Screens
                                                         }),
                                                         new AdaptiveSpriteText
                                                         {
-                                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30),
+                                                            Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30),
                                                             Text = YTPlayerEXStrings.Video,
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             Colour = overlayColourProvider.Content2,
@@ -1103,7 +1108,7 @@ namespace YouTubePlayerEX.App.Screens
                                                         },
                                                         new AdaptiveSpriteText
                                                         {
-                                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30),
+                                                            Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30),
                                                             Text = YTPlayerEXStrings.Audio,
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             Colour = overlayColourProvider.Content2,
@@ -1126,7 +1131,7 @@ namespace YouTubePlayerEX.App.Screens
                                                         }),
                                                         new AdaptiveSpriteText
                                                         {
-                                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30),
+                                                            Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30),
                                                             Text = YTPlayerEXStrings.Volume,
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             Colour = overlayColourProvider.Content2,
@@ -1151,7 +1156,7 @@ namespace YouTubePlayerEX.App.Screens
                                                         }),
                                                         new AdaptiveSpriteText
                                                         {
-                                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30),
+                                                            Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30),
                                                             Text = YTPlayerEXStrings.Debug,
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             Colour = overlayColourProvider.Content2,
@@ -1201,7 +1206,7 @@ namespace YouTubePlayerEX.App.Screens
                                                                 }
                                                             },
                                                         },
-                                                        new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30, weight: "Bold"))
+                                                        new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30, weight: "Bold"))
                                                         {
                                                             RelativeSizeAxes = Axes.X,
                                                             AutoSizeAxes = Axes.Y,
@@ -1531,7 +1536,7 @@ namespace YouTubePlayerEX.App.Screens
                                     Anchor = Anchor.TopLeft,
                                     Text = YTPlayerEXStrings.Comments("0"),
                                     Margin = new MarginPadding(16),
-                                    Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30, weight: "Bold"),
+                                    Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30, weight: "Bold"),
                                     Colour = overlayColourProvider.Content2,
                                 },
                                 new GridContainer
@@ -1634,7 +1639,7 @@ namespace YouTubePlayerEX.App.Screens
                                     Anchor = Anchor.TopLeft,
                                     Text = "Video info (Expert)",
                                     Margin = new MarginPadding(16),
-                                    Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30, weight: "Bold"),
+                                    Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30, weight: "Bold"),
                                     Colour = overlayColourProvider.Content2,
                                 },
                                 new Container
@@ -1694,7 +1699,7 @@ namespace YouTubePlayerEX.App.Screens
                                     Anchor = Anchor.TopLeft,
                                     Text = YTPlayerEXStrings.Search,
                                     Margin = new MarginPadding(16),
-                                    Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30, weight: "Bold"),
+                                    Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30, weight: "Bold"),
                                     Colour = overlayColourProvider.Content2,
                                 },
                                 new GridContainer
@@ -1798,7 +1803,7 @@ namespace YouTubePlayerEX.App.Screens
                                     Anchor = Anchor.TopLeft,
                                     Text = YTPlayerEXStrings.Report,
                                     Margin = new MarginPadding(16),
-                                    Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30, weight: "Bold"),
+                                    Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30, weight: "Bold"),
                                     Colour = overlayColourProvider.Content2,
                                 },
                                 new Container
@@ -1828,7 +1833,7 @@ namespace YouTubePlayerEX.App.Screens
                                                         new TruncatingSpriteText
                                                         {
                                                             Text = YTPlayerEXStrings.WhatsGoingOn,
-                                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 27, weight: "Bold"),
+                                                            Font = YouTubePlayerEXApp.TorusAlternate.With(size: 27, weight: "Bold"),
                                                             Colour = overlayColourProvider.Content2,
                                                         },
                                                         new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 17, weight: "Regular"))
@@ -1901,7 +1906,7 @@ namespace YouTubePlayerEX.App.Screens
                                     Anchor = Anchor.TopLeft,
                                     Text = YTPlayerEXStrings.Playlists,
                                     Margin = new MarginPadding(16),
-                                    Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30, weight: "Bold"),
+                                    Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30, weight: "Bold"),
                                     Colour = overlayColourProvider.Content2,
                                 },
                                 loadPlaylistOpenButton = new IconButton
@@ -1945,12 +1950,12 @@ namespace YouTubePlayerEX.App.Screens
                                                             Anchor = Anchor.TopLeft,
                                                             Text = "[playlist name]",
                                                             RelativeSizeAxes = Axes.X,
-                                                            Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30, weight: "Bold"),
+                                                            Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30, weight: "Bold"),
                                                             Colour = overlayColourProvider.Content2,
                                                         },
                                                         playlistAuthor = new LinkFlowContainer(f =>
                                                         {
-                                                            f.Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 16, weight: "SemiBold");
+                                                            f.Font = YouTubePlayerEXApp.TorusAlternate.With(size: 16, weight: "SemiBold");
                                                             f.Colour = overlayColourProvider.Background1;
                                                         })
                                                         {
@@ -2006,7 +2011,7 @@ namespace YouTubePlayerEX.App.Screens
                                     Anchor = Anchor.TopLeft,
                                     Text = YTPlayerEXStrings.LoadFromPlaylistId,
                                     Margin = new MarginPadding(16),
-                                    Font = YouTubePlayerEXApp.DefaultFont.With(family: "Torus-Alternate", size: 30, weight: "Bold"),
+                                    Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30, weight: "Bold"),
                                     Colour = overlayColourProvider.Content2,
                                 },
                                 loadPlaylistBtn = new AdaptiveButton

@@ -27,8 +27,6 @@ namespace YouTubePlayerEX.App.Graphics.Caption
         private ClosedCaptionLanguage captionLanguage;
         private Container captionContainer;
 
-        private Bindable<ClosedCaptionFont> closedCaptionFont = null!;
-
         private Bindable<float> bottomMargin = new Bindable<float>();
 
         public ClosedCaptionContainer(YouTubeVideoPlayer videoPlayer, ClosedCaptionTrack captionTrack, ClosedCaptionLanguage captionLanguage)
@@ -57,7 +55,6 @@ namespace YouTubePlayerEX.App.Graphics.Caption
         [BackgroundDependencyLoader]
         private void load(YTPlayerEXConfigManager config, SessionStatics sessionStatics)
         {
-            closedCaptionFont = config.GetBindable<ClosedCaptionFont>(YTPlayerEXSetting.ClosedCaptionFont);
             controlsVisibleState = sessionStatics.GetBindable<bool>(Static.IsControlVisible);
 
             Add(captionContainer = new Container

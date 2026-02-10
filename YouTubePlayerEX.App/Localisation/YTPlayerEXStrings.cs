@@ -680,6 +680,11 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString NextVideo => new TranslatableString(getKey(@"next_video"), "Next video");
 
+        /// <summary>
+        /// "Default UI font"
+        /// </summary>
+        public static LocalisableString UIFont => new TranslatableString(getKey(@"default_ui_font"), "Default UI font");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }
