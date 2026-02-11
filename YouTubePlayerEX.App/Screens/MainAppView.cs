@@ -9,10 +9,12 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using FFmpeg.AutoGen;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using osu.Framework;
@@ -199,6 +201,8 @@ namespace YouTubePlayerEX.App.Screens
         private Bindable<bool> updateButtonEnabled, fpsDisplay;
         private Bindable<AspectRatioMethod> aspectRatioMethod;
 
+        private AdaptiveTextFlowContainer debugInfo;
+
         private FormEnumDropdown<GCLatencyMode> latencyModeDropdown;
 
         private BufferedContainer videoScalingContainer;
@@ -214,6 +218,7 @@ namespace YouTubePlayerEX.App.Screens
         private AdaptiveColour colours { get; set; } = null!;
 
         private Bindable<SettingsNote.Data> videoQualityWarning = new Bindable<SettingsNote.Data>();
+        private Bindable<SettingsNote.Data> hwAccelNote = new Bindable<SettingsNote.Data>();
 
         private Bindable<float> scalingBackgroundDim = null!;
 
@@ -833,6 +838,7 @@ namespace YouTubePlayerEX.App.Screens
                                                         {
                                                             Caption = YTPlayerEXStrings.Language,
                                                             Current = game.CurrentLanguage,
+                                                            AlwaysShowSearchBar = true,
                                                         })
                                                         {
                                                             ShowRevertToDefaultButton = false,
@@ -1082,7 +1088,10 @@ namespace YouTubePlayerEX.App.Screens
                                                         new SettingsItemV2(hwAccelCheckbox = new FormCheckBox
                                                         {
                                                             Caption = YTPlayerEXStrings.UseHardwareAcceleration,
-                                                        }),
+                                                        })
+                                                        {
+                                                            Note = { BindTarget = hwAccelNote },
+                                                        },
                                                         new SettingsItemV2(new FormEnumDropdown<Config.VideoQuality>
                                                         {
                                                             Caption = YTPlayerEXStrings.VideoQuality,
@@ -1209,27 +1218,36 @@ namespace YouTubePlayerEX.App.Screens
                                                             TextAnchor = Anchor.Centre,
                                                             Colour = overlayColourProvider.Content2,
                                                         },
-                                                        gameVersion = new LinkFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 15))
+                                                        gameVersion = new LinkFlowContainer(f =>
+                                                        {
+                                                            f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 15);
+                                                            f.Colour = overlayColourProvider.Content2;
+                                                        })
                                                         {
                                                             RelativeSizeAxes = Axes.X,
                                                             AutoSizeAxes = Axes.Y,
                                                             TextAnchor = Anchor.Centre,
-                                                            Colour = overlayColourProvider.Content2,
                                                         },
-                                                        madeByText = new LinkFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 15))
+                                                        madeByText = new LinkFlowContainer(f =>
+                                                        {
+                                                            f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 15);
+                                                            f.Colour = overlayColourProvider.Content2;
+                                                        })
                                                         {
                                                             RelativeSizeAxes = Axes.X,
                                                             AutoSizeAxes = Axes.Y,
                                                             TextAnchor = Anchor.Centre,
-                                                            Colour = overlayColourProvider.Content2,
                                                         },
-                                                        dislikeCounterCredits = new LinkFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 15))
+                                                        dislikeCounterCredits = new LinkFlowContainer(f =>
+                                                        {
+                                                            f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 15);
+                                                            f.Colour = overlayColourProvider.Content2;
+                                                        })
                                                         {
                                                             RelativeSizeAxes = Axes.X,
                                                             AutoSizeAxes = Axes.Y,
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             TextAnchor = Anchor.Centre,
-                                                            Colour = overlayColourProvider.Content2,
                                                         },
                                                     }
                                                 }
@@ -2145,8 +2163,9 @@ namespace YouTubePlayerEX.App.Screens
 
             hwAccelCheckbox.Current.BindValueChanged(val =>
             {
+                hwAccelNote.Value = val.NewValue ? new SettingsNote.Data(YTPlayerEXStrings.HardwareAccelerationEnabledNote, SettingsNote.Type.Informational) : null;
                 hardwareVideoDecoder.Value = val.NewValue ? HardwareVideoDecoder.Any : HardwareVideoDecoder.None;
-            });
+            }, true);
 
             if (RuntimeInfo.OS != RuntimeInfo.Platform.Windows)
             {
@@ -4003,16 +4022,31 @@ namespace YouTubePlayerEX.App.Screens
                     }
                     else
                     {
-                        // Select best video stream (1080p60 in this example)
-                        videoStreamInfo = streamManifest
-                            .GetVideoOnlyStreams()
-                            .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
-                            .Where(s => s.VideoQuality.Label.Contains(app.ParseVideoQuality()))
-                            .TryGetWithHighestVideoQuality();
+                        try
+                        {
+                            // Select best video stream (1080p60 in this example)
+                            videoStreamInfo = streamManifest
+                                .GetVideoOnlyStreams()
+                                .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
+                                .Where(s => s.VideoQuality.Label.Contains(app.ParseVideoQuality()))
+                                .TryGetWithHighestVideoQuality();
 
-                        Toast toast = new Toast(YTPlayerEXStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
+                            Toast toast = new Toast(YTPlayerEXStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
 
-                        onScreenDisplay.Display(toast);
+                            onScreenDisplay.Display(toast);
+                        }
+                        catch
+                        {
+                            // Select best video stream (1080p60 in this example)
+                            videoStreamInfo = streamManifest
+                                .GetVideoOnlyStreams()
+                                .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
+                                .TryGetWithHighestVideoQuality();
+
+                            Toast toast = new Toast(YTPlayerEXStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
+
+                            onScreenDisplay.Display(toast);
+                        }
                     }
 
                     var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);

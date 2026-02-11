@@ -681,9 +681,9 @@ namespace YouTubePlayerEX.App.Localisation
         public static LocalisableString NextVideo => new TranslatableString(getKey(@"next_video"), "Next video");
 
         /// <summary>
-        /// "Default UI font"
+        /// "Hardware acceleration via GPU is enabled. If you experience any issues, please keep hardware acceleration disabled for now."
         /// </summary>
-        public static LocalisableString UIFont => new TranslatableString(getKey(@"default_ui_font"), "Default UI font");
+        public static LocalisableString HardwareAccelerationEnabledNote => new TranslatableString(getKey(@"hw_acceleration_enabled_note"), "Hardware acceleration via GPU is enabled. If you experience any issues, please keep hardware acceleration disabled for now.");
 
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
