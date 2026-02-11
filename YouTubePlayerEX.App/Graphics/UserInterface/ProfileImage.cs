@@ -62,7 +62,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 {
                     RelativeSizeAxes = Axes.Both,
                 },
-                loading = new LoadingLayer(true, false, true)
+                loading = new LoadingLayer(true, false, false)
             };
         }
 
