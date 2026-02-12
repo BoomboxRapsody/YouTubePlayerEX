@@ -9,12 +9,10 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Management;
 using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
-using FFmpeg.AutoGen;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using osu.Framework;
@@ -66,7 +64,6 @@ using YouTubePlayerEX.App.Overlays;
 using YouTubePlayerEX.App.Overlays.OSD;
 using YouTubePlayerEX.App.Updater;
 using YouTubePlayerEX.App.Utils;
-using static System.Net.Mime.MediaTypeNames;
 using static YouTubePlayerEX.App.YouTubePlayerEXApp;
 using Container = osu.Framework.Graphics.Containers.Container;
 using Language = YouTubePlayerEX.App.Localisation.Language;
@@ -91,6 +88,8 @@ namespace YouTubePlayerEX.App.Screens
         private VideoMetadataDisplayWithoutProfile videoMetadataDisplay;
         private VideoMetadataDisplay videoMetadataDisplayDetails;
         private RoundedButtonContainer commentOpenButtonDetails, likeButton;
+
+        private BackdropBlurContainer controlBackdrop;
 
         private LinkFlowContainer madeByText;
 
@@ -517,11 +516,21 @@ namespace YouTubePlayerEX.App.Screens
                                     },
                                     Children = new Drawable[]
                                     {
-                                        new Box
+                                        controlBackdrop = new BackdropBlurContainer
                                         {
                                             RelativeSizeAxes = Axes.Both,
+                                            MaskCutoff = 0.1f,
+                                            Masking = true,
+                                            BackdropTintStrength = 0.3f,
                                             Colour = overlayColourProvider.Background5,
-                                            Alpha = 1f,
+                                            EffectBufferScale = new Vector2(0.5f),
+                                            BlurSigma = new Vector2(10f),
+                                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
+                                            Child = new Box
+                                            {
+                                                RelativeSizeAxes = Axes.Both,
+                                                Alpha = .2f,
+                                            },
                                         },
                                         new FillFlowContainer {
                                             RelativeSizeAxes = Axes.Both,
@@ -2744,6 +2753,7 @@ namespace YouTubePlayerEX.App.Screens
             if (isControlVisible == true)
             {
                 isControlVisible = false;
+                controlBackdrop.BlurTo(new Vector2(0), 250);
                 uiContainer.FadeOutFromOne(250);
                 uiGradientContainer.FadeOutFromOne(250);
                 sessionStatics.GetBindable<bool>(Static.IsControlVisible).Value = false;
@@ -2804,6 +2814,7 @@ namespace YouTubePlayerEX.App.Screens
             if (isControlVisible == false)
             {
                 isControlVisible = true;
+                controlBackdrop.BlurTo(new Vector2(10), 125);
                 uiContainer.FadeInFromZero(125);
                 uiGradientContainer.FadeInFromZero(125);
                 sessionStatics.GetBindable<bool>(Static.IsControlVisible).Value = true;
