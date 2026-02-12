@@ -12,9 +12,9 @@
     <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.68.0.1869" />
     <PackageReference Include="Microsoft.Toolkit.HighPerformance" Version="7.1.2" />
     <PackageReference Include="NReco.VideoInfo" Version="1.2.1" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.10" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.3" />
     <PackageReference Include="SharpCompress" Version="0.39.0" />
-    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.73.0.4029" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.73.0.4053" />
     <PackageReference Include="Humanizer" Version="3.0.1" />
     <PackageReference Include="PaletteNet" Version="3.0.1" />
     <PackageReference Include="McEndu.FreeTypeSharp" Version="4.1.5" />
