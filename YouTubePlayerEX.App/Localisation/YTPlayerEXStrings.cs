@@ -733,7 +733,7 @@ namespace YouTubePlayerEX.App.Localisation
         /// <summary>
         /// "Wet mix"
         /// </summary>
-        public static LocalisableString EchoWetMix => new TranslatableString(getKey(@"echo_wet_mix"), "Wet mix");
+        public static LocalisableString EchoWetMix => new TranslatableString(getKey(@"echo_wet_mix"), "Wet mix"); //separated from reverb_wet_mix
 
         /// <summary>
         /// "Feedback"
