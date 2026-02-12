@@ -529,7 +529,7 @@ namespace YouTubePlayerEX.App.Screens
                                             Child = new Box
                                             {
                                                 RelativeSizeAxes = Axes.Both,
-                                                Alpha = .2f,
+                                                Alpha = .35f,
                                             },
                                         },
                                         new FillFlowContainer {
