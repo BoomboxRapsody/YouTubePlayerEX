@@ -731,6 +731,11 @@ namespace YouTubePlayerEX.App.Localisation
         public static LocalisableString DryMix => new TranslatableString(getKey(@"echo_dry_mix"), "Dry mix");
 
         /// <summary>
+        /// "Wet mix"
+        /// </summary>
+        public static LocalisableString EchoWetMix => new TranslatableString(getKey(@"echo_wet_mix"), "Wet mix");
+
+        /// <summary>
         /// "Feedback"
         /// </summary>
         public static LocalisableString EchoFeedback => new TranslatableString(getKey(@"echo_feedback"), "Feedback");
@@ -754,11 +759,6 @@ namespace YouTubePlayerEX.App.Localisation
         /// "Distortion volume"
         /// </summary>
         public static LocalisableString DistortionVolume => new TranslatableString(getKey(@"distortion_volume"), "Distortion volume");
-
-        /// <summary>
-        /// "Distortion drive"
-        /// </summary>
-        public static LocalisableString DistortionDrive => new TranslatableString(getKey(@"distortion_drive"), "Distortion drive");
 
         private static string getKey(string key) => $@"{prefix}:{key}";
     }

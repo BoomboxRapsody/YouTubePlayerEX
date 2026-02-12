@@ -2224,7 +2224,7 @@ namespace YouTubePlayerEX.App.Screens
                                                                 }),
                                                                 new SettingsItemV2(new FormSliderBar<float>
                                                                 {
-                                                                    Caption = YTPlayerEXStrings.WetMix,
+                                                                    Caption = YTPlayerEXStrings.EchoWetMix,
                                                                     Current = audioEffectsConfig.GetBindable<float>(AudioEffectsSetting.EchoWetMix),
                                                                     LabelFormat = f => $"{f - 2}",
                                                                 }),
@@ -2260,11 +2260,6 @@ namespace YouTubePlayerEX.App.Screens
                                                                     Caption = YTPlayerEXStrings.DistortionVolume,
                                                                     Current = audioEffectsConfig.GetBindable<float>(AudioEffectsSetting.DistortionVolume),
                                                                     DisplayAsPercentage = true,
-                                                                }),
-                                                                new SettingsItemV2(new FormSliderBar<float>
-                                                                {
-                                                                    Caption = YTPlayerEXStrings.DistortionDrive,
-                                                                    Current = audioEffectsConfig.GetBindable<float>(AudioEffectsSetting.DistortionDrive),
                                                                 }),
                                                             }
                                                         },
