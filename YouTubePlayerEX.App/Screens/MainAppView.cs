@@ -517,11 +517,16 @@ namespace YouTubePlayerEX.App.Screens
                                     },
                                     Children = new Drawable[]
                                     {
+                                        new BackdropBlurContainer
+                                        {
+                                            RelativeSizeAxes = Axes.Both,
+                                            BlurSigma = new Vector2(2),
+                                        },
                                         new Box
                                         {
                                             RelativeSizeAxes = Axes.Both,
                                             Colour = overlayColourProvider.Background5,
-                                            Alpha = 1f,
+                                            Alpha = 0.2f,
                                         },
                                         new FillFlowContainer {
                                             RelativeSizeAxes = Axes.Both,
