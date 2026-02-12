@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ManagedBass.Fx;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
@@ -65,6 +66,7 @@ namespace YouTubePlayerEX.App
         private IBindable<LocalisationParameters> localisationParameters = null!;
 
         protected YTPlayerEXConfigManager LocalConfig { get; private set; }
+        protected AudioEffectsConfigManager AudioEffectsConfig { get; private set; }
 
         protected GlobalCursorDisplay GlobalCursorDisplay { get; private set; }
 
@@ -174,6 +176,7 @@ namespace YouTubePlayerEX.App
         {
             base.Dispose(isDisposing);
 
+            AudioEffectsConfig?.Dispose();
             LocalConfig?.Dispose();
 
             if (Host != null)
@@ -259,6 +262,7 @@ namespace YouTubePlayerEX.App
             dependencies.Cache(TranslateAPI = new GoogleTranslate(this, frameworkConfig));
             dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig, TranslateAPI, LocalConfig, GoogleOAuth2, !IsDeployedBuild));
 
+            dependencies.Cache(AudioEffectsConfig = new AudioEffectsConfigManager(Storage));
             dependencies.Cache(SessionStatics = new SessionStatics());
 
             GlobalActionContainer globalBindings;
@@ -316,7 +320,182 @@ namespace YouTubePlayerEX.App
             });
 
             Logger.Log($"Scaling container loaded");
+
+            trackAudioEffects();
         }
+
+        #region Audio Effects
+        private Bindable<bool> enableReverb = null!;
+        private Bindable<bool> rotateEnabled = null!;
+        private Bindable<bool> echoEnabled = null!;
+        private Bindable<bool> distortionEnabled = null!;
+
+        private Bindable<float> reverbWetMix = null!;
+        private Bindable<float> reverbRoomSize = null!;
+        private Bindable<float> reverbDamp = null!;
+        private Bindable<float> reverbStereoWidth = null!;
+
+        private Bindable<float> echoDryMix = null!;
+        private Bindable<float> echoWetMix = null!;
+        private Bindable<float> echoFeedback = null!;
+        private Bindable<float> echoDelay = null!;
+
+        private Bindable<float> rotateRate = null!;
+
+        private Bindable<float> distortionVolume = null!;
+        private Bindable<float> distortionDrive = null!;
+
+        private ReverbParameters reverbParameters = new ReverbParameters();
+        private RotateParameters rotateParameters = new RotateParameters();
+        private EchoParameters echoParameters = new EchoParameters();
+        private DistortionParameters distortionParameters = new DistortionParameters();
+
+        private void trackAudioEffects()
+        {
+            #region Reverb
+            enableReverb = AudioEffectsConfig.GetBindable<bool>(AudioEffectsSetting.ReverbEnabled);
+            enableReverb.BindValueChanged(enabled =>
+            {
+                if (enabled.NewValue)
+                    Audio.TrackMixer.AddEffect(reverbParameters);
+                else
+                    Audio.TrackMixer.RemoveEffect(reverbParameters);
+            }, true);
+
+            reverbWetMix = AudioEffectsConfig.GetBindable<float>(AudioEffectsSetting.ReverbWetMix);
+            reverbWetMix.BindValueChanged(value =>
+            {
+                reverbParameters.fWetMix = value.NewValue;
+
+                if (enableReverb.Value)
+                    Audio.TrackMixer.UpdateEffect(reverbParameters);
+            }, true);
+
+            reverbRoomSize = AudioEffectsConfig.GetBindable<float>(AudioEffectsSetting.ReverbRoomSize);
+            reverbRoomSize.BindValueChanged(value =>
+            {
+                reverbParameters.fRoomSize = value.NewValue;
+
+                if (enableReverb.Value)
+                    Audio.TrackMixer.UpdateEffect(reverbParameters);
+            }, true);
+
+            reverbDamp = AudioEffectsConfig.GetBindable<float>(AudioEffectsSetting.ReverbDamp);
+            reverbDamp.BindValueChanged(value =>
+            {
+                reverbParameters.fDamp = value.NewValue;
+
+                if (enableReverb.Value)
+                    Audio.TrackMixer.UpdateEffect(reverbParameters);
+            }, true);
+
+            reverbStereoWidth = AudioEffectsConfig.GetBindable<float>(AudioEffectsSetting.ReverbStereoWidth);
+            reverbStereoWidth.BindValueChanged(value =>
+            {
+                reverbParameters.fWidth = value.NewValue;
+
+                if (enableReverb.Value)
+                    Audio.TrackMixer.UpdateEffect(reverbParameters);
+            }, true);
+            #endregion
+
+            #region Rotate
+            rotateEnabled = AudioEffectsConfig.GetBindable<bool>(AudioEffectsSetting.RotateEnabled);
+            rotateEnabled.BindValueChanged(enabled =>
+            {
+                if (enabled.NewValue)
+                    Audio.TrackMixer.AddEffect(rotateParameters);
+                else
+                    Audio.TrackMixer.RemoveEffect(rotateParameters);
+            }, true);
+
+            rotateRate = AudioEffectsConfig.GetBindable<float>(AudioEffectsSetting.RotateRate);
+            rotateRate.BindValueChanged(value =>
+            {
+                rotateParameters.fRate = value.NewValue;
+
+                if (rotateEnabled.Value)
+                    Audio.TrackMixer.UpdateEffect(rotateParameters);
+            }, true);
+            #endregion
+
+            #region Echo
+            echoEnabled = AudioEffectsConfig.GetBindable<bool>(AudioEffectsSetting.EchoEnabled);
+            echoEnabled.BindValueChanged(enabled =>
+            {
+                if (enabled.NewValue)
+                    Audio.TrackMixer.AddEffect(echoParameters);
+                else
+                    Audio.TrackMixer.RemoveEffect(echoParameters);
+            }, true);
+
+            echoDryMix = AudioEffectsConfig.GetBindable<float>(AudioEffectsSetting.EchoDryMix);
+            echoDryMix.BindValueChanged(value =>
+            {
+                echoParameters.fDryMix = value.NewValue - 2;
+
+                if (echoEnabled.Value)
+                    Audio.TrackMixer.UpdateEffect(echoParameters);
+            }, true);
+
+            echoWetMix = AudioEffectsConfig.GetBindable<float>(AudioEffectsSetting.EchoWetMix);
+            echoWetMix.BindValueChanged(value =>
+            {
+                echoParameters.fWetMix = value.NewValue - 2;
+
+                if (echoEnabled.Value)
+                    Audio.TrackMixer.UpdateEffect(echoParameters);
+            }, true);
+
+            echoFeedback = AudioEffectsConfig.GetBindable<float>(AudioEffectsSetting.EchoFeedback);
+            echoFeedback.BindValueChanged(value =>
+            {
+                echoParameters.fFeedback = value.NewValue - 1;
+
+                if (echoEnabled.Value)
+                    Audio.TrackMixer.UpdateEffect(echoParameters);
+            }, true);
+
+            echoDelay = AudioEffectsConfig.GetBindable<float>(AudioEffectsSetting.EchoDelay);
+            echoDelay.BindValueChanged(value =>
+            {
+                echoParameters.fDelay = value.NewValue;
+
+                if (echoEnabled.Value)
+                    Audio.TrackMixer.UpdateEffect(echoParameters);
+            }, true);
+            #endregion
+
+            #region Distortion
+            distortionEnabled = AudioEffectsConfig.GetBindable<bool>(AudioEffectsSetting.DistortionEnabled);
+            distortionEnabled.BindValueChanged(enabled =>
+            {
+                if (enabled.NewValue)
+                    Audio.TrackMixer.AddEffect(distortionParameters);
+                else
+                    Audio.TrackMixer.RemoveEffect(distortionParameters);
+            }, true);
+
+            distortionVolume = AudioEffectsConfig.GetBindable<float>(AudioEffectsSetting.DistortionVolume);
+            distortionVolume.BindValueChanged(value =>
+            {
+                distortionParameters.fVolume = value.NewValue;
+
+                if (distortionEnabled.Value)
+                    Audio.TrackMixer.UpdateEffect(distortionParameters);
+            }, true);
+
+            distortionDrive = AudioEffectsConfig.GetBindable<float>(AudioEffectsSetting.DistortionDrive);
+            distortionDrive.BindValueChanged(value =>
+            {
+                distortionParameters.fDrive = value.NewValue;
+
+                if (distortionEnabled.Value)
+                    Audio.TrackMixer.UpdateEffect(distortionParameters);
+            }, true);
+            #endregion
+        }
+        #endregion
 
         protected virtual Container CreateScalingContainer() => new DrawSizePreservingFillContainer();
 
