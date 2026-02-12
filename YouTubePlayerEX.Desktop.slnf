@@ -7,8 +7,6 @@
 	  "YouTubePlayerEX-framework\\osu.Framework\\osu.Framework.csproj",
 	  "YouTubePlayerEX-framework\\osu.Framework.NativeLibs\\osu.Framework.NativeLibs.csproj",
       "YouTubePlayerEX.App.Tests\\YouTubePlayerEX.App.Tests.csproj",
-	  "YoutubeExplode\\YoutubeExplode\\YoutubeExplode.csproj",
-	  "YoutubeExplode\\YoutubeExplode.Converter\\YoutubeExplode.Converter.csproj"
     ]
   }
 }
