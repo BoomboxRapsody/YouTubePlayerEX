@@ -2670,7 +2670,6 @@ namespace YouTubePlayerEX.App.Screens
                 }
                 catch
                 {
-
                 }
             }
 
@@ -2704,7 +2703,6 @@ namespace YouTubePlayerEX.App.Screens
                 }
                 catch
                 {
-
                 }
             }
         }
