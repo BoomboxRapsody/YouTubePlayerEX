@@ -685,6 +685,81 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString HardwareAccelerationEnabledNote => new TranslatableString(getKey(@"hw_acceleration_enabled_note"), "Hardware acceleration via GPU is enabled. If you experience any issues, please keep hardware acceleration disabled for now.");
 
+        /// <summary>
+        /// "Audio effects (Beta)"
+        /// </summary>
+        public static LocalisableString AudioEffects => new TranslatableString(getKey(@"audio_effects"), "Audio effects (Beta)");
+
+        /// <summary>
+        /// "Reverb"
+        /// </summary>
+        public static LocalisableString ReverbEffect => new TranslatableString(getKey(@"reverb"), "Reverb");
+
+        /// <summary>
+        /// "Wet mix"
+        /// </summary>
+        public static LocalisableString WetMix => new TranslatableString(getKey(@"reverb_wet_mix"), "Wet mix");
+
+        /// <summary>
+        /// "Stereo width"
+        /// </summary>
+        public static LocalisableString StereoWidth => new TranslatableString(getKey(@"reverb_stereo_width"), "Stereo width");
+
+        /// <summary>
+        /// "High frequency damping"
+        /// </summary>
+        public static LocalisableString HighFreqDamp => new TranslatableString(getKey(@"reverb_high_frequency_damping"), "High frequency damping");
+
+        /// <summary>
+        /// "Room size"
+        /// </summary>
+        public static LocalisableString RoomSize => new TranslatableString(getKey(@"reverb_room_size"), "Room size");
+
+        /// <summary>
+        /// "Rotate rate"
+        /// </summary>
+        public static LocalisableString RotateParameters_fRate => new TranslatableString(getKey(@"audio_effect_rotate_rate"), "Rotate rate");
+
+        /// <summary>
+        /// "3D rotate effect"
+        /// </summary>
+        public static LocalisableString RotateParameters_Enabled => new TranslatableString(getKey(@"audio_effect_rotate_enabled"), "3D rotate effect");
+
+        /// <summary>
+        /// "Dry mix"
+        /// </summary>
+        public static LocalisableString DryMix => new TranslatableString(getKey(@"echo_dry_mix"), "Dry mix");
+
+        /// <summary>
+        /// "Feedback"
+        /// </summary>
+        public static LocalisableString EchoFeedback => new TranslatableString(getKey(@"echo_feedback"), "Feedback");
+
+        /// <summary>
+        /// "Delay"
+        /// </summary>
+        public static LocalisableString EchoDelay => new TranslatableString(getKey(@"echo_delay"), "Delay");
+
+        /// <summary>
+        /// "Echo"
+        /// </summary>
+        public static LocalisableString EchoEffect => new TranslatableString(getKey(@"echo_effect"), "Echo");
+
+        /// <summary>
+        /// "Distortion"
+        /// </summary>
+        public static LocalisableString DistortionEffect => new TranslatableString(getKey(@"distortion_effect"), "Distortion");
+
+        /// <summary>
+        /// "Distortion volume"
+        /// </summary>
+        public static LocalisableString DistortionVolume => new TranslatableString(getKey(@"distortion_volume"), "Distortion volume");
+
+        /// <summary>
+        /// "Distortion drive"
+        /// </summary>
+        public static LocalisableString DistortionDrive => new TranslatableString(getKey(@"distortion_drive"), "Distortion drive");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

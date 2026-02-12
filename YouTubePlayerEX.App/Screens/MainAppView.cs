@@ -86,8 +86,8 @@ namespace YouTubePlayerEX.App.Screens
         private Container uiContainer;
         private Container uiGradientContainer;
         private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer, reportAbuseOverlay, loadPlaylistContainer;
-        private SideOverlayContainer playlistOverlay;
-        private AdaptiveButtonWithShadow loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton, searchOpenButton, reportOpenButton, playlistOpenButton;
+        private SideOverlayContainer playlistOverlay, audioEffectsOverlay;
+        private AdaptiveButtonWithShadow loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton, searchOpenButton, reportOpenButton, playlistOpenButton, audioEffectsOpenButton;
         private VideoMetadataDisplayWithoutProfile videoMetadataDisplay;
         private VideoMetadataDisplay videoMetadataDisplayDetails;
         private RoundedButtonContainer commentOpenButtonDetails, likeButton;
@@ -201,6 +201,9 @@ namespace YouTubePlayerEX.App.Screens
         private Bindable<bool> updateButtonEnabled, fpsDisplay;
         private Bindable<AspectRatioMethod> aspectRatioMethod;
 
+        [Resolved]
+        private AudioEffectsConfigManager audioEffectsConfig { get; set; } = null!;
+
         private AdaptiveTextFlowContainer debugInfo;
 
         private FormEnumDropdown<GCLatencyMode> latencyModeDropdown;
@@ -233,6 +236,10 @@ namespace YouTubePlayerEX.App.Screens
 
         private Bindable<double> videoVolume;
 
+        //effects
+        private Bindable<bool> reverbEnabled, rotateEnabled, echoEnabled, distortionEnabled;
+        private FillFlowContainer reverbSettings, rotateSettings, echoSettings, distortionSettings;
+
         protected T GetShaderByType<T>() where T : InternalShader, new()
             => shaderManager.LocalInternalShader<T>();
 
@@ -254,6 +261,11 @@ namespace YouTubePlayerEX.App.Screens
 
             var renderer = config.GetBindable<RendererType>(FrameworkSetting.Renderer);
             automaticRendererInUse = renderer.Value == RendererType.Automatic;
+
+            reverbEnabled = audioEffectsConfig.GetBindable<bool>(AudioEffectsSetting.ReverbEnabled);
+            rotateEnabled = audioEffectsConfig.GetBindable<bool>(AudioEffectsSetting.RotateEnabled);
+            echoEnabled = audioEffectsConfig.GetBindable<bool>(AudioEffectsSetting.EchoEnabled);
+            distortionEnabled = audioEffectsConfig.GetBindable<bool>(AudioEffectsSetting.DistortionEnabled);
 
             scalingMode = appConfig.GetBindable<ScalingMode>(YTPlayerEXSetting.Scaling);
             scalingSizeX = appConfig.GetBindable<float>(YTPlayerEXSetting.ScalingSizeX);
@@ -474,6 +486,20 @@ namespace YouTubePlayerEX.App.Screens
                                     Icon = FontAwesome.Solid.List,
                                     IconScale = new Vector2(1.2f),
                                     TooltipText = YTPlayerEXStrings.Playlists,
+                                },
+                                audioEffectsOpenButton = new IconButtonWithShadow
+                                {
+                                    Enabled = { Value = true },
+                                    Margin = new MarginPadding
+                                    {
+                                        Right = 288,
+                                    },
+                                    Origin = Anchor.TopRight,
+                                    Anchor = Anchor.TopRight,
+                                    Size = new Vector2(40, 40),
+                                    Icon = FontAwesome.Solid.VolumeUp,
+                                    IconScale = new Vector2(1.2f),
+                                    TooltipText = YTPlayerEXStrings.AudioEffects,
                                 },
                                 new Container {
                                     Anchor = Anchor.BottomCentre,
@@ -2047,6 +2073,200 @@ namespace YouTubePlayerEX.App.Screens
                                 },
                             }
                         },
+                        audioEffectsOverlay = new SideOverlayContainer
+                        {
+                            Size = new Vector2(1f, .95f),
+                            Width = 400,
+                            RelativeSizeAxes = Axes.Y,
+                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
+                            Masking = true,
+                            Origin = Anchor.CentreRight,
+                            Anchor = Anchor.CentreRight,
+                            Margin = new MarginPadding
+                            {
+                                Right = 16,
+                            },
+                            EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                            {
+                                Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                Colour = Color4.Black.Opacity(0.25f),
+                                Offset = new Vector2(0, 2),
+                                Radius = 16,
+                            },
+                            Children = new Drawable[]
+                            {
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Colour = overlayColourProvider.Background5,
+                                },
+                                new AdaptiveSpriteText
+                                {
+                                    Origin = Anchor.TopLeft,
+                                    Anchor = Anchor.TopLeft,
+                                    Text = YTPlayerEXStrings.AudioEffects,
+                                    Margin = new MarginPadding(16),
+                                    Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30, weight: "Bold"),
+                                    Colour = overlayColourProvider.Content2,
+                                },
+                                new Container
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Padding = new MarginPadding
+                                    {
+                                        Horizontal = 16,
+                                        Bottom = 16,
+                                        Top = 56,
+                                    },
+                                    Children = new Drawable[] {
+                                        new AdaptiveScrollContainer
+                                        {
+                                            RelativeSizeAxes = Axes.Both,
+                                            ScrollbarVisible = false,
+                                            Children = new Drawable[]
+                                            {
+                                                new FillFlowContainer
+                                                {
+                                                    RelativeSizeAxes = Axes.X,
+                                                    AutoSizeAxes = Axes.Y,
+                                                    Direction = FillDirection.Vertical,
+                                                    Spacing = new Vector2(4),
+                                                    Children = new Drawable[]
+                                                    {
+                                                        new SettingsItemV2(new FormCheckBox
+                                                        {
+                                                            Caption = YTPlayerEXStrings.ReverbEffect,
+                                                            Current = reverbEnabled,
+                                                        }),
+                                                        reverbSettings = new FillFlowContainer
+                                                        {
+                                                            Direction = FillDirection.Vertical,
+                                                            RelativeSizeAxes = Axes.X,
+                                                            AutoSizeAxes = Axes.Y,
+                                                            Masking = true,
+                                                            Spacing = new Vector2(0, 4),
+                                                            Children = new Drawable[]
+                                                            {
+                                                                new SettingsItemV2(new FormSliderBar<float>
+                                                                {
+                                                                    Caption = YTPlayerEXStrings.WetMix,
+                                                                    Current = audioEffectsConfig.GetBindable<float>(AudioEffectsSetting.ReverbWetMix),
+                                                                }),
+                                                                new SettingsItemV2(new FormSliderBar<float>
+                                                                {
+                                                                    Caption = YTPlayerEXStrings.StereoWidth,
+                                                                    Current = audioEffectsConfig.GetBindable<float>(AudioEffectsSetting.ReverbStereoWidth),
+                                                                    DisplayAsPercentage = true,
+                                                                }),
+                                                                new SettingsItemV2(new FormSliderBar<float>
+                                                                {
+                                                                    Caption = YTPlayerEXStrings.HighFreqDamp,
+                                                                    Current = audioEffectsConfig.GetBindable<float>(AudioEffectsSetting.ReverbDamp),
+                                                                }),
+                                                                new SettingsItemV2(new FormSliderBar<float>
+                                                                {
+                                                                    Caption = YTPlayerEXStrings.RoomSize,
+                                                                    Current = audioEffectsConfig.GetBindable<float>(AudioEffectsSetting.ReverbRoomSize),
+                                                                    DisplayAsPercentage = true,
+                                                                }),
+                                                            }
+                                                        },
+                                                        new SettingsItemV2(new FormCheckBox
+                                                        {
+                                                            Caption = YTPlayerEXStrings.RotateParameters_Enabled,
+                                                            Current = rotateEnabled,
+                                                        }),
+                                                        rotateSettings = new FillFlowContainer
+                                                        {
+                                                            Direction = FillDirection.Vertical,
+                                                            RelativeSizeAxes = Axes.X,
+                                                            AutoSizeAxes = Axes.Y,
+                                                            Masking = true,
+                                                            Spacing = new Vector2(0, 4),
+                                                            Children = new Drawable[]
+                                                            {
+                                                                new SettingsItemV2(new FormSliderBar<float>
+                                                                {
+                                                                    Caption = YTPlayerEXStrings.RotateParameters_fRate,
+                                                                    Current = audioEffectsConfig.GetBindable<float>(AudioEffectsSetting.RotateRate),
+                                                                    DisplayAsPercentage = true,
+                                                                }),
+                                                            }
+                                                        },
+                                                        new SettingsItemV2(new FormCheckBox
+                                                        {
+                                                            Caption = YTPlayerEXStrings.EchoEffect,
+                                                            Current = echoEnabled,
+                                                        }),
+                                                        echoSettings = new FillFlowContainer
+                                                        {
+                                                            Direction = FillDirection.Vertical,
+                                                            RelativeSizeAxes = Axes.X,
+                                                            AutoSizeAxes = Axes.Y,
+                                                            Masking = true,
+                                                            Spacing = new Vector2(0, 4),
+                                                            Children = new Drawable[]
+                                                            {
+                                                                new SettingsItemV2(new FormSliderBar<float>
+                                                                {
+                                                                    Caption = YTPlayerEXStrings.DryMix,
+                                                                    Current = audioEffectsConfig.GetBindable<float>(AudioEffectsSetting.EchoDryMix),
+                                                                    LabelFormat = f => $"{f - 2}",
+                                                                }),
+                                                                new SettingsItemV2(new FormSliderBar<float>
+                                                                {
+                                                                    Caption = YTPlayerEXStrings.WetMix,
+                                                                    Current = audioEffectsConfig.GetBindable<float>(AudioEffectsSetting.EchoWetMix),
+                                                                    LabelFormat = f => $"{f - 2}",
+                                                                }),
+                                                                new SettingsItemV2(new FormSliderBar<float>
+                                                                {
+                                                                    Caption = YTPlayerEXStrings.EchoFeedback,
+                                                                    Current = audioEffectsConfig.GetBindable<float>(AudioEffectsSetting.EchoFeedback),
+                                                                    LabelFormat = f => $"{f - 1}",
+                                                                }),
+                                                                new SettingsItemV2(new FormSliderBar<float>
+                                                                {
+                                                                    Caption = YTPlayerEXStrings.EchoDelay,
+                                                                    Current = audioEffectsConfig.GetBindable<float>(AudioEffectsSetting.EchoDelay),
+                                                                }),
+                                                            }
+                                                        },
+                                                        new SettingsItemV2(new FormCheckBox
+                                                        {
+                                                            Caption = YTPlayerEXStrings.DistortionEffect,
+                                                            Current = distortionEnabled,
+                                                        }),
+                                                        distortionSettings = new FillFlowContainer
+                                                        {
+                                                            Direction = FillDirection.Vertical,
+                                                            RelativeSizeAxes = Axes.X,
+                                                            AutoSizeAxes = Axes.Y,
+                                                            Masking = true,
+                                                            Spacing = new Vector2(0, 4),
+                                                            Children = new Drawable[]
+                                                            {
+                                                                new SettingsItemV2(new FormSliderBar<float>
+                                                                {
+                                                                    Caption = YTPlayerEXStrings.DistortionVolume,
+                                                                    Current = audioEffectsConfig.GetBindable<float>(AudioEffectsSetting.DistortionVolume),
+                                                                    DisplayAsPercentage = true,
+                                                                }),
+                                                                new SettingsItemV2(new FormSliderBar<float>
+                                                                {
+                                                                    Caption = YTPlayerEXStrings.DistortionDrive,
+                                                                    Current = audioEffectsConfig.GetBindable<float>(AudioEffectsSetting.DistortionDrive),
+                                                                }),
+                                                            }
+                                                        },
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
                         new Container
                         {
                             RelativeSizeAxes = Axes.Both,
@@ -2072,6 +2292,7 @@ namespace YouTubePlayerEX.App.Screens
             reportAbuseOverlay.Hide();
             playlistOverlay.Hide();
             loadPlaylistContainer.Hide();
+            audioEffectsOverlay.Hide();
 
             madeByText.AddText("made by ");
             madeByText.AddLink("BoomboxRapsody", "https://github.com/BoomboxRapsody");
@@ -2181,6 +2402,7 @@ namespace YouTubePlayerEX.App.Screens
             overlayContainers.Add(reportAbuseOverlay);
             overlayContainers.Add(playlistOverlay);
             overlayContainers.Add(loadPlaylistContainer);
+            overlayContainers.Add(audioEffectsOverlay);
 
             playlistName.Text = "please choose a playlist!";
             playlistAuthor.Text = "[no metadata available]";
@@ -2330,6 +2552,43 @@ namespace YouTubePlayerEX.App.Screens
             });
             updateScalingModeVisibility();
 
+            reverbEnabled.BindValueChanged(_ =>
+            {
+                reverbSettings.ClearTransforms();
+                reverbSettings.AutoSizeDuration = 400;
+                reverbSettings.AutoSizeEasing = Easing.OutQuint;
+
+                updateAudioEffectsVisibility();
+            });
+
+            rotateEnabled.BindValueChanged(_ =>
+            {
+                rotateSettings.ClearTransforms();
+                rotateSettings.AutoSizeDuration = 400;
+                rotateSettings.AutoSizeEasing = Easing.OutQuint;
+
+                updateAudioEffectsVisibility();
+            });
+
+            echoEnabled.BindValueChanged(_ =>
+            {
+                echoSettings.ClearTransforms();
+                echoSettings.AutoSizeDuration = 400;
+                echoSettings.AutoSizeEasing = Easing.OutQuint;
+
+                updateAudioEffectsVisibility();
+            });
+
+            distortionEnabled.BindValueChanged(_ =>
+            {
+                distortionSettings.ClearTransforms();
+                distortionSettings.AutoSizeDuration = 400;
+                distortionSettings.AutoSizeEasing = Easing.OutQuint;
+
+                updateAudioEffectsVisibility();
+            });
+            updateAudioEffectsVisibility();
+
             videoProgress.BindValueChanged(seek =>
             {
                 if (seekbar.IsDragged)
@@ -2408,6 +2667,40 @@ namespace YouTubePlayerEX.App.Screens
                             item.CanBeShown.Value = scalingMode.Value != ScalingMode.Off;
                         }
                     }
+                }
+                catch
+                {
+
+                }
+            }
+
+            void updateAudioEffectsVisibility()
+            {
+                try
+                {
+                    //reverb
+                    if (reverbEnabled.Value == false)
+                        reverbSettings.ResizeHeightTo(0, 400, Easing.OutQuint);
+
+                    reverbSettings.AutoSizeAxes = reverbEnabled.Value != false ? Axes.Y : Axes.None;
+
+                    //rotate
+                    if (rotateEnabled.Value == false)
+                        rotateSettings.ResizeHeightTo(0, 400, Easing.OutQuint);
+
+                    rotateSettings.AutoSizeAxes = rotateEnabled.Value != false ? Axes.Y : Axes.None;
+
+                    //echo
+                    if (echoEnabled.Value == false)
+                        echoSettings.ResizeHeightTo(0, 400, Easing.OutQuint);
+
+                    echoSettings.AutoSizeAxes = echoEnabled.Value != false ? Axes.Y : Axes.None;
+
+                    //distortion
+                    if (distortionEnabled.Value == false)
+                        distortionSettings.ResizeHeightTo(0, 400, Easing.OutQuint);
+
+                    distortionSettings.AutoSizeAxes = distortionEnabled.Value != false ? Axes.Y : Axes.None;
                 }
                 catch
                 {
@@ -2835,6 +3128,11 @@ namespace YouTubePlayerEX.App.Screens
                 showOverlayContainer(playlistOverlay);
             };
 
+            audioEffectsOpenButton.ClickAction = _ =>
+            {
+                showOverlayContainer(audioEffectsOverlay);
+            };
+
             loadPlaylistOpenButton.ClickAction = _ =>
             {
                 hideOverlays();
@@ -3066,6 +3364,17 @@ namespace YouTubePlayerEX.App.Screens
                     }
                     else
                         hideOverlayContainer(playlistOverlay);
+
+                    return true;
+
+                case GlobalAction.OpenAudioEffects:
+                    if (!audioEffectsOverlay.IsVisible)
+                    {
+                        hideOverlays();
+                        showOverlayContainer(audioEffectsOverlay);
+                    }
+                    else
+                        hideOverlayContainer(audioEffectsOverlay);
 
                     return true;
 
