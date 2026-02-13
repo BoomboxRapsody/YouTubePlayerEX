@@ -8,7 +8,6 @@
 [![GitHub release](https://img.shields.io/github/release/BoomboxRapsody/YouTubePlayerEX.svg)](https://github.com/BoomboxRapsody/YouTubePlayerEX/releases/latest)
 [![Licence](https://img.shields.io/github/license/BoomboxRapsody/YouTubePlayerEX.svg)](https://github.com/BoomboxRapsody/YouTubePlayerEX/blob/main/LICENSE.md)
 [![CodeFactor](https://www.codefactor.io/repository/github/boomboxrapsody/youtubeplayerex/badge)](https://www.codefactor.io/repository/github/boomboxrapsody/youtubeplayerex)
-[![Crowdin](https://badges.crowdin.net/youtube-player-ex/localized.svg)](https://crowdin.com/project/youtube-player-ex)
 
 The enhanced YouTube video player written in [custom osu-framework](https://github.com/BoomboxRapsody/YouTubePlayerEX-framework).
 
@@ -80,7 +79,7 @@ JetBrains ReSharper InspectCode is also used for wider rule sets. You can run it
 
 When it comes to contributing to the project, the two main things you can do to help out are reporting issues and submitting pull requests. Please refer to the [contributing guidelines](CONTRIBUTING.md) to understand how to help in the most effective way possible.
 
-If you wish to help with localisation efforts, head over to [crowdin](https://crowdin.com/project/youtube-player-ex).
+If you wish to help with localisation efforts, head over to [tolgee](https://app.tolgee.io/projects/28208).
 
 ## Licence
 
