@@ -760,6 +760,11 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString DistortionVolume => new TranslatableString(getKey(@"distortion_volume"), "Distortion volume");
 
+        /// <summary>
+        /// "Video bloom level"
+        /// </summary>
+        public static LocalisableString VideoBloomLevel => new TranslatableString(getKey(@"bloom"), "Video bloom level");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

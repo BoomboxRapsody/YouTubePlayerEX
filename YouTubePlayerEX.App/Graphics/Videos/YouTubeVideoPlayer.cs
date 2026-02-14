@@ -4,7 +4,6 @@
 #nullable enable
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -20,7 +19,7 @@ using YoutubeExplode.Videos.ClosedCaptions;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Graphics.Caption;
 using YouTubePlayerEX.App.Graphics.Containers;
-using YouTubePlayerEX.App.Graphics.Shaders;
+using YouTubePlayerEX.App.Graphics.Shaders.New.Bloom;
 
 namespace YouTubePlayerEX.App.Graphics.Videos
 {
@@ -67,14 +66,16 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         private KeyBindingAnimations keyBindingAnimations = null!;
         private ClosedCaptionContainer closedCaption = null!;
         private Bindable<AspectRatioMethod> aspectRatioMethod = null!;
+        private Bindable<float> videoBloomLevel = null!;
 
-        private VideoShaderContainer shaderContainer = null!;
+        private BloomContainer bloom = null!;
 
         [BackgroundDependencyLoader]
         private void load(ITrackStore tracks, YTPlayerEXConfigManager config, ScreenshotManager screenshotManager)
         {
             uiVisible = screenshotManager.CursorVisibility.GetBoundCopy();
             aspectRatioMethod = config.GetBindable<AspectRatioMethod>(YTPlayerEXSetting.AspectRatioMethod);
+            videoBloomLevel = config.GetBindable<float>(YTPlayerEXSetting.VideoBloomLevel);
             track = tracks.GetFromStream(File.OpenRead(fileName_Audio), fileName_Audio);
             playbackSpeed = new Bindable<double>(1);
 
@@ -92,7 +93,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                         new DimmableContainer
                         {
                             RelativeSizeAxes = Axes.Both,
-                            Child = shaderContainer = new VideoShaderContainer
+                            Child = bloom = new BloomContainer
                             {
                                 RelativeSizeAxes = Axes.Both,
                                 Child = new BufferedContainer {
@@ -149,6 +150,11 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             aspectRatioMethod.BindValueChanged(value =>
             {
                 video.FillMode = value.NewValue == AspectRatioMethod.Letterbox ? FillMode.Fit : FillMode.Stretch;
+            }, true);
+
+            videoBloomLevel.BindValueChanged(value =>
+            {
+                bloom.Strength = value.NewValue;
             }, true);
 
             drawableTrack.Completed += trackCompleted;
@@ -209,19 +215,6 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             {
                 VideoProgress.MaxValue = drawableTrack.Length / 1000;
                 VideoProgress.Value = drawableTrack.CurrentTime / 1000;
-            }
-        }
-
-        public void ApplyShaders(List<InternalShader> shaders)
-        {
-            try
-            {
-                if (shaders != null)
-                    shaderContainer.Shaders = shaders;
-            }
-            catch
-            {
-                // Ignore errors applying shaders
             }
         }
 

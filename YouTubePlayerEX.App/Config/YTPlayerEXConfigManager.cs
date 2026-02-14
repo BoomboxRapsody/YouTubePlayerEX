@@ -61,6 +61,8 @@ namespace YouTubePlayerEX.App.Config
             SetDefault(YTPlayerEXSetting.AlwaysUseOriginalAudio, false);
 
             SetDefault(YTPlayerEXSetting.UseSystemCursor, true);
+
+            SetDefault(YTPlayerEXSetting.VideoBloomLevel, 0f, 0f, 1f, 0.01f);
         }
 
         public YTPlayerEXConfigManager(Storage storage, IDictionary<YTPlayerEXSetting, object> defaultOverrides = null) : base(storage, defaultOverrides)
@@ -115,5 +117,7 @@ namespace YouTubePlayerEX.App.Config
 
         AlwaysUseOriginalAudio,
         UseSystemCursor,
+
+        VideoBloomLevel,
     }
 }

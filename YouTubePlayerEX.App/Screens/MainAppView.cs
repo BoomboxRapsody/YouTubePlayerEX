@@ -296,11 +296,6 @@ namespace YouTubePlayerEX.App.Screens
 
             windowedResolution.Value = sizeWindowed.Value;
 
-            appliedEffects.BindValueChanged(shaders =>
-            {
-                currentVideoSource?.ApplyShaders(shaders.NewValue);
-            }, true);
-
             if (window != null)
             {
                 currentDisplay.BindTo(window.CurrentDisplayBindable);
@@ -1127,6 +1122,12 @@ namespace YouTubePlayerEX.App.Screens
                                                         {
                                                             Note = { BindTarget = hwAccelNote },
                                                         },
+                                                        new SettingsItemV2(new FormSliderBar<float>
+                                                        {
+                                                            Caption = YTPlayerEXStrings.VideoBloomLevel,
+                                                            Current = appConfig.GetBindable<float>(YTPlayerEXSetting.VideoBloomLevel),
+                                                            DisplayAsPercentage = true,
+                                                        }),
                                                         new SettingsItemV2(new FormEnumDropdown<Config.VideoQuality>
                                                         {
                                                             Caption = YTPlayerEXStrings.VideoQuality,
@@ -4303,9 +4304,6 @@ namespace YouTubePlayerEX.App.Screens
                         RelativeSizeAxes = Axes.Both
                     };
 
-                    if (appliedEffects.Value.Count > 0)
-                        Schedule(() => currentVideoSource?.ApplyShaders(appliedEffects.Value));
-
                     spinnerShow = Scheduler.AddDelayed(spinner.Hide, 0);
 
                     spinnerShow = Scheduler.AddDelayed(addVideoToScreen, 0);
@@ -4387,9 +4385,6 @@ namespace YouTubePlayerEX.App.Screens
                     {
                         RelativeSizeAxes = Axes.Both
                     };
-
-                    if (appliedEffects.Value.Count > 0)
-                        Schedule(() => currentVideoSource?.ApplyShaders(appliedEffects.Value));
 
                     spinnerShow = Scheduler.AddDelayed(spinner.Hide, 0);
 
