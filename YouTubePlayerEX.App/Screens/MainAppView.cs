@@ -224,6 +224,8 @@ namespace YouTubePlayerEX.App.Screens
 
         private Bindable<float> scalingBackgroundDim = null!;
 
+        private BufferedContainer idleBackground;
+
         private SpriteIcon volumeIcon;
 
         private LinkFlowContainer dislikeCounterCredits, playlistAuthor;
@@ -339,6 +341,14 @@ namespace YouTubePlayerEX.App.Screens
                             },
                         },
                     },
+                },
+                idleBackground = new BufferedContainer
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    BlurSigma = new Vector2(256),
+                    Alpha = 0.25f,
+                    FrameBufferScale = new Vector2(.4f),
+                    Child = new BubbleBackground()
                 },
                 videoContainer = new BufferedContainer
                 {
@@ -4169,6 +4179,7 @@ namespace YouTubePlayerEX.App.Screens
                 videoUrl = $"https://youtube.com/watch?v={videoId}";
 
                 spinnerShow = Scheduler.AddDelayed(() => updateVideoMetadata(videoId), 0);
+                Schedule(() => idleBackground.Hide());
                 Schedule(() => thumbnailContainer.Show());
 
                 if (!File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3") || !File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4"))
