@@ -10,9 +10,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
+using osu.Framework.Audio.Sample;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Audio;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Input;
@@ -257,6 +259,37 @@ namespace YouTubePlayerEX.App
 
             GlobalCursorDisplay.ShowCursor = (UseSystemCursor.Value == false) ? ((screenStack.CurrentScreen as IYouTubePlayerEXScreen)?.CursorVisible ?? false) : false;
         }
+
+        protected override bool OnExiting()
+        {
+            if (LoadFailed)
+                return base.OnExiting();
+
+            Logger.Log("Exiting...", LoggingTarget.Runtime, LogLevel.Debug);
+
+            Schedule(AttemptExit);
+            return !isExiting;
+        }
+
+        public override void AttemptExit()
+        {
+            ISample exitSound = Audio.Samples.Get(@"overlay-pop-out");
+            DrawableSample drawableSample = new DrawableSample(exitSound);
+
+            Content.Add(drawableSample);
+
+            Bindable<double> fadeVolume = new Bindable<double>(1);
+
+            drawableSample.Play();
+
+            Content.FadeOut(500, Easing.InQuart).OnComplete(_ => base.Exit());
+            this.TransformBindableTo(fadeVolume, 0, 500, Easing.InQuart);
+            Audio.Tracks.AddAdjustment(AdjustableProperty.Volume, fadeVolume);
+
+            isExiting = true;
+        }
+
+        private bool isExiting = false;
 
         private readonly List<DuckParameters> duckOperations = new List<DuckParameters>();
         private readonly BindableDouble audioDuckVolume = new BindableDouble(1);

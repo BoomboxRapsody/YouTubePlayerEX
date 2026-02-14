@@ -16,16 +16,19 @@ using osu.Framework.Configuration;
 using osu.Framework.Development;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.IO.Stores;
 using osu.Framework.Localisation;   
 using osu.Framework.Logging;
 using osu.Framework.Platform;
+using osuTK.Graphics;
 using YoutubeExplode;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics;
 using YouTubePlayerEX.App.Graphics.Cursor;
+using YouTubePlayerEX.App.Graphics.Sprites;
 using YouTubePlayerEX.App.Graphics.UserInterface;
 using YouTubePlayerEX.App.Input;
 using YouTubePlayerEX.App.Input.Binding;
@@ -46,6 +49,8 @@ namespace YouTubePlayerEX.App
         protected override Container<Drawable> Content => content;
 
         private Container content;
+
+        protected bool LoadFailed { get; set; }
 
         [Cached]
         public readonly YoutubeClient YouTubeClient = new YoutubeClient();
@@ -229,85 +234,87 @@ namespace YouTubePlayerEX.App
         [BackgroundDependencyLoader]
         private void load(FrameworkConfigManager frameworkConfig)
         {
-            Logger.Log($"------------------------------------------------\nYouTube Player EX by BoomboxRapsody\n------------------------------------------------\nApp version is: {Version}\nApp version hash is: {VersionHash}\n------------------------------------------------\ngood luck ^^\n------------------------------------------------");
-            RestartRequired.Value = false;
-            UpdateManagerVersionText.Value = Version;
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            try
+            {
+                Logger.Log($"------------------------------------------------\nYouTube Player EX by BoomboxRapsody\n------------------------------------------------\nApp version is: {Version}\nApp version hash is: {VersionHash}\n------------------------------------------------\ngood luck ^^\n------------------------------------------------");
+                RestartRequired.Value = false;
+                UpdateManagerVersionText.Value = Version;
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            //Logger.Log(Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath("videoId") + @"\video.mp4");
-            Resources.AddStore(new DllResourceStore(typeof(YouTubePlayerEXResources).Assembly));
+                //Logger.Log(Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath("videoId") + @"\video.mp4");
+                Resources.AddStore(new DllResourceStore(typeof(YouTubePlayerEXResources).Assembly));
 
-            Resources.AddStore(new NamespacedResourceStore<byte[]>(new ShaderResourceStore(), "Resources"));
+                Resources.AddStore(new NamespacedResourceStore<byte[]>(new ShaderResourceStore(), "Resources"));
 
-            // For some atlases, its recommended to use LargeTextureStore. e.g: mipmapping, incorrect positioning due to the atlas scale adjust, etc
-            IResourceStore<TextureUpload> texUpload = Host.CreateTextureLoaderStore(Resources);
-            LargeTextureStore largeTs = new(Host.Renderer, texUpload);
-            largeTs.AddTextureSource(texUpload);
-            dependencies.CacheAs(largeTs);
+                // For some atlases, its recommended to use LargeTextureStore. e.g: mipmapping, incorrect positioning due to the atlas scale adjust, etc
+                IResourceStore<TextureUpload> texUpload = Host.CreateTextureLoaderStore(Resources);
+                LargeTextureStore largeTs = new(Host.Renderer, texUpload);
+                largeTs.AddTextureSource(texUpload);
+                dependencies.CacheAs(largeTs);
 
-            frameworkLocale = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
-            frameworkLocale.BindValueChanged(_ => updateLanguage());
+                frameworkLocale = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
+                frameworkLocale.BindValueChanged(_ => updateLanguage());
 
-            localisationParameters = Localisation.CurrentParameters.GetBoundCopy();
-            localisationParameters.BindValueChanged(_ => updateLanguage(), true);
+                localisationParameters = Localisation.CurrentParameters.GetBoundCopy();
+                localisationParameters.BindValueChanged(_ => updateLanguage(), true);
 
-            CurrentLanguage.BindValueChanged(val => frameworkLocale.Value = val.NewValue.ToCultureCode());
+                CurrentLanguage.BindValueChanged(val => frameworkLocale.Value = val.NewValue.ToCultureCode());
 
-            InitialiseFonts();
+                InitialiseFonts();
 
-            dependencies.Cache(LocalConfig);
+                dependencies.Cache(LocalConfig);
 
-            dependencies.Cache(GoogleOAuth2 = new GoogleOAuth2(LocalConfig, !IsDeployedBuild));
+                dependencies.Cache(GoogleOAuth2 = new GoogleOAuth2(LocalConfig, !IsDeployedBuild));
 
-            dependencies.Cache(TranslateAPI = new GoogleTranslate(this, frameworkConfig));
-            dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig, TranslateAPI, LocalConfig, GoogleOAuth2, !IsDeployedBuild));
+                dependencies.Cache(TranslateAPI = new GoogleTranslate(this, frameworkConfig));
+                dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig, TranslateAPI, LocalConfig, GoogleOAuth2, !IsDeployedBuild));
 
-            dependencies.Cache(AudioEffectsConfig = new AudioEffectsConfigManager(Storage));
-            dependencies.Cache(SessionStatics = new SessionStatics());
+                dependencies.Cache(AudioEffectsConfig = new AudioEffectsConfigManager(Storage));
+                dependencies.Cache(SessionStatics = new SessionStatics());
 
-            GlobalActionContainer globalBindings;
+                GlobalActionContainer globalBindings;
 
-            AdaptiveMenuSamples menuSamples;
-            dependencies.Cache(menuSamples = new AdaptiveMenuSamples());
-            base.Content.Add(menuSamples);
+                AdaptiveMenuSamples menuSamples;
+                dependencies.Cache(menuSamples = new AdaptiveMenuSamples());
+                base.Content.Add(menuSamples);
 
-            dependencies.CacheAs(idleTracker = new AppIdleTracker(6000));
+                dependencies.CacheAs(idleTracker = new AppIdleTracker(6000));
 
-            dependencies.CacheAs(colours = new AdaptiveColour());
+                dependencies.CacheAs(colours = new AdaptiveColour());
 
-            dependencies.CacheAs(overlayColourProvider = new OverlayColourProvider(OverlayColourScheme.Blue));
+                dependencies.CacheAs(overlayColourProvider = new OverlayColourProvider(OverlayColourScheme.Blue));
 
-            Logger.Log($"🎨 OverlayColourProvider loaded");
+                Logger.Log($"🎨 OverlayColourProvider loaded");
 
-            /*
-            // Ensure game and tests scale with window size and screen DPI.
-            base.Content.Add(
-                new ScalingContainerNew(ScalingMode.Everything)
+                /*
+                // Ensure game and tests scale with window size and screen DPI.
+                base.Content.Add(
+                    new ScalingContainerNew(ScalingMode.Everything)
+                    {
+                        Child = globalBindings = new GlobalActionContainer(this)
+                        {
+                            Children = new Drawable[]
+                            {
+                                (GlobalCursorDisplay = new GlobalCursorDisplay
+                                {
+                                    RelativeSizeAxes = Axes.Both
+                                }).WithChild(content = new AdaptiveTooltipContainer(GlobalCursorDisplay.MenuCursor)
+                                {
+                                    RelativeSizeAxes = Axes.Both
+                                }),
+                            }
+                        }
+                });
+                */
+
+                base.Content.Add(SafeAreaContainer = new SafeAreaContainer
                 {
-                    Child = globalBindings = new GlobalActionContainer(this)
+                    SafeAreaOverrideEdges = SafeAreaOverrideEdges,
+                    RelativeSizeAxes = Axes.Both,
+                    Child = CreateScalingContainer().WithChild(globalBindings = new GlobalActionContainer(this)
                     {
                         Children = new Drawable[]
                         {
-                            (GlobalCursorDisplay = new GlobalCursorDisplay
-                            {
-                                RelativeSizeAxes = Axes.Both
-                            }).WithChild(content = new AdaptiveTooltipContainer(GlobalCursorDisplay.MenuCursor)
-                            {
-                                RelativeSizeAxes = Axes.Both
-                            }),
-                        }
-                    }
-            });
-            */
-
-            base.Content.Add(SafeAreaContainer = new SafeAreaContainer
-            {
-                SafeAreaOverrideEdges = SafeAreaOverrideEdges,
-                RelativeSizeAxes = Axes.Both,
-                Child = CreateScalingContainer().WithChild(globalBindings = new GlobalActionContainer(this)
-                {
-                    Children = new Drawable[]
-                    {
                         (GlobalCursorDisplay = new GlobalCursorDisplay
                         {
                             RelativeSizeAxes = Axes.Both
@@ -315,13 +322,45 @@ namespace YouTubePlayerEX.App
                         {
                             RelativeSizeAxes = Axes.Both
                         }),
+                        }
+                    })
+                });
+
+                Logger.Log($"Scaling container loaded");
+
+                trackAudioEffects();
+            }
+            catch (Exception ex)
+            {
+                LoadFailed = true;
+                Logger.Error(ex, "Failed to initialize app!");
+
+                base.Content.Child = new FillFlowContainer
+                {
+                    AutoSizeAxes = Axes.Both,
+                    Direction = FillDirection.Vertical,
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    Children = new Drawable[]
+                    {
+                        new AdaptiveSpriteText
+                        {
+                            Text = "Failed to initialize app!",
+                            Font = FontUsage.Default.With("Roboto", 32, "Regular"),
+                            Anchor = Anchor.TopCentre,
+                            Origin = Anchor.TopCentre
+                        },
+                        new AdaptiveSpriteText
+                        {
+                            Text = $"{ex.GetType().Name}: {ex.Message}",
+                            Font = FontUsage.Default.With("Roboto", 16, "Regular"),
+                            Anchor = Anchor.TopCentre,
+                            Origin = Anchor.TopCentre,
+                            Colour = Color4.Red,
+                        }
                     }
-                })
-            });
-
-            Logger.Log($"Scaling container loaded");
-
-            trackAudioEffects();
+                };
+            }
         }
 
         #region Audio Effects
@@ -349,6 +388,14 @@ namespace YouTubePlayerEX.App
         private RotateParameters rotateParameters = new RotateParameters();
         private EchoParameters echoParameters = new EchoParameters();
         private DistortionParameters distortionParameters = new DistortionParameters();
+
+        public virtual void AttemptExit()
+        {
+            if (!OnExiting())
+                Exit();
+            else
+                Scheduler.AddDelayed(AttemptExit, 2000);
+        }
 
         private void trackAudioEffects()
         {
