@@ -36,6 +36,7 @@ using YouTubePlayerEX.App.IO.Stores;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
 using YouTubePlayerEX.App.Resources;
+using YouTubePlayerEX.App.Utils;
 
 namespace YouTubePlayerEX.App
 {
@@ -181,6 +182,8 @@ namespace YouTubePlayerEX.App
         {
             base.Dispose(isDisposing);
 
+            sentry.Dispose();
+
             AudioEffectsConfig?.Dispose();
             LocalConfig?.Dispose();
 
@@ -231,6 +234,8 @@ namespace YouTubePlayerEX.App
         /// </summary>
         public IBindable<bool> IsIdle => idleTracker.IsIdle;
 
+        private SentryClient sentry { get; set; }
+
         [BackgroundDependencyLoader]
         private void load(FrameworkConfigManager frameworkConfig)
         {
@@ -265,6 +270,8 @@ namespace YouTubePlayerEX.App
                 dependencies.Cache(LocalConfig);
 
                 dependencies.Cache(GoogleOAuth2 = new GoogleOAuth2(LocalConfig, !IsDeployedBuild));
+
+                dependencies.Cache(sentry = new SentryClient(this, GoogleOAuth2));
 
                 dependencies.Cache(TranslateAPI = new GoogleTranslate(this, frameworkConfig));
                 dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig, TranslateAPI, LocalConfig, GoogleOAuth2, !IsDeployedBuild));
@@ -329,6 +336,8 @@ namespace YouTubePlayerEX.App
                 Logger.Log($"Scaling container loaded");
 
                 trackAudioEffects();
+
+                sentry.PostInit();
             }
             catch (Exception ex)
             {
