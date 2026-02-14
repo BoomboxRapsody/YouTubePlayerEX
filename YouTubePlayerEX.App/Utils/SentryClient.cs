@@ -56,8 +56,8 @@ namespace YouTubePlayerEX.App.Utils
             {
                 SentrySdk.ConfigureScope(s => s.User = new SentryUser
                 {
-                    Username = youtubeAPI.GetMineChannel().Snippet.Title ?? "Guest User",
-                    Id = $"{(youtubeAPI.GetMineChannel().Id != null ? youtubeAPI.GetMineChannel().Id : 0)}"
+                    Username = e.NewValue ? youtubeAPI.GetMineChannel().Snippet.Title : "Guest User",
+                    Id = e.NewValue ? $"{(youtubeAPI.GetMineChannel().Id != null ? youtubeAPI.GetMineChannel().Id : 0)}" : "0",
                 });
             }, true);
         }
