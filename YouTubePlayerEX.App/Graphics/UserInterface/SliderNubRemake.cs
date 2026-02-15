@@ -10,6 +10,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Effects;
 using osu.Framework.Graphics.Primitives;
 using osu.Framework.Graphics.Shapes;
+using osu.Framework.Graphics.Textures;
 using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Layout;
 using osuTK;
@@ -17,18 +18,18 @@ using osuTK.Graphics;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
-    public partial class Nub : Container, IHasCurrentValue<bool>
+    public partial class SliderNubRemake : Container, IHasCurrentValue<bool>
     {
         public const float HEIGHT = 15;
 
-        public const float DEFAULT_EXPANDED_SIZE = 50;
+        public const float DEFAULT_EXPANDED_SIZE = 15;
 
         private const float border_width = 3;
 
         private readonly Box fill;
         private readonly Container main;
 
-        public Nub(float expandedSize = DEFAULT_EXPANDED_SIZE)
+        public SliderNubRemake(float expandedSize = DEFAULT_EXPANDED_SIZE)
         {
             Size = new Vector2(expandedSize, HEIGHT);
 
