@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ManagedBass.Fx;
+using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
@@ -248,8 +249,7 @@ namespace YouTubePlayerEX.App
 
                 //Logger.Log(Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath("videoId") + @"\video.mp4");
                 Resources.AddStore(new DllResourceStore(typeof(YouTubePlayerEXResources).Assembly));
-
-                Resources.AddStore(new NamespacedResourceStore<byte[]>(new ShaderResourceStore(), "Resources"));
+                Resources.AddStore(new NamespacedResourceStore<byte[]>(new DllResourceStore(typeof(YouTubePlayerEXAppBase).Assembly), "BuiltInResources"));
 
                 // For some atlases, its recommended to use LargeTextureStore. e.g: mipmapping, incorrect positioning due to the atlas scale adjust, etc
                 IResourceStore<TextureUpload> texUpload = Host.CreateTextureLoaderStore(Resources);
@@ -577,7 +577,7 @@ namespace YouTubePlayerEX.App
 
             if (!string.IsNullOrEmpty(customTitle))
             {
-                newTitle = $"YouTube Player EX - {customTitle}";
+                newTitle = $"YouTube Player EX > {customTitle}";
             }
 
             if (newTitle != Host.Window.Title)

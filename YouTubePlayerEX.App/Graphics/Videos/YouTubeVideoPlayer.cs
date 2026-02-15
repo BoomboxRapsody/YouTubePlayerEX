@@ -21,7 +21,11 @@ using YoutubeExplode.Videos.ClosedCaptions;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Graphics.Caption;
 using YouTubePlayerEX.App.Graphics.Containers;
+using YouTubePlayerEX.App.Graphics.Shaders.New;
 using YouTubePlayerEX.App.Graphics.Shaders.New.Bloom;
+using YouTubePlayerEX.App.Graphics.Shaders.New.Chromatic;
+using YouTubePlayerEX.App.Graphics.Shaders.New.Grayscale;
+using YouTubePlayerEX.App.Graphics.Shaders.New.HueShift;
 
 namespace YouTubePlayerEX.App.Graphics.Videos
 {
@@ -68,9 +72,9 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         private KeyBindingAnimations keyBindingAnimations = null!;
         private ClosedCaptionContainer closedCaption = null!;
         private Bindable<AspectRatioMethod> aspectRatioMethod = null!;
-        private Bindable<float> videoBloomLevel = null!;
+        private Bindable<float> videoBloomLevel, chromaticAberrationStrength, videoGrayscaleLevel, videoHueShift = null!;
 
-        private BloomContainer bloom = null!;
+        private VideoNewShaderContainer bloom, chromatic, grayscale, hueShift = null!;
 
         [BackgroundDependencyLoader]
         private void load(ITrackStore tracks, YTPlayerEXConfigManager config, ScreenshotManager screenshotManager)
@@ -78,6 +82,9 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             uiVisible = screenshotManager.CursorVisibility.GetBoundCopy();
             aspectRatioMethod = config.GetBindable<AspectRatioMethod>(YTPlayerEXSetting.AspectRatioMethod);
             videoBloomLevel = config.GetBindable<float>(YTPlayerEXSetting.VideoBloomLevel);
+            videoGrayscaleLevel = config.GetBindable<float>(YTPlayerEXSetting.VideoGrayscaleLevel);
+            videoHueShift = config.GetBindable<float>(YTPlayerEXSetting.VideoHueShift);
+            chromaticAberrationStrength = config.GetBindable<float>(YTPlayerEXSetting.ChromaticAberrationStrength);
             track = tracks.GetFromStream(File.OpenRead(fileName_Audio), fileName_Audio);
             playbackSpeed = new Bindable<double>(1);
 
@@ -95,33 +102,45 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                         new DimmableContainer
                         {
                             RelativeSizeAxes = Axes.Both,
-                            Child = bloom = new BloomContainer
+                            Child = grayscale = new GrayscaleContainer
                             {
                                 RelativeSizeAxes = Axes.Both,
-                                Children = new Drawable[]
+                                Child = chromatic = new ChromaticContainer
                                 {
-                                    new Box
+                                    RelativeSizeAxes = Axes.Both,
+                                    Child = bloom = new BloomContainer
                                     {
                                         RelativeSizeAxes = Axes.Both,
-                                        Colour = Color4.Black,
-                                    },
-                                    new BufferedContainer
-                                    {
-                                        RelativeSizeAxes = Axes.Both,
-                                        DrawOriginal = true,
-                                        EffectPlacement = EffectPlacement.Behind,
-                                        BlurSigma = new osuTK.Vector2(256),
-                                        Child = video = new Video(fileName_Video, false)
+                                        Child = hueShift = new HueShiftContainer
                                         {
                                             RelativeSizeAxes = Axes.Both,
-                                            FillMode = FillMode.Fit,
-                                            Anchor = Anchor.Centre,
-                                            Origin = Anchor.Centre,
-                                            Clock = framedClock,
+                                            Children = new Drawable[]
+                                            {
+                                                new Box
+                                                {
+                                                    RelativeSizeAxes = Axes.Both,
+                                                    Colour = Color4.Black,
+                                                },
+                                                new BufferedContainer
+                                                {
+                                                    RelativeSizeAxes = Axes.Both,
+                                                    DrawOriginal = true,
+                                                    EffectPlacement = EffectPlacement.Behind,
+                                                    BlurSigma = new osuTK.Vector2(256),
+                                                    Child = video = new Video(fileName_Video, false)
+                                                    {
+                                                        RelativeSizeAxes = Axes.Both,
+                                                        FillMode = FillMode.Fit,
+                                                        Anchor = Anchor.Centre,
+                                                        Origin = Anchor.Centre,
+                                                        Clock = framedClock,
+                                                    }
+                                                }
+                                            }
                                         }
-                                    }
+                                    },
                                 }
-                            },
+                            }
                         },
                         keyBindingAnimations = new KeyBindingAnimations
                         {
@@ -169,6 +188,21 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             videoBloomLevel.BindValueChanged(value =>
             {
                 bloom.Strength = value.NewValue;
+            }, true);
+
+            videoGrayscaleLevel.BindValueChanged(value =>
+            {
+                grayscale.Strength = value.NewValue;
+            }, true);
+
+            chromaticAberrationStrength.BindValueChanged(value =>
+            {
+                chromatic.Strength = value.NewValue;
+            }, true);
+
+            videoHueShift.BindValueChanged(value =>
+            {
+                hueShift.Strength = value.NewValue / 360;
             }, true);
 
             drawableTrack.Completed += trackCompleted;

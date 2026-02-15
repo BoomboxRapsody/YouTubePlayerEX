@@ -765,6 +765,26 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString VideoBloomLevel => new TranslatableString(getKey(@"bloom"), "Video bloom level");
 
+        /// <summary>
+        /// "Chromatic aberration effect strength"
+        /// </summary>
+        public static LocalisableString ChromaticAberration => new TranslatableString(getKey(@"chromatic_aberration"), "Chromatic aberration effect strength");
+
+        /// <summary>
+        /// "Visual effects"
+        /// </summary>
+        public static LocalisableString VisualEffects => new TranslatableString(getKey(@"visual_effects"), "Visual effects");
+
+        /// <summary>
+        /// "Video grayscale level"
+        /// </summary>
+        public static LocalisableString VideoGrayscaleLevel => new TranslatableString(getKey(@"grayscale"), "Video grayscale level");
+
+        /// <summary>
+        /// "Video hue shift"
+        /// </summary>
+        public static LocalisableString VideoHueShift => new TranslatableString(getKey(@"hue_shift"), "Video hue shift");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

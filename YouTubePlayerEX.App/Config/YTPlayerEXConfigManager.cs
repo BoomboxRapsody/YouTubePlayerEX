@@ -63,6 +63,9 @@ namespace YouTubePlayerEX.App.Config
             SetDefault(YTPlayerEXSetting.UseSystemCursor, true);
 
             SetDefault(YTPlayerEXSetting.VideoBloomLevel, 0f, 0f, 1f, 0.01f);
+            SetDefault(YTPlayerEXSetting.ChromaticAberrationStrength, 0f, 0f, 1f, 0.01f);
+            SetDefault(YTPlayerEXSetting.VideoGrayscaleLevel, 0f, 0f, 1f, 0.01f);
+            SetDefault(YTPlayerEXSetting.VideoHueShift, 0, 0, 360, 1);
         }
 
         public YTPlayerEXConfigManager(Storage storage, IDictionary<YTPlayerEXSetting, object> defaultOverrides = null) : base(storage, defaultOverrides)
@@ -119,5 +122,8 @@ namespace YouTubePlayerEX.App.Config
         UseSystemCursor,
 
         VideoBloomLevel,
+        ChromaticAberrationStrength,
+        VideoGrayscaleLevel,
+        VideoHueShift,
     }
 }

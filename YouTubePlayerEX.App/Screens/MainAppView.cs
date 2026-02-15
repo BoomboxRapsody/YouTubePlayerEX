@@ -1134,12 +1134,6 @@ namespace YouTubePlayerEX.App.Screens
                                                         {
                                                             Note = { BindTarget = hwAccelNote },
                                                         },
-                                                        new SettingsItemV2(new FormSliderBar<float>
-                                                        {
-                                                            Caption = YTPlayerEXStrings.VideoBloomLevel,
-                                                            Current = appConfig.GetBindable<float>(YTPlayerEXSetting.VideoBloomLevel),
-                                                            DisplayAsPercentage = true,
-                                                        }),
                                                         new SettingsItemV2(new FormEnumDropdown<Config.VideoQuality>
                                                         {
                                                             Caption = YTPlayerEXStrings.VideoQuality,
@@ -1158,6 +1152,37 @@ namespace YouTubePlayerEX.App.Screens
                                                         {
                                                             ShowRevertToDefaultButton = false,
                                                         },
+                                                        new AdaptiveSpriteText
+                                                        {
+                                                            Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30),
+                                                            Text = YTPlayerEXStrings.VisualEffects,
+                                                            Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
+                                                            Colour = overlayColourProvider.Content2,
+                                                        },
+                                                        new SettingsItemV2(new FormSliderBar<float>
+                                                        {
+                                                            Caption = YTPlayerEXStrings.VideoBloomLevel,
+                                                            Current = appConfig.GetBindable<float>(YTPlayerEXSetting.VideoBloomLevel),
+                                                            DisplayAsPercentage = true,
+                                                        }),
+                                                        new SettingsItemV2(new FormSliderBar<float>
+                                                        {
+                                                            Caption = YTPlayerEXStrings.ChromaticAberration,
+                                                            Current = appConfig.GetBindable<float>(YTPlayerEXSetting.ChromaticAberrationStrength),
+                                                            DisplayAsPercentage = true,
+                                                        }),
+                                                        new SettingsItemV2(new FormSliderBar<float>
+                                                        {
+                                                            Caption = YTPlayerEXStrings.VideoGrayscaleLevel,
+                                                            Current = appConfig.GetBindable<float>(YTPlayerEXSetting.VideoGrayscaleLevel),
+                                                            DisplayAsPercentage = true,
+                                                        }),
+                                                        new SettingsItemV2(new FormSliderBar<float>
+                                                        {
+                                                            Caption = YTPlayerEXStrings.VideoHueShift,
+                                                            Current = appConfig.GetBindable<float>(YTPlayerEXSetting.VideoHueShift),
+                                                            KeyboardStep = 1,
+                                                        }),
                                                         new AdaptiveSpriteText
                                                         {
                                                             Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30),
@@ -3869,7 +3894,7 @@ namespace YouTubePlayerEX.App.Screens
                 else
                     Schedule(() => commentOpenButtonDetails.Hide());
 
-                game.RequestUpdateWindowTitle($"{videoData.Snippet.ChannelTitle} - {videoData.Snippet.Title}");
+                game.RequestUpdateWindowTitle($"{videoData.Snippet.Title} by {videoData.Snippet.ChannelTitle}");
 
                 DateTimeOffset? dateTime = videoData.Snippet.PublishedAtDateTimeOffset;
                 DateTime now = DateTime.Now;
