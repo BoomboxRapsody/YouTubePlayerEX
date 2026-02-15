@@ -58,6 +58,12 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             set => icon.Scale = value;
         }
 
+        public Vector2 IconShear
+        {
+            get => icon.Shear;
+            set => icon.Shear = value;
+        }
+
         private readonly SpriteIcon icon;
 
         public IconButtonWithShadow()

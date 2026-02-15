@@ -289,7 +289,7 @@ namespace YouTubePlayerEX.App
 
                 dependencies.CacheAs(colours = new AdaptiveColour());
 
-                dependencies.CacheAs(overlayColourProvider = new OverlayColourProvider(OverlayColourScheme.Blue));
+                dependencies.CacheAs(overlayColourProvider = new OverlayColourProvider(OverlayColourScheme.Pink));
 
                 Logger.Log($"🎨 OverlayColourProvider loaded");
 

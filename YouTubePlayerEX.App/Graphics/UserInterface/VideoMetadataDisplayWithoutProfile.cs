@@ -69,6 +69,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 Radius = 16,
             };
 
+            Shear = new Vector2(0.2f, 0);
+
             InternalChildren = new Drawable[]
             {
                 samples,
@@ -87,7 +89,13 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 },
                 new Container {
                     RelativeSizeAxes = Axes.Both,
-                    Padding = new MarginPadding(7),
+                    Padding = new MarginPadding
+                    {
+                        Vertical = 7,
+                        Right = 7,
+                        Left = 4,
+                    },
+                    Shear = new Vector2(-0.2f, 0),
                     Children = new Drawable[]
                     {
                         new Container

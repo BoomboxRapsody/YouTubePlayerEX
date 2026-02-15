@@ -411,101 +411,130 @@ namespace YouTubePlayerEX.App.Screens
                                     Height = 60,
                                     Origin = Anchor.TopLeft,
                                     Anchor = Anchor.TopLeft,
+                                    Margin = new MarginPadding
+                                    {
+                                        Left = 8,
+                                    },
                                     ClickEvent = _ => showOverlayContainer(videoDescriptionContainer),
                                 },
-                                loadBtnOverlayShow = new IconButtonWithShadow
+                                new Container
                                 {
-                                    Enabled = { Value = true },
-                                    Origin = Anchor.TopRight,
-                                    Anchor = Anchor.TopRight,
-                                    Size = new Vector2(40, 40),
-                                    Icon = FontAwesome.Regular.FolderOpen,
-                                    IconScale = new Vector2(1.2f),
-                                    TooltipText = YTPlayerEXStrings.LoadVideo,
-                                },
-                                settingsOverlayShowBtn = new IconButtonWithShadow
-                                {
-                                    Enabled = { Value = true },
-                                    Margin = new MarginPadding
+                                    RelativeSizeAxes = Axes.Both,
+                                    Padding = new MarginPadding
                                     {
-                                        Right = 48,
+                                        Horizontal = 8,
                                     },
-                                    Origin = Anchor.TopRight,
-                                    Anchor = Anchor.TopRight,
-                                    Size = new Vector2(40, 40),
-                                    Icon = FontAwesome.Solid.Cog,
-                                    IconScale = new Vector2(1.2f),
-                                    TooltipText = YTPlayerEXStrings.Settings,
-                                },
-                                commentOpenButton = new IconButtonWithShadow
-                                {
-                                    Enabled = { Value = false },
-                                    Margin = new MarginPadding
+                                    Children = new Drawable[]
                                     {
-                                        Right = 96,
-                                    },
-                                    Origin = Anchor.TopRight,
-                                    Anchor = Anchor.TopRight,
-                                    Size = new Vector2(40, 40),
-                                    Icon = FontAwesome.Regular.CommentAlt,
-                                    IconScale = new Vector2(1.2f),
-                                    TooltipText = YTPlayerEXStrings.CommentsWithoutCount,
-                                },
-                                searchOpenButton = new IconButtonWithShadow
-                                {
-                                    Enabled = { Value = true },
-                                    Margin = new MarginPadding
-                                    {
-                                        Right = 144,
-                                    },
-                                    Origin = Anchor.TopRight,
-                                    Anchor = Anchor.TopRight,
-                                    Size = new Vector2(40, 40),
-                                    Icon = FontAwesome.Solid.Search,
-                                    IconScale = new Vector2(1.2f),
-                                    TooltipText = YTPlayerEXStrings.Search,
-                                },
-                                reportOpenButton = new IconButtonWithShadow
-                                {
-                                    Enabled = { Value = false },
-                                    Margin = new MarginPadding
-                                    {
-                                        Right = 192,
-                                    },
-                                    Origin = Anchor.TopRight,
-                                    Anchor = Anchor.TopRight,
-                                    Size = new Vector2(40, 40),
-                                    Icon = FontAwesome.Solid.Flag,
-                                    IconScale = new Vector2(1.2f),
-                                    TooltipText = YTPlayerEXStrings.Report,
-                                },
-                                playlistOpenButton = new IconButtonWithShadow
-                                {
-                                    Enabled = { Value = true },
-                                    Margin = new MarginPadding
-                                    {
-                                        Right = 240,
-                                    },
-                                    Origin = Anchor.TopRight,
-                                    Anchor = Anchor.TopRight,
-                                    Size = new Vector2(40, 40),
-                                    Icon = FontAwesome.Solid.List,
-                                    IconScale = new Vector2(1.2f),
-                                    TooltipText = YTPlayerEXStrings.Playlists,
-                                },
-                                audioEffectsOpenButton = new IconButtonWithShadow
-                                {
-                                    Enabled = { Value = true },
-                                    Margin = new MarginPadding
-                                    {
-                                        Right = 288,
-                                    },
-                                    Origin = Anchor.TopRight,
-                                    Anchor = Anchor.TopRight,
-                                    Size = new Vector2(40, 40),
-                                    Icon = FontAwesome.Solid.VolumeUp,
-                                    IconScale = new Vector2(1.2f),
-                                    TooltipText = YTPlayerEXStrings.AudioEffects,
+                                        loadBtnOverlayShow = new IconButtonWithShadow
+                                        {
+                                            Enabled = { Value = true },
+                                            Origin = Anchor.TopRight,
+                                            Anchor = Anchor.TopRight,
+                                            Size = new Vector2(40, 40),
+                                            Icon = FontAwesome.Regular.FolderOpen,
+                                            IconScale = new Vector2(1.2f),
+                                            Shear = new Vector2(-0.2f, 0),
+                                            IconShear = new Vector2(0.2f, 0),
+                                            TooltipText = YTPlayerEXStrings.LoadVideo,
+                                        },
+                                        settingsOverlayShowBtn = new IconButtonWithShadow
+                                        {
+                                            Enabled = { Value = true },
+                                            Margin = new MarginPadding
+                                            {
+                                                Right = 48,
+                                            },
+                                            Origin = Anchor.TopRight,
+                                            Anchor = Anchor.TopRight,
+                                            Size = new Vector2(40, 40),
+                                            Icon = FontAwesome.Solid.Cog,
+                                            IconScale = new Vector2(1.2f),
+                                            Shear = new Vector2(-0.2f, 0),
+                                            IconShear = new Vector2(0.2f, 0),
+                                            TooltipText = YTPlayerEXStrings.Settings,
+                                        },
+                                        commentOpenButton = new IconButtonWithShadow
+                                        {
+                                            Enabled = { Value = false },
+                                            Margin = new MarginPadding
+                                            {
+                                                Right = 96,
+                                            },
+                                            Origin = Anchor.TopRight,
+                                            Anchor = Anchor.TopRight,
+                                            Size = new Vector2(40, 40),
+                                            Icon = FontAwesome.Regular.CommentAlt,
+                                            IconScale = new Vector2(1.2f),
+                                            Shear = new Vector2(-0.2f, 0),
+                                            IconShear = new Vector2(0.2f, 0),
+                                            TooltipText = YTPlayerEXStrings.CommentsWithoutCount,
+                                        },
+                                        searchOpenButton = new IconButtonWithShadow
+                                        {
+                                            Enabled = { Value = true },
+                                            Margin = new MarginPadding
+                                            {
+                                                Right = 144,
+                                            },
+                                            Origin = Anchor.TopRight,
+                                            Anchor = Anchor.TopRight,
+                                            Size = new Vector2(40, 40),
+                                            Icon = FontAwesome.Solid.Search,
+                                            IconScale = new Vector2(1.2f),
+                                            Shear = new Vector2(-0.2f, 0),
+                                            IconShear = new Vector2(0.2f, 0),
+                                            TooltipText = YTPlayerEXStrings.Search,
+                                        },
+                                        reportOpenButton = new IconButtonWithShadow
+                                        {
+                                            Enabled = { Value = false },
+                                            Margin = new MarginPadding
+                                            {
+                                                Right = 192,
+                                            },
+                                            Origin = Anchor.TopRight,
+                                            Anchor = Anchor.TopRight,
+                                            Size = new Vector2(40, 40),
+                                            Icon = FontAwesome.Solid.Flag,
+                                            IconScale = new Vector2(1.2f),
+                                            Shear = new Vector2(-0.2f, 0),
+                                            IconShear = new Vector2(0.2f, 0),
+                                            TooltipText = YTPlayerEXStrings.Report,
+                                        },
+                                        playlistOpenButton = new IconButtonWithShadow
+                                        {
+                                            Enabled = { Value = true },
+                                            Margin = new MarginPadding
+                                            {
+                                                Right = 240,
+                                            },
+                                            Origin = Anchor.TopRight,
+                                            Anchor = Anchor.TopRight,
+                                            Size = new Vector2(40, 40),
+                                            Icon = FontAwesome.Solid.List,
+                                            IconScale = new Vector2(1.2f),
+                                            Shear = new Vector2(-0.2f, 0),
+                                            IconShear = new Vector2(0.2f, 0),
+                                            TooltipText = YTPlayerEXStrings.Playlists,
+                                        },
+                                        audioEffectsOpenButton = new IconButtonWithShadow
+                                        {
+                                            Enabled = { Value = true },
+                                            Margin = new MarginPadding
+                                            {
+                                                Right = 288,
+                                            },
+                                            Origin = Anchor.TopRight,
+                                            Anchor = Anchor.TopRight,
+                                            Size = new Vector2(40, 40),
+                                            Icon = FontAwesome.Solid.VolumeUp,
+                                            IconScale = new Vector2(1.2f),
+                                            Shear = new Vector2(-0.2f, 0),
+                                            IconShear = new Vector2(0.2f, 0),
+                                            TooltipText = YTPlayerEXStrings.AudioEffects,
+                                        },
+                                    }
                                 },
                                 new Container {
                                     Anchor = Anchor.BottomCentre,
@@ -4062,7 +4091,7 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     if (playlistItemIndex != playlists.Count - 1)
                         playlistItemIndex++;
-                    
+
                     await SetVideoSource(playlists[playlistItemIndex].Snippet.ResourceId.VideoId);
                 };
             }
@@ -4131,7 +4160,8 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     Schedule(() => prevVideoButton.Enabled.Value = true);
                 }
-            } else
+            }
+            else
             {
                 Schedule(() => prevVideoButton.Enabled.Value = false);
                 Schedule(() => nextVideoButton.Enabled.Value = false);
@@ -4252,7 +4282,8 @@ namespace YouTubePlayerEX.App.Screens
                                 .TryGetWithHighestBitrate();
                             Logger.Error(e, e.GetDescription());
                             Logger.Log($"Prefer default audio language: {videoData.Snippet.DefaultLanguage}");
-                        } catch
+                        }
+                        catch
                         {
                             Logger.Log($"Prefer default audio language failed.\nFalling back to default audio language.");
                             // Select best audio stream (highest bitrate)

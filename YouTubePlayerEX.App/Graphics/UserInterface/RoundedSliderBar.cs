@@ -21,7 +21,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
     public partial class RoundedSliderBar<T> : AdaptiveSliderBar<T>
         where T : struct, INumber<T>, IMinMaxValue<T>
     {
-        protected readonly Nub Nub;
+        protected readonly SliderNubRemake Nub;
         protected readonly Box LeftBox;
         protected readonly Box RightBox;
         private readonly Container nubContainer;
@@ -60,8 +60,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         public RoundedSliderBar()
         {
-            Height = Nub.HEIGHT;
-            RangePadding = Nub.DEFAULT_EXPANDED_SIZE / 2;
+            Height = SliderNubRemake.HEIGHT;
+            RangePadding = SliderNubRemake.DEFAULT_EXPANDED_SIZE / 2;
             ResetToDefault = () =>
             {
                 if (!Current.Disabled)
@@ -88,8 +88,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                         {
                             LeftBox = new Box
                             {
-                                Height = 5,
-                                EdgeSmoothness = new Vector2(0, 0.5f),
+                                Height = SliderNubRemake.HEIGHT,
                                 Colour = AccentColour,
                                 RelativeSizeAxes = Axes.None,
                                 Anchor = Anchor.CentreLeft,
@@ -97,8 +96,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                             },
                             RightBox = new Box
                             {
-                                Height = 5,
-                                EdgeSmoothness = new Vector2(0, 0.5f),
+                                Height = SliderNubRemake.HEIGHT,
                                 Colour = backgroundColour,
                                 RelativeSizeAxes = Axes.None,
                                 Anchor = Anchor.CentreRight,
@@ -155,7 +153,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 Type = EdgeEffectType.Glow,
                 Colour = AccentColour.Darken(1),
                 Hollow = true,
-                Radius = 2,
+                Radius = 5,
             };
         }
 
@@ -189,14 +187,21 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         private void updateGlow()
         {
-            Nub.Glowing = !Current.Disabled && (IsHovered || IsDragged);
+            //Nub.Glowing = !Current.Disabled && (IsHovered || IsDragged);
+            if (!Current.Disabled && (IsHovered || IsDragged))
+            {
+                FadeEdgeEffectTo(Color4.White.Opacity(0.1f), 40, Easing.OutQuint);
+            } else
+            {
+                FadeEdgeEffectTo(Color4.White.Opacity(0), 800, Easing.OutQuint);
+            }
         }
 
         protected override void UpdateAfterChildren()
         {
             base.UpdateAfterChildren();
-            LeftBox.Scale = new Vector2(Math.Clamp(RangePadding + Nub.DrawPosition.X - Nub.DrawWidth / 2, 0, Math.Max(0, DrawWidth)), 1);
-            RightBox.Scale = new Vector2(Math.Clamp(DrawWidth - Nub.DrawPosition.X - RangePadding - Nub.DrawWidth / 2, 0, Math.Max(0, DrawWidth)), 1);
+            LeftBox.Scale = new Vector2(Math.Clamp(RangePadding + Nub.DrawPosition.X, 0, Math.Max(0, DrawWidth)), 1);
+            RightBox.Scale = new Vector2(Math.Clamp(DrawWidth - Nub.DrawPosition.X - RangePadding, 0, Math.Max(0, DrawWidth)), 1);
         }
 
         protected override void UpdateValue(float value)
@@ -204,7 +209,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             Nub.MoveToX(value, 250, Easing.OutQuint);
         }
 
-        public partial class SliderNub : Nub
+        public partial class SliderNub : SliderNubRemake
         {
             public Action? OnDoubleClicked { get; init; }
 
