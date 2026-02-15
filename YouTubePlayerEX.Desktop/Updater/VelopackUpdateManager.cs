@@ -111,7 +111,7 @@ namespace YouTubePlayerEX.Desktop.Updater
         private void restartToApplyUpdate(Velopack.UpdateManager updateManager, UpdateInfo update) => Task.Run(async () =>
         {
             await updateManager.WaitExitThenApplyUpdatesAsync(update.TargetFullRelease).ConfigureAwait(false);
-            Schedule(() => game.Exit());
+            Schedule(() => game.AttemptExit());
         });
 
         private static void log(string text) => Logger.Log($"VelopackUpdateManager: {text}");

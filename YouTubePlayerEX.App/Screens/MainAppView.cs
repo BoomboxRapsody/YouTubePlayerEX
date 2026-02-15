@@ -232,6 +232,8 @@ namespace YouTubePlayerEX.App.Screens
 
         private Bindable<bool> signedIn;
 
+        private ParallaxContainer thumbnailContainerBase;
+
         [Resolved]
         private ShaderManager shaderManager { get; set; } = null!;
 
@@ -318,7 +320,7 @@ namespace YouTubePlayerEX.App.Screens
                     Child = new ScalingContainerNew(ScalingMode.Video)
                     {
                         Children = new Drawable[] {
-                            new ParallaxContainer
+                            thumbnailContainerBase = new ParallaxContainer
                             {
                                 Children = new Drawable[]
                                 {
@@ -2657,7 +2659,7 @@ namespace YouTubePlayerEX.App.Screens
 
                 if (game?.RestartAppWhenExited() == true)
                 {
-                    game.Exit();
+                    game.AttemptExit();
                 }
             });
 

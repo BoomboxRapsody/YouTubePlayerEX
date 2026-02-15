@@ -12,9 +12,11 @@ using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Audio;
 using osu.Framework.Graphics.Containers;
+using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Video;
 using osu.Framework.Timing;
+using osuTK.Graphics;
 using YoutubeExplode.Videos.ClosedCaptions;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Graphics.Caption;
@@ -96,15 +98,27 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                             Child = bloom = new BloomContainer
                             {
                                 RelativeSizeAxes = Axes.Both,
-                                Child = new BufferedContainer {
-                                    RelativeSizeAxes = Axes.Both,
-                                    Child = video = new Video(fileName_Video, false)
+                                Children = new Drawable[]
+                                {
+                                    new Box
                                     {
                                         RelativeSizeAxes = Axes.Both,
-                                        FillMode = FillMode.Fit,
-                                        Anchor = Anchor.Centre,
-                                        Origin = Anchor.Centre,
-                                        Clock = framedClock,
+                                        Colour = Color4.Black,
+                                    },
+                                    new BufferedContainer
+                                    {
+                                        RelativeSizeAxes = Axes.Both,
+                                        DrawOriginal = true,
+                                        EffectPlacement = EffectPlacement.Behind,
+                                        BlurSigma = new osuTK.Vector2(256),
+                                        Child = video = new Video(fileName_Video, false)
+                                        {
+                                            RelativeSizeAxes = Axes.Both,
+                                            FillMode = FillMode.Fit,
+                                            Anchor = Anchor.Centre,
+                                            Origin = Anchor.Centre,
+                                            Clock = framedClock,
+                                        }
                                     }
                                 }
                             },
