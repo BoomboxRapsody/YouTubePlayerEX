@@ -89,8 +89,6 @@ namespace YouTubePlayerEX.App.Screens
         private VideoMetadataDisplay videoMetadataDisplayDetails;
         private RoundedButtonContainer commentOpenButtonDetails, likeButton;
 
-        private BackdropBlurContainer controlBackdrop;
-
         private LinkFlowContainer madeByText;
 
         private SettingsItemV2 audioLanguageItem, wasapiExperimentalItem;
@@ -552,21 +550,11 @@ namespace YouTubePlayerEX.App.Screens
                                     },
                                     Children = new Drawable[]
                                     {
-                                        controlBackdrop = new BackdropBlurContainer
+                                        new Box
                                         {
                                             RelativeSizeAxes = Axes.Both,
-                                            MaskCutoff = 0.1f,
-                                            Masking = true,
-                                            BackdropTintStrength = 0.3f,
                                             Colour = overlayColourProvider.Background5,
-                                            EffectBufferScale = new Vector2(0.5f),
-                                            BlurSigma = new Vector2(10f),
-                                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
-                                            Child = new Box
-                                            {
-                                                RelativeSizeAxes = Axes.Both,
-                                                Alpha = .55f,
-                                            },
+                                            Alpha = 1f,
                                         },
                                         new FillFlowContainer {
                                             RelativeSizeAxes = Axes.Both,
@@ -2815,7 +2803,6 @@ namespace YouTubePlayerEX.App.Screens
             if (isControlVisible == true)
             {
                 isControlVisible = false;
-                controlBackdrop.BlurTo(new Vector2(0), 250);
                 uiContainer.FadeOutFromOne(250);
                 uiGradientContainer.FadeOutFromOne(250);
                 sessionStatics.GetBindable<bool>(Static.IsControlVisible).Value = false;
@@ -2876,7 +2863,6 @@ namespace YouTubePlayerEX.App.Screens
             if (isControlVisible == false)
             {
                 isControlVisible = true;
-                controlBackdrop.BlurTo(new Vector2(10), 125);
                 uiContainer.FadeInFromZero(125);
                 uiGradientContainer.FadeInFromZero(125);
                 sessionStatics.GetBindable<bool>(Static.IsControlVisible).Value = true;
@@ -3460,7 +3446,7 @@ namespace YouTubePlayerEX.App.Screens
                             }
                             catch (Exception ex)
                             {
-                                Console.WriteLine($"¿¹¿Ü ¹ß»ý: {ex.Message}");
+                                Console.WriteLine($"Â¿Â¹Â¿Ãœ Â¹ÃŸÂ»Ã½: {ex.Message}");
                             }
                         });
                     }
