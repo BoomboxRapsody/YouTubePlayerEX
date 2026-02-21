@@ -79,7 +79,7 @@ JetBrains ReSharper InspectCode is also used for wider rule sets. You can run it
 
 When it comes to contributing to the project, the two main things you can do to help out are reporting issues and submitting pull requests. Please refer to the [contributing guidelines](CONTRIBUTING.md) to understand how to help in the most effective way possible.
 
-If you wish to help with localisation efforts, head over to [tolgee](https://app.tolgee.io/projects/28208).
+If you wish to help with localisation efforts, head over to [this](https://app.tolgee.io/projects/28208).
 
 ## Licence
 
