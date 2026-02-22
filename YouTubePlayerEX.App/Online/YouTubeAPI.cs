@@ -330,14 +330,28 @@ namespace YouTubePlayerEX.App.Online
             {
                 if (appConfig.Get<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource) == VideoMetadataTranslateSource.YouTube)
                 {
-                    string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
-                    try
+                    string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);   
+                    if (!string.IsNullOrEmpty(channel.Snippet.CustomUrl))
                     {
-                        return channel.Localizations[language].Title + $" ({channel.Snippet.CustomUrl})";
+                        try
+                        {
+                            return channel.Localizations.Where(locale => locale.Key.Contains(language)).First().Value.Title + $" ({channel.Snippet.CustomUrl})";
+                        }
+                        catch
+                        {
+                            return channel.Snippet.Title + $" ({channel.Snippet.CustomUrl})";
+                        }
                     }
-                    catch
+                    else
                     {
-                        return channel.Snippet.Title + $" ({channel.Snippet.CustomUrl})";
+                        try
+                        {
+                            return channel.Localizations.Where(locale => locale.Key.Contains(language)).First().Value.Title;
+                        }
+                        catch
+                        {
+                            return channel.Snippet.Title;
+                        }
                     }
                 }
                 else
@@ -346,11 +360,18 @@ namespace YouTubePlayerEX.App.Online
                     {
                         string originalTitle = channel.Snippet.Title;
                         string translatedTitle = translateApi.Translate(originalTitle, GoogleTranslateLanguage.auto);
-                        return translatedTitle + $" ({channel.Snippet.CustomUrl})";
+
+                        if (!string.IsNullOrEmpty(channel.Snippet.CustomUrl))
+                            return translatedTitle + $" ({channel.Snippet.CustomUrl})";
+                        else
+                            return translatedTitle;
                     }
                     catch
                     {
-                        return channel.Snippet.Title + $" ({channel.Snippet.CustomUrl})";
+                        if (!string.IsNullOrEmpty(channel.Snippet.CustomUrl))
+                            return channel.Snippet.Title + $" ({channel.Snippet.CustomUrl})";
+                        else
+                            return channel.Snippet.Title;
                     }
                 }
             }
@@ -362,7 +383,7 @@ namespace YouTubePlayerEX.App.Online
                     string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
                     try
                     {
-                        return channel.Localizations[language].Title;
+                        return channel.Localizations.Where(locale => locale.Key.Contains(language)).First().Value.Title;
                     }
                     catch
                     {
