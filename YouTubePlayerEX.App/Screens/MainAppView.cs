@@ -3154,7 +3154,6 @@ namespace YouTubePlayerEX.App.Screens
                             {
                                 LargeImageKey = videoData.Snippet.Thumbnails.High.Url,
                                 LargeImageUrl = $"https://youtu.be/{videoData.Id}",
-                                LargeImageText = $"Click to watch video in YouTube. ({videoData.Id})",
                                 SmallImageText = "YouTube Player EX",
                                 SmallImageKey = "youtube_player_ex_logo"
                             },
