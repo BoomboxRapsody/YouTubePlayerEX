@@ -22,9 +22,9 @@ namespace YouTubePlayerEX.App.Online
 
             client.OnReady += (sender, e) =>
             {
-                Console.WriteLine("Connected to discord with user {0}", e.User.Username);
-                Console.WriteLine("Avatar: {0}", e.User.GetAvatarURL(User.AvatarFormat.WebP));
-                Console.WriteLine("Decoration: {0}", e.User.GetAvatarDecorationURL());
+                Logger.Log($"[Discord] Connected to discord with user {e.User.Username}", LoggingTarget.Runtime);
+                Logger.Log($"[Discord] Avatar: {e.User.GetAvatarURL(User.AvatarFormat.WebP)}", LoggingTarget.Runtime);
+                Logger.Log($"[Discord] Decoration: {e.User.GetAvatarDecorationURL()}", LoggingTarget.Runtime);
             };
 
             //Connect to the RPC
