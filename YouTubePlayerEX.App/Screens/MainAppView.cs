@@ -1212,6 +1212,7 @@ namespace YouTubePlayerEX.App.Screens
                                                             Caption = YTPlayerEXStrings.VideoHueShift,
                                                             Current = appConfig.GetBindable<float>(YTPlayerEXSetting.VideoHueShift),
                                                             KeyboardStep = 1,
+                                                            LabelFormat = value => $"{value:N0}°"
                                                         }),
                                                         new AdaptiveSpriteText
                                                         {
