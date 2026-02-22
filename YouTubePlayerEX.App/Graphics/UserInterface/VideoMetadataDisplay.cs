@@ -37,6 +37,20 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private TruncatingSpriteText desc;
         public Action<VideoMetadataDisplay> ClickEvent;
 
+        private Action subscribeClickAction;
+
+        public Action SubscribeClickAction
+        {
+            get => subscribeClickAction;
+            set
+            {
+                subscribeClickAction = value;
+                subscribeButton.Action = value;
+            }
+        }
+
+        private RoundedAdaptiveButtonV2 subscribeButton;
+
         private Box bgLayer, hover;
 
         [Resolved]
@@ -80,7 +94,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 {
                     RelativeSizeAxes = Axes.Both,
                     Colour = overlayColourProvider.Background4,
-                    Alpha = 0.7f,
+                    Alpha = 1,
                 },
                 hover = new Box
                 {
@@ -122,10 +136,21 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                     Position = new osuTK.Vector2(0, 20),
                                 }
                             }
+                        },
+                        subscribeButton = new RoundedAdaptiveButtonV2
+                        {
+                            Enabled = { Value = true },
+                            Width = 90,
+                            Height = 30,
+                            Text = YTPlayerEXStrings.Subscribe,
+                            Origin = Anchor.CentreRight,
+                            Anchor = Anchor.CentreRight,
                         }
                     }
                 }
             };
+
+            subscribeButton.Action = SubscribeClickAction;
         }
 
         private Video videoData;
@@ -161,6 +186,19 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             (samples as HoverClickSounds).Enabled.Value = (ClickEvent != null);
         }
 
+        public void UpdateChannelSubscribeState(string channelId)
+        {
+            Task.Run(async () =>
+            {
+                bool response = await api.IsChannelSubscribed(channelId);
+
+                if (response == true)
+                    subscribeButton.Text = YTPlayerEXStrings.Unsubscribe;
+                else
+                    subscribeButton.Text = YTPlayerEXStrings.Subscribe;
+            });
+        }
+
         public void GetPalette()
         {
             Task.Run(async () =>
@@ -193,16 +231,28 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             });
         }
 
+        private void updateDescText()
+        {
+            Schedule(() =>
+            {
+                DateTimeOffset? dateTime = videoData.Snippet.PublishedAtDateTimeOffset;
+                DateTimeOffset now = DateTime.Now;
+                Channel channelData = api.GetChannel(videoData.Snippet.ChannelId);
+                desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
+            });
+        }
+
         public void UpdateVideo(string videoId)
         {
             Task.Run(async () =>
             {
                 videoData = api.GetVideo(videoId);
+                UpdateChannelSubscribeState(videoData.Snippet.ChannelId);
                 DateTimeOffset? dateTime = videoData.Snippet.PublishedAtDateTimeOffset;
                 DateTimeOffset now = DateTime.Now;
                 Channel channelData = api.GetChannel(videoData.Snippet.ChannelId);
                 videoName.Text = api.GetLocalizedVideoTitle(videoData);
-                desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
+                updateDescText();
                 profileImage.UpdateProfileImage(videoData.Snippet.ChannelId);
 
                 GetPalette();
@@ -212,7 +262,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     Task.Run(async () =>
                     {
                         videoName.Text = api.GetLocalizedVideoTitle(videoData);
-                        desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
+                        updateDescText();
                     });
                 });
 
@@ -220,7 +270,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 {
                     Task.Run(async () =>
                     {
-                        desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
+                        updateDescText();
                     });
                 }, true);
 
@@ -229,7 +279,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     Task.Run(async () =>
                     {
                         videoName.Text = api.GetLocalizedVideoTitle(videoData);
-                        desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
+                        updateDescText();
                     });
                 }, true);
             });

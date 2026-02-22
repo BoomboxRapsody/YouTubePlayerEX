@@ -785,6 +785,61 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString VideoHueShift => new TranslatableString(getKey(@"hue_shift"), "Video hue shift");
 
+        /// <summary>
+        /// "Discord Rich Presence"
+        /// </summary>
+        public static LocalisableString DiscordRichPresence => new TranslatableString(getKey(@"discord_rich_presence"), @"Discord Rich Presence");
+
+        /// <summary>
+        /// "Hide video information"
+        /// </summary>
+        public static LocalisableString HideIdentifiableInformation => new TranslatableString(getKey(@"hide_identifiable_information"), @"Hide video information");
+
+        /// <summary>
+        /// "Full"
+        /// </summary>
+        public static LocalisableString DiscordPresenceFull => new TranslatableString(getKey(@"discord_presence_full"), @"Full");
+
+        /// <summary>
+        /// "Off"
+        /// </summary>
+        public static LocalisableString DiscordPresenceOff => new TranslatableString(getKey(@"discord_presence_off"), @"Off");
+
+        /// <summary>
+        /// "Cancel"
+        /// </summary>
+        public static LocalisableString Cancel => new TranslatableString(getKey(@"cancel"), @"Cancel");
+
+        /// <summary>
+        /// "Yes"
+        /// </summary>
+        public static LocalisableString Yes => new TranslatableString(getKey(@"yes"), @"Yes");
+
+        /// <summary>
+        /// "Are you sure you want to unsubscribe this channel?"
+        /// </summary>
+        public static LocalisableString UnsubscribeDesc => new TranslatableString(getKey(@"unsubscribe_desc"), @"Are you sure you want to unsubscribe this channel?");
+
+        /// <summary>
+        /// "Subscribe"
+        /// </summary>
+        public static LocalisableString Subscribe => new TranslatableString(getKey(@"subscribe"), @"Subscribe");
+
+        /// <summary>
+        /// "Unsubscribe"
+        /// </summary>
+        public static LocalisableString Unsubscribe => new TranslatableString(getKey(@"unsubscribe"), @"Unsubscribe");
+
+        /// <summary>
+        /// "Subscription removed."
+        /// </summary>
+        public static LocalisableString SubscriptionRemoved => new TranslatableString(getKey(@"subscription_removed"), @"Subscription removed.");
+
+        /// <summary>
+        /// "Subscription added."
+        /// </summary>
+        public static LocalisableString SubscriptionAdded => new TranslatableString(getKey(@"subscription_added"), @"Subscription added.");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

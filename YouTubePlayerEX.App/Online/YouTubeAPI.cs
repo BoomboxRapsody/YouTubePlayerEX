@@ -62,6 +62,9 @@ namespace YouTubePlayerEX.App.Online
 
             request.Id = channelId;
 
+            if (googleOAuth2.SignedIn.Value == true)
+                request.OauthToken = googleOAuth2.GetAccessToken();
+
             var response = request.Execute();
 
             var result = response.Items.First();
@@ -82,7 +85,7 @@ namespace YouTubePlayerEX.App.Online
             var part = "statistics,snippet,brandingSettings,id,localizations";
             var request = youtubeService.Channels.List(part);
 
-            request.AccessToken = googleOAuth2.GetAccessToken();
+            request.OauthToken = googleOAuth2.GetAccessToken();
 
             request.Mine = true;
 
@@ -98,7 +101,7 @@ namespace YouTubePlayerEX.App.Online
             var part = "statistics,snippet,brandingSettings,id,localizations";
             var request = youtubeService.Channels.List(part);
 
-            request.AccessToken = googleOAuth2.GetAccessToken();
+            request.OauthToken = googleOAuth2.GetAccessToken();
 
             request.Mine = true;
 
@@ -130,7 +133,7 @@ namespace YouTubePlayerEX.App.Online
                 }
             }, part);
 
-            request.AccessToken = googleOAuth2.GetAccessToken();
+            request.OauthToken = googleOAuth2.GetAccessToken();
 
             request.Execute();
         }
@@ -161,7 +164,7 @@ namespace YouTubePlayerEX.App.Online
                         Language = CultureInfo.CurrentCulture.Name,
                     });
 
-                    request.AccessToken = googleOAuth2.GetAccessToken();
+                    request.OauthToken = googleOAuth2.GetAccessToken();
                     request.Execute();
                 }
                 else
@@ -174,7 +177,7 @@ namespace YouTubePlayerEX.App.Online
                         Language = CultureInfo.CurrentCulture.Name,
                     });
 
-                    request.AccessToken = googleOAuth2.GetAccessToken();
+                    request.OauthToken = googleOAuth2.GetAccessToken();
                     request.Execute();
                 }
             }
@@ -190,7 +193,7 @@ namespace YouTubePlayerEX.App.Online
                         Language = CultureInfo.CurrentCulture.Name,
                     });
 
-                    request.AccessToken = googleOAuth2.GetAccessToken();
+                    request.OauthToken = googleOAuth2.GetAccessToken();
                     request.Execute();
                 }
                 else
@@ -202,7 +205,7 @@ namespace YouTubePlayerEX.App.Online
                         Language = CultureInfo.CurrentCulture.Name,
                     });
 
-                    request.AccessToken = googleOAuth2.GetAccessToken();
+                    request.OauthToken = googleOAuth2.GetAccessToken();
                     request.Execute();
                 }
             }
@@ -213,7 +216,7 @@ namespace YouTubePlayerEX.App.Online
             var part = "snippet";
             var request = youtubeService.VideoAbuseReportReasons.List(part);
 
-            request.AccessToken = googleOAuth2.GetAccessToken();
+            request.OauthToken = googleOAuth2.GetAccessToken();
             request.Hl = frameworkConfig.Get<string>(FrameworkSetting.Locale);
 
             Logger.Log($"Using access token {googleOAuth2.GetAccessToken()}");
@@ -273,6 +276,9 @@ namespace YouTubePlayerEX.App.Online
             request.VideoId = videoId;
             request.Order = orderEnum;
 
+            if (googleOAuth2.SignedIn.Value == true)
+                request.OauthToken = googleOAuth2.GetAccessToken();
+
             var response = request.Execute();
 
             var result = response.Items;
@@ -288,6 +294,9 @@ namespace YouTubePlayerEX.App.Online
             request.MaxResults = 20; // <------ why 20? dues to quota limits
             request.Q = query;
 
+            if (googleOAuth2.SignedIn.Value == true)
+                request.OauthToken = googleOAuth2.GetAccessToken();
+
             var response = request.Execute();
 
             var result = response.Items;
@@ -302,11 +311,135 @@ namespace YouTubePlayerEX.App.Online
 
             request.Id = commentId;
 
+            if (googleOAuth2.SignedIn.Value == true)
+                request.OauthToken = googleOAuth2.GetAccessToken();
+
             var response = await request.ExecuteAsync();
 
             var result = response.Items.First();
 
             return result;
+        }
+
+        public async Task<bool> IsChannelSubscribed(string channelId)
+        {
+            if (googleOAuth2.SignedIn.Value == false)
+                return false;
+
+            var part = "snippet";
+            var request = youtubeService.Subscriptions.List(part);
+
+            request.ForChannelId = channelId;
+            request.Mine = true;
+            request.OauthToken = googleOAuth2.GetAccessToken();
+
+            var response = await request.ExecuteAsync();
+
+            if (response.Items.Count > 0)
+                return true;
+            else
+                return false;
+        }
+
+        public async Task<string> GetSubscriptionId(string channelId)
+        {
+            if (googleOAuth2.SignedIn.Value == false)
+                return string.Empty;
+
+            var part = "snippet";
+            var request = youtubeService.Subscriptions.List(part);
+
+            request.ForChannelId = channelId;
+            request.Mine = true;
+            request.OauthToken = googleOAuth2.GetAccessToken();
+
+            var response = await request.ExecuteAsync();
+
+            if (response.Items.Count > 0)
+                return response.Items.First().Id;
+            else
+                return string.Empty;
+        }
+
+        public async Task SubscribeChannel(string channelId)
+        {
+            if (googleOAuth2.SignedIn.Value == false)
+                return;
+
+            var body = new Subscription
+            {
+                Snippet = new SubscriptionSnippet
+                {
+                    ResourceId = new ResourceId
+                    {
+                        Kind = "youtube#channel",
+                        ChannelId = channelId
+                    }
+                }
+            };
+
+            var part = "snippet";
+            var request = youtubeService.Subscriptions.Insert(body, part);
+
+            request.OauthToken = googleOAuth2.GetAccessToken();
+
+            await request.ExecuteAsync();
+
+            return;
+        }
+
+        public async Task UnsubscribeChannel(string subscriptionId)
+        {
+            if (googleOAuth2.SignedIn.Value == false)
+                return;
+
+            var request = youtubeService.Subscriptions.Delete(subscriptionId);
+
+            request.OauthToken = googleOAuth2.GetAccessToken();
+
+            await request.ExecuteAsync();
+
+            return;
+        }
+
+        public string GetLocalizedChannelTitleDisplayBoth(Channel channel)
+        {
+            string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
+            if (!string.IsNullOrEmpty(channel.Snippet.CustomUrl))
+            {
+                try
+                {
+                    return channel.Localizations.Where(locale => locale.Key.Contains(language)).First().Value.Title + $" ({channel.Snippet.CustomUrl})";
+                }
+                catch
+                {
+                    return channel.Snippet.Title + $" ({channel.Snippet.CustomUrl})";
+                }
+            }
+            else
+            {
+                try
+                {
+                    return channel.Localizations.Where(locale => locale.Key.Contains(language)).First().Value.Title;
+                }
+                catch
+                {
+                    return channel.Snippet.Title;
+                }
+            }
+        }
+
+        public string GetLocalizedChannelTitleOnlyOne(Channel channel)
+        {
+            string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
+            try
+            {
+                return channel.Localizations.Where(locale => locale.Key.Contains(language)).First().Value.Title;
+            }
+            catch
+            {
+                return channel.Snippet.Title;
+            }
         }
 
         public string GetLocalizedChannelTitle(Channel channel, bool displayBoth = false)
@@ -318,15 +451,7 @@ namespace YouTubePlayerEX.App.Online
             {
                 if (appConfig.Get<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource) == VideoMetadataTranslateSource.YouTube)
                 {
-                    string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
-                    try
-                    {
-                        return channel.Localizations[language].Title + $" ({channel.Snippet.CustomUrl})";
-                    }
-                    catch
-                    {
-                        return channel.Snippet.Title + $" ({channel.Snippet.CustomUrl})";
-                    }
+                    return GetLocalizedChannelTitleDisplayBoth(channel);
                 }
                 else
                 {
@@ -334,11 +459,18 @@ namespace YouTubePlayerEX.App.Online
                     {
                         string originalTitle = channel.Snippet.Title;
                         string translatedTitle = translateApi.Translate(originalTitle, GoogleTranslateLanguage.auto);
-                        return translatedTitle + $" ({channel.Snippet.CustomUrl})";
+
+                        if (!string.IsNullOrEmpty(channel.Snippet.CustomUrl))
+                            return translatedTitle + $" ({channel.Snippet.CustomUrl})";
+                        else
+                            return translatedTitle;
                     }
                     catch
                     {
-                        return channel.Snippet.Title + $" ({channel.Snippet.CustomUrl})";
+                        if (!string.IsNullOrEmpty(channel.Snippet.CustomUrl))
+                            return channel.Snippet.Title + $" ({channel.Snippet.CustomUrl})";
+                        else
+                            return channel.Snippet.Title;
                     }
                 }
             }
@@ -347,15 +479,7 @@ namespace YouTubePlayerEX.App.Online
             {
                 if (appConfig.Get<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource) == VideoMetadataTranslateSource.YouTube)
                 {
-                    string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
-                    try
-                    {
-                        return channel.Localizations[language].Title;
-                    }
-                    catch
-                    {
-                        return channel.Snippet.Title;
-                    }
+                    return GetLocalizedChannelTitleOnlyOne(channel);
                 }
                 else
                 {
@@ -470,6 +594,9 @@ namespace YouTubePlayerEX.App.Online
 
             request.Id = videoId;
 
+            if (googleOAuth2.SignedIn.Value == true)
+                request.OauthToken = googleOAuth2.GetAccessToken();
+
             var response = request.Execute();
 
             var result = response.Items.First();
@@ -483,6 +610,9 @@ namespace YouTubePlayerEX.App.Online
             var request = youtubeService.Playlists.List(part);
 
             request.Id = playlistId;
+
+            if (googleOAuth2.SignedIn.Value == true)
+                request.OauthToken = googleOAuth2.GetAccessToken();
 
             var response = request.Execute();
 
@@ -499,6 +629,9 @@ namespace YouTubePlayerEX.App.Online
             request.MaxResults = 50; // <------ why 50? dues to quota limits
             request.PlaylistId = playlistId;
 
+            if (googleOAuth2.SignedIn.Value == true)
+                request.OauthToken = googleOAuth2.GetAccessToken();
+
             var response = await request.ExecuteAsync();
 
             var result = response.Items;
@@ -513,7 +646,7 @@ namespace YouTubePlayerEX.App.Online
 
             var request = youtubeService.Videos.GetRating(videoId);
 
-            request.AccessToken = googleOAuth2.GetAccessToken();
+            request.OauthToken = googleOAuth2.GetAccessToken();
 
             var response = await request.ExecuteAsync();
 
@@ -547,7 +680,7 @@ namespace YouTubePlayerEX.App.Online
 
             var request = youtubeService.Videos.Rate(videoId, videoRating);
 
-            request.AccessToken = googleOAuth2.GetAccessToken();
+            request.OauthToken = googleOAuth2.GetAccessToken();
 
             await request.ExecuteAsync();
         }

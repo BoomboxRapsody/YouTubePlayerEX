@@ -7,6 +7,7 @@
 [![Build status](https://github.com/BoomboxRapsody/YouTubePlayerEX/actions/workflows/ci.yml/badge.svg?branch=master&event=push)](https://github.com/BoomboxRapsody/YouTubePlayerEX/actions/workflows/ci.yml)
 [![GitHub release](https://img.shields.io/github/release/BoomboxRapsody/YouTubePlayerEX.svg)](https://github.com/BoomboxRapsody/YouTubePlayerEX/releases/latest)
 [![Licence](https://img.shields.io/github/license/BoomboxRapsody/YouTubePlayerEX.svg)](https://github.com/BoomboxRapsody/YouTubePlayerEX/blob/main/LICENSE.md)
+[![dev chat](https://discordapp.com/api/guilds/1474931183854026812/widget.png?style=shield)](https://discord.gg/UZWDqQ29ch)
 [![CodeFactor](https://www.codefactor.io/repository/github/boomboxrapsody/youtubeplayerex/badge)](https://www.codefactor.io/repository/github/boomboxrapsody/youtubeplayerex)
 
 The enhanced YouTube video player written in [custom osu-framework](https://github.com/BoomboxRapsody/YouTubePlayerEX-framework).

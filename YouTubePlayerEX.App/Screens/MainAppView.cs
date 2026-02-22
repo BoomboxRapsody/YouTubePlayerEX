@@ -9,10 +9,13 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using DiscordRPC;
+using DiscordRPC.Message;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using osu.Framework;
@@ -64,6 +67,7 @@ using YouTubePlayerEX.App.Overlays;
 using YouTubePlayerEX.App.Overlays.OSD;
 using YouTubePlayerEX.App.Updater;
 using YouTubePlayerEX.App.Utils;
+using static YouTubePlayerEX.App.Online.DiscordRPC;
 using static YouTubePlayerEX.App.YouTubePlayerEXApp;
 using Container = osu.Framework.Graphics.Containers.Container;
 using Language = YouTubePlayerEX.App.Localisation.Language;
@@ -74,7 +78,7 @@ namespace YouTubePlayerEX.App.Screens
     public partial class MainAppView : YouTubePlayerEXScreen, IKeyBindingHandler<GlobalAction>
     {
         private BufferedContainer videoContainer;
-        private AdaptiveButton loadBtn, commentSendButton, searchButton, loadPlaylistBtn, loadPlaylistOpenButton, prevVideoButton, nextVideoButton;
+        private AdaptiveButton loadBtn, commentSendButton, searchButton, loadPlaylistBtn, loadPlaylistOpenButton, prevVideoButton, nextVideoButton, declineButton, acceptButton;
         private AdaptiveTextBox videoIdBox, commentTextBox, searchTextBox, playlistIdBox;
         private LoadingSpinner spinner;
         private ScheduledDelegate spinnerShow;
@@ -82,7 +86,7 @@ namespace YouTubePlayerEX.App.Screens
         private IdleTracker idleTracker;
         private Container uiContainer;
         private Container uiGradientContainer;
-        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer, reportAbuseOverlay, loadPlaylistContainer;
+        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer, reportAbuseOverlay, loadPlaylistContainer, unsubscribeDialog;
         private SideOverlayContainer playlistOverlay, audioEffectsOverlay;
         private AdaptiveButtonWithShadow loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton, searchOpenButton, reportOpenButton, playlistOpenButton, audioEffectsOpenButton;
         private VideoMetadataDisplayWithoutProfile videoMetadataDisplay;
@@ -90,6 +94,8 @@ namespace YouTubePlayerEX.App.Screens
         private RoundedButtonContainer commentOpenButtonDetails, likeButton;
 
         private LinkFlowContainer madeByText;
+
+        private YouTubeChannelMetadataDisplay youtubeChannelMetadataDisplay;
 
         private SettingsItemV2 audioLanguageItem, wasapiExperimentalItem;
 
@@ -197,6 +203,7 @@ namespace YouTubePlayerEX.App.Screens
         private Bindable<LocalisableString> updateInfomationText;
         private Bindable<bool> updateButtonEnabled, fpsDisplay;
         private Bindable<AspectRatioMethod> aspectRatioMethod;
+        private Bindable<DiscordRichPresenceMode> discordRichPresence;
 
         [Resolved]
         private AudioEffectsConfigManager audioEffectsConfig { get; set; } = null!;
@@ -237,6 +244,11 @@ namespace YouTubePlayerEX.App.Screens
 
         private Bindable<double> videoVolume;
 
+#nullable enable
+        [Resolved(canBeNull: true)]
+        private Online.DiscordRPC? discordRPC { get; set; }
+#nullable disable
+
         //effects
         private Bindable<bool> reverbEnabled, rotateEnabled, echoEnabled, distortionEnabled;
         private FillFlowContainer reverbSettings, rotateSettings, echoSettings, distortionSettings;
@@ -275,6 +287,7 @@ namespace YouTubePlayerEX.App.Screens
             scalingPositionY = appConfig.GetBindable<float>(YTPlayerEXSetting.ScalingPositionY);
             scalingBackgroundDim = appConfig.GetBindable<float>(YTPlayerEXSetting.ScalingBackgroundDim);
             alwaysUseOriginalAudio = appConfig.GetBindable<bool>(YTPlayerEXSetting.AlwaysUseOriginalAudio);
+            discordRichPresence = appConfig.GetBindable<DiscordRichPresenceMode>(YTPlayerEXSetting.DiscordRichPresence);
 
             exportStorage = storage.GetStorageForDirectory(@"exports");
 
@@ -566,6 +579,7 @@ namespace YouTubePlayerEX.App.Screens
                                                     RelativeSizeAxes = Axes.X,
                                                     PlaySamplesOnAdjust = false,
                                                     DisplayAsPercentage = true,
+                                                    AlwaysPresent = true,
                                                     Current = { BindTarget = videoProgress },
                                                 },
                                                 new Container
@@ -692,6 +706,7 @@ namespace YouTubePlayerEX.App.Screens
                                                                             },
                                                                             KeyboardStep = 0.05f,
                                                                             PlaySamplesOnAdjust = true,
+                                                                            AlwaysPresent = true,
                                                                             Current = { BindTarget = playbackSpeed },
                                                                         },
                                                                     }
@@ -744,6 +759,7 @@ namespace YouTubePlayerEX.App.Screens
                                                                             KeyboardStep = 0.05f,
                                                                             PlaySamplesOnAdjust = true,
                                                                             DisplayAsPercentage = true,
+                                                                            AlwaysPresent = true,
                                                                             Current = videoVolume,
                                                                         },
                                                                     }
@@ -908,6 +924,11 @@ namespace YouTubePlayerEX.App.Screens
                                                             Caption = YTPlayerEXStrings.CaptionLanguage,
                                                             Current = captionLanguage,
                                                             Hotkey = new Hotkey(GlobalAction.CycleCaptionLanguage),
+                                                        }),
+                                                        new SettingsItemV2(new FormEnumDropdown<DiscordRichPresenceMode>
+                                                        {
+                                                            Caption = YTPlayerEXStrings.DiscordRichPresence,
+                                                            Current = discordRichPresence,
                                                         }),
                                                         new SettingsItemV2(new FormEnumDropdown<VideoMetadataTranslateSource>
                                                         {
@@ -1199,6 +1220,7 @@ namespace YouTubePlayerEX.App.Screens
                                                             Caption = YTPlayerEXStrings.VideoHueShift,
                                                             Current = appConfig.GetBindable<float>(YTPlayerEXSetting.VideoHueShift),
                                                             KeyboardStep = 1,
+                                                            LabelFormat = value => $"{value:N0}°"
                                                         }),
                                                         new AdaptiveSpriteText
                                                         {
@@ -2326,6 +2348,69 @@ namespace YouTubePlayerEX.App.Screens
                                 }
                             }
                         },
+                        unsubscribeDialog = new OverlayContainer
+                        {
+                            Width = 450,
+                            Height = 200,
+                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
+                            Masking = true,
+                            Origin = Anchor.Centre,
+                            Anchor = Anchor.Centre,
+                            EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                            {
+                                Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                Colour = Color4.Black.Opacity(0.25f),
+                                Offset = new Vector2(0, 2),
+                                Radius = 16,
+                            },
+                            Children = new Drawable[]
+                            {
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Colour = overlayColourProvider.Background5,
+                                },
+                                youtubeChannelMetadataDisplay = new YouTubeChannelMetadataDisplay
+                                {
+                                    RelativeSizeAxes = Axes.X,
+                                    Margin = new MarginPadding(8),
+                                    Size = new Vector2(0.965f, 1f),
+                                    Height = 60,
+                                    Origin = Anchor.TopLeft,
+                                    Anchor = Anchor.TopLeft,
+                                    AlwaysPresent = true,
+                                },
+                                new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont)
+                                {
+                                    RelativeSizeAxes = Axes.X,
+                                    AutoSizeAxes = Axes.Y,
+                                    Origin = Anchor.Centre,
+                                    Anchor = Anchor.Centre,
+                                    TextAnchor = Anchor.Centre,
+                                    AlwaysPresent = true,
+                                    Text = YTPlayerEXStrings.UnsubscribeDesc,
+                                    Colour = overlayColourProvider.Content2,
+                                },
+                                declineButton = new AdaptiveButton
+                                {
+                                    Enabled = { Value = true },
+                                    Origin = Anchor.BottomLeft,
+                                    Anchor = Anchor.BottomLeft,
+                                    Text = YTPlayerEXStrings.Cancel,
+                                    Size = new Vector2(200, 60),
+                                    Margin = new MarginPadding(8),
+                                },
+                                acceptButton = new AdaptiveButton
+                                {
+                                    Enabled = { Value = true },
+                                    Origin = Anchor.BottomRight,
+                                    Anchor = Anchor.BottomRight,
+                                    Text = YTPlayerEXStrings.Yes,
+                                    Size = new Vector2(200, 60),
+                                    Margin = new MarginPadding(8),
+                                },
+                            }
+                        },
                         new Container
                         {
                             RelativeSizeAxes = Axes.Both,
@@ -2352,6 +2437,7 @@ namespace YouTubePlayerEX.App.Screens
             playlistOverlay.Hide();
             loadPlaylistContainer.Hide();
             audioEffectsOverlay.Hide();
+            unsubscribeDialog.Hide();
 
             madeByText.AddText("made by ");
             madeByText.AddLink("BoomboxRapsody", "https://github.com/BoomboxRapsody");
@@ -2462,6 +2548,7 @@ namespace YouTubePlayerEX.App.Screens
             overlayContainers.Add(playlistOverlay);
             overlayContainers.Add(loadPlaylistContainer);
             overlayContainers.Add(audioEffectsOverlay);
+            overlayContainers.Add(unsubscribeDialog);
 
             playlistName.Text = "please choose a playlist!";
             playlistAuthor.Text = "[no metadata available]";
@@ -3092,6 +3179,7 @@ namespace YouTubePlayerEX.App.Screens
 
                     wth.ClickAction = async _ =>
                     {
+                        ClearPlaylistItems();
                         await SetVideoSource(item.Id.VideoId);
                     };
 
@@ -3124,9 +3212,91 @@ namespace YouTubePlayerEX.App.Screens
             }
         }
 
+        private Random random;
+
+        private void updatePresence(DiscordRichPresenceMode mode)
+        {
+            var hostname = Dns.GetHostName();
+            var ip = Dns.GetHostEntry(hostname).AddressList[1].ToString();
+            switch (mode)
+            {
+                case DiscordRichPresenceMode.Full:
+                {
+                    if (videoData != null)
+                    {
+                        discordRPC?.UpdatePresence(new RichPresence()
+                        {
+                            Details = $"{videoData.Snippet.ChannelTitle} - {videoData.Snippet.Title}",
+                            State = "Watching Video",
+                            Assets = new Assets()
+                            {
+                                LargeImageKey = videoData.Snippet.Thumbnails.High.Url,
+                                LargeImageUrl = $"https://youtu.be/{videoData.Id}",
+                                LargeImageText = videoData.Snippet.Title,
+                                SmallImageText = "YouTube Player EX",
+                                SmallImageKey = "youtube_player_ex_logo"
+                            },
+                        });
+                    }
+                    else
+                    {
+                        discordRPC?.UpdatePresence(new RichPresence()
+                        {
+                            State = "Idle",
+                            Assets = new Assets()
+                            {
+                                LargeImageKey = "youtube_player_ex_logo",
+                                LargeImageText = "YouTube Player EX",
+                            },
+                        });
+                    }
+                    break;
+                }
+                case DiscordRichPresenceMode.Limited:
+                {
+                    if (videoData != null)
+                    {
+                        discordRPC?.UpdatePresence(new RichPresence()
+                        {
+                            State = "Watching Video",
+                            Assets = new Assets()
+                            {
+                                LargeImageText = "YouTube Player EX",
+                                LargeImageKey = "youtube_player_ex_logo"
+                            },
+                        });
+                    }
+                    else
+                    {
+                        discordRPC?.UpdatePresence(new RichPresence()
+                        {
+                            State = "Idle",
+                            Assets = new Assets()
+                            {
+                                LargeImageKey = "youtube_player_ex_logo",
+                                LargeImageText = "YouTube Player EX",
+                            },
+                        });
+                    }
+                    break;
+                }
+                case DiscordRichPresenceMode.Off:
+                {
+                    discordRPC.ClearPresence();
+                    break;
+                }
+            }
+        }
+
+        private int partySize = 1;
+
         protected override void LoadComplete()
         {
             base.LoadComplete();
+
+            random = new Random();
+
+            discordRichPresence.BindValueChanged(mode => updatePresence(mode.NewValue), true);
 
             //check updates for LoadComplete
             if (game.IsDeployedBuild)
@@ -3562,6 +3732,8 @@ namespace YouTubePlayerEX.App.Screens
             }
         }
 
+        private Google.Apis.YouTube.v3.Data.Video videoData;
+
         public async Task SetPlaylistItems(IList<PlaylistItem> playlists)
         {
             this.playlists = playlists;
@@ -3894,7 +4066,7 @@ namespace YouTubePlayerEX.App.Screens
             Task.Run(() =>
             {
                 // metadata area
-                Google.Apis.YouTube.v3.Data.Video videoData = api.GetVideo(videoId);
+                videoData = api.GetVideo(videoId);
                 updateRatingButtons(videoId, videoData.Statistics.LikeCount != null);
 
                 Schedule(() => commentOpenButton.Enabled.Value = videoData.Statistics.CommentCount != null);
@@ -3909,7 +4081,7 @@ namespace YouTubePlayerEX.App.Screens
                 else
                     Schedule(() => commentOpenButtonDetails.Hide());
 
-                game.RequestUpdateWindowTitle($"{videoData.Snippet.Title} by {videoData.Snippet.ChannelTitle}");
+                game.RequestUpdateWindowTitle($"{videoData.Snippet.ChannelTitle} - {videoData.Snippet.Title}");
 
                 DateTimeOffset? dateTime = videoData.Snippet.PublishedAtDateTimeOffset;
                 DateTime now = DateTime.Now;
@@ -3947,6 +4119,58 @@ namespace YouTubePlayerEX.App.Screens
 
                 Schedule(() =>
                 {
+                    updatePresence(discordRichPresence.Value);
+
+                    videoMetadataDisplayDetails.SubscribeClickAction = () =>
+                    {
+                        Task.Run(async () =>
+                        {
+                            bool result = await api.IsChannelSubscribed(videoData.Snippet.ChannelId);
+                            string subscriptionId = await api.GetSubscriptionId(videoData.Snippet.ChannelId);
+
+                            Logger.Log("SubscribeClickAction clicked");
+
+                            if (result)
+                            {
+                                Schedule(() => youtubeChannelMetadataDisplay.UpdateUser(api.GetChannel(videoData.Snippet.ChannelId)));
+
+                                declineButton.ClickAction = async _ =>
+                                {
+                                    hideOverlayContainer(unsubscribeDialog);
+                                };
+                                acceptButton.ClickAction = async _ =>
+                                {
+                                    hideOverlayContainer(unsubscribeDialog);
+                                    await api.UnsubscribeChannel(subscriptionId);
+
+                                    Logger.Log("UnsubscribeChannel()");
+
+                                    Toast toast = new Toast(YTPlayerEXStrings.General, YTPlayerEXStrings.SubscriptionRemoved);
+
+                                    Schedule(() => onScreenDisplay.Display(toast));
+                                    Schedule(() => videoMetadataDisplayDetails.UpdateChannelSubscribeState(videoData.Snippet.ChannelId));
+                                };
+
+                                Schedule(() =>
+                                {
+                                    hideOverlays();
+                                    showOverlayContainer(unsubscribeDialog);
+                                });
+                            }
+                            else
+                            {
+                                await api.SubscribeChannel(videoData.Snippet.ChannelId);
+
+                                Logger.Log("SubscribeChannel()");
+
+                                Toast toast = new Toast(YTPlayerEXStrings.General, YTPlayerEXStrings.SubscriptionAdded);
+
+                                Schedule(() => onScreenDisplay.Display(toast));
+                                Schedule(() => videoMetadataDisplayDetails.UpdateChannelSubscribeState(videoData.Snippet.ChannelId));
+                            }
+                        });
+                    };
+
                     reportButton.Action = () =>
                     {
                         if (!googleOAuth2.SignedIn.Value)

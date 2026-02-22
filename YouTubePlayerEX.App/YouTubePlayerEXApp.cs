@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Sample;
@@ -31,6 +32,7 @@ using YouTubePlayerEX.App.Graphics;
 using YouTubePlayerEX.App.Graphics.Containers;
 using YouTubePlayerEX.App.Graphics.UserInterface;
 using YouTubePlayerEX.App.Localisation;
+using YouTubePlayerEX.App.Online;
 using YouTubePlayerEX.App.Overlays;
 using YouTubePlayerEX.App.Screens;
 using YouTubePlayerEX.App.Updater;
@@ -55,6 +57,8 @@ namespace YouTubePlayerEX.App
         private OnScreenDisplay onScreenDisplay;
 
         private ScreenshotManager screenshotManager;
+
+        private Online.DiscordRPC discord_rpc;
 
         [Resolved]
         private FrameworkConfigManager frameworkConfig { get; set; }
@@ -147,6 +151,9 @@ namespace YouTubePlayerEX.App
 
             loadComponentSingleFile(screenshotManager, Add, true);
 
+            if (RuntimeInfo.IsDesktop)
+                loadComponentSingleFile(discord_rpc = new Online.DiscordRPC(), Add, true);
+
             loadComponentSingleFile(fpsCounter = new FPSCounter
             {
                 Anchor = Anchor.BottomRight,
@@ -156,6 +163,12 @@ namespace YouTubePlayerEX.App
 
             applySafeAreaConsiderations = LocalConfig.GetBindable<bool>(YTPlayerEXSetting.SafeAreaConsiderations);
             applySafeAreaConsiderations.BindValueChanged(apply => SafeAreaContainer.SafeAreaOverrideEdges = apply.NewValue ? SafeAreaOverrideEdges : Edges.All, true);
+        }
+
+        protected override void Dispose(bool isDisposing)
+        {
+            base.Dispose(isDisposing);
+            discord_rpc.Dispose();
         }
 
         private Bindable<bool> applySafeAreaConsiderations = null!;
