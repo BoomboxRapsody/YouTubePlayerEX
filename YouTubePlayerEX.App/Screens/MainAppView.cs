@@ -13,6 +13,7 @@ using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using DiscordRPC;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using osu.Framework;
@@ -197,6 +198,7 @@ namespace YouTubePlayerEX.App.Screens
         private Bindable<LocalisableString> updateInfomationText;
         private Bindable<bool> updateButtonEnabled, fpsDisplay;
         private Bindable<AspectRatioMethod> aspectRatioMethod;
+        private Bindable<DiscordRichPresenceMode> discordRichPresence;
 
         [Resolved]
         private AudioEffectsConfigManager audioEffectsConfig { get; set; } = null!;
@@ -237,6 +239,11 @@ namespace YouTubePlayerEX.App.Screens
 
         private Bindable<double> videoVolume;
 
+#nullable enable
+        [Resolved(canBeNull: true)]
+        private Online.DiscordRPC? discordRPC { get; set; }
+#nullable disable
+
         //effects
         private Bindable<bool> reverbEnabled, rotateEnabled, echoEnabled, distortionEnabled;
         private FillFlowContainer reverbSettings, rotateSettings, echoSettings, distortionSettings;
@@ -275,6 +282,7 @@ namespace YouTubePlayerEX.App.Screens
             scalingPositionY = appConfig.GetBindable<float>(YTPlayerEXSetting.ScalingPositionY);
             scalingBackgroundDim = appConfig.GetBindable<float>(YTPlayerEXSetting.ScalingBackgroundDim);
             alwaysUseOriginalAudio = appConfig.GetBindable<bool>(YTPlayerEXSetting.AlwaysUseOriginalAudio);
+            discordRichPresence = appConfig.GetBindable<DiscordRichPresenceMode>(YTPlayerEXSetting.DiscordRichPresence);
 
             exportStorage = storage.GetStorageForDirectory(@"exports");
 
@@ -908,6 +916,11 @@ namespace YouTubePlayerEX.App.Screens
                                                             Caption = YTPlayerEXStrings.CaptionLanguage,
                                                             Current = captionLanguage,
                                                             Hotkey = new Hotkey(GlobalAction.CycleCaptionLanguage),
+                                                        }),
+                                                        new SettingsItemV2(new FormEnumDropdown<DiscordRichPresenceMode>
+                                                        {
+                                                            Caption = YTPlayerEXStrings.DiscordRichPresence,
+                                                            Current = discordRichPresence,
                                                         }),
                                                         new SettingsItemV2(new FormEnumDropdown<VideoMetadataTranslateSource>
                                                         {
@@ -3128,6 +3141,32 @@ namespace YouTubePlayerEX.App.Screens
         {
             base.LoadComplete();
 
+            discordRichPresence.BindValueChanged(mode =>
+            {
+                switch (mode.NewValue)
+                {
+                    case DiscordRichPresenceMode.Full:
+                    case DiscordRichPresenceMode.Limited:
+                    {
+                        discordRPC?.UpdatePresence(new RichPresence()
+                        {
+                            State = "Idle",
+                            Assets = new Assets()
+                            {
+                                LargeImageKey = "youtube_player_ex_logo",
+                                LargeImageText = "YouTube Player EX",
+                            },
+                        });
+                        break;
+                    }
+                    case DiscordRichPresenceMode.Off:
+                    {
+                        discordRPC.ClearPresence();
+                        break;
+                    }
+                }
+            }, true);
+
             //check updates for LoadComplete
             if (game.IsDeployedBuild)
                 checkForUpdates().FireAndForget();
@@ -3909,7 +3948,7 @@ namespace YouTubePlayerEX.App.Screens
                 else
                     Schedule(() => commentOpenButtonDetails.Hide());
 
-                game.RequestUpdateWindowTitle($"{videoData.Snippet.Title} by {videoData.Snippet.ChannelTitle}");
+                game.RequestUpdateWindowTitle($"{videoData.Snippet.ChannelTitle} - {videoData.Snippet.Title}");
 
                 DateTimeOffset? dateTime = videoData.Snippet.PublishedAtDateTimeOffset;
                 DateTime now = DateTime.Now;
@@ -3947,6 +3986,47 @@ namespace YouTubePlayerEX.App.Screens
 
                 Schedule(() =>
                 {
+                    discordRichPresence.BindValueChanged(mode =>
+                    {
+                        switch (mode.NewValue)
+                        {
+                            case DiscordRichPresenceMode.Full:
+                            {
+                                discordRPC?.UpdatePresence(new RichPresence()
+                                {
+                                    Details = $"{videoData.Snippet.ChannelTitle} - {videoData.Snippet.Title}",
+                                    State = "Watching Video",
+                                    Assets = new Assets()
+                                    {
+                                        LargeImageKey = videoData.Snippet.Thumbnails.High.Url,
+                                        LargeImageText = $"{videoData.Snippet.ChannelTitle} - {videoData.Snippet.Title}",
+                                        SmallImageText = "YouTube Player EX",
+                                        SmallImageKey = "youtube_player_ex_logo"
+                                    },
+                                });
+                                break;
+                            }
+                            case DiscordRichPresenceMode.Limited:
+                            {
+                                discordRPC?.UpdatePresence(new RichPresence()
+                                {
+                                    State = "Watching Video",
+                                    Assets = new Assets()
+                                    {
+                                        LargeImageText = "YouTube Player EX",
+                                        LargeImageKey = "youtube_player_ex_logo"
+                                    },
+                                });
+                                break;
+                            }
+                            case DiscordRichPresenceMode.Off:
+                            {
+                                discordRPC.ClearPresence();
+                                break;
+                            }
+                        }
+                    }, true);
+
                     reportButton.Action = () =>
                     {
                         if (!googleOAuth2.SignedIn.Value)

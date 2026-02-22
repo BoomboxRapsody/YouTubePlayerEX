@@ -785,6 +785,26 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString VideoHueShift => new TranslatableString(getKey(@"hue_shift"), "Video hue shift");
 
+        /// <summary>
+        /// "Discord Rich Presence"
+        /// </summary>
+        public static LocalisableString DiscordRichPresence => new TranslatableString(getKey(@"discord_rich_presence"), @"Discord Rich Presence");
+
+        /// <summary>
+        /// "Hide identifiable information"
+        /// </summary>
+        public static LocalisableString HideIdentifiableInformation => new TranslatableString(getKey(@"hide_identifiable_information"), @"Hide identifiable information");
+
+        /// <summary>
+        /// "Full"
+        /// </summary>
+        public static LocalisableString DiscordPresenceFull => new TranslatableString(getKey(@"discord_presence_full"), @"Full");
+
+        /// <summary>
+        /// "Off"
+        /// </summary>
+        public static LocalisableString DiscordPresenceOff => new TranslatableString(getKey(@"discord_presence_off"), @"Off");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }
