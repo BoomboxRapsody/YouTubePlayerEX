@@ -68,7 +68,6 @@ namespace YouTubePlayerEX.App.Config
             SetDefault(YTPlayerEXSetting.VideoHueShift, 0, 0, 360, 1);
 
             SetDefault(YTPlayerEXSetting.DiscordRichPresence, DiscordRichPresenceMode.Full);
-
         }
 
         public YTPlayerEXConfigManager(Storage storage, IDictionary<YTPlayerEXSetting, object> defaultOverrides = null) : base(storage, defaultOverrides)
