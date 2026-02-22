@@ -6,37 +6,27 @@
 using System;
 using System.Threading.Tasks;
 using Google.Apis.YouTube.v3.Data;
-using Humanizer;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
-using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Extensions.LocalisationExtensions;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Input.Events;
-using osuTK;
 using osuTK.Graphics;
-using PaletteNet;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 using YouTubePlayerEX.App.Config;
-using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics.Sprites;
-using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
-using YouTubePlayerEX.App.Utils;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
-    public partial class DiscordUserMetadataDisplay : CompositeDrawable
+    public partial class YouTubeChannelMetadataDisplay : CompositeDrawable
     {
-        private DiscordProfileImage profileImage;
+        private ProfileImage profileImage;
         private TruncatingSpriteText videoName;
         private TruncatingSpriteText desc;
-        public Action<DiscordUserMetadataDisplay> ClickEvent;
+        public Action<YouTubeChannelMetadataDisplay> ClickEvent;
 
         private Box bgLayer, hover;
 
@@ -87,7 +77,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     Padding = new MarginPadding(7),
                     Children = new Drawable[]
                     {
-                        profileImage = new DiscordProfileImage(45),
+                        profileImage = new ProfileImage(45),
                         new Container
                         {
                             RelativeSizeAxes = Axes.Both,
@@ -105,15 +95,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                     RelativeSizeAxes = Axes.X,
                                     Text = "[nickname]",
                                     Colour = overlayColourProvider.Content2,
+                                    Position = new osuTK.Vector2(0, 10),
                                 },
-                                desc = new TruncatingSpriteText
-                                {
-                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "SemiBold"),
-                                    RelativeSizeAxes = Axes.X,
-                                    Colour = overlayColourProvider.Background1,
-                                    Text = "[user id]",
-                                    Position = new osuTK.Vector2(0, 20),
-                                }
                             }
                         }
                     }
@@ -154,13 +137,12 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             (samples as HoverClickSounds).Enabled.Value = (ClickEvent != null);
         }
 
-        public void UpdateUser(DiscordRPC.User user)
+        public void UpdateUser(Channel channel)
         {
             Task.Run(async () =>
             {
-                videoName.Text = api.GetLocalizedVideoTitle(videoData);
-                profileImage.UpdateProfileImage(user);
-                desc.Text = user.ID.ToLocalisableString();
+                videoName.Text = api.GetLocalizedChannelTitle(channel);
+                profileImage.UpdateProfileImage(channel.Id);
             });
         }
     }

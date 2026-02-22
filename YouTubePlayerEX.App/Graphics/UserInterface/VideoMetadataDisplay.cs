@@ -37,6 +37,20 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         private TruncatingSpriteText desc;
         public Action<VideoMetadataDisplay> ClickEvent;
 
+        private Action subscribeClickAction;
+
+        public Action SubscribeClickAction
+        {
+            get => subscribeClickAction;
+            set
+            {
+                subscribeClickAction = value;
+                subscribeButton.Action = value;
+            }
+        }
+
+        private RoundedAdaptiveButtonV2 subscribeButton;
+
         private Box bgLayer, hover;
 
         [Resolved]
@@ -122,10 +136,21 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                     Position = new osuTK.Vector2(0, 20),
                                 }
                             }
+                        },
+                        subscribeButton = new RoundedAdaptiveButtonV2
+                        {
+                            Enabled = { Value = true },
+                            Width = 90,
+                            Height = 30,
+                            Text = YTPlayerEXStrings.Subscribe,
+                            Origin = Anchor.CentreRight,
+                            Anchor = Anchor.CentreRight,
                         }
                     }
                 }
             };
+
+            subscribeButton.Action = SubscribeClickAction;
         }
 
         private Video videoData;
@@ -159,6 +184,19 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         {
             base.LoadComplete();
             (samples as HoverClickSounds).Enabled.Value = (ClickEvent != null);
+        }
+
+        public void UpdateChannelSubscribeState(string channelId)
+        {
+            Task.Run(async () =>
+            {
+                bool response = await api.IsChannelSubscribed(channelId);
+
+                if (response == true)
+                    subscribeButton.Text = YTPlayerEXStrings.Unsubscribe;
+                else
+                    subscribeButton.Text = YTPlayerEXStrings.Subscribe;
+            });
         }
 
         public void GetPalette()
@@ -209,6 +247,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             Task.Run(async () =>
             {
                 videoData = api.GetVideo(videoId);
+                UpdateChannelSubscribeState(videoData.Snippet.ChannelId);
                 DateTimeOffset? dateTime = videoData.Snippet.PublishedAtDateTimeOffset;
                 DateTimeOffset now = DateTime.Now;
                 Channel channelData = api.GetChannel(videoData.Snippet.ChannelId);

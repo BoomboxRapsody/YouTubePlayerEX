@@ -321,6 +321,87 @@ namespace YouTubePlayerEX.App.Online
             return result;
         }
 
+        public async Task<bool> IsChannelSubscribed(string channelId)
+        {
+            if (googleOAuth2.SignedIn.Value == false)
+                return false;
+
+            var part = "snippet";
+            var request = youtubeService.Subscriptions.List(part);
+
+            request.ForChannelId = channelId;
+            request.Mine = true;
+            request.OauthToken = googleOAuth2.GetAccessToken();
+
+            var response = await request.ExecuteAsync();
+
+            if (response.Items.Count > 0)
+                return true;
+            else
+                return false;
+        }
+
+        public async Task<string> GetSubscriptionId(string channelId)
+        {
+            if (googleOAuth2.SignedIn.Value == false)
+                return string.Empty;
+
+            var part = "snippet";
+            var request = youtubeService.Subscriptions.List(part);
+
+            request.ForChannelId = channelId;
+            request.Mine = true;
+            request.OauthToken = googleOAuth2.GetAccessToken();
+
+            var response = await request.ExecuteAsync();
+
+            if (response.Items.Count > 0)
+                return response.Items.First().Id;
+            else
+                return string.Empty;
+        }
+
+        public async Task SubscribeChannel(string channelId)
+        {
+            if (googleOAuth2.SignedIn.Value == false)
+                return;
+
+            var body = new Subscription
+            {
+                Snippet = new SubscriptionSnippet
+                {
+                    ResourceId = new ResourceId
+                    {
+                        Kind = "youtube#channel",
+                        ChannelId = channelId
+                    }
+                }
+            };
+
+            var part = "snippet";
+            var request = youtubeService.Subscriptions.Insert(body, part);
+
+            request.OauthToken = googleOAuth2.GetAccessToken();
+
+            await request.ExecuteAsync();
+
+            return;
+        }
+
+        public async Task UnsubscribeChannel(string subscriptionId)
+        {
+            if (googleOAuth2.SignedIn.Value == false)
+                return;
+
+            var request = youtubeService.Subscriptions.Delete(subscriptionId);
+
+            request.OauthToken = googleOAuth2.GetAccessToken();
+
+            await request.ExecuteAsync();
+
+            return;
+        }
+
         public string GetLocalizedChannelTitle(Channel channel, bool displayBoth = false)
         {
             if (channel == null)

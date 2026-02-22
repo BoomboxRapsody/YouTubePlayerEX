@@ -86,7 +86,7 @@ namespace YouTubePlayerEX.App.Screens
         private IdleTracker idleTracker;
         private Container uiContainer;
         private Container uiGradientContainer;
-        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer, reportAbuseOverlay, loadPlaylistContainer, discordJoinDialog;
+        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer, reportAbuseOverlay, loadPlaylistContainer, unsubscribeDialog;
         private SideOverlayContainer playlistOverlay, audioEffectsOverlay;
         private AdaptiveButtonWithShadow loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton, searchOpenButton, reportOpenButton, playlistOpenButton, audioEffectsOpenButton;
         private VideoMetadataDisplayWithoutProfile videoMetadataDisplay;
@@ -95,7 +95,7 @@ namespace YouTubePlayerEX.App.Screens
 
         private LinkFlowContainer madeByText;
 
-        private DiscordUserMetadataDisplay discordUserMetadataDisplay;
+        private YouTubeChannelMetadataDisplay youtubeChannelMetadataDisplay;
 
         private SettingsItemV2 audioLanguageItem, wasapiExperimentalItem;
 
@@ -579,6 +579,7 @@ namespace YouTubePlayerEX.App.Screens
                                                     RelativeSizeAxes = Axes.X,
                                                     PlaySamplesOnAdjust = false,
                                                     DisplayAsPercentage = true,
+                                                    AlwaysPresent = true,
                                                     Current = { BindTarget = videoProgress },
                                                 },
                                                 new Container
@@ -705,6 +706,7 @@ namespace YouTubePlayerEX.App.Screens
                                                                             },
                                                                             KeyboardStep = 0.05f,
                                                                             PlaySamplesOnAdjust = true,
+                                                                            AlwaysPresent = true,
                                                                             Current = { BindTarget = playbackSpeed },
                                                                         },
                                                                     }
@@ -757,6 +759,7 @@ namespace YouTubePlayerEX.App.Screens
                                                                             KeyboardStep = 0.05f,
                                                                             PlaySamplesOnAdjust = true,
                                                                             DisplayAsPercentage = true,
+                                                                            AlwaysPresent = true,
                                                                             Current = videoVolume,
                                                                         },
                                                                     }
@@ -2345,7 +2348,7 @@ namespace YouTubePlayerEX.App.Screens
                                 }
                             }
                         },
-                        discordJoinDialog = new OverlayContainer
+                        unsubscribeDialog = new OverlayContainer
                         {
                             Width = 450,
                             Height = 200,
@@ -2367,7 +2370,7 @@ namespace YouTubePlayerEX.App.Screens
                                     RelativeSizeAxes = Axes.Both,
                                     Colour = overlayColourProvider.Background5,
                                 },
-                                discordUserMetadataDisplay = new DiscordUserMetadataDisplay
+                                youtubeChannelMetadataDisplay = new YouTubeChannelMetadataDisplay
                                 {
                                     RelativeSizeAxes = Axes.X,
                                     Margin = new MarginPadding(8),
@@ -2385,7 +2388,7 @@ namespace YouTubePlayerEX.App.Screens
                                     Anchor = Anchor.Centre,
                                     TextAnchor = Anchor.Centre,
                                     AlwaysPresent = true,
-                                    Text = YTPlayerEXStrings.DiscordJoinDesc,
+                                    Text = YTPlayerEXStrings.UnsubscribeDesc,
                                     Colour = overlayColourProvider.Content2,
                                 },
                                 declineButton = new AdaptiveButton
@@ -2393,7 +2396,7 @@ namespace YouTubePlayerEX.App.Screens
                                     Enabled = { Value = true },
                                     Origin = Anchor.BottomLeft,
                                     Anchor = Anchor.BottomLeft,
-                                    Text = YTPlayerEXStrings.Decline,
+                                    Text = YTPlayerEXStrings.Cancel,
                                     Size = new Vector2(200, 60),
                                     Margin = new MarginPadding(8),
                                 },
@@ -2402,7 +2405,7 @@ namespace YouTubePlayerEX.App.Screens
                                     Enabled = { Value = true },
                                     Origin = Anchor.BottomRight,
                                     Anchor = Anchor.BottomRight,
-                                    Text = YTPlayerEXStrings.Accept,
+                                    Text = YTPlayerEXStrings.Yes,
                                     Size = new Vector2(200, 60),
                                     Margin = new MarginPadding(8),
                                 },
@@ -2434,7 +2437,7 @@ namespace YouTubePlayerEX.App.Screens
             playlistOverlay.Hide();
             loadPlaylistContainer.Hide();
             audioEffectsOverlay.Hide();
-            discordJoinDialog.Hide();
+            unsubscribeDialog.Hide();
 
             madeByText.AddText("made by ");
             madeByText.AddLink("BoomboxRapsody", "https://github.com/BoomboxRapsody");
@@ -2545,7 +2548,7 @@ namespace YouTubePlayerEX.App.Screens
             overlayContainers.Add(playlistOverlay);
             overlayContainers.Add(loadPlaylistContainer);
             overlayContainers.Add(audioEffectsOverlay);
-            overlayContainers.Add(discordJoinDialog);
+            overlayContainers.Add(unsubscribeDialog);
 
             playlistName.Text = "please choose a playlist!";
             playlistAuthor.Text = "[no metadata available]";
@@ -4117,6 +4120,56 @@ namespace YouTubePlayerEX.App.Screens
                 Schedule(() =>
                 {
                     updatePresence(discordRichPresence.Value);
+
+                    videoMetadataDisplayDetails.SubscribeClickAction = () =>
+                    {
+                        Task.Run(async () =>
+                        {
+                            bool result = await api.IsChannelSubscribed(videoData.Snippet.ChannelId);
+                            string subscriptionId = await api.GetSubscriptionId(videoData.Snippet.ChannelId);
+
+                            Logger.Log("SubscribeClickAction clicked");
+
+                            if (result)
+                            {
+                                Schedule(() => youtubeChannelMetadataDisplay.UpdateUser(api.GetChannel(videoData.Snippet.ChannelId)));
+
+                                declineButton.ClickAction = async _ =>
+                                {
+                                    hideOverlayContainer(unsubscribeDialog);
+                                };
+                                acceptButton.ClickAction = async _ =>
+                                {
+                                    hideOverlayContainer(unsubscribeDialog);
+                                    await api.UnsubscribeChannel(subscriptionId);
+
+                                    Logger.Log("UnsubscribeChannel()");
+
+                                    Toast toast = new Toast(YTPlayerEXStrings.General, YTPlayerEXStrings.SubscriptionRemoved);
+
+                                    Schedule(() => onScreenDisplay.Display(toast));
+                                    Schedule(() => videoMetadataDisplayDetails.UpdateChannelSubscribeState(videoData.Snippet.ChannelId));
+                                };
+
+                                Schedule(() =>
+                                {
+                                    hideOverlays();
+                                    showOverlayContainer(unsubscribeDialog);
+                                });
+                            }
+                            else
+                            {
+                                await api.SubscribeChannel(videoData.Snippet.ChannelId);
+
+                                Logger.Log("SubscribeChannel()");
+
+                                Toast toast = new Toast(YTPlayerEXStrings.General, YTPlayerEXStrings.SubscriptionAdded);
+
+                                Schedule(() => onScreenDisplay.Display(toast));
+                                Schedule(() => videoMetadataDisplayDetails.UpdateChannelSubscribeState(videoData.Snippet.ChannelId));
+                            }
+                        });
+                    };
 
                     reportButton.Action = () =>
                     {

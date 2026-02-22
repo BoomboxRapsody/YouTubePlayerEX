@@ -806,19 +806,39 @@ namespace YouTubePlayerEX.App.Localisation
         public static LocalisableString DiscordPresenceOff => new TranslatableString(getKey(@"discord_presence_off"), @"Off");
 
         /// <summary>
-        /// "Decline"
+        /// "Cancel"
         /// </summary>
-        public static LocalisableString Decline => new TranslatableString(getKey(@"discord_join_decline"), @"Decline");
+        public static LocalisableString Cancel => new TranslatableString(getKey(@"cancel"), @"Cancel");
 
         /// <summary>
-        /// "Accept"
+        /// "Yes"
         /// </summary>
-        public static LocalisableString Accept => new TranslatableString(getKey(@"discord_join_accept"), @"Accept");
+        public static LocalisableString Yes => new TranslatableString(getKey(@"yes"), @"Yes");
 
         /// <summary>
-        /// "The user requested a co-view."
+        /// "Are you sure you want to unsubscribe this channel?"
         /// </summary>
-        public static LocalisableString DiscordJoinDesc => new TranslatableString(getKey(@"discord_join_desc"), @"The user requested a co-view.");
+        public static LocalisableString UnsubscribeDesc => new TranslatableString(getKey(@"unsubscribe_desc"), @"Are you sure you want to unsubscribe this channel?");
+
+        /// <summary>
+        /// "Subscribe"
+        /// </summary>
+        public static LocalisableString Subscribe => new TranslatableString(getKey(@"subscribe"), @"Subscribe");
+
+        /// <summary>
+        /// "Unsubscribe"
+        /// </summary>
+        public static LocalisableString Unsubscribe => new TranslatableString(getKey(@"unsubscribe"), @"Unsubscribe");
+
+        /// <summary>
+        /// "Subscription removed."
+        /// </summary>
+        public static LocalisableString SubscriptionRemoved => new TranslatableString(getKey(@"subscription_removed"), @"Subscription removed.");
+
+        /// <summary>
+        /// "Subscription added."
+        /// </summary>
+        public static LocalisableString SubscriptionAdded => new TranslatableString(getKey(@"subscription_added"), @"Subscription added.");
 
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
