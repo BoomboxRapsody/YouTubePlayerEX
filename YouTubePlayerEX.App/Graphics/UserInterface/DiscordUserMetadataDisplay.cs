@@ -11,6 +11,7 @@ using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
 using osu.Framework.Extensions.Color4Extensions;
+using osu.Framework.Extensions.LocalisationExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
@@ -30,12 +31,12 @@ using YouTubePlayerEX.App.Utils;
 
 namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
-    public partial class VideoMetadataDisplay : CompositeDrawable
+    public partial class DiscordUserMetadataDisplay : CompositeDrawable
     {
-        private ProfileImage profileImage;
+        private DiscordProfileImage profileImage;
         private TruncatingSpriteText videoName;
         private TruncatingSpriteText desc;
-        public Action<VideoMetadataDisplay> ClickEvent;
+        public Action<DiscordUserMetadataDisplay> ClickEvent;
 
         private Box bgLayer, hover;
 
@@ -65,14 +66,6 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS;
             Masking = true;
 
-            EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
-            {
-                Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
-                Colour = Color4.Black.Opacity(0.25f),
-                Offset = new Vector2(0, 2),
-                Radius = 16,
-            };
-
             InternalChildren = new Drawable[]
             {
                 samples,
@@ -80,7 +73,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 {
                     RelativeSizeAxes = Axes.Both,
                     Colour = overlayColourProvider.Background4,
-                    Alpha = 1,
+                    Alpha = 1f,
                 },
                 hover = new Box
                 {
@@ -94,7 +87,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     Padding = new MarginPadding(7),
                     Children = new Drawable[]
                     {
-                        profileImage = new ProfileImage(45),
+                        profileImage = new DiscordProfileImage(45),
                         new Container
                         {
                             RelativeSizeAxes = Axes.Both,
@@ -110,7 +103,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                 {
                                     Font = YouTubePlayerEXApp.TorusAlternate.With(size: 20, weight: "Bold"),
                                     RelativeSizeAxes = Axes.X,
-                                    Text = "please choose a video!",
+                                    Text = "[nickname]",
                                     Colour = overlayColourProvider.Content2,
                                 },
                                 desc = new TruncatingSpriteText
@@ -118,7 +111,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "SemiBold"),
                                     RelativeSizeAxes = Axes.X,
                                     Colour = overlayColourProvider.Background1,
-                                    Text = "[no metadata available]",
+                                    Text = "[user id]",
                                     Position = new osuTK.Vector2(0, 20),
                                 }
                             }
@@ -161,88 +154,13 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             (samples as HoverClickSounds).Enabled.Value = (ClickEvent != null);
         }
 
-        public void GetPalette()
+        public void UpdateUser(DiscordRPC.User user)
         {
             Task.Run(async () =>
             {
-                var cachePath = app.Host.CacheStorage.GetStorageForDirectory("videoThumbnailCache").GetFullPath($"{videoData.Id}.png");
-
-                using (var httpClient = new System.Net.Http.HttpClient())
-                {
-                    var imageBytes = await httpClient.GetByteArrayAsync(videoData.Snippet.Thumbnails.High.Url);
-                    await System.IO.File.WriteAllBytesAsync(cachePath, imageBytes);
-                }
-
-                using Image<Rgba32> bitmap = SixLabors.ImageSharp.Image.Load<Rgba32>(app.Host.CacheStorage.GetStorageForDirectory("videoThumbnailCache").GetFullPath($"{videoData.Id}.png"));
-
-                IBitmapHelper bitmapHelper = new BitmapHelper(bitmap);
-                PaletteBuilder paletteBuilder = new PaletteBuilder();
-                Palette palette = paletteBuilder.Generate(bitmapHelper);
-                int? rgbColor = palette.MutedSwatch.Rgb;
-                int? rgbTextColor = palette.MutedSwatch.TitleTextColor;
-
-                if (rgbColor != null && rgbTextColor != null)
-                {
-                    Color4 bgColor = System.Drawing.Color.FromArgb((int)rgbColor);
-                    Color4 textColor = System.Drawing.Color.FromArgb((int)rgbTextColor);
-                    bgLayer.Alpha = 1;
-                    bgLayer.Colour = ColourInfo.GradientHorizontal(bgColor, bgColor.Darken(1f));
-                    videoName.Colour = (textColor);
-                    desc.Colour = (textColor);
-                }
-            });
-        }
-
-        private void updateDescText()
-        {
-            Schedule(() =>
-            {
-                DateTimeOffset? dateTime = videoData.Snippet.PublishedAtDateTimeOffset;
-                DateTimeOffset now = DateTime.Now;
-                Channel channelData = api.GetChannel(videoData.Snippet.ChannelId);
-                desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
-            });
-        }
-
-        public void UpdateVideo(string videoId)
-        {
-            Task.Run(async () =>
-            {
-                videoData = api.GetVideo(videoId);
-                DateTimeOffset? dateTime = videoData.Snippet.PublishedAtDateTimeOffset;
-                DateTimeOffset now = DateTime.Now;
-                Channel channelData = api.GetChannel(videoData.Snippet.ChannelId);
                 videoName.Text = api.GetLocalizedVideoTitle(videoData);
-                updateDescText();
-                profileImage.UpdateProfileImage(videoData.Snippet.ChannelId);
-
-                GetPalette();
-
-                localeBindable.BindValueChanged(locale =>
-                {
-                    Task.Run(async () =>
-                    {
-                        videoName.Text = api.GetLocalizedVideoTitle(videoData);
-                        updateDescText();
-                    });
-                });
-
-                usernameDisplayMode.BindValueChanged(locale =>
-                {
-                    Task.Run(async () =>
-                    {
-                        updateDescText();
-                    });
-                }, true);
-
-                translationSource.BindValueChanged(locale =>
-                {
-                    Task.Run(async () =>
-                    {
-                        videoName.Text = api.GetLocalizedVideoTitle(videoData);
-                        updateDescText();
-                    });
-                }, true);
+                profileImage.UpdateProfileImage(user);
+                desc.Text = user.ID.ToLocalisableString();
             });
         }
     }

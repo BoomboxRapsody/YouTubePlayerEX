@@ -9,11 +9,13 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using DiscordRPC;
+using DiscordRPC.Message;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using osu.Framework;
@@ -65,6 +67,7 @@ using YouTubePlayerEX.App.Overlays;
 using YouTubePlayerEX.App.Overlays.OSD;
 using YouTubePlayerEX.App.Updater;
 using YouTubePlayerEX.App.Utils;
+using static YouTubePlayerEX.App.Online.DiscordRPC;
 using static YouTubePlayerEX.App.YouTubePlayerEXApp;
 using Container = osu.Framework.Graphics.Containers.Container;
 using Language = YouTubePlayerEX.App.Localisation.Language;
@@ -75,7 +78,7 @@ namespace YouTubePlayerEX.App.Screens
     public partial class MainAppView : YouTubePlayerEXScreen, IKeyBindingHandler<GlobalAction>
     {
         private BufferedContainer videoContainer;
-        private AdaptiveButton loadBtn, commentSendButton, searchButton, loadPlaylistBtn, loadPlaylistOpenButton, prevVideoButton, nextVideoButton;
+        private AdaptiveButton loadBtn, commentSendButton, searchButton, loadPlaylistBtn, loadPlaylistOpenButton, prevVideoButton, nextVideoButton, declineButton, acceptButton;
         private AdaptiveTextBox videoIdBox, commentTextBox, searchTextBox, playlistIdBox;
         private LoadingSpinner spinner;
         private ScheduledDelegate spinnerShow;
@@ -83,7 +86,7 @@ namespace YouTubePlayerEX.App.Screens
         private IdleTracker idleTracker;
         private Container uiContainer;
         private Container uiGradientContainer;
-        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer, reportAbuseOverlay, loadPlaylistContainer;
+        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer, reportAbuseOverlay, loadPlaylistContainer, discordJoinDialog;
         private SideOverlayContainer playlistOverlay, audioEffectsOverlay;
         private AdaptiveButtonWithShadow loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton, searchOpenButton, reportOpenButton, playlistOpenButton, audioEffectsOpenButton;
         private VideoMetadataDisplayWithoutProfile videoMetadataDisplay;
@@ -91,6 +94,8 @@ namespace YouTubePlayerEX.App.Screens
         private RoundedButtonContainer commentOpenButtonDetails, likeButton;
 
         private LinkFlowContainer madeByText;
+
+        private DiscordUserMetadataDisplay discordUserMetadataDisplay;
 
         private SettingsItemV2 audioLanguageItem, wasapiExperimentalItem;
 
@@ -2340,6 +2345,69 @@ namespace YouTubePlayerEX.App.Screens
                                 }
                             }
                         },
+                        discordJoinDialog = new OverlayContainer
+                        {
+                            Width = 450,
+                            Height = 200,
+                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
+                            Masking = true,
+                            Origin = Anchor.Centre,
+                            Anchor = Anchor.Centre,
+                            EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                            {
+                                Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                Colour = Color4.Black.Opacity(0.25f),
+                                Offset = new Vector2(0, 2),
+                                Radius = 16,
+                            },
+                            Children = new Drawable[]
+                            {
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Colour = overlayColourProvider.Background5,
+                                },
+                                discordUserMetadataDisplay = new DiscordUserMetadataDisplay
+                                {
+                                    RelativeSizeAxes = Axes.X,
+                                    Margin = new MarginPadding(8),
+                                    Size = new Vector2(0.965f, 1f),
+                                    Height = 60,
+                                    Origin = Anchor.TopLeft,
+                                    Anchor = Anchor.TopLeft,
+                                    AlwaysPresent = true,
+                                },
+                                new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont)
+                                {
+                                    RelativeSizeAxes = Axes.X,
+                                    AutoSizeAxes = Axes.Y,
+                                    Origin = Anchor.Centre,
+                                    Anchor = Anchor.Centre,
+                                    TextAnchor = Anchor.Centre,
+                                    AlwaysPresent = true,
+                                    Text = YTPlayerEXStrings.DiscordJoinDesc,
+                                    Colour = overlayColourProvider.Content2,
+                                },
+                                declineButton = new AdaptiveButton
+                                {
+                                    Enabled = { Value = true },
+                                    Origin = Anchor.BottomLeft,
+                                    Anchor = Anchor.BottomLeft,
+                                    Text = YTPlayerEXStrings.Decline,
+                                    Size = new Vector2(200, 60),
+                                    Margin = new MarginPadding(8),
+                                },
+                                acceptButton = new AdaptiveButton
+                                {
+                                    Enabled = { Value = true },
+                                    Origin = Anchor.BottomRight,
+                                    Anchor = Anchor.BottomRight,
+                                    Text = YTPlayerEXStrings.Accept,
+                                    Size = new Vector2(200, 60),
+                                    Margin = new MarginPadding(8),
+                                },
+                            }
+                        },
                         new Container
                         {
                             RelativeSizeAxes = Axes.Both,
@@ -2366,6 +2434,7 @@ namespace YouTubePlayerEX.App.Screens
             playlistOverlay.Hide();
             loadPlaylistContainer.Hide();
             audioEffectsOverlay.Hide();
+            discordJoinDialog.Hide();
 
             madeByText.AddText("made by ");
             madeByText.AddLink("BoomboxRapsody", "https://github.com/BoomboxRapsody");
@@ -2476,6 +2545,7 @@ namespace YouTubePlayerEX.App.Screens
             overlayContainers.Add(playlistOverlay);
             overlayContainers.Add(loadPlaylistContainer);
             overlayContainers.Add(audioEffectsOverlay);
+            overlayContainers.Add(discordJoinDialog);
 
             playlistName.Text = "please choose a playlist!";
             playlistAuthor.Text = "[no metadata available]";
@@ -3139,8 +3209,12 @@ namespace YouTubePlayerEX.App.Screens
             }
         }
 
+        private Random random;
+
         private void updatePresence(DiscordRichPresenceMode mode)
         {
+            var hostname = Dns.GetHostName();
+            var ip = Dns.GetHostEntry(hostname).AddressList[1].ToString();
             switch (mode)
             {
                 case DiscordRichPresenceMode.Full:
@@ -3211,9 +3285,13 @@ namespace YouTubePlayerEX.App.Screens
             }
         }
 
+        private int partySize = 1;
+
         protected override void LoadComplete()
         {
             base.LoadComplete();
+
+            random = new Random();
 
             discordRichPresence.BindValueChanged(mode => updatePresence(mode.NewValue), true);
 

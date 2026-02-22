@@ -805,6 +805,21 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString DiscordPresenceOff => new TranslatableString(getKey(@"discord_presence_off"), @"Off");
 
+        /// <summary>
+        /// "Decline"
+        /// </summary>
+        public static LocalisableString Decline => new TranslatableString(getKey(@"discord_join_decline"), @"Decline");
+
+        /// <summary>
+        /// "Accept"
+        /// </summary>
+        public static LocalisableString Accept => new TranslatableString(getKey(@"discord_join_accept"), @"Accept");
+
+        /// <summary>
+        /// "The user requested a co-view."
+        /// </summary>
+        public static LocalisableString DiscordJoinDesc => new TranslatableString(getKey(@"discord_join_desc"), @"The user requested a co-view.");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }
