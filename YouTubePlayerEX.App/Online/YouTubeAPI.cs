@@ -402,6 +402,46 @@ namespace YouTubePlayerEX.App.Online
             return;
         }
 
+        public string GetLocalizedChannelTitleDisplayBoth(Channel channel)
+        {
+            string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
+            if (!string.IsNullOrEmpty(channel.Snippet.CustomUrl))
+            {
+                try
+                {
+                    return channel.Localizations.Where(locale => locale.Key.Contains(language)).First().Value.Title + $" ({channel.Snippet.CustomUrl})";
+                }
+                catch
+                {
+                    return channel.Snippet.Title + $" ({channel.Snippet.CustomUrl})";
+                }
+            }
+            else
+            {
+                try
+                {
+                    return channel.Localizations.Where(locale => locale.Key.Contains(language)).First().Value.Title;
+                }
+                catch
+                {
+                    return channel.Snippet.Title;
+                }
+            }
+        }
+
+        public string GetLocalizedChannelTitleOnlyOne(Channel channel)
+        {
+            string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
+            try
+            {
+                return channel.Localizations.Where(locale => locale.Key.Contains(language)).First().Value.Title;
+            }
+            catch
+            {
+                return channel.Snippet.Title;
+            }
+        }
+
         public string GetLocalizedChannelTitle(Channel channel, bool displayBoth = false)
         {
             if (channel == null)
@@ -411,29 +451,7 @@ namespace YouTubePlayerEX.App.Online
             {
                 if (appConfig.Get<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource) == VideoMetadataTranslateSource.YouTube)
                 {
-                    string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);   
-                    if (!string.IsNullOrEmpty(channel.Snippet.CustomUrl))
-                    {
-                        try
-                        {
-                            return channel.Localizations.Where(locale => locale.Key.Contains(language)).First().Value.Title + $" ({channel.Snippet.CustomUrl})";
-                        }
-                        catch
-                        {
-                            return channel.Snippet.Title + $" ({channel.Snippet.CustomUrl})";
-                        }
-                    }
-                    else
-                    {
-                        try
-                        {
-                            return channel.Localizations.Where(locale => locale.Key.Contains(language)).First().Value.Title;
-                        }
-                        catch
-                        {
-                            return channel.Snippet.Title;
-                        }
-                    }
+                    return GetLocalizedChannelTitleDisplayBoth(channel);
                 }
                 else
                 {
@@ -461,15 +479,7 @@ namespace YouTubePlayerEX.App.Online
             {
                 if (appConfig.Get<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource) == VideoMetadataTranslateSource.YouTube)
                 {
-                    string language = frameworkConfig.Get<string>(FrameworkSetting.Locale);
-                    try
-                    {
-                        return channel.Localizations.Where(locale => locale.Key.Contains(language)).First().Value.Title;
-                    }
-                    catch
-                    {
-                        return channel.Snippet.Title;
-                    }
+                    return GetLocalizedChannelTitleOnlyOne(channel);
                 }
                 else
                 {
