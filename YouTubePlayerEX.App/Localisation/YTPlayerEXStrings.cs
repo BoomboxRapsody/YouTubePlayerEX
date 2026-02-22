@@ -791,9 +791,9 @@ namespace YouTubePlayerEX.App.Localisation
         public static LocalisableString DiscordRichPresence => new TranslatableString(getKey(@"discord_rich_presence"), @"Discord Rich Presence");
 
         /// <summary>
-        /// "Hide identifiable information"
+        /// "Hide video information"
         /// </summary>
-        public static LocalisableString HideIdentifiableInformation => new TranslatableString(getKey(@"hide_identifiable_information"), @"Hide identifiable information");
+        public static LocalisableString HideIdentifiableInformation => new TranslatableString(getKey(@"hide_identifiable_information"), @"Hide video information");
 
         /// <summary>
         /// "Full"
