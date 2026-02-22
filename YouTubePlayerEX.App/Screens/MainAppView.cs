@@ -3138,16 +3138,28 @@ namespace YouTubePlayerEX.App.Screens
             }
         }
 
-        protected override void LoadComplete()
+        private void updatePresence(DiscordRichPresenceMode mode)
         {
-            base.LoadComplete();
-
-            discordRichPresence.BindValueChanged(mode =>
+            switch (mode)
             {
-                switch (mode.NewValue)
+                case DiscordRichPresenceMode.Full:
                 {
-                    case DiscordRichPresenceMode.Full:
-                    case DiscordRichPresenceMode.Limited:
+                    if (videoData != null)
+                    {
+                        discordRPC?.UpdatePresence(new RichPresence()
+                        {
+                            Details = $"{videoData.Snippet.ChannelTitle} - {videoData.Snippet.Title}",
+                            State = "Watching Video",
+                            Assets = new Assets()
+                            {
+                                LargeImageKey = videoData.Snippet.Thumbnails.High.Url,
+                                LargeImageText = $"{videoData.Snippet.ChannelTitle} - {videoData.Snippet.Title}",
+                                SmallImageText = "YouTube Player EX",
+                                SmallImageKey = "youtube_player_ex_logo"
+                            },
+                        });
+                    }
+                    else
                     {
                         discordRPC?.UpdatePresence(new RichPresence()
                         {
@@ -3158,15 +3170,50 @@ namespace YouTubePlayerEX.App.Screens
                                 LargeImageText = "YouTube Player EX",
                             },
                         });
-                        break;
                     }
-                    case DiscordRichPresenceMode.Off:
-                    {
-                        discordRPC.ClearPresence();
-                        break;
-                    }
+                    break;
                 }
-            }, true);
+                case DiscordRichPresenceMode.Limited:
+                {
+                    if (videoData != null)
+                    {
+                        discordRPC?.UpdatePresence(new RichPresence()
+                        {
+                            State = "Watching Video",
+                            Assets = new Assets()
+                            {
+                                LargeImageText = "YouTube Player EX",
+                                LargeImageKey = "youtube_player_ex_logo"
+                            },
+                        });
+                    }
+                    else
+                    {
+                        discordRPC?.UpdatePresence(new RichPresence()
+                        {
+                            State = "Idle",
+                            Assets = new Assets()
+                            {
+                                LargeImageKey = "youtube_player_ex_logo",
+                                LargeImageText = "YouTube Player EX",
+                            },
+                        });
+                    }
+                    break;
+                }
+                case DiscordRichPresenceMode.Off:
+                {
+                    discordRPC.ClearPresence();
+                    break;
+                }
+            }
+        }
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            discordRichPresence.BindValueChanged(mode => updatePresence(mode.NewValue), true);
 
             //check updates for LoadComplete
             if (game.IsDeployedBuild)
@@ -3602,6 +3649,8 @@ namespace YouTubePlayerEX.App.Screens
             }
         }
 
+        private Google.Apis.YouTube.v3.Data.Video videoData;
+
         public async Task SetPlaylistItems(IList<PlaylistItem> playlists)
         {
             this.playlists = playlists;
@@ -3934,7 +3983,7 @@ namespace YouTubePlayerEX.App.Screens
             Task.Run(() =>
             {
                 // metadata area
-                Google.Apis.YouTube.v3.Data.Video videoData = api.GetVideo(videoId);
+                videoData = api.GetVideo(videoId);
                 updateRatingButtons(videoId, videoData.Statistics.LikeCount != null);
 
                 Schedule(() => commentOpenButton.Enabled.Value = videoData.Statistics.CommentCount != null);
@@ -3987,46 +4036,7 @@ namespace YouTubePlayerEX.App.Screens
 
                 Schedule(() =>
                 {
-                    discordRichPresence.BindValueChanged(mode =>
-                    {
-                        switch (mode.NewValue)
-                        {
-                            case DiscordRichPresenceMode.Full:
-                            {
-                                discordRPC?.UpdatePresence(new RichPresence()
-                                {
-                                    Details = $"{videoData.Snippet.ChannelTitle} - {videoData.Snippet.Title}",
-                                    State = "Watching Video",
-                                    Assets = new Assets()
-                                    {
-                                        LargeImageKey = videoData.Snippet.Thumbnails.High.Url,
-                                        LargeImageText = $"{videoData.Snippet.ChannelTitle} - {videoData.Snippet.Title}",
-                                        SmallImageText = "YouTube Player EX",
-                                        SmallImageKey = "youtube_player_ex_logo"
-                                    },
-                                });
-                                break;
-                            }
-                            case DiscordRichPresenceMode.Limited:
-                            {
-                                discordRPC?.UpdatePresence(new RichPresence()
-                                {
-                                    State = "Watching Video",
-                                    Assets = new Assets()
-                                    {
-                                        LargeImageText = "YouTube Player EX",
-                                        LargeImageKey = "youtube_player_ex_logo"
-                                    },
-                                });
-                                break;
-                            }
-                            case DiscordRichPresenceMode.Off:
-                            {
-                                discordRPC.ClearPresence();
-                                break;
-                            }
-                        }
-                    }, true);
+                    updatePresence(discordRichPresence.Value);
 
                     reportButton.Action = () =>
                     {
