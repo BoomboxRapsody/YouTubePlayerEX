@@ -19,7 +19,6 @@ namespace YouTubePlayerEX.App.Online
         {
             // Create the client and setup some basic events
             client = new DiscordRpcClient(DISCORD_APP_ID);
-            Logger.Log("[Discord] Discord Rich Presence system initialized.", LoggingTarget.Runtime);
 
             client.OnReady += (sender, e) =>
             {
@@ -30,6 +29,7 @@ namespace YouTubePlayerEX.App.Online
 
             //Connect to the RPC
             client.Initialize();
+            Logger.Log("[Discord] Discord Rich Presence system initialized.", LoggingTarget.Runtime);
         }
 
         public void UpdatePresence(RichPresence richPresence) => client.SetPresence(richPresence);
