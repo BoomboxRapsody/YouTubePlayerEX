@@ -136,7 +136,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             Depth = -1,
             Origin = Anchor.Centre,
             Anchor = Anchor.Centre,
-            Font = YouTubePlayerEXApp.DefaultFont.With(size: 28),
+            Font = YouTubePlayerEXApp.DefaultFont.With(size: 24),
             Colour = Color4.White,
         };
 
