@@ -3106,7 +3106,7 @@ namespace YouTubePlayerEX.App.Screens
                 overlayFadeContainer.FadeTo(0.5f, 250, Easing.OutQuart);
                 overlayContent.Show();
                 overlayContent.ScaleTo(0.8f);
-                overlayContent.ScaleTo(1f, 250, Easing.OutQuart);
+                overlayContent.ScaleTo(1f, 750, Easing.OutElastic);
                 overlayContent.FadeInFromZero(250, Easing.OutQuart);
                 overlayShowSample.Play();
             }
