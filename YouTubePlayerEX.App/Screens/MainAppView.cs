@@ -2380,7 +2380,7 @@ namespace YouTubePlayerEX.App.Screens
                                     Anchor = Anchor.TopLeft,
                                     AlwaysPresent = true,
                                 },
-                                new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont)
+                                new AdaptiveTextFlowContainer(f => f.Font = YouTubePlayerEXApp.DefaultFont.With(size: 28))
                                 {
                                     RelativeSizeAxes = Axes.X,
                                     AutoSizeAxes = Axes.Y,
