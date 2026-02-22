@@ -46,6 +46,7 @@ namespace YouTubePlayerEX.App.Graphics
         public Color4 Dark5 => getColour(0.2f, 0.15f);
         public Color4 Dark6 => getColour(0.2f, 0.1f);
         public Color4 Foreground1 => getColour(0.1f, 0.6f);
+        public Color4 Foreground2 => getColour(0.1f, 0.42f);
         public Color4 Background1 => getColour(0.1f, 0.4f);
         public Color4 Background2 => getColour(0.1f, 0.3f);
         public Color4 Background3 => getColour(0.1f, 0.25f);

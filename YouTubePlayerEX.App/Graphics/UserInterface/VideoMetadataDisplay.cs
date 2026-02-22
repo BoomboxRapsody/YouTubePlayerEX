@@ -131,7 +131,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                 {
                                     Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "SemiBold"),
                                     RelativeSizeAxes = Axes.X,
-                                    Colour = overlayColourProvider.Background1,
+                                    Colour = overlayColourProvider.Foreground2,
                                     Text = "[no metadata available]",
                                     Position = new osuTK.Vector2(0, 20),
                                 }

@@ -92,10 +92,17 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                                 {
                                     Font = YouTubePlayerEXApp.TorusAlternate.With(size: 20, weight: "Bold"),
                                     RelativeSizeAxes = Axes.X,
-                                    Text = "[nickname]",
+                                    Text = "please choose a video!",
                                     Colour = overlayColourProvider.Content2,
-                                    Position = new osuTK.Vector2(0, 10),
                                 },
+                                desc = new TruncatingSpriteText
+                                {
+                                    Font = YouTubePlayerEXApp.DefaultFont.With(size: 13, weight: "SemiBold"),
+                                    RelativeSizeAxes = Axes.X,
+                                    Colour = overlayColourProvider.Foreground2,
+                                    Text = "[no metadata available]",
+                                    Position = new osuTK.Vector2(0, 20),
+                                }
                             }
                         }
                     }
@@ -141,6 +148,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             Task.Run(async () =>
             {
                 videoName.Text = api.GetLocalizedChannelTitle(channel);
+                desc.Text = channel.Snippet.CustomUrl;
                 profileImage.UpdateProfileImage(channel.Id);
             });
         }
