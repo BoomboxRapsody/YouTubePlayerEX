@@ -3153,6 +3153,7 @@ namespace YouTubePlayerEX.App.Screens
                             Assets = new Assets()
                             {
                                 LargeImageKey = videoData.Snippet.Thumbnails.High.Url,
+                                LargeImageUrl = $"https://youtu.be/{videoData.Id}",
                                 LargeImageText = $"{videoData.Snippet.ChannelTitle} - {videoData.Snippet.Title}",
                                 SmallImageText = "YouTube Player EX",
                                 SmallImageKey = "youtube_player_ex_logo"
