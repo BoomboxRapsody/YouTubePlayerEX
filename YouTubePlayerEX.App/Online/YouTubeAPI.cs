@@ -62,6 +62,9 @@ namespace YouTubePlayerEX.App.Online
 
             request.Id = channelId;
 
+            if (googleOAuth2.SignedIn.Value == true)
+                request.OauthToken = googleOAuth2.GetAccessToken();
+
             var response = request.Execute();
 
             var result = response.Items.First();
@@ -82,7 +85,7 @@ namespace YouTubePlayerEX.App.Online
             var part = "statistics,snippet,brandingSettings,id,localizations";
             var request = youtubeService.Channels.List(part);
 
-            request.AccessToken = googleOAuth2.GetAccessToken();
+            request.OauthToken = googleOAuth2.GetAccessToken();
 
             request.Mine = true;
 
@@ -98,7 +101,7 @@ namespace YouTubePlayerEX.App.Online
             var part = "statistics,snippet,brandingSettings,id,localizations";
             var request = youtubeService.Channels.List(part);
 
-            request.AccessToken = googleOAuth2.GetAccessToken();
+            request.OauthToken = googleOAuth2.GetAccessToken();
 
             request.Mine = true;
 
@@ -130,7 +133,7 @@ namespace YouTubePlayerEX.App.Online
                 }
             }, part);
 
-            request.AccessToken = googleOAuth2.GetAccessToken();
+            request.OauthToken = googleOAuth2.GetAccessToken();
 
             request.Execute();
         }
@@ -161,7 +164,7 @@ namespace YouTubePlayerEX.App.Online
                         Language = CultureInfo.CurrentCulture.Name,
                     });
 
-                    request.AccessToken = googleOAuth2.GetAccessToken();
+                    request.OauthToken = googleOAuth2.GetAccessToken();
                     request.Execute();
                 }
                 else
@@ -174,7 +177,7 @@ namespace YouTubePlayerEX.App.Online
                         Language = CultureInfo.CurrentCulture.Name,
                     });
 
-                    request.AccessToken = googleOAuth2.GetAccessToken();
+                    request.OauthToken = googleOAuth2.GetAccessToken();
                     request.Execute();
                 }
             }
@@ -190,7 +193,7 @@ namespace YouTubePlayerEX.App.Online
                         Language = CultureInfo.CurrentCulture.Name,
                     });
 
-                    request.AccessToken = googleOAuth2.GetAccessToken();
+                    request.OauthToken = googleOAuth2.GetAccessToken();
                     request.Execute();
                 }
                 else
@@ -202,7 +205,7 @@ namespace YouTubePlayerEX.App.Online
                         Language = CultureInfo.CurrentCulture.Name,
                     });
 
-                    request.AccessToken = googleOAuth2.GetAccessToken();
+                    request.OauthToken = googleOAuth2.GetAccessToken();
                     request.Execute();
                 }
             }
@@ -213,7 +216,7 @@ namespace YouTubePlayerEX.App.Online
             var part = "snippet";
             var request = youtubeService.VideoAbuseReportReasons.List(part);
 
-            request.AccessToken = googleOAuth2.GetAccessToken();
+            request.OauthToken = googleOAuth2.GetAccessToken();
             request.Hl = frameworkConfig.Get<string>(FrameworkSetting.Locale);
 
             Logger.Log($"Using access token {googleOAuth2.GetAccessToken()}");
@@ -273,6 +276,9 @@ namespace YouTubePlayerEX.App.Online
             request.VideoId = videoId;
             request.Order = orderEnum;
 
+            if (googleOAuth2.SignedIn.Value == true)
+                request.OauthToken = googleOAuth2.GetAccessToken();
+
             var response = request.Execute();
 
             var result = response.Items;
@@ -288,6 +294,9 @@ namespace YouTubePlayerEX.App.Online
             request.MaxResults = 20; // <------ why 20? dues to quota limits
             request.Q = query;
 
+            if (googleOAuth2.SignedIn.Value == true)
+                request.OauthToken = googleOAuth2.GetAccessToken();
+
             var response = request.Execute();
 
             var result = response.Items;
@@ -301,6 +310,9 @@ namespace YouTubePlayerEX.App.Online
             var request = youtubeService.Comments.List(part);
 
             request.Id = commentId;
+
+            if (googleOAuth2.SignedIn.Value == true)
+                request.OauthToken = googleOAuth2.GetAccessToken();
 
             var response = await request.ExecuteAsync();
 
@@ -470,6 +482,9 @@ namespace YouTubePlayerEX.App.Online
 
             request.Id = videoId;
 
+            if (googleOAuth2.SignedIn.Value == true)
+                request.OauthToken = googleOAuth2.GetAccessToken();
+
             var response = request.Execute();
 
             var result = response.Items.First();
@@ -483,6 +498,9 @@ namespace YouTubePlayerEX.App.Online
             var request = youtubeService.Playlists.List(part);
 
             request.Id = playlistId;
+
+            if (googleOAuth2.SignedIn.Value == true)
+                request.OauthToken = googleOAuth2.GetAccessToken();
 
             var response = request.Execute();
 
@@ -499,6 +517,9 @@ namespace YouTubePlayerEX.App.Online
             request.MaxResults = 50; // <------ why 50? dues to quota limits
             request.PlaylistId = playlistId;
 
+            if (googleOAuth2.SignedIn.Value == true)
+                request.OauthToken = googleOAuth2.GetAccessToken();
+
             var response = await request.ExecuteAsync();
 
             var result = response.Items;
@@ -513,7 +534,7 @@ namespace YouTubePlayerEX.App.Online
 
             var request = youtubeService.Videos.GetRating(videoId);
 
-            request.AccessToken = googleOAuth2.GetAccessToken();
+            request.OauthToken = googleOAuth2.GetAccessToken();
 
             var response = await request.ExecuteAsync();
 
@@ -547,7 +568,7 @@ namespace YouTubePlayerEX.App.Online
 
             var request = youtubeService.Videos.Rate(videoId, videoRating);
 
-            request.AccessToken = googleOAuth2.GetAccessToken();
+            request.OauthToken = googleOAuth2.GetAccessToken();
 
             await request.ExecuteAsync();
         }

@@ -193,6 +193,17 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             });
         }
 
+        private void updateDescText()
+        {
+            Schedule(() =>
+            {
+                DateTimeOffset? dateTime = videoData.Snippet.PublishedAtDateTimeOffset;
+                DateTimeOffset now = DateTime.Now;
+                Channel channelData = api.GetChannel(videoData.Snippet.ChannelId);
+                desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
+            });
+        }
+
         public void UpdateVideo(string videoId)
         {
             Task.Run(async () =>
@@ -202,7 +213,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 DateTimeOffset now = DateTime.Now;
                 Channel channelData = api.GetChannel(videoData.Snippet.ChannelId);
                 videoName.Text = api.GetLocalizedVideoTitle(videoData);
-                desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
+                updateDescText();
                 profileImage.UpdateProfileImage(videoData.Snippet.ChannelId);
 
                 GetPalette();
@@ -212,7 +223,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     Task.Run(async () =>
                     {
                         videoName.Text = api.GetLocalizedVideoTitle(videoData);
-                        desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
+                        updateDescText();
                     });
                 });
 
@@ -220,7 +231,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 {
                     Task.Run(async () =>
                     {
-                        desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
+                        updateDescText();
                     });
                 }, true);
 
@@ -229,7 +240,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                     Task.Run(async () =>
                     {
                         videoName.Text = api.GetLocalizedVideoTitle(videoData);
-                        desc.Text = YTPlayerEXStrings.VideoMetadataDesc(api.GetLocalizedChannelTitle(channelData), Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.Humanize(dateToCompareAgainst: now));
+                        updateDescText();
                     });
                 }, true);
             });
