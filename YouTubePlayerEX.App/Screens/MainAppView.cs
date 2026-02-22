@@ -3106,6 +3106,7 @@ namespace YouTubePlayerEX.App.Screens
 
                     wth.ClickAction = async _ =>
                     {
+                        ClearPlaylistItems();
                         await SetVideoSource(item.Id.VideoId);
                     };
 
