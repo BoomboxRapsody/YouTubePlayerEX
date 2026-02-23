@@ -669,7 +669,7 @@ namespace YouTubePlayerEX.App.Screens
                                                                                 Top = 8,
                                                                             },
                                                                             KeyboardStep = 0.05f,
-                                                                            PlaySamplesOnAdjust = true,
+                                                                            PlaySamplesOnAdjust = false,
                                                                             DisplayAsPercentage = true,
                                                                             AlwaysPresent = true,
                                                                             Current = videoVolume,
@@ -831,28 +831,10 @@ namespace YouTubePlayerEX.App.Screens
                                                             ShowRevertToDefaultButton = false,
                                                             CanBeShown = { BindTarget = displayDropdownCanBeShown }
                                                         },
-                                                        new SettingsItemV2(new FormCheckBox
-                                                        {
-                                                            Caption = YTPlayerEXStrings.ClosedCaptions,
-                                                            Current = captionEnabled,
-                                                            Hotkey = new Hotkey(GlobalAction.CycleCaptionLanguage),
-                                                        }),
-                                                        captionLangOptions = new SettingsItemV2(captionLangDropdown = new YouTubeI18nLangDropdown
-                                                        {
-                                                            Caption = YTPlayerEXStrings.CaptionLanguage,
-                                                        })
-                                                        {
-                                                            ShowRevertToDefaultButton = false,
-                                                        },
                                                         new SettingsItemV2(new FormEnumDropdown<DiscordRichPresenceMode>
                                                         {
                                                             Caption = YTPlayerEXStrings.DiscordRichPresence,
                                                             Current = discordRichPresence,
-                                                        }),
-                                                        new SettingsItemV2(new FormEnumDropdown<UIFont>
-                                                        {
-                                                            Caption = YTPlayerEXStrings.CaptionFont,
-                                                            Current = appConfig.GetBindable<UIFont>(YTPlayerEXSetting.UIFont),
                                                         }),
                                                         new SettingsItemV2(new FormEnumDropdown<VideoMetadataTranslateSource>
                                                         {
@@ -1114,6 +1096,24 @@ namespace YouTubePlayerEX.App.Screens
                                                         {
                                                             ShowRevertToDefaultButton = false,
                                                         },
+                                                        new SettingsItemV2(new FormCheckBox
+                                                        {
+                                                            Caption = YTPlayerEXStrings.ClosedCaptions,
+                                                            Current = captionEnabled,
+                                                            Hotkey = new Hotkey(GlobalAction.CycleCaptionLanguage),
+                                                        }),
+                                                        captionLangOptions = new SettingsItemV2(captionLangDropdown = new YouTubeI18nLangDropdown
+                                                        {
+                                                            Caption = YTPlayerEXStrings.CaptionLanguage,
+                                                        })
+                                                        {
+                                                            ShowRevertToDefaultButton = false,
+                                                        },
+                                                        new SettingsItemV2(new FormEnumDropdown<UIFont>
+                                                        {
+                                                            Caption = YTPlayerEXStrings.CaptionFont,
+                                                            Current = appConfig.GetBindable<UIFont>(YTPlayerEXSetting.UIFont),
+                                                        }),
                                                         new AdaptiveSpriteText
                                                         {
                                                             Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30),
@@ -2825,6 +2825,8 @@ namespace YouTubePlayerEX.App.Screens
             videoSaveLocationOverlay.Hide();
             addPlaylistOverlay.Hide();
             menuOverlay.Hide();
+
+            captionEnabled.Disabled = true;
 
             menuOverlayShow.ClickAction = _ =>
             {
