@@ -4975,7 +4975,6 @@ namespace YouTubePlayerEX.App.Screens
             [BackgroundDependencyLoader]
             private void load()
             {
-
             }
 
             public async Task RefreshCaptionLanguages(string videoId)
