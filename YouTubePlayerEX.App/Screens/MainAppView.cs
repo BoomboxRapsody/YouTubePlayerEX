@@ -66,6 +66,7 @@ using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
 using YouTubePlayerEX.App.Overlays;
 using YouTubePlayerEX.App.Overlays.OSD;
+using YouTubePlayerEX.App.Overlays.Volume;
 using YouTubePlayerEX.App.Updater;
 using YouTubePlayerEX.App.Utils;
 using static YouTubePlayerEX.App.Online.DiscordRPC;
@@ -372,6 +373,7 @@ namespace YouTubePlayerEX.App.Screens
                 {
                     RelativeSizeAxes = Axes.Both,
                 },
+                new GlobalScrollAdjustsVolume(),
                 userInterfaceContainer = new Container
                 {
                     RelativeSizeAxes = Axes.Both,
@@ -3600,6 +3602,9 @@ namespace YouTubePlayerEX.App.Screens
 
         private List<OverlayContainer> overlayContainers = new List<OverlayContainer>();
 
+        [Resolved]
+        private VolumeOverlay volume { get; set; }
+
         public bool OnPressed(KeyBindingPressEvent<GlobalAction> e)
         {
             if (e.Target is TextBox)
@@ -3607,6 +3612,10 @@ namespace YouTubePlayerEX.App.Screens
 
             switch (e.Action)
             {
+                case GlobalAction.DecreaseVolume:
+                case GlobalAction.IncreaseVolume:
+                    return volume.Adjust(e.Action);
+
                 case GlobalAction.FastForward_10sec:
                     currentVideoSource?.FastForward10Sec();
                     return true;
@@ -3626,22 +3635,12 @@ namespace YouTubePlayerEX.App.Screens
                     return true;
 
                 case GlobalAction.DecreaseVideoVolume:
-                {
                     videoVolume.Value -= 0.05;
-                    Toast toast = new Toast(YTPlayerEXStrings.VideoVolume, videoVolume.Value.ToStandardFormattedString(5, true));
-
-                    osd.Display(toast);
                     return true;
-                }
 
                 case GlobalAction.IncreaseVideoVolume:
-                {
                     videoVolume.Value += 0.05;
-                    Toast toast = new Toast(YTPlayerEXStrings.VideoVolume, videoVolume.Value.ToStandardFormattedString(5, true));
-
-                    osd.Display(toast);
                     return true;
-                }
 
                 case GlobalAction.DecreasePlaybackSpeed2:
                     playbackSpeed.Value -= 0.01;
@@ -3659,6 +3658,18 @@ namespace YouTubePlayerEX.App.Screens
 
             switch (e.Action)
             {
+                case GlobalAction.ToggleMute:
+                case GlobalAction.NextVolumeMeter:
+                case GlobalAction.PreviousVolumeMeter:
+                    return volume.Adjust(e.Action);
+
+                case GlobalAction.RestartApp:
+                    if (game?.RestartAppWhenExited() == true)
+                    {
+                        game.AttemptExit();
+                    }
+                    return true;
+
                 case GlobalAction.Back:
                     hideOverlays();
                     return true;
@@ -3804,6 +3815,11 @@ namespace YouTubePlayerEX.App.Screens
             }
 
             return false;
+        }
+
+        private void restartApp()
+        {
+            throw new NotImplementedException();
         }
 
         [Resolved]

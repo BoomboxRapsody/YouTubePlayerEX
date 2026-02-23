@@ -102,6 +102,11 @@ namespace YouTubePlayerEX.App.Graphics.Caption
                         spriteText.Font = YouTubePlayerEXApp.Hungeul.With(size: 24);
                         break;
                     }
+                    case UIFont.Futehodo_MaruGothic:
+                    {
+                        spriteText.Font = YouTubePlayerEXApp.Futehodo_MaruGothic.With(size: 24);
+                        break;
+                    }
                 }
             }, true);
 
