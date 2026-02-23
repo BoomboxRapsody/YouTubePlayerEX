@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Apis.YouTube.v3.Data;
 using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -45,6 +46,8 @@ namespace YouTubePlayerEX.App
         private ScreenStack screenStack;
 
         public static FontUsage DefaultFont = FontUsage.Default.With("Torus", 16, "Regular");
+
+        public static FontUsage Hungeul = FontUsage.Default.With("Hungeul", 16, "Regular");
 
         public static FontUsage TorusAlternate = FontUsage.Default.With("Torus-Alternate", 16, "Regular");
 
@@ -126,6 +129,8 @@ namespace YouTubePlayerEX.App
                 UpdateManagerVersionText.Value = YTPlayerEXStrings.ViewLatestVersions;
             }
 
+            fetchCaptionLanguages();
+
             // Add your top-level game components here.
             // A screen stack and sample screen has been provided for convenience, but you can replace it if you don't want to use screens.
             AddRange(new Drawable[]
@@ -164,6 +169,28 @@ namespace YouTubePlayerEX.App
             applySafeAreaConsiderations = LocalConfig.GetBindable<bool>(YTPlayerEXSetting.SafeAreaConsiderations);
             applySafeAreaConsiderations.BindValueChanged(apply => SafeAreaContainer.SafeAreaOverrideEdges = apply.NewValue ? SafeAreaOverrideEdges : Edges.All, true);
         }
+
+        private void fetchCaptionLanguages()
+        {
+            IList<I18nLanguage> i18NLanguages = YouTubeService.GetAvailableLanguages();
+            List<YouTubeI18nLangItem> items = new List<YouTubeI18nLangItem>();
+
+            foreach (var item in i18NLanguages)
+            {
+                YouTubeI18nLangItem i18NLangItem = new YouTubeI18nLangItem
+                {
+                    Hl = item.Snippet.Hl,
+                    Name = item.Snippet.Name,
+                };
+
+                items.Add(i18NLangItem);
+            }
+
+            AvailableCaptionLanguages = items;
+        }
+
+        public List<YouTubeI18nLangItem> AvailableCaptionLanguages;
+        public Bindable<YouTubeI18nLangItem> CurrentCaptionLanguage;
 
         protected override void Dispose(bool isDisposing)
         {

@@ -6,6 +6,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Humanizer;
 using osu.Framework.Allocation;
 using osu.Framework.Audio.Sample;
 using osu.Framework.Bindables;
@@ -108,13 +109,13 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 {
                     await GetProfileImage(channel.Snippet.Thumbnails.High.Url);
                 });
-                TooltipText = YTPlayerEXStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel, true), Convert.ToInt32(channel.Statistics.SubscriberCount).ToStandardFormattedString(0));
+                TooltipText = YTPlayerEXStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel, true), Convert.ToInt32(channel.Statistics.SubscriberCount).ToMetric(decimals: 2));
 
                 translationSource.BindValueChanged(locale =>
                 {
                     Task.Run(async () =>
                     {
-                        TooltipText = YTPlayerEXStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel, true), Convert.ToInt32(channel.Statistics.SubscriberCount).ToStandardFormattedString(0));
+                        TooltipText = YTPlayerEXStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel, true), Convert.ToInt32(channel.Statistics.SubscriberCount).ToMetric(decimals: 2));
                     });
                 }, true);
             });

@@ -18,6 +18,7 @@ using DiscordRPC;
 using DiscordRPC.Message;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
+using Humanizer;
 using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -97,7 +98,7 @@ namespace YouTubePlayerEX.App.Screens
 
         private YouTubeChannelMetadataDisplay youtubeChannelMetadataDisplay;
 
-        private SettingsItemV2 audioLanguageItem, wasapiExperimentalItem;
+        private SettingsItemV2 audioLanguageItem, wasapiExperimentalItem, captionLangOptions;
 
         private Sample overlayShowSample;
         private Sample overlayHideSample;
@@ -201,7 +202,7 @@ namespace YouTubePlayerEX.App.Screens
         private ThumbnailContainerBackground thumbnailContainer;
         private AdaptiveSliderBar<double> seekbar;
         private Bindable<LocalisableString> updateInfomationText;
-        private Bindable<bool> updateButtonEnabled, fpsDisplay;
+        private Bindable<bool> updateButtonEnabled, fpsDisplay, captionEnabled;
         private Bindable<AspectRatioMethod> aspectRatioMethod;
         private Bindable<DiscordRichPresenceMode> discordRichPresence;
 
@@ -243,6 +244,8 @@ namespace YouTubePlayerEX.App.Screens
         private ShaderManager shaderManager { get; set; } = null!;
 
         private Bindable<double> videoVolume;
+
+        private YouTubeI18nLangDropdown captionLangDropdown;
 
 #nullable enable
         [Resolved(canBeNull: true)]
@@ -288,6 +291,8 @@ namespace YouTubePlayerEX.App.Screens
             scalingBackgroundDim = appConfig.GetBindable<float>(YTPlayerEXSetting.ScalingBackgroundDim);
             alwaysUseOriginalAudio = appConfig.GetBindable<bool>(YTPlayerEXSetting.AlwaysUseOriginalAudio);
             discordRichPresence = appConfig.GetBindable<DiscordRichPresenceMode>(YTPlayerEXSetting.DiscordRichPresence);
+
+            captionEnabled = appConfig.GetBindable<bool>(YTPlayerEXSetting.CaptionEnabled);
 
             exportStorage = storage.GetStorageForDirectory(@"exports");
 
@@ -919,16 +924,28 @@ namespace YouTubePlayerEX.App.Screens
                                                             ShowRevertToDefaultButton = false,
                                                             CanBeShown = { BindTarget = displayDropdownCanBeShown }
                                                         },
-                                                        new SettingsItemV2(new FormEnumDropdown<ClosedCaptionLanguage>
+                                                        new SettingsItemV2(new FormCheckBox
                                                         {
-                                                            Caption = YTPlayerEXStrings.CaptionLanguage,
-                                                            Current = captionLanguage,
+                                                            Caption = YTPlayerEXStrings.ClosedCaptions,
+                                                            Current = captionEnabled,
                                                             Hotkey = new Hotkey(GlobalAction.CycleCaptionLanguage),
                                                         }),
+                                                        captionLangOptions = new SettingsItemV2(captionLangDropdown = new YouTubeI18nLangDropdown
+                                                        {
+                                                            Caption = YTPlayerEXStrings.CaptionLanguage,
+                                                        })
+                                                        {
+                                                            ShowRevertToDefaultButton = false,
+                                                        },
                                                         new SettingsItemV2(new FormEnumDropdown<DiscordRichPresenceMode>
                                                         {
                                                             Caption = YTPlayerEXStrings.DiscordRichPresence,
                                                             Current = discordRichPresence,
+                                                        }),
+                                                        new SettingsItemV2(new FormEnumDropdown<UIFont>
+                                                        {
+                                                            Caption = YTPlayerEXStrings.CaptionFont,
+                                                            Current = appConfig.GetBindable<UIFont>(YTPlayerEXSetting.UIFont),
                                                         }),
                                                         new SettingsItemV2(new FormEnumDropdown<VideoMetadataTranslateSource>
                                                         {
@@ -1565,6 +1582,61 @@ namespace YouTubePlayerEX.App.Screens
                                                                 commentCount = new AdaptiveSpriteText
                                                                 {
                                                                     Text = "[no metadata]",
+                                                                    Colour = overlayColourProvider.Content2,
+                                                                },
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                new RoundedButtonContainer
+                                                {
+                                                    Enabled = { Value = true },
+                                                    AutoSizeAxes = Axes.X,
+                                                    Height = 32,
+                                                    CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
+                                                    Masking = true,
+                                                    AlwaysPresent = true,
+                                                    ClickAction = f =>
+                                                    {
+                                                        if (string.IsNullOrEmpty(videoUrl))
+                                                            return;
+
+                                                        LocalisableString prompt = $"{videoUrl} <-- Summarize this video";
+
+                                                        host.OpenUrlExternally($"https://chat.openai.com/?q={prompt}");
+                                                    },
+                                                    Children = new Drawable[]
+                                                    {
+                                                        new Container
+                                                        {
+                                                            RelativeSizeAxes = Axes.Both,
+                                                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
+                                                            Child = new Box
+                                                            {
+                                                                RelativeSizeAxes = Axes.Both,
+                                                                Colour = overlayColourProvider.Background4,
+                                                                Alpha = 0.7f,
+                                                            },
+                                                        },
+                                                        new FillFlowContainer
+                                                        {
+                                                            AutoSizeAxes = Axes.X,
+                                                            RelativeSizeAxes = Axes.Y,
+                                                            Direction = FillDirection.Horizontal,
+                                                            Spacing = new Vector2(4, 0),
+                                                            Padding = new MarginPadding(8),
+                                                            Children = new Drawable[]
+                                                            {
+                                                                new SpriteIcon
+                                                                {
+                                                                    Width = 15,
+                                                                    Height = 15,
+                                                                    Icon = FontAwesome.Regular.StickyNote,
+                                                                    Colour = overlayColourProvider.Content2,
+                                                                },
+                                                                new AdaptiveSpriteText
+                                                                {
+                                                                    Text = YTPlayerEXStrings.SummarizeViaGPT,
                                                                     Colour = overlayColourProvider.Content2,
                                                                 },
                                                             }
@@ -2599,6 +2671,14 @@ namespace YouTubePlayerEX.App.Screens
                 }
             }, true);
 
+            captionEnabled.BindValueChanged(enabled =>
+            {
+                if (enabled.NewValue)
+                    captionLangOptions.Show();
+                else
+                    captionLangOptions.Hide();
+            }, true);
+
             alwaysUseOriginalAudio.BindValueChanged(enabled =>
             {
                 if (enabled.NewValue)
@@ -2639,7 +2719,7 @@ namespace YouTubePlayerEX.App.Screens
                 }
             });
 
-            captionLanguage.BindValueChanged(lang =>
+            captionLangDropdown.Current.BindValueChanged(lang =>
             {
                 if (currentVideoSource != null)
                 {
@@ -2647,7 +2727,7 @@ namespace YouTubePlayerEX.App.Screens
                     {
                         var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
 
-                        var trackInfo = trackManifest.TryGetByLanguage(api.ParseCaptionLanguage(lang.NewValue));
+                        var trackInfo = trackManifest.TryGetByLanguage(lang.NewValue.Hl);
 
                         ClosedCaptionTrack captionTrack = null;
 
@@ -2655,7 +2735,7 @@ namespace YouTubePlayerEX.App.Screens
                         {
                             Schedule(() =>
                             {
-                                Toast toast = new TrackedSettingToast(new osu.Framework.Configuration.Tracking.SettingDescription(captionLanguage.Value, YTPlayerEXStrings.CaptionLanguage, (trackInfo.IsAutoGenerated ? YTPlayerEXStrings.CaptionAutoGen(captionLanguage.Value.GetLocalisableDescription()) : captionLanguage.Value.GetLocalisableDescription()), "Shift+C"), false);
+                                Toast toast = new Toast(YTPlayerEXStrings.CaptionLanguage, lang.NewValue.Name);
 
                                 onScreenDisplay.Display(toast);
                             });
@@ -2663,7 +2743,36 @@ namespace YouTubePlayerEX.App.Screens
                             captionTrack = await game.YouTubeClient.Videos.ClosedCaptions.GetAsync(trackInfo);
                         }
 
-                        currentVideoSource.UpdateCaptionTrack(lang.NewValue, captionTrack);
+                        currentVideoSource.UpdateCaptionTrack(captionTrack);
+                    });
+                }
+            });
+
+            captionEnabled.BindValueChanged(enabled =>
+            {
+                if (currentVideoSource != null)
+                {
+                    Task.Run(async () =>
+                    {
+                        var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
+
+                        var trackInfo = trackManifest.TryGetByLanguage(captionLangDropdown.Current.Value.Hl);
+
+                        ClosedCaptionTrack captionTrack = null;
+
+                        if (enabled.NewValue)
+                        {
+                            Schedule(() =>
+                            {
+                                Toast toast = new Toast(YTPlayerEXStrings.CaptionLanguage, captionLangDropdown.Current.Value.Name);
+
+                                onScreenDisplay.Display(toast);
+                            });
+
+                            captionTrack = await game.YouTubeClient.Videos.ClosedCaptions.GetAsync(trackInfo);
+                        }
+
+                        currentVideoSource.UpdateCaptionTrack(captionTrack);
                     });
                 }
             });
@@ -3690,24 +3799,7 @@ namespace YouTubePlayerEX.App.Screens
 
         protected void CycleCaptionLanguage()
         {
-            switch (captionLanguage.Value)
-            {
-                case ClosedCaptionLanguage.Disabled:
-                    captionLanguage.Value = ClosedCaptionLanguage.English;
-                    break;
-
-                case ClosedCaptionLanguage.English:
-                    captionLanguage.Value = ClosedCaptionLanguage.Korean;
-                    break;
-
-                case ClosedCaptionLanguage.Korean:
-                    captionLanguage.Value = ClosedCaptionLanguage.Japanese;
-                    break;
-
-                case ClosedCaptionLanguage.Japanese:
-                    captionLanguage.Value = ClosedCaptionLanguage.Disabled;
-                    break;
-            }
+            captionEnabled.Value = !captionEnabled.Value;
         }
 
         private IList<PlaylistItem> playlists = new List<PlaylistItem>();
@@ -4102,7 +4194,7 @@ namespace YouTubePlayerEX.App.Screens
                 commentCount.Text = videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : YTPlayerEXStrings.DisabledByUploader;
                 try
                 {
-                    dislikeCount.Text = ReturnYouTubeDislike.GetDislikes(videoId).Dislikes > 0 ? ReturnYouTubeDislike.GetDislikes(videoId).Dislikes.ToStandardFormattedString(0) : ReturnYouTubeDislike.GetDislikes(videoId).RawDislikes.ToStandardFormattedString(0);
+                    dislikeCount.Text = ReturnYouTubeDislike.GetDislikes(videoId).Dislikes > 0 ? Convert.ToDouble(ReturnYouTubeDislike.GetDislikes(videoId).Dislikes).ToMetric(decimals: 2) : Convert.ToDouble(ReturnYouTubeDislike.GetDislikes(videoId).RawDislikes).ToMetric(decimals: 2);
                     dislikeButton.TooltipText = YTPlayerEXStrings.DislikeCountTooltip(ReturnYouTubeDislike.GetDislikes(videoId).Dislikes.ToStandardFormattedString(0), ReturnYouTubeDislike.GetDislikes(videoId).RawDislikes.ToStandardFormattedString(0));
                 }
                 catch
@@ -4114,7 +4206,7 @@ namespace YouTubePlayerEX.App.Screens
 
                 DateTime.TryParseExact(uploadDateRaw, @"yyyy-MM-dd\THH:mm:ss\Z", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var uploadDate);
 
-                likeCount.Text = videoData.Statistics.LikeCount != null ? Convert.ToInt32(videoData.Statistics.LikeCount).ToStandardFormattedString(0) : ReturnYouTubeDislike.GetDislikes(videoId).RawLikes.ToStandardFormattedString(0);
+                likeCount.Text = videoData.Statistics.LikeCount != null ? Convert.ToDouble(videoData.Statistics.LikeCount).ToMetric(decimals: 2) : Convert.ToDouble(ReturnYouTubeDislike.GetDislikes(videoId).RawLikes).ToMetric(decimals: 2);
                 commentsContainerTitle.Text = YTPlayerEXStrings.Comments(videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : YTPlayerEXStrings.Disabled);
                 videoInfoDetails.Text = YTPlayerEXStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), uploadDate.ToString());
 
@@ -4532,15 +4624,17 @@ namespace YouTubePlayerEX.App.Screens
                         onScreenDisplay.Display(toast);
                     }
 
+                    await captionLangDropdown.RefreshCaptionLanguages(videoUrl);
+
                     var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
 
-                    var trackInfo = trackManifest.TryGetByLanguage(api.ParseCaptionLanguage(captionLanguage.Value));
+                    var trackInfo = trackManifest.TryGetByLanguage(captionLangDropdown.Current.Value.Hl);
 
                     ClosedCaptionTrack captionTrack = null;
 
                     if (trackInfo != null)
                     {
-                        if (captionLanguage.Value != ClosedCaptionLanguage.Disabled)
+                        if (captionEnabled.Value)
                         {
                             Schedule(() =>
                             {
@@ -4550,7 +4644,7 @@ namespace YouTubePlayerEX.App.Screens
                                 spinnerShow = Scheduler.AddDelayed(alert.Hide, 3000);
                                 */
 
-                                Toast toast = new TrackedSettingToast(new osu.Framework.Configuration.Tracking.SettingDescription(captionLanguage.Value, YTPlayerEXStrings.CaptionLanguage, (trackInfo.IsAutoGenerated ? YTPlayerEXStrings.CaptionAutoGen(captionLanguage.Value.GetLocalisableDescription()) : captionLanguage.Value.GetLocalisableDescription()), "Shift+C"), false);
+                                Toast toast = new Toast(YTPlayerEXStrings.CaptionLanguage, captionLangDropdown.Current.Value.Name);
 
                                 onScreenDisplay.Display(toast);
                             });
@@ -4579,7 +4673,7 @@ namespace YouTubePlayerEX.App.Screens
                         }
                     }
 
-                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3", captionTrack, captionLanguage.Value, pausedTime)
+                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3", captionTrack, pausedTime)
                     {
                         RelativeSizeAxes = Axes.Both
                     };
@@ -4640,19 +4734,21 @@ namespace YouTubePlayerEX.App.Screens
                         }
                     }
 
+                    await captionLangDropdown.RefreshCaptionLanguages(videoUrl);
+
                     var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
 
-                    var trackInfo = trackManifest.TryGetByLanguage(api.ParseCaptionLanguage(captionLanguage.Value));
+                    var trackInfo = trackManifest.TryGetByLanguage(captionLangDropdown.Current.Value.Hl);
 
                     ClosedCaptionTrack captionTrack = null;
 
                     if (trackInfo != null)
                     {
-                        if (captionLanguage.Value != ClosedCaptionLanguage.Disabled)
+                        if (captionEnabled.Value)
                         {
                             Schedule(() =>
                             {
-                                Toast toast = new TrackedSettingToast(new osu.Framework.Configuration.Tracking.SettingDescription(captionLanguage.Value, YTPlayerEXStrings.CaptionLanguage, (trackInfo.IsAutoGenerated ? YTPlayerEXStrings.CaptionAutoGen(captionLanguage.Value.GetLocalisableDescription()) : captionLanguage.Value.GetLocalisableDescription()), "Shift+C"), false);
+                                Toast toast = new Toast(YTPlayerEXStrings.CaptionLanguage, captionLangDropdown.Current.Value.Name);
 
                                 onScreenDisplay.Display(toast);
                             });
@@ -4661,7 +4757,7 @@ namespace YouTubePlayerEX.App.Screens
                         captionTrack = await game.YouTubeClient.Videos.ClosedCaptions.GetAsync(trackInfo);
                     }
 
-                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3", captionTrack, captionLanguage.Value, pausedTime)
+                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3", captionTrack, pausedTime)
                     {
                         RelativeSizeAxes = Axes.Both
                     };
@@ -4860,6 +4956,59 @@ namespace YouTubePlayerEX.App.Screens
                         return YTPlayerEXStrings.Unlimited;
                 }
                 return base.GenerateItemText(item);
+            }
+        }
+
+        private partial class YouTubeI18nLangDropdown : FormDropdown<YouTubeI18nLangItem>
+        {
+            [Resolved]
+            private YouTubePlayerEXApp app { get; set; }
+
+            [Resolved]
+            private YTPlayerEXConfigManager config { get; set; }
+
+            [Resolved]
+            private YoutubeExplode.YoutubeClient youtubeService { get; set; }
+
+            private Bindable<int> closedCaptionLanguageValue;
+
+            [BackgroundDependencyLoader]
+            private void load()
+            {
+
+            }
+
+            public async Task RefreshCaptionLanguages(string videoId)
+            {
+                try
+                {
+                    var trackManifest = await youtubeService.Videos.ClosedCaptions.GetManifestAsync(videoId);
+
+                    List<YouTubeI18nLangItem> items = new List<YouTubeI18nLangItem>();
+
+                    foreach (var item in trackManifest.Tracks)
+                    {
+                        YouTubeI18nLangItem youTubeI18NLangItem = new YouTubeI18nLangItem
+                        {
+                            Hl = item.Language.Code,
+                            Name = item.Language.Name,
+                        };
+
+                        items.Add(youTubeI18NLangItem);
+                    }
+
+                    Items = items;
+                    Current.Value = Current.Default = items.Where(lang => lang.Hl.Contains(CultureInfo.CurrentCulture.TwoLetterISOLanguageName)).First();
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e, e.GetDescription());
+                }
+            }
+
+            protected override LocalisableString GenerateItemText(YouTubeI18nLangItem item)
+            {
+                return item.Name;
             }
         }
 

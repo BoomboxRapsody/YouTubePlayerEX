@@ -840,6 +840,21 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString SubscriptionAdded => new TranslatableString(getKey(@"subscription_added"), @"Subscription added.");
 
+        /// <summary>
+        /// "Closed captions"
+        /// </summary>
+        public static LocalisableString ClosedCaptions => new TranslatableString(getKey(@"closed_captions"), @"Closed captions");
+
+        /// <summary>
+        /// "Summarize via ChatGPT"
+        /// </summary>
+        public static LocalisableString SummarizeViaGPT => new TranslatableString(getKey(@"summarize_via_gpt"), @"Summarize via ChatGPT");
+
+        /// <summary>
+        /// "{0} Summarize this video"
+        /// </summary>
+        public static LocalisableString GPTSummarizePrompt(LocalisableString videoUrl) => new TranslatableString(getKey(@"gpt_summarize_prompt"), @"{0} Summarize this video", videoUrl);
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

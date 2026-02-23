@@ -72,6 +72,18 @@ namespace YouTubePlayerEX.App.Online
             return result;
         }
 
+        public IList<I18nLanguage> GetAvailableLanguages()
+        {
+            var part = "snippet";
+            var request = youtubeService.I18nLanguages.List(part);
+
+            var response = request.Execute();
+
+            var result = response.Items;
+
+            return result;
+        }
+
         public Channel? TryToGetMineChannel()
         {
             if (!googleOAuth2.SignedIn.Value)
