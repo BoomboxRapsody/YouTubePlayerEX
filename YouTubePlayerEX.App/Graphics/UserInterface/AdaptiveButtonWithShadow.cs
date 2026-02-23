@@ -93,6 +93,8 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
         protected SpriteText SpriteText;
         private readonly Container content;
 
+        protected Container ForegroundContent;
+
         public AdaptiveButtonWithShadow(HoverSampleSet hoverSampleSet = HoverSampleSet.Default)
             : base(hoverSampleSet)
         {
@@ -126,7 +128,13 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                         Blending = BlendingParameters.Additive,
                         Alpha = 0,
                     },
-                    SpriteText = CreateText()
+                    ForegroundContent = new Container
+                    {
+                        Origin = Anchor.Centre,
+                        Anchor = Anchor.Centre,
+                        RelativeSizeAxes = Axes.Both,
+                        Child = SpriteText = CreateText()
+                    }
                 }
             });
 
@@ -158,13 +166,13 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 
         protected override bool OnMouseDown(MouseDownEvent e)
         {
-            Content.ScaleTo(0.9f, 2000, Easing.OutQuint);
+            content.ScaleTo(0.9f, 2000, Easing.OutQuint);
             return base.OnMouseDown(e);
         }
 
         protected override void OnMouseUp(MouseUpEvent e)
         {
-            Content.ScaleTo(1, 1000, Easing.OutElastic);
+            content.ScaleTo(1, 1000, Easing.OutElastic);
             base.OnMouseUp(e);
         }
 

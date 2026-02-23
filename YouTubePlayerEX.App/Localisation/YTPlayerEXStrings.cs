@@ -920,6 +920,16 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString VideoRemovedFromPlaylist(string videoName, string playlistName) => new TranslatableString(getKey(@"video_removed_from_playlist"), @"Removed video {0} from playlist {1}.", videoName, playlistName);
 
+        /// <summary>
+        /// "Menu"
+        /// </summary>
+        public static LocalisableString Menu => new TranslatableString(getKey(@"menu"), @"Menu");
+
+        /// <summary>
+        /// "Exit"
+        /// </summary>
+        public static LocalisableString Exit => new TranslatableString(getKey(@"exit"), @"Exit");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }
