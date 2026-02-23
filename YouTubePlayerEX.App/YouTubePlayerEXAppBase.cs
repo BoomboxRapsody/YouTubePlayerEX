@@ -616,6 +616,13 @@ namespace YouTubePlayerEX.App
 
             Logger.Log($"Font family loaded: Torus");
 
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Regular");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Bold");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-SemiBold");
+            AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Light");
+
+            Logger.Log($"Font family loaded: Noto Sans Korean");
+
             AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Basic");
             AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Bopomofo");
             AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-CJK-Basic");
@@ -624,6 +631,17 @@ namespace YouTubePlayerEX.App
             AddFont(Resources, @"Fonts/UIFonts/Noto/Noto-Thai");
 
             Logger.Log($"Font family loaded: Noto");
+
+            AddFont(Resources, @"Fonts/CaptionFonts/Hungeul/Hungeul-Regular");
+            AddFont(Resources, @"Fonts/CaptionFonts/Hungeul/Hungeul-Bold");
+            AddFont(Resources, @"Fonts/CaptionFonts/Hungeul/Hungeul-RegularItalic");
+            AddFont(Resources, @"Fonts/CaptionFonts/Hungeul/Hungeul-BoldItalic");
+
+            Logger.Log($"Font family loaded: Hungeul");
+
+            AddFont(Resources, @"Fonts/CaptionFonts/Futehodo_MaruGothic/Futehodo_MaruGothic-Regular");
+
+            Logger.Log($"Font family loaded: Futehodo_MaruGothic");
 
             Fonts.AddStore(new EmojiStore(Host.Renderer, Resources));
 

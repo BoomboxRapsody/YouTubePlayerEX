@@ -81,6 +81,15 @@ namespace YouTubePlayerEX.App.Input.Binding
             new KeyBinding(new[] { InputKey.Control, InputKey.P }, GlobalAction.ToggleFPSDisplay),
 
             new KeyBinding(new[] { InputKey.F12 }, GlobalAction.TakeScreenshot),
+
+            new KeyBinding(new[] { InputKey.Alt, InputKey.Up }, GlobalAction.IncreaseVolume),
+            new KeyBinding(new[] { InputKey.Alt, InputKey.Down }, GlobalAction.DecreaseVolume),
+
+            new KeyBinding(new[] { InputKey.Alt, InputKey.Left }, GlobalAction.PreviousVolumeMeter),
+            new KeyBinding(new[] { InputKey.Alt, InputKey.Right }, GlobalAction.NextVolumeMeter),
+
+            new KeyBinding(new[] { InputKey.Control, InputKey.F4 }, GlobalAction.ToggleMute),
+            new KeyBinding(new[] { InputKey.Control, InputKey.Shift, InputKey.R }, GlobalAction.RestartApp),
         };
     }
 
@@ -123,5 +132,14 @@ namespace YouTubePlayerEX.App.Input.Binding
         NextVideo,
 
         OpenAudioEffects,
+
+        IncreaseVolume,
+        DecreaseVolume,
+
+        PreviousVolumeMeter,
+        NextVolumeMeter,
+
+        ToggleMute,
+        RestartApp,
     }
 }

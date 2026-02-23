@@ -48,16 +48,15 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
         public Action? OnVideoCompleted = null!;
 
-        public YouTubeVideoPlayer(string fileName_Video, string fileName_Audio, ClosedCaptionTrack captionTrack, ClosedCaptionLanguage captionLanguage, double resumeFromTime)
+        public YouTubeVideoPlayer(string fileName_Video, string fileName_Audio, ClosedCaptionTrack captionTrack, double resumeFromTime)
         {
             this.fileName_Video = fileName_Video;
             this.fileName_Audio = fileName_Audio;
             this.captionTrack = captionTrack;
-            this.captionLanguage = captionLanguage;
             this.resumeFromTime = resumeFromTime;
         }
 
-        public void UpdateCaptionTrack(ClosedCaptionLanguage captionLanguage, ClosedCaptionTrack captionTrack)
+        public void UpdateCaptionTrack(ClosedCaptionTrack captionTrack)
         {
             this.captionTrack = captionTrack;
             closedCaption.UpdateCaptionTrack(captionLanguage, captionTrack);
@@ -148,7 +147,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                         },
                     }
                 },
-                closedCaption = new ClosedCaptionContainer(this, captionTrack, captionLanguage)
+                closedCaption = new ClosedCaptionContainer(this, captionTrack)
             });
 
             rateAdjustClock.Rate = playbackSpeed.Value;

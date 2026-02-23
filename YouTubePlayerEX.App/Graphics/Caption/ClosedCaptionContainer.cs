@@ -13,6 +13,7 @@ using osuTK.Graphics;
 using YoutubeExplode.Videos.ClosedCaptions;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Graphics.Sprites;
+using YouTubePlayerEX.App.Graphics.UserInterface;
 using YouTubePlayerEX.App.Graphics.Videos;
 
 namespace YouTubePlayerEX.App.Graphics.Caption
@@ -24,16 +25,16 @@ namespace YouTubePlayerEX.App.Graphics.Caption
         private AdaptiveSpriteText spriteText;
         private YouTubeVideoPlayer videoPlayer;
         private ClosedCaptionTrack captionTrack;
-        private ClosedCaptionLanguage captionLanguage;
+        private Bindable<bool> captionEnabled;
+        private Bindable<UIFont> captionFont;
         private Container captionContainer;
 
         private Bindable<float> bottomMargin = new Bindable<float>();
 
-        public ClosedCaptionContainer(YouTubeVideoPlayer videoPlayer, ClosedCaptionTrack captionTrack, ClosedCaptionLanguage captionLanguage)
+        public ClosedCaptionContainer(YouTubeVideoPlayer videoPlayer, ClosedCaptionTrack captionTrack)
         {
             this.videoPlayer = videoPlayer;
             this.captionTrack = captionTrack;
-            this.captionLanguage = captionLanguage;
             Padding = new MarginPadding(32);
             RelativeSizeAxes = Axes.Both;
             Anchor = Anchor.BottomCentre;
@@ -43,7 +44,6 @@ namespace YouTubePlayerEX.App.Graphics.Caption
 
         public void UpdateCaptionTrack(ClosedCaptionLanguage captionLanguage, ClosedCaptionTrack captionTrack)
         {
-            this.captionLanguage = captionLanguage;
             if (captionTrack != null)
                 this.captionTrack = captionTrack;
             else
@@ -56,6 +56,8 @@ namespace YouTubePlayerEX.App.Graphics.Caption
         private void load(YTPlayerEXConfigManager config, SessionStatics sessionStatics)
         {
             controlsVisibleState = sessionStatics.GetBindable<bool>(Static.IsControlVisible);
+            captionEnabled = config.GetBindable<bool>(YTPlayerEXSetting.CaptionEnabled);
+            captionFont = config.GetBindable<UIFont>(YTPlayerEXSetting.UIFont);
 
             Add(captionContainer = new Container
             {
@@ -84,6 +86,28 @@ namespace YouTubePlayerEX.App.Graphics.Caption
             controlsVisibleState.BindValueChanged(v =>
             {
                 UpdateControlsVisibleState(v.NewValue);
+            }, true);
+
+            captionFont.BindValueChanged(v =>
+            {
+                switch (v.NewValue)
+                {
+                    case UIFont.Torus:
+                    {
+                        spriteText.Font = YouTubePlayerEXApp.DefaultFont.With(size: 24);
+                        break;
+                    }
+                    case UIFont.Hungeul:
+                    {
+                        spriteText.Font = YouTubePlayerEXApp.Hungeul.With(size: 24);
+                        break;
+                    }
+                    case UIFont.Futehodo_MaruGothic:
+                    {
+                        spriteText.Font = YouTubePlayerEXApp.Futehodo_MaruGothic.With(size: 24);
+                        break;
+                    }
+                }
             }, true);
 
             bottomMargin.BindValueChanged(v =>

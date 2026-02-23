@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Apis.YouTube.v3.Data;
 using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -31,6 +32,7 @@ using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics;
 using YouTubePlayerEX.App.Graphics.Containers;
 using YouTubePlayerEX.App.Graphics.UserInterface;
+using YouTubePlayerEX.App.Input.Binding;
 using YouTubePlayerEX.App.Localisation;
 using YouTubePlayerEX.App.Online;
 using YouTubePlayerEX.App.Overlays;
@@ -46,11 +48,15 @@ namespace YouTubePlayerEX.App
 
         public static FontUsage DefaultFont = FontUsage.Default.With("Torus", 16, "Regular");
 
+        public static FontUsage Hungeul = FontUsage.Default.With("Hungeul", 16, "Regular");
+
+        public static FontUsage Futehodo_MaruGothic = FontUsage.Default.With("Futehodo_MaruGothic", 16, "Regular");
+
         public static FontUsage TorusAlternate = FontUsage.Default.With("Torus-Alternate", 16, "Regular");
 
         private BindableNumber<double> sampleVolume = null!;
         private FPSCounter fpsCounter;
-        private Container topMostOverlayContent, overlayContainer;
+        private Container topMostOverlayContent, overlayContainer, leftFloatingOverlayContent;
 
         public const float UI_CORNER_RADIUS = 16f;
 
@@ -59,6 +65,8 @@ namespace YouTubePlayerEX.App
         private ScreenshotManager screenshotManager;
 
         private Online.DiscordRPC discord_rpc;
+
+        private VolumeOverlay volume;
 
         [Resolved]
         private FrameworkConfigManager frameworkConfig { get; set; }
@@ -126,6 +134,8 @@ namespace YouTubePlayerEX.App
                 UpdateManagerVersionText.Value = YTPlayerEXStrings.ViewLatestVersions;
             }
 
+            fetchCaptionLanguages();
+
             // Add your top-level game components here.
             // A screen stack and sample screen has been provided for convenience, but you can replace it if you don't want to use screens.
             AddRange(new Drawable[]
@@ -138,8 +148,11 @@ namespace YouTubePlayerEX.App
                 {
                     RelativeSizeAxes = Axes.Both
                 },
+                leftFloatingOverlayContent = new Container { RelativeSizeAxes = Axes.Both },
                 topMostOverlayContent = new Container { RelativeSizeAxes = Axes.Both },
             });
+
+            loadComponentSingleFile(volume = new VolumeOverlay(), leftFloatingOverlayContent.Add, true);
 
             onScreenDisplay = new OnScreenDisplay();
             screenshotManager = new ScreenshotManager();
@@ -164,6 +177,28 @@ namespace YouTubePlayerEX.App
             applySafeAreaConsiderations = LocalConfig.GetBindable<bool>(YTPlayerEXSetting.SafeAreaConsiderations);
             applySafeAreaConsiderations.BindValueChanged(apply => SafeAreaContainer.SafeAreaOverrideEdges = apply.NewValue ? SafeAreaOverrideEdges : Edges.All, true);
         }
+
+        private void fetchCaptionLanguages()
+        {
+            IList<I18nLanguage> i18NLanguages = YouTubeService.GetAvailableLanguages();
+            List<YouTubeI18nLangItem> items = new List<YouTubeI18nLangItem>();
+
+            foreach (var item in i18NLanguages)
+            {
+                YouTubeI18nLangItem i18NLangItem = new YouTubeI18nLangItem
+                {
+                    Hl = item.Snippet.Hl,
+                    Name = item.Snippet.Name,
+                };
+
+                items.Add(i18NLangItem);
+            }
+
+            AvailableCaptionLanguages = items;
+        }
+
+        public List<YouTubeI18nLangItem> AvailableCaptionLanguages;
+        public Bindable<YouTubeI18nLangItem> CurrentCaptionLanguage;
 
         protected override void Dispose(bool isDisposing)
         {
@@ -305,10 +340,10 @@ namespace YouTubePlayerEX.App
         private AudioFilter audioDuckFilter = null!;
 
 #nullable enable
-        /// <summary>
-        /// Applies ducking, attenuating the volume and/or low-pass cutoff of the currently playing track to make headroom for effects (or just to apply an effect).
-        /// </summary>
-        /// <returns>A <see cref="IDisposable"/> which will restore the duck operation when disposed.</returns>
+            /// <summary>
+            /// Applies ducking, attenuating the volume and/or low-pass cutoff of the currently playing track to make headroom for effects (or just to apply an effect).
+            /// </summary>
+            /// <returns>A <see cref="IDisposable"/> which will restore the duck operation when disposed.</returns>
         public IDisposable Duck(DuckParameters? parameters = null)
         {
             // Don't duck if samples have no volume, it sounds weird.

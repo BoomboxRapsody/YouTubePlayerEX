@@ -10,7 +10,10 @@ namespace YouTubePlayerEX.App.Config
         [Description("Torus")]
         Torus,
 
-        [Description("Cafe24 Syongsyong")]
-        Cafe24Syongsyong,
+        [Description("헌글")]
+        Hungeul,
+
+        [Description("ふてほど丸ゴシック")]
+        Futehodo_MaruGothic
     }
 }

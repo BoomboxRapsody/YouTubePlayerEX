@@ -840,6 +840,96 @@ namespace YouTubePlayerEX.App.Localisation
         /// </summary>
         public static LocalisableString SubscriptionAdded => new TranslatableString(getKey(@"subscription_added"), @"Subscription added.");
 
+        /// <summary>
+        /// "Closed captions"
+        /// </summary>
+        public static LocalisableString ClosedCaptions => new TranslatableString(getKey(@"closed_captions"), @"Closed captions");
+
+        /// <summary>
+        /// "Summarize via ChatGPT"
+        /// </summary>
+        public static LocalisableString SummarizeViaGPT => new TranslatableString(getKey(@"summarize_via_gpt"), @"Summarize via ChatGPT");
+
+        /// <summary>
+        /// "{0} Summarize this video"
+        /// </summary>
+        public static LocalisableString GPTSummarizePrompt(LocalisableString videoUrl) => new TranslatableString(getKey(@"gpt_summarize_prompt"), @"{0} Summarize this video", videoUrl);
+
+        /// <summary>
+        /// "Public"
+        /// </summary>
+        public static LocalisableString Public => new TranslatableString(getKey(@"public"), @"Public");
+
+        /// <summary>
+        /// "Unlisted"
+        /// </summary>
+        public static LocalisableString Unlisted => new TranslatableString(getKey(@"unlisted"), @"Unlisted");
+
+        /// <summary>
+        /// "Private"
+        /// </summary>
+        public static LocalisableString Private => new TranslatableString(getKey(@"private"), @"Private");
+
+        /// <summary>
+        /// "Save"
+        /// </summary>
+        public static LocalisableString Save => new TranslatableString(getKey(@"save"), @"Save");
+
+        /// <summary>
+        /// "Save or remove"
+        /// </summary>
+        public static LocalisableString SaveOrRemove => new TranslatableString(getKey(@"save_or_remove"), @"Save or remove");
+
+        /// <summary>
+        /// "Save location"
+        /// </summary>
+        public static LocalisableString SaveLocation => new TranslatableString(getKey(@"save_location"), @"Save location");
+
+        /// <summary>
+        /// "Add new playlist"
+        /// </summary>
+        public static LocalisableString AddNewPlaylist => new TranslatableString(getKey(@"add_new_playlist"), @"Add new playlist");
+
+        /// <summary>
+        /// "Privacy status"
+        /// </summary>
+        public static LocalisableString PrivacyStatus => new TranslatableString(getKey(@"privacy_status"), @"Privacy status");
+
+        /// <summary>
+        /// "Enter title here"
+        /// </summary>
+        public static LocalisableString TitlePlaceholder => new TranslatableString(getKey(@"title_placeholder"), @"Enter title here");
+
+        /// <summary>
+        /// "Title"
+        /// </summary>
+        public static LocalisableString Title => new TranslatableString(getKey(@"title"), @"Title");
+
+        /// <summary>
+        /// "Create"
+        /// </summary>
+        public static LocalisableString Create => new TranslatableString(getKey(@"create"), @"Create");
+
+        /// <summary>
+        /// "Added video {0} to playlist {1}."
+        /// </summary>
+        public static LocalisableString VideoSavedToPlaylist(string videoName, string playlistName) => new TranslatableString(getKey(@"video_saved_to_playlist"), @"Added video {0} to playlist {1}.", videoName, playlistName);
+
+        /// <summary>
+        /// "Removed video {0} from playlist {1}."
+        /// </summary>
+        public static LocalisableString VideoRemovedFromPlaylist(string videoName, string playlistName) => new TranslatableString(getKey(@"video_removed_from_playlist"), @"Removed video {0} from playlist {1}.", videoName, playlistName);
+
+        /// <summary>
+        /// "Menu"
+        /// </summary>
+        public static LocalisableString Menu => new TranslatableString(getKey(@"menu"), @"Menu");
+
+        /// <summary>
+        /// "Exit"
+        /// </summary>
+        public static LocalisableString Exit => new TranslatableString(getKey(@"exit"), @"Exit");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

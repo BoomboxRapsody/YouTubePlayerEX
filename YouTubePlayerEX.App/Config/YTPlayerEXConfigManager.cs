@@ -26,6 +26,7 @@ namespace YouTubePlayerEX.App.Config
         {
             SetDefault(YTPlayerEXSetting.UsernameDisplayMode, UsernameDisplayMode.Handle);
             SetDefault(YTPlayerEXSetting.ClosedCaptionLanguage, ClosedCaptionLanguage.Disabled);
+            SetDefault(YTPlayerEXSetting.ClosedCaptionLanguageNew, 0);
             SetDefault(YTPlayerEXSetting.CaptionEnabled, false);
             SetDefault(YTPlayerEXSetting.AspectRatioMethod, AspectRatioMethod.Letterbox);
             SetDefault(YTPlayerEXSetting.VideoMetadataTranslateSource, VideoMetadataTranslateSource.YouTube);
@@ -79,6 +80,7 @@ namespace YouTubePlayerEX.App.Config
             new TrackedSetting<ClosedCaptionLanguage>(YTPlayerEXSetting.ClosedCaptionLanguage, v => new SettingDescription(v, YTPlayerEXStrings.CaptionLanguage, v.GetLocalisableDescription(), "Shift+C")),
             new TrackedSetting<AspectRatioMethod>(YTPlayerEXSetting.AspectRatioMethod, v => new SettingDescription(v, YTPlayerEXStrings.AspectRatioMethod, v.GetLocalisableDescription(), "Ctrl+F6")),
             new TrackedSetting<bool>(YTPlayerEXSetting.AdjustPitchOnSpeedChange, v => new SettingDescription(v, YTPlayerEXStrings.AdjustPitchOnSpeedChange, v == true ? YTPlayerEXStrings.Enabled.ToLower() : YTPlayerEXStrings.Disabled.ToLower(), "Alt+P")),
+            new TrackedSetting<bool>(YTPlayerEXSetting.CaptionEnabled, v => new SettingDescription(v, YTPlayerEXStrings.ClosedCaptions, v == true ? YTPlayerEXStrings.Enabled.ToLower() : YTPlayerEXStrings.Disabled.ToLower(), "Shift+C")),
             new TrackedSetting<float>(YTPlayerEXSetting.UIScale, v => new SettingDescription(v, YTPlayerEXStrings.UIScaling, $@"{v:0.##}x")),
             new TrackedSetting<bool>(YTPlayerEXSetting.ShowFpsDisplay, v => new SettingDescription(v, YTPlayerEXStrings.ShowFPS, v == true ? YTPlayerEXStrings.Enabled.ToLower() : YTPlayerEXStrings.Disabled.ToLower(), "Ctrl+P")),
             new TrackedSetting<ScalingMode>(YTPlayerEXSetting.Scaling, scalingMode => new SettingDescription(
@@ -129,5 +131,6 @@ namespace YouTubePlayerEX.App.Config
         VideoHueShift,
 
         DiscordRichPresence,
+        ClosedCaptionLanguageNew,
     }
 }
