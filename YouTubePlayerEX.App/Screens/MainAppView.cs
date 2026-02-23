@@ -2721,59 +2721,73 @@ namespace YouTubePlayerEX.App.Screens
 
             captionLangDropdown.Current.BindValueChanged(lang =>
             {
-                if (currentVideoSource != null && captionEnabled.Value)
+                if (currentVideoSource != null)
                 {
-                    Task.Run(async () =>
+                    if (captionEnabled.Value)
                     {
-                        var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
-
-                        var trackInfo = trackManifest.Tracks.Where(track => track.Language.Name == lang.NewValue.Name).First();
-
-                        ClosedCaptionTrack captionTrack = null;
-
-                        if (trackInfo != null)
+                        Task.Run(async () =>
                         {
-                            Schedule(() =>
+                            var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
+
+                            var trackInfo = trackManifest.Tracks.Where(track => track.Language.Name == lang.NewValue.Name).First();
+
+                            ClosedCaptionTrack captionTrack = null;
+
+                            if (trackInfo != null)
                             {
-                                Toast toast = new Toast(YTPlayerEXStrings.CaptionLanguage, lang.NewValue.Name);
+                                Schedule(() =>
+                                {
+                                    Toast toast = new Toast(YTPlayerEXStrings.CaptionLanguage, lang.NewValue.Name);
 
-                                onScreenDisplay.Display(toast);
-                            });
+                                    onScreenDisplay.Display(toast);
+                                });
 
-                            captionTrack = await game.YouTubeClient.Videos.ClosedCaptions.GetAsync(trackInfo);
-                        }
+                                captionTrack = await game.YouTubeClient.Videos.ClosedCaptions.GetAsync(trackInfo);
+                            }
 
-                        currentVideoSource.UpdateCaptionTrack(captionTrack);
-                    });
+                            currentVideoSource.UpdateCaptionTrack(captionTrack);
+                        });
+                    }
+                    else
+                    {
+                        currentVideoSource.UpdateCaptionTrack(null);
+                    }
                 }
             });
 
             captionEnabled.BindValueChanged(enabled =>
             {
-                if (currentVideoSource != null && captionEnabled.Value)
+                if (currentVideoSource != null)
                 {
-                    Task.Run(async () =>
+                    if (captionEnabled.Value)
                     {
-                        var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
-
-                        var trackInfo = trackManifest.Tracks.Where(track => track.Language.Name == captionLangDropdown.Current.Value.Name).First();
-
-                        ClosedCaptionTrack captionTrack = null;
-
-                        if (enabled.NewValue)
+                        Task.Run(async () =>
                         {
-                            Schedule(() =>
+                            var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
+
+                            var trackInfo = trackManifest.Tracks.Where(track => track.Language.Name == captionLangDropdown.Current.Value.Name).First();
+
+                            ClosedCaptionTrack captionTrack = null;
+
+                            if (enabled.NewValue)
                             {
-                                Toast toast = new Toast(YTPlayerEXStrings.CaptionLanguage, captionLangDropdown.Current.Value.Name);
+                                Schedule(() =>
+                                {
+                                    Toast toast = new Toast(YTPlayerEXStrings.CaptionLanguage, captionLangDropdown.Current.Value.Name);
 
-                                onScreenDisplay.Display(toast);
-                            });
+                                    onScreenDisplay.Display(toast);
+                                });
 
-                            captionTrack = await game.YouTubeClient.Videos.ClosedCaptions.GetAsync(trackInfo);
-                        }
+                                captionTrack = await game.YouTubeClient.Videos.ClosedCaptions.GetAsync(trackInfo);
+                            }
 
-                        currentVideoSource.UpdateCaptionTrack(captionTrack);
-                    });
+                            currentVideoSource.UpdateCaptionTrack(captionTrack);
+                        });
+                    }
+                    else
+                    {
+                        currentVideoSource.UpdateCaptionTrack(null);
+                    }
                 }
             });
 
@@ -4633,31 +4647,38 @@ namespace YouTubePlayerEX.App.Screens
 
                     try
                     {
-                        var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
-
-                        captionEnabled.Disabled = trackManifest.Tracks.Count == 0;
-
-                        var trackInfo = trackManifest.Tracks.Where(track => track.Language.Name == captionLangDropdown.Current.Value.Name).First();
-
-                        if (trackInfo != null)
+                        if (captionEnabled.Value)
                         {
-                            if (captionEnabled.Value)
+                            var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
+
+                            captionEnabled.Disabled = trackManifest.Tracks.Count == 0;
+
+                            var trackInfo = trackManifest.Tracks.Where(track => track.Language.Name == captionLangDropdown.Current.Value.Name).First();
+
+                            if (trackInfo != null)
                             {
-                                Schedule(() =>
+                                if (captionEnabled.Value)
                                 {
-                                    /*
-                                    alert.Text = captionLanguage.Value != ClosedCaptionLanguage.Disabled ? (trackInfo.IsAutoGenerated ? YTPlayerEXStrings.SelectedCaptionAutoGen(captionLanguage.Value.GetLocalisableDescription()) : YTPlayerEXStrings.SelectedCaption(captionLanguage.Value.GetLocalisableDescription())) : YTPlayerEXStrings.SelectedCaption(captionLanguage.Value.GetLocalisableDescription());
-                                    alert.Show();
-                                    spinnerShow = Scheduler.AddDelayed(alert.Hide, 3000);
-                                    */
+                                    Schedule(() =>
+                                    {
+                                        /*
+                                        alert.Text = captionLanguage.Value != ClosedCaptionLanguage.Disabled ? (trackInfo.IsAutoGenerated ? YTPlayerEXStrings.SelectedCaptionAutoGen(captionLanguage.Value.GetLocalisableDescription()) : YTPlayerEXStrings.SelectedCaption(captionLanguage.Value.GetLocalisableDescription())) : YTPlayerEXStrings.SelectedCaption(captionLanguage.Value.GetLocalisableDescription());
+                                        alert.Show();
+                                        spinnerShow = Scheduler.AddDelayed(alert.Hide, 3000);
+                                        */
 
-                                    Toast toast = new Toast(YTPlayerEXStrings.CaptionLanguage, captionLangDropdown.Current.Value.Name);
+                                        Toast toast = new Toast(YTPlayerEXStrings.CaptionLanguage, captionLangDropdown.Current.Value.Name);
 
-                                    onScreenDisplay.Display(toast);
-                                });
+                                        onScreenDisplay.Display(toast);
+                                    });
+                                }
+
+                                captionTrack = await game.YouTubeClient.Videos.ClosedCaptions.GetAsync(trackInfo);
                             }
-
-                            captionTrack = await game.YouTubeClient.Videos.ClosedCaptions.GetAsync(trackInfo);
+                        }
+                        else
+                        {
+                            currentVideoSource.UpdateCaptionTrack(null);
                         }
                     }
                     catch (Exception e)
@@ -4753,25 +4774,32 @@ namespace YouTubePlayerEX.App.Screens
 
                     try
                     {
-                        var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
-
-                        captionEnabled.Disabled = trackManifest.Tracks.Count == 0;
-
-                        var trackInfo = trackManifest.Tracks.Where(track => track.Language.Name == captionLangDropdown.Current.Value.Name).First();
-
-                        if (trackInfo != null)
+                        if (captionEnabled.Value)
                         {
-                            if (captionEnabled.Value)
+                            var trackManifest = await game.YouTubeClient.Videos.ClosedCaptions.GetManifestAsync(videoUrl);
+
+                            captionEnabled.Disabled = trackManifest.Tracks.Count == 0;
+
+                            var trackInfo = trackManifest.Tracks.Where(track => track.Language.Name == captionLangDropdown.Current.Value.Name).First();
+
+                            if (trackInfo != null)
                             {
-                                Schedule(() =>
+                                if (captionEnabled.Value)
                                 {
-                                    Toast toast = new Toast(YTPlayerEXStrings.CaptionLanguage, captionLangDropdown.Current.Value.Name);
+                                    Schedule(() =>
+                                    {
+                                        Toast toast = new Toast(YTPlayerEXStrings.CaptionLanguage, captionLangDropdown.Current.Value.Name);
 
-                                    onScreenDisplay.Display(toast);
-                                });
+                                        onScreenDisplay.Display(toast);
+                                    });
+                                }
+
+                                captionTrack = await game.YouTubeClient.Videos.ClosedCaptions.GetAsync(trackInfo);
                             }
-
-                            captionTrack = await game.YouTubeClient.Videos.ClosedCaptions.GetAsync(trackInfo);
+                        }
+                        else
+                        {
+                            currentVideoSource.UpdateCaptionTrack(null);
                         }
                     }
                     catch (Exception e)
