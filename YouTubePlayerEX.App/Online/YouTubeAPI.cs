@@ -15,6 +15,7 @@ using Google.Apis.YouTube.v3.Data;
 using osu.Framework.Configuration;
 using osu.Framework.Extensions;
 using osu.Framework.Logging;
+using Sentry.Protocol;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Localisation;
 
@@ -380,9 +381,9 @@ namespace YouTubePlayerEX.App.Online
 
             var body = new Subscription
             {
-                Snippet = new SubscriptionSnippet
+                Snippet = new()
                 {
-                    ResourceId = new ResourceId
+                    ResourceId = new()
                     {
                         Kind = "youtube#channel",
                         ChannelId = channelId
@@ -631,6 +632,134 @@ namespace YouTubePlayerEX.App.Online
             var result = response.Items.First();
 
             return result;
+        }
+
+        public async Task<IList<Playlist>> GetMyPlaylistItems()
+        {
+            if (!googleOAuth2.SignedIn.Value)
+                return new List<Playlist>();
+
+            var part = "snippet";
+            var request = youtubeService.Playlists.List(part);
+
+            request.Mine = true;
+
+            request.OauthToken = googleOAuth2.GetAccessToken();
+
+            var response = await request.ExecuteAsync();
+
+            var result = response.Items;
+
+            return result;
+        }
+
+        public async Task SaveVideoToPlaylist(string playlistId, string videoId)
+        {
+            if (!googleOAuth2.SignedIn.Value)
+                return;
+
+            PlaylistItem item = new PlaylistItem
+            {
+                Snippet = new()
+                {
+                    PlaylistId = playlistId,
+                    ResourceId = new()
+                    {
+                        Kind = "youtube#video",
+                        VideoId = videoId,
+                    }
+                }
+            };
+
+            var part = "snippet";
+            var request = youtubeService.PlaylistItems.Insert(item, part);
+
+            request.OauthToken = googleOAuth2.GetAccessToken();
+
+            await request.ExecuteAsync();
+        }
+
+        public async Task RemoveVideoFromPlaylist(string playlistId, string videoId)
+        {
+            if (!googleOAuth2.SignedIn.Value)
+                return;
+
+            var part = "snippet";
+            var request = youtubeService.PlaylistItems.List(part);
+
+            request.PlaylistId = playlistId;
+            request.VideoId = videoId;
+
+            request.OauthToken = googleOAuth2.GetAccessToken();
+
+            var response = await request.ExecuteAsync();
+
+            var result = response.Items.First();
+
+            var request2 = youtubeService.PlaylistItems.Delete(result.Id);
+
+            request2.OauthToken = googleOAuth2.GetAccessToken();
+
+            await request2.ExecuteAsync();
+        }
+
+        public async Task<bool> IsVideoExistsOnPlaylist(string playlistId, string videoId)
+        {
+            if (!googleOAuth2.SignedIn.Value)
+                return false;
+
+            var part = "snippet";
+            var request = youtubeService.PlaylistItems.List(part);
+
+            request.PlaylistId = playlistId;
+            request.VideoId = videoId;
+
+            request.OauthToken = googleOAuth2.GetAccessToken();
+
+            var response = await request.ExecuteAsync();
+
+            var result = response.Items;
+
+            return result.Count > 0;
+        }
+
+        public string ParsePrivacyStatus(PrivacyStatus privacyStatus)
+        {
+            switch (privacyStatus)
+            {
+                case PrivacyStatus.Public:
+                    return "public";
+                case PrivacyStatus.Unlisted:
+                    return "unlisted";
+                case PrivacyStatus.Private:
+                    return "private";
+            }
+            return string.Empty;
+        }
+
+        public async Task AddPlaylist(string playlistTitle, PrivacyStatus privacyStatus)
+        {
+            if (!googleOAuth2.SignedIn.Value)
+                return;
+
+            Playlist item = new Playlist
+            {
+                Snippet = new()
+                {
+                    Title = playlistTitle,
+                },
+                Status = new()
+                {
+                    PrivacyStatus = ParsePrivacyStatus(privacyStatus),
+                }
+            };
+
+            var part = "snippet,status";
+            var request = youtubeService.Playlists.Insert(item, part);
+
+            request.OauthToken = googleOAuth2.GetAccessToken();
+
+            await request.ExecuteAsync();
         }
 
         public async Task<IList<PlaylistItem>> GetPlaylistItems(string playlistId)

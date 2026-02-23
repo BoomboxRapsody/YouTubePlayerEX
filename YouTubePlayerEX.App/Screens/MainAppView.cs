@@ -15,7 +15,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using DiscordRPC;
-using DiscordRPC.Message;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Humanizer;
@@ -69,7 +68,6 @@ using YouTubePlayerEX.App.Overlays.OSD;
 using YouTubePlayerEX.App.Overlays.Volume;
 using YouTubePlayerEX.App.Updater;
 using YouTubePlayerEX.App.Utils;
-using static YouTubePlayerEX.App.Online.DiscordRPC;
 using static YouTubePlayerEX.App.YouTubePlayerEXApp;
 using Container = osu.Framework.Graphics.Containers.Container;
 using Language = YouTubePlayerEX.App.Localisation.Language;
@@ -88,12 +86,15 @@ namespace YouTubePlayerEX.App.Screens
         private IdleTracker idleTracker;
         private Container uiContainer;
         private Container uiGradientContainer;
-        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer, reportAbuseOverlay, loadPlaylistContainer, unsubscribeDialog;
+        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer, reportAbuseOverlay, loadPlaylistContainer, unsubscribeDialog, addPlaylistOverlay, videoSaveLocationOverlay;
         private SideOverlayContainer playlistOverlay, audioEffectsOverlay;
         private AdaptiveButtonWithShadow loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton, searchOpenButton, reportOpenButton, playlistOpenButton, audioEffectsOpenButton;
+        private IconButtonWithShadow saveVideoOpenButton;
         private VideoMetadataDisplayWithoutProfile videoMetadataDisplay;
         private VideoMetadataDisplay videoMetadataDisplayDetails;
         private RoundedButtonContainer commentOpenButtonDetails, likeButton;
+
+        private FormEnumDropdown<PrivacyStatus> playlistPrivacyStatusDropdown;
 
         private LinkFlowContainer madeByText;
 
@@ -104,7 +105,9 @@ namespace YouTubePlayerEX.App.Screens
         private Sample overlayShowSample;
         private Sample overlayHideSample;
         private AdaptiveButtonV2 reportButton;
-        private FormTextBox reportComment;
+        private FormTextBox reportComment, playlistTitleBox;
+
+        private FormDropdown<Playlist> myPlaylistsDropdown;
 
         private Container overlayFadeContainer;
         private RoundedButtonContainer dislikeButton;
@@ -551,6 +554,22 @@ namespace YouTubePlayerEX.App.Screens
                                             Shear = new Vector2(-0.2f, 0),
                                             IconShear = new Vector2(0.2f, 0),
                                             TooltipText = YTPlayerEXStrings.AudioEffects,
+                                        },
+                                        saveVideoOpenButton = new IconButtonWithShadow
+                                        {
+                                            Enabled = { Value = true },
+                                            Margin = new MarginPadding
+                                            {
+                                                Right = 336,
+                                            },
+                                            Origin = Anchor.TopRight,
+                                            Anchor = Anchor.TopRight,
+                                            Size = new Vector2(40, 40),
+                                            Icon = FontAwesome.Regular.Bookmark,
+                                            IconScale = new Vector2(1.2f),
+                                            Shear = new Vector2(-0.2f, 0),
+                                            IconShear = new Vector2(0.2f, 0),
+                                            TooltipText = YTPlayerEXStrings.Save,
                                         },
                                     }
                                 },
@@ -2486,6 +2505,238 @@ namespace YouTubePlayerEX.App.Screens
                                 },
                             }
                         },
+                        videoSaveLocationOverlay = new OverlayContainer
+                        {
+                            Size = new Vector2(1f, 1f),
+                            Width = 450,
+                            Height = 250,
+                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
+                            Masking = true,
+                            Origin = Anchor.Centre,
+                            Anchor = Anchor.Centre,
+                            EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                            {
+                                Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                Colour = Color4.Black.Opacity(0.25f),
+                                Offset = new Vector2(0, 2),
+                                Radius = 16,
+                            },
+                            Children = new Drawable[]
+                            {
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Colour = overlayColourProvider.Background5,
+                                },
+                                new AdaptiveSpriteText
+                                {
+                                    Origin = Anchor.TopLeft,
+                                    Anchor = Anchor.TopLeft,
+                                    Text = YTPlayerEXStrings.SaveLocation,
+                                    Margin = new MarginPadding(16),
+                                    Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30, weight: "Bold"),
+                                    Colour = overlayColourProvider.Content2,
+                                },
+                                new Container
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Padding = new MarginPadding
+                                    {
+                                        Horizontal = 16,
+                                        Bottom = 16,
+                                        Top = 56,
+                                    },
+                                    Children = new Drawable[] {
+                                        new AdaptiveScrollContainer
+                                        {
+                                            RelativeSizeAxes = Axes.Both,
+                                            ScrollbarVisible = false,
+                                            Children = new Drawable[]
+                                            {
+                                                new FillFlowContainer
+                                                {
+                                                    RelativeSizeAxes = Axes.X,
+                                                    AutoSizeAxes = Axes.Y,
+                                                    Direction = FillDirection.Vertical,
+                                                    Spacing = new Vector2(4),
+                                                    Children = new Drawable[]
+                                                    {
+                                                        myPlaylistsDropdown = new PlaylistDropdown
+                                                        {
+                                                            RelativeSizeAxes = Axes.X,
+                                                            Height = 50,
+                                                            Caption = YTPlayerEXStrings.Playlists,
+                                                        },
+                                                        new AdaptiveButton
+                                                        {
+                                                            Enabled = { Value = true },
+                                                            Text = YTPlayerEXStrings.AddNewPlaylist,
+                                                            RelativeSizeAxes = Axes.X,
+                                                            Size = new Vector2(1, 40),
+                                                            Margin = new MarginPadding(4),
+                                                            Action = () =>
+                                                            {
+                                                                hideOverlays();
+                                                                showOverlayContainer(addPlaylistOverlay);
+                                                            }
+                                                        },
+                                                        new FillFlowContainer
+                                                        {
+                                                            RelativeSizeAxes = Axes.X,
+                                                            AutoSizeAxes = Axes.Y,
+                                                            Direction = FillDirection.Horizontal,
+                                                            Children = new Drawable[]
+                                                            {
+                                                                new AdaptiveButton
+                                                                {
+                                                                    Enabled = { Value = true },
+                                                                    Text = YTPlayerEXStrings.Cancel,
+                                                                    Size = new Vector2(200, 60),
+                                                                    Margin = new MarginPadding(4),
+                                                                    Action = () =>
+                                                                    {
+                                                                        hideOverlayContainer(videoSaveLocationOverlay);
+                                                                    }
+                                                                },
+                                                                new AdaptiveButton
+                                                                {
+                                                                    Enabled = { Value = true },
+                                                                    Text = YTPlayerEXStrings.SaveOrRemove,
+                                                                    Size = new Vector2(200, 60),
+                                                                    Margin = new MarginPadding(4),
+                                                                    Action = async () =>
+                                                                    {
+                                                                        if (videoId != null)
+                                                                        {
+                                                                            bool trickcalChibiGo = await api.IsVideoExistsOnPlaylist(myPlaylistsDropdown.Current.Value.Id, videoData.Id);
+                                                                            hideOverlays();
+
+                                                                            if (!trickcalChibiGo)
+                                                                                saveVideoToPlaylist(videoData.Id);
+                                                                            else
+                                                                                removeVideoFromPlaylist(videoData.Id);
+                                                                        }
+                                                                    }
+                                                                },
+                                                            },
+                                                        },
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        addPlaylistOverlay = new OverlayContainer
+                        {
+                            Size = new Vector2(1f, 1f),
+                            Width = 450,
+                            Height = 250,
+                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
+                            Masking = true,
+                            Origin = Anchor.Centre,
+                            Anchor = Anchor.Centre,
+                            EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                            {
+                                Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                Colour = Color4.Black.Opacity(0.25f),
+                                Offset = new Vector2(0, 2),
+                                Radius = 16,
+                            },
+                            Children = new Drawable[]
+                            {
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Colour = overlayColourProvider.Background5,
+                                },
+                                new AdaptiveSpriteText
+                                {
+                                    Origin = Anchor.TopLeft,
+                                    Anchor = Anchor.TopLeft,
+                                    Text = YTPlayerEXStrings.AddNewPlaylist,
+                                    Margin = new MarginPadding(16),
+                                    Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30, weight: "Bold"),
+                                    Colour = overlayColourProvider.Content2,
+                                },
+                                new Container
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Padding = new MarginPadding
+                                    {
+                                        Horizontal = 16,
+                                        Bottom = 16,
+                                        Top = 56,
+                                    },
+                                    Children = new Drawable[] {
+                                        new AdaptiveScrollContainer
+                                        {
+                                            RelativeSizeAxes = Axes.Both,
+                                            ScrollbarVisible = false,
+                                            Children = new Drawable[]
+                                            {
+                                                new FillFlowContainer
+                                                {
+                                                    RelativeSizeAxes = Axes.X,
+                                                    AutoSizeAxes = Axes.Y,
+                                                    Direction = FillDirection.Vertical,
+                                                    Spacing = new Vector2(4),
+                                                    Children = new Drawable[]
+                                                    {
+                                                        playlistTitleBox = new FormTextBox
+                                                        {
+                                                            RelativeSizeAxes = Axes.X,
+                                                            Height = 50,
+                                                            Caption = YTPlayerEXStrings.Title,
+                                                            PlaceholderText = YTPlayerEXStrings.TitlePlaceholder,
+                                                        },
+                                                        playlistPrivacyStatusDropdown = new FormEnumDropdown<PrivacyStatus>
+                                                        {
+                                                            RelativeSizeAxes = Axes.X,
+                                                            Height = 50,
+                                                            Caption = YTPlayerEXStrings.PrivacyStatus,
+                                                        },
+                                                        new FillFlowContainer
+                                                        {
+                                                            RelativeSizeAxes = Axes.X,
+                                                            AutoSizeAxes = Axes.Y,
+                                                            Direction = FillDirection.Horizontal,
+                                                            Children = new Drawable[]
+                                                            {
+                                                                new AdaptiveButton
+                                                                {
+                                                                    Enabled = { Value = true },
+                                                                    Text = YTPlayerEXStrings.Cancel,
+                                                                    Size = new Vector2(200, 60),
+                                                                    Margin = new MarginPadding(4),
+                                                                    Action = () =>
+                                                                    {
+                                                                        hideOverlayContainer(addPlaylistOverlay);
+                                                                    }
+                                                                },
+                                                                new AdaptiveButton
+                                                                {
+                                                                    Enabled = { Value = true },
+                                                                    Text = YTPlayerEXStrings.Create,
+                                                                    Size = new Vector2(200, 60),
+                                                                    Margin = new MarginPadding(4),
+                                                                    Action = async () =>
+                                                                    {
+                                                                        hideOverlays();
+                                                                        await api.AddPlaylist(playlistTitleBox.Current.Value, playlistPrivacyStatusDropdown.Current.Value);
+                                                                    }
+                                                                },
+                                                            },
+                                                        },
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
                         new Container
                         {
                             RelativeSizeAxes = Axes.Both,
@@ -2513,6 +2764,8 @@ namespace YouTubePlayerEX.App.Screens
             loadPlaylistContainer.Hide();
             audioEffectsOverlay.Hide();
             unsubscribeDialog.Hide();
+            videoSaveLocationOverlay.Hide();
+            addPlaylistOverlay.Hide();
 
             madeByText.AddText("made by ");
             madeByText.AddLink("BoomboxRapsody", "https://github.com/BoomboxRapsody");
@@ -2545,6 +2798,17 @@ namespace YouTubePlayerEX.App.Screens
                         Task.Run(async () =>
                         {
                             GetReportReasons();
+                        });
+                    });
+
+                    Task.Run(async () =>
+                    {
+                        IList<Playlist> playlists = await api.GetMyPlaylistItems();
+
+                        Schedule(() =>
+                        {
+                            myPlaylistsDropdown.Items = playlists;
+                            myPlaylistsDropdown.Current.Value = playlists[0];
                         });
                     });
 
@@ -2624,6 +2888,8 @@ namespace YouTubePlayerEX.App.Screens
             overlayContainers.Add(loadPlaylistContainer);
             overlayContainers.Add(audioEffectsOverlay);
             overlayContainers.Add(unsubscribeDialog);
+            overlayContainers.Add(addPlaylistOverlay);
+            overlayContainers.Add(videoSaveLocationOverlay);
 
             playlistName.Text = "please choose a playlist!";
             playlistAuthor.Text = "[no metadata available]";
@@ -2977,6 +3243,40 @@ namespace YouTubePlayerEX.App.Screens
                 {
                 }
             }
+        }
+
+        private void saveVideoToPlaylist(string videoId)
+        {
+            if (string.IsNullOrEmpty(videoId))
+                return;
+
+            Task.Run(async () =>
+            {
+                await api.SaveVideoToPlaylist(myPlaylistsDropdown.Current.Value.Id, videoId);
+
+                saveVideoOpenButton.Icon = FontAwesome.Solid.Bookmark;
+
+                Toast toast = new Toast(YTPlayerEXStrings.Playlists, YTPlayerEXStrings.VideoSavedToPlaylist(videoId, myPlaylistsDropdown.Current.Value.Snippet.Title));
+
+                Schedule(() => onScreenDisplay.Display(toast));
+            });
+        }
+
+        private void removeVideoFromPlaylist(string videoId)
+        {
+            if (string.IsNullOrEmpty(videoId))
+                return;
+
+            Task.Run(async () =>
+            {
+                await api.RemoveVideoFromPlaylist(myPlaylistsDropdown.Current.Value.Id, videoId);
+
+                saveVideoOpenButton.Icon = FontAwesome.Regular.Bookmark;
+
+                Toast toast = new Toast(YTPlayerEXStrings.Playlists, YTPlayerEXStrings.VideoRemovedFromPlaylist(videoId, myPlaylistsDropdown.Current.Value.Snippet.Title));
+
+                Schedule(() => onScreenDisplay.Display(toast));
+            });
         }
 
         public void GetReportReasons()
@@ -3484,6 +3784,11 @@ namespace YouTubePlayerEX.App.Screens
             audioEffectsOpenButton.ClickAction = _ =>
             {
                 showOverlayContainer(audioEffectsOverlay);
+            };
+
+            saveVideoOpenButton.ClickAction = _ =>
+            {
+                showOverlayContainer(videoSaveLocationOverlay);
             };
 
             loadPlaylistOpenButton.ClickAction = _ =>
@@ -4189,7 +4494,7 @@ namespace YouTubePlayerEX.App.Screens
         {
             videoMetadataDisplay.UpdateVideo(videoId);
             videoMetadataDisplayDetails.UpdateVideo(videoId);
-            Task.Run(() =>
+            Task.Run(async () =>
             {
                 // metadata area
                 videoData = api.GetVideo(videoId);
@@ -4389,6 +4694,21 @@ namespace YouTubePlayerEX.App.Screens
                         videoInfoDetails.Text = YTPlayerEXStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), uploadDate.ToString());
                     });
                 });
+
+                if (googleOAuth2.SignedIn.Value)
+                {
+                    try
+                    {
+                        foreach (var item in myPlaylistsDropdown.Items)
+                        {
+                            bool result = await api.IsVideoExistsOnPlaylist(item.Id, videoId);
+                            Schedule(() => saveVideoOpenButton.Icon = result ? FontAwesome.Solid.Bookmark : FontAwesome.Regular.Bookmark);
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
 
                 TimeSpan duration = XmlConvert.ToTimeSpan(videoData.ContentDetails.Duration);
                 if (duration.Hours > 0)
@@ -4971,9 +5291,7 @@ namespace YouTubePlayerEX.App.Screens
         private partial class ReportDropdown : FormDropdown<VideoAbuseReportReasonItem>
         {
             protected override LocalisableString GenerateItemText(VideoAbuseReportReasonItem item)
-            {
-                return item.Label;
-            }
+                => item.Label;
         }
 
         private partial class WindowModeDropdown : FormDropdown<WindowMode>
@@ -4999,6 +5317,12 @@ namespace YouTubePlayerEX.App.Screens
         {
             protected override LocalisableString GenerateItemText(string item)
                 => string.IsNullOrEmpty(item) ? YTPlayerEXStrings.Default : base.GenerateItemText(item);
+        }
+
+        private partial class PlaylistDropdown : FormDropdown<Playlist>
+        {
+            protected override LocalisableString GenerateItemText(Playlist item)
+                => item.Snippet.Title;
         }
 
         private partial class FrameSyncDropdown : FormEnumDropdown<FrameSync>
