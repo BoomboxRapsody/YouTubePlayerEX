@@ -139,7 +139,7 @@ namespace YouTubePlayerEX.MediaSessionHandler
 
         public override void UpdatePlaybackSpeed(double speed)
         {
-            mediaPlayer.PlaybackRate = speed;
+            smtc.PlaybackRate = speed;
         }
     }
 }
