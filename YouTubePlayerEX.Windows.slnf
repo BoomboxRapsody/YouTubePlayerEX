@@ -1,0 +1,12 @@
+﻿{
+  "solution": {
+    "path": "YouTubePlayerEX.sln",
+    "projects": [
+      "YouTubePlayerEX.Windows\\YouTubePlayerEX.Windows.csproj",
+      "YouTubePlayerEX.App\\YouTubePlayerEX.App.csproj",
+	  "YouTubePlayerEX-framework\\osu.Framework\\osu.Framework.csproj",
+	  "YouTubePlayerEX-framework\\osu.Framework.NativeLibs\\osu.Framework.NativeLibs.csproj",
+      "YouTubePlayerEX.App.Tests\\YouTubePlayerEX.App.Tests.csproj",
+    ]
+  }
+}

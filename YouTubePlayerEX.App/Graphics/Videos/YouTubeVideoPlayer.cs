@@ -26,6 +26,7 @@ using YouTubePlayerEX.App.Graphics.Shaders.New.Bloom;
 using YouTubePlayerEX.App.Graphics.Shaders.New.Chromatic;
 using YouTubePlayerEX.App.Graphics.Shaders.New.Grayscale;
 using YouTubePlayerEX.App.Graphics.Shaders.New.HueShift;
+using YouTubePlayerEX.App.Online;
 
 namespace YouTubePlayerEX.App.Graphics.Videos
 {
@@ -34,6 +35,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         private Video video = null!;
         private Track track = null!;
         private DrawableTrack drawableTrack = null!;
+        private Google.Apis.YouTube.v3.Data.Video videoData = null!;
 
         private string fileName_Video, fileName_Audio = null!;
         private ClosedCaptionTrack captionTrack = null!;
@@ -48,11 +50,22 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
         public Action? OnVideoCompleted = null!;
 
-        public YouTubeVideoPlayer(string fileName_Video, string fileName_Audio, ClosedCaptionTrack captionTrack, double resumeFromTime)
+        private MediaSessionControls mediaSessionControls = null!;
+
+        [Resolved]
+        private YouTubeAPI api { get; set; }
+
+#nullable enable
+        [Resolved(canBeNull: true)]
+        private MediaSession? mediaSession { get; set; }
+#nullable disable
+
+        public YouTubeVideoPlayer(string fileName_Video, string fileName_Audio, ClosedCaptionTrack captionTrack, Google.Apis.YouTube.v3.Data.Video videoData, double resumeFromTime)
         {
             this.fileName_Video = fileName_Video;
             this.fileName_Audio = fileName_Audio;
             this.captionTrack = captionTrack;
+            this.videoData = videoData;
             this.resumeFromTime = resumeFromTime;
         }
 
@@ -89,6 +102,18 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
             rateAdjustClock = new StopwatchClock(true);
             framedClock = new DecouplingFramedClock(rateAdjustClock);
+
+            mediaSessionControls = new MediaSessionControls()
+            {
+                NextButtonPressed = () => FastForward10Sec(),
+                PrevButtonPressed = () => FastRewind10Sec(),
+                PlayButtonPressed = () => Play(),
+                PauseButtonPressed = () => Pause(),
+            };
+
+            mediaSession?.CreateMediaSession(api, fileName_Audio);
+
+            mediaSession?.RegisterControlEvents(mediaSessionControls);
 
             AddRange(new Drawable[] {
                 drawableTrack = new DrawableTrack(track)
@@ -234,6 +259,9 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         protected override void Dispose(bool isDisposing)
         {
             base.Dispose(isDisposing);
+            mediaSession?.UnregisterControlEvents();
+            mediaSession?.DeleteMediaSession();
+
             drawableTrack.Dispose();
             video.Dispose();
         }
@@ -252,6 +280,8 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         protected override void LoadComplete()
         {
             base.LoadComplete();
+            mediaSession?.UpdateMediaSession(videoData);
+            mediaSession?.UpdateTimestamp(videoData, 0);
         }
 
         protected override void Update()
@@ -276,6 +306,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             {
                 drawableTrack?.Seek(pos2);
                 video?.Seek(pos2);
+                mediaSession?.UpdateTimestamp(videoData, pos2);
             }
         }
 
@@ -311,6 +342,8 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                 drawableTrack?.Stop();
                 framedClock.Stop();
 
+                mediaSession?.UpdatePlayingState(false);
+
                 if (isKeyboardAction)
                     keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.PlayPause, FontAwesome.Solid.Pause);
             }
@@ -327,6 +360,8 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
                     trackFinished = false;
                 }
+
+                mediaSession?.UpdatePlayingState(true);
 
                 drawableTrack?.Start();
                 framedClock.Start();

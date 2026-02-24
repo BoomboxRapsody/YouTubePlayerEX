@@ -3709,8 +3709,6 @@ namespace YouTubePlayerEX.App.Screens
 
         private void updatePresence(DiscordRichPresenceMode mode)
         {
-            var hostname = Dns.GetHostName();
-            var ip = Dns.GetHostEntry(hostname).AddressList[1].ToString();
             switch (mode)
             {
                 case DiscordRichPresenceMode.Full:
@@ -5125,7 +5123,7 @@ namespace YouTubePlayerEX.App.Screens
                         }
                     }
 
-                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3", captionTrack, pausedTime)
+                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3", captionTrack, videoData, pausedTime)
                     {
                         RelativeSizeAxes = Axes.Both
                     };
@@ -5226,7 +5224,7 @@ namespace YouTubePlayerEX.App.Screens
                         Logger.Error(e, e.GetDescription());
                     }
 
-                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3", captionTrack, pausedTime)
+                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3", captionTrack, videoData, pausedTime)
                     {
                         RelativeSizeAxes = Axes.Both
                     };
