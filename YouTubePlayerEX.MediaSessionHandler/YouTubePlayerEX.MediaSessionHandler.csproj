@@ -7,9 +7,4 @@
   <ItemGroup Label="Project References">
     <ProjectReference Include="..\YouTubePlayerEX.App\YouTubePlayerEX.App.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Update="empty.mp3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 </Project>
