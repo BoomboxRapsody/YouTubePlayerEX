@@ -32,7 +32,6 @@ namespace YouTubePlayerEX.MediaSessionHandler
                     Source = MediaSource.CreateFromUri(new Uri($"file:///{audioPath}")),
                     Volume = 0,
                 };
-                mediaPlayer.Play();
 
                 smtc = mediaPlayer.SystemMediaTransportControls;
                 smtc.PlaybackStatus = MediaPlaybackStatus.Paused;
