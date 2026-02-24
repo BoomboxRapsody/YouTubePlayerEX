@@ -2834,7 +2834,7 @@ namespace YouTubePlayerEX.App.Screens
             };
 
             madeByText.AddText("made by ");
-            madeByText.AddLink("BoomboxRapsody", "https://github.com/BoomboxRapsody");
+            madeByText.AddLink("MayoDev Studios", "https://boomboxrapsody.github.io/youtube-player-ex.html");
 
             latencyModeDropdown.Current.BindValueChanged(mode =>
             {
