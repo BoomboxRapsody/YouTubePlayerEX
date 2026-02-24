@@ -14,7 +14,7 @@ The enhanced YouTube video player written in [custom osu-framework](https://gith
 
 ### Latest release:
 
-| [Windows 7+ (x64)](https://github.com/BoomboxRapsody/YouTubePlayerEX/releases/latest/download/YouTubePlayerEX-win-Setup.exe) | [Linux (x64)](https://github.com/BoomboxRapsody/YouTubePlayerEX/releases/latest/download/YouTubePlayerEX-linux-x64.AppImage)
+| [Windows 11+ (x64)](https://github.com/BoomboxRapsody/YouTubePlayerEX/releases/latest/download/YouTubePlayerEX-win-Setup.exe) | [Linux (x64)](https://github.com/BoomboxRapsody/YouTubePlayerEX/releases/latest/download/YouTubePlayerEX-linux-x64.AppImage)
 |--------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
 
 If your platform is unsupported or not listed above, there is still a chance you can run the release or manually build it by following the instructions below.

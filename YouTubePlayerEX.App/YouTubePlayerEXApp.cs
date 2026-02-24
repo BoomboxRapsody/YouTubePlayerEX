@@ -96,6 +96,7 @@ namespace YouTubePlayerEX.App
         }
 
         public UpdateManager UpdateManager;
+        public MediaSession MediaSession;
 
         [BackgroundDependencyLoader]
         private void load()
@@ -126,6 +127,7 @@ namespace YouTubePlayerEX.App
 
             Localisation.AddLocaleMappings(mappings);
 
+            loadComponentSingleFile(MediaSession = CreateMediaSession(), Add, true);
             // dependency on notification overlay, dependent by settings overlay
             loadComponentSingleFile(UpdateManager = CreateUpdateManager(), Add, true);
 
@@ -282,6 +284,11 @@ namespace YouTubePlayerEX.App
         private DependencyContainer dependencies;
 
         protected virtual UpdateManager CreateUpdateManager() => new UpdateManager();
+
+        /// <summary>
+        /// If supported by the platform, the media session creation will be handled by the app, allowing for features such as scrobbling and integration with external media controls.
+        /// </summary>
+        public virtual MediaSession CreateMediaSession() => new MediaSession();
 
         protected override IReadOnlyDependencyContainer CreateChildDependencies(IReadOnlyDependencyContainer parent) =>
             dependencies = new DependencyContainer(base.CreateChildDependencies(parent));
