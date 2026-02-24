@@ -2,7 +2,7 @@
   "solution": {
     "path": "YouTubePlayerEX.sln",
     "projects": [
-      "YouTubePlayerEX.Desktop\\YouTubePlayerEX.Desktop.csproj",
+      "YouTubePlayerEX.Linux\\YouTubePlayerEX.Linux.csproj",
       "YouTubePlayerEX.App\\YouTubePlayerEX.App.csproj",
 	  "YouTubePlayerEX-framework\\osu.Framework\\osu.Framework.csproj",
 	  "YouTubePlayerEX-framework\\osu.Framework.NativeLibs\\osu.Framework.NativeLibs.csproj",
