@@ -2,8 +2,6 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using DiscordRPC;
-using DiscordRPC.Events;
-using DiscordRPC.Message;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Logging;
