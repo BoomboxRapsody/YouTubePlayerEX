@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using YouTubePlayerEX.App;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Updater;
-using YouTubePlayerEX.Desktop.Updater;
+using YouTubePlayerEX.Linux.Updater;
 
-namespace YouTubePlayerEX.Desktop
+namespace YouTubePlayerEX.Linux
 {
-    internal partial class YouTubePlayerEXAppDesktop : YouTubePlayerEXApp
+    internal partial class YouTubePlayerEXAppLinuxDesktop : YouTubePlayerEXApp
     {
         protected override UpdateManager CreateUpdateManager() => new VelopackUpdateManager();
 

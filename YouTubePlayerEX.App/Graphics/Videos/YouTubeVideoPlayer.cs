@@ -105,8 +105,8 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
             mediaSessionControls = new MediaSessionControls()
             {
-                NextButtonPressed = () => FastForward10Sec(),
-                PrevButtonPressed = () => FastRewind10Sec(),
+                NextButtonPressed = FastForward10Sec,
+                PrevButtonPressed = FastRewind10Sec,
                 PlayButtonPressed = () => Play(),
                 PauseButtonPressed = () => Pause(),
             };

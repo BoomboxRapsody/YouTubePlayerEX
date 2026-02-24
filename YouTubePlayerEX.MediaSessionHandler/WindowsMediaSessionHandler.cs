@@ -40,6 +40,8 @@ namespace YouTubePlayerEX.MediaSessionHandler
                 smtc.IsPauseEnabled = true;
                 smtc.IsNextEnabled = true;
                 smtc.IsPreviousEnabled = true;
+                smtc.IsFastForwardEnabled = true;
+                smtc.IsRewindEnabled = true;
 
                 smtc.ButtonPressed += smtc_ButtonPressed;
 
@@ -58,8 +60,8 @@ namespace YouTubePlayerEX.MediaSessionHandler
         {
             Task.Run(async () =>
             {
-                smtc.DisplayUpdater.MusicProperties.Title = YouTubeAPI.GetLocalizedVideoTitle(video);
-                smtc.DisplayUpdater.MusicProperties.Artist = YouTubeAPI.GetLocalizedChannelTitle(YouTubeAPI.GetChannel(video.Snippet.ChannelId));
+                smtc.DisplayUpdater.MusicProperties.Title = video.Snippet.Title;
+                smtc.DisplayUpdater.MusicProperties.Artist = YouTubeAPI.GetChannel(video.Snippet.ChannelId).Snippet.Title;
                 smtc.DisplayUpdater.Thumbnail = Windows.Storage.Streams.RandomAccessStreamReference.CreateFromUri(new Uri(video.Snippet.Thumbnails.High.Url));
 
                 smtc.DisplayUpdater.Update();
@@ -109,6 +111,12 @@ namespace YouTubePlayerEX.MediaSessionHandler
                     break;
                 case Windows.Media.SystemMediaTransportControlsButton.Pause:
                     controls?.PauseButtonPressed?.Invoke();
+                    break;
+                case Windows.Media.SystemMediaTransportControlsButton.Rewind:
+                    controls?.PrevButtonPressed?.Invoke();
+                    break;
+                case Windows.Media.SystemMediaTransportControlsButton.FastForward:
+                    controls?.NextButtonPressed?.Invoke();
                     break;
                 case Windows.Media.SystemMediaTransportControlsButton.Previous:
                     controls?.PrevButtonPressed?.Invoke();

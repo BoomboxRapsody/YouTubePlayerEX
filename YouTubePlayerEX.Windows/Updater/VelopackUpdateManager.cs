@@ -13,7 +13,7 @@ using YouTubePlayerEX.App;
 using YouTubePlayerEX.App.Localisation;
 using UpdateManager = YouTubePlayerEX.App.Updater.UpdateManager;
 
-namespace YouTubePlayerEX.Desktop.Updater
+namespace YouTubePlayerEX.Windows.Updater
 {
     public partial class VelopackUpdateManager : UpdateManager
     {

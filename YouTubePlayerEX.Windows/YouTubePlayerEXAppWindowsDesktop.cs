@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using YouTubePlayerEX.App;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Updater;
-using YouTubePlayerEX.Desktop.Updater;
+using YouTubePlayerEX.Windows.Updater;
 using YouTubePlayerEX.MediaSessionHandler;
 
-namespace YouTubePlayerEX.Desktop
+namespace YouTubePlayerEX.Windows
 {
-    internal partial class YouTubePlayerEXAppDesktop : YouTubePlayerEXApp
+    internal partial class YouTubePlayerEXAppWindowsDesktop : YouTubePlayerEXApp
     {
         protected override UpdateManager CreateUpdateManager() => new VelopackUpdateManager();
 

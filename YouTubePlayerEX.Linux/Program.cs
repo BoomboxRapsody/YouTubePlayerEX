@@ -3,10 +3,9 @@
 
 using osu.Framework.Platform;
 using osu.Framework;
-using YouTubePlayerEX.App;
 using Velopack;
 
-namespace YouTubePlayerEX.Desktop
+namespace YouTubePlayerEX.Linux
 {
     public static class Program
     {
@@ -22,7 +21,7 @@ namespace YouTubePlayerEX.Desktop
             using (GameHost host = Host.GetSuitableDesktopHost(@"YouTubePlayerEX", hostOptions))
             {
                 host.AllowBenchmarkUnlimitedFrames = true;
-                host.Run(new YouTubePlayerEXAppDesktop());
+                host.Run(new YouTubePlayerEXAppLinuxDesktop());
             }
         }
     }
