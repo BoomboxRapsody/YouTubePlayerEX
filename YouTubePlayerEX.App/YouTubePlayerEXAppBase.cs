@@ -177,11 +177,6 @@ namespace YouTubePlayerEX.App
         /// <returns>Whether a restart operation was queued.</returns>
         public virtual bool RestartAppWhenExited() => false;
 
-        /// <summary>
-        /// If supported by the platform, the media session creation will be handled by the app, allowing for features such as scrobbling and integration with external media controls.
-        /// </summary>
-        public virtual MediaSession CreateMediaSession() => null;
-
         protected override void Dispose(bool isDisposing)
         {
             base.Dispose(isDisposing);
@@ -287,9 +282,6 @@ namespace YouTubePlayerEX.App
                 AdaptiveMenuSamples menuSamples;
                 dependencies.Cache(menuSamples = new AdaptiveMenuSamples());
                 base.Content.Add(menuSamples);
-
-                MediaSession mediaSession;
-                dependencies.CacheAs(mediaSession = CreateMediaSession());
 
                 dependencies.CacheAs(idleTracker = new AppIdleTracker(6000));
 

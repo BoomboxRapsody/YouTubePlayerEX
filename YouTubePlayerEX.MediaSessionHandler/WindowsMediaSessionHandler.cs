@@ -14,7 +14,7 @@ using YouTubePlayerEX.App.Online;
 
 namespace YouTubePlayerEX.MediaSessionHandler
 {
-    public class WindowsMediaSessionHandler : MediaSession
+    public partial class WindowsMediaSessionHandler : MediaSession
     {
         private SystemMediaTransportControls smtc;
         private MediaPlayer mediaPlayer;

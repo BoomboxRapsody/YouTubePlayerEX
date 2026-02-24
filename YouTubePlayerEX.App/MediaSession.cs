@@ -5,29 +5,50 @@
 
 using System;
 using Google.Apis.YouTube.v3.Data;
+using osu.Framework.Graphics.Containers;
 using YouTubePlayerEX.App.Online;
 
 namespace YouTubePlayerEX.App
 {
-    public abstract class MediaSession
+    public partial class MediaSession : CompositeDrawable
     {
         protected YouTubeAPI YouTubeAPI;
 
-        public abstract void CreateMediaSession(YouTubeAPI youtubeAPI, string audioPath);
+        public MediaSession()
+        {
+        }
 
-        public abstract void UpdateMediaSession(Video video);
+        public virtual void CreateMediaSession(YouTubeAPI youtubeAPI, string audioPath)
+        {
+        }
 
-        public abstract void UpdateTimestamp(Video video, double pos);
+        public virtual void UpdateMediaSession(Video video)
+        {
+        }
 
-        public abstract void DeleteMediaSession();
+        public virtual void UpdateTimestamp(Video video, double pos)
+        {
+        }
 
-        public abstract void RegisterControlEvents(MediaSessionControls controls);
+        public virtual void DeleteMediaSession()
+        {
+        }
 
-        public abstract void UnregisterControlEvents();
+        public virtual void RegisterControlEvents(MediaSessionControls controls)
+        {
+        }
 
-        public abstract void UpdatePlaybackSpeed(double speed);
+        public virtual void UnregisterControlEvents()
+        {
+        }
 
-        public abstract void UpdatePlayingState(bool playing);
+        public virtual void UpdatePlaybackSpeed(double speed)
+        {
+        }
+
+        public virtual void UpdatePlayingState(bool playing)
+        {
+        }
     }
 
     public class MediaSessionControls
