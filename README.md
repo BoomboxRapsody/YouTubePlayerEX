@@ -61,7 +61,8 @@ To build for mobile platforms, you will likely need to run `sudo dotnet workload
 You can also build and run *YouTube Player EX* from the command-line with a single command:
 
 ```shell
-dotnet run --project YouTubePlayerEX.Desktop
+dotnet run --project YouTubePlayerEX.Windows (for Windows)
+dotnet run --project YouTubePlayerEX.Linux (for Linux)
 ```
 
 When running locally to do any kind of performance testing, make sure to add `-c Release` to the build command, as the overhead of running with the default `Debug` configuration can be large (especially when testing with local framework modifications as below).
