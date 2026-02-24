@@ -5058,6 +5058,7 @@ namespace YouTubePlayerEX.App.Screens
                     }
 
                     await captionLangDropdown.RefreshCaptionLanguages(videoUrl);
+                    captionEnabled.Disabled = false;
 
                     ClosedCaptionTrack captionTrack = null;
 
@@ -5185,6 +5186,7 @@ namespace YouTubePlayerEX.App.Screens
                     }
 
                     await captionLangDropdown.RefreshCaptionLanguages(videoUrl);
+                    captionEnabled.Disabled = false;
 
                     ClosedCaptionTrack captionTrack = null;
 
