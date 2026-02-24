@@ -50,7 +50,8 @@ git pull --recurse-submodules
 
 You should load the solution via one of the platform-specific `.slnf` files, rather than the main `.sln`. This will reduce dependencies and hide platforms that you don't care about. Valid `.slnf` files are:
 
-- `YouTubePlayerEX.Desktop.slnf` (most common)
+- `YouTubePlayerEX.Windows.slnf` (Windows platform, most common)
+- `YouTubePlayerEX.Linux.slnf` (Linux platform)
 
 Run configurations for the recommended IDEs (listed above) are included. You should use the provided Build/Run functionality of your IDE to get things going. When testing or building new components, it's highly encouraged you use the `YouTube Player EX (Tests)` project/configuration. More information on this is provided [below](#contributing).
 
