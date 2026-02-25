@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.2.11415.280
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubePlayerEX.Linux", "YouTubePlayerEX.Linux\YouTubePlayerEX.Linux.csproj", "{AEB3FC89-DC3E-4BC9-9EC7-03B72FC5D849}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubePlayerEX.Desktop", "YouTubePlayerEX.Desktop\YouTubePlayerEX.Desktop.csproj", "{AEB3FC89-DC3E-4BC9-9EC7-03B72FC5D849}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubePlayerEX.App", "YouTubePlayerEX.App\YouTubePlayerEX.App.csproj", "{1ADACD09-7BE3-46A1-AEAB-C41E78E8700F}"
 EndProject
@@ -28,9 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeAnalysis", "CodeAnalysi
 		CodeAnalysis\YouTubePlayerEX.globalconfig = CodeAnalysis\YouTubePlayerEX.globalconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubePlayerEX.MediaSessionHandler", "YouTubePlayerEX.MediaSessionHandler\YouTubePlayerEX.MediaSessionHandler.csproj", "{DAA9411F-68BC-46F6-997F-9A8A90327756}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubePlayerEX.Windows", "YouTubePlayerEX.Windows\YouTubePlayerEX.Windows.csproj", "{3CC84560-5BD7-FD04-160A-41E2025DA698}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YouTubePlayerEX.Desktop.Windows", "YouTubePlayerEX.Desktop.Windows\YouTubePlayerEX.Desktop.Windows.csproj", "{3CC84560-5BD7-FD04-160A-41E2025DA698}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -114,18 +112,6 @@ Global
 		{6DC508DC-8D1A-4644-963F-9C7D6D4D68EA}.Release|iPhone.Build.0 = Release|Any CPU
 		{6DC508DC-8D1A-4644-963F-9C7D6D4D68EA}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{6DC508DC-8D1A-4644-963F-9C7D6D4D68EA}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{DAA9411F-68BC-46F6-997F-9A8A90327756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DAA9411F-68BC-46F6-997F-9A8A90327756}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DAA9411F-68BC-46F6-997F-9A8A90327756}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{DAA9411F-68BC-46F6-997F-9A8A90327756}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{DAA9411F-68BC-46F6-997F-9A8A90327756}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{DAA9411F-68BC-46F6-997F-9A8A90327756}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{DAA9411F-68BC-46F6-997F-9A8A90327756}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DAA9411F-68BC-46F6-997F-9A8A90327756}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DAA9411F-68BC-46F6-997F-9A8A90327756}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{DAA9411F-68BC-46F6-997F-9A8A90327756}.Release|iPhone.Build.0 = Release|Any CPU
-		{DAA9411F-68BC-46F6-997F-9A8A90327756}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{DAA9411F-68BC-46F6-997F-9A8A90327756}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{3CC84560-5BD7-FD04-160A-41E2025DA698}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3CC84560-5BD7-FD04-160A-41E2025DA698}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CC84560-5BD7-FD04-160A-41E2025DA698}.Debug|iPhone.ActiveCfg = Debug|Any CPU

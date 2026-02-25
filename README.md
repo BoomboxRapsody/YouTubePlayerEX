@@ -14,7 +14,7 @@ The enhanced YouTube video player written in [custom osu-framework](https://gith
 
 ### Latest release:
 
-| [Windows 11+ (x64)](https://github.com/BoomboxRapsody/YouTubePlayerEX/releases/latest/download/YouTubePlayerEX-win-Setup.exe) | [Linux (x64)](https://github.com/BoomboxRapsody/YouTubePlayerEX/releases/latest/download/YouTubePlayerEX-linux-x64.AppImage)
+| [Windows 10+ (x64)](https://github.com/BoomboxRapsody/YouTubePlayerEX/releases/latest/download/YouTubePlayerEX-win-Setup.exe) | [Linux (x64)](https://github.com/BoomboxRapsody/YouTubePlayerEX/releases/latest/download/YouTubePlayerEX-linux-x64.AppImage)
 |--------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
 
 If your platform is unsupported or not listed above, there is still a chance you can run the release or manually build it by following the instructions below.
@@ -50,8 +50,8 @@ git pull --recurse-submodules
 
 You should load the solution via one of the platform-specific `.slnf` files, rather than the main `.sln`. This will reduce dependencies and hide platforms that you don't care about. Valid `.slnf` files are:
 
-- `YouTubePlayerEX.Windows.slnf` (Windows platform with WinRT extensions, most common)
-- `YouTubePlayerEX.Linux.slnf` (Linux and Windows platform)
+- `YouTubePlayerEX.Desktop.Windows.slnf` (Windows platform with WinRT extensions, most common)
+- `YouTubePlayerEX.Desktop.slnf` (Linux and other platform)
 
 Run configurations for the recommended IDEs (listed above) are included. You should use the provided Build/Run functionality of your IDE to get things going. When testing or building new components, it's highly encouraged you use the `YouTube Player EX (Tests)` project/configuration. More information on this is provided [below](#contributing).
 
@@ -62,8 +62,8 @@ To build for mobile platforms, you will likely need to run `sudo dotnet workload
 You can also build and run *YouTube Player EX* from the command-line with a single command:
 
 ```shell
-dotnet run --project YouTubePlayerEX.Windows (for Windows)
-dotnet run --project YouTubePlayerEX.Linux (for Linux)
+dotnet run --project YouTubePlayerEX.Desktop.Windows (for Windows)
+dotnet run --project YouTubePlayerEX.Desktop (for Linux and other platform)
 ```
 
 When running locally to do any kind of performance testing, make sure to add `-c Release` to the build command, as the overhead of running with the default `Debug` configuration can be large (especially when testing with local framework modifications as below).
