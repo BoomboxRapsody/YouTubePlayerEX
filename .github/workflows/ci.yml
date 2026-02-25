@@ -24,7 +24,7 @@ jobs:
           dotnet-version: "8.0.x"
 
       - name: Compile
-        run: dotnet build -c Debug YouTubePlayerEX.Windows.slnf
+        run: dotnet build -c Debug YouTubePlayerEX.Desktop.Windows.slnf
         
   build-only-linux:
     name: Build only (Linux)
@@ -42,4 +42,4 @@ jobs:
           dotnet-version: "8.0.x"
 
       - name: Compile
-        run: dotnet build -c Debug YouTubePlayerEX.Linux.slnf
+        run: dotnet build -c Debug YouTubePlayerEX.Desktop.slnf
