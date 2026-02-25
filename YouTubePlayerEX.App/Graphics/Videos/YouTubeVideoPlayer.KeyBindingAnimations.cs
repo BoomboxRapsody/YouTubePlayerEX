@@ -10,6 +10,7 @@ using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
+using osu.Framework.Logging;
 using osuTK.Graphics;
 using YouTubePlayerEX.App.Graphics.Sprites;
 
@@ -54,12 +55,14 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                 {
                     case SeekAction.FastRewind10sec:
                     {
+                        rightContent.RepeatCount = 0;
                         rightContent.HideNow();
                         leftContent.PlaySeekAnimation(FontAwesome.Solid.ChevronLeft);
                         break;
                     }
                     case SeekAction.FastForward10sec:
                     {
+                        leftContent.RepeatCount = 0;
                         leftContent.HideNow();
                         rightContent.PlaySeekAnimation(FontAwesome.Solid.ChevronRight);
                         break;
@@ -79,6 +82,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                 private AdaptiveSpriteText seekValue;
 
                 private Container content;
+                public int RepeatCount = 0;
 
                 public SeekAnimation(SeekAction trackAction)
                 {
@@ -114,7 +118,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                                         },
                                         seekValue = new AdaptiveSpriteText
                                         {
-                                            Text = "- 10",
+                                            Text = $"- 5",
                                             Margin = new MarginPadding
                                             {
                                                 Left = 30,
@@ -157,7 +161,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                                         },
                                         seekValue = new AdaptiveSpriteText
                                         {
-                                            Text = "+ 10",
+                                            Text = $"+ 5",
                                             Margin = new MarginPadding
                                             {
                                                 Right = 45,
@@ -225,6 +229,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                         using (BeginDelayedSequence(250))
                         {
                             seekArrow.ScaleTo(new osuTK.Vector2(0.8f, 1));
+                            //count = 0;
                             if (trackAction == SeekAction.FastRewind10sec)
                             {
                                 seekArrow.MoveTo(new osuTK.Vector2(20, 0));
@@ -242,6 +247,9 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                     seekArrow.Icon = icon;
                     if (trackAction != SeekAction.PlayPause)
                     {
+                        RepeatCount += 5;
+                        Logger.Log(RepeatCount.ToString());
+                        seekValue.Text = trackAction == SeekAction.FastRewind10sec ? $"- {RepeatCount}" : $"+ {RepeatCount}";
                         content.FadeInFromZero(250, Easing.Out);
                         seekArrow.ScaleTo(new osuTK.Vector2(0.7f, 1));
                         if (trackAction == SeekAction.FastRewind10sec)

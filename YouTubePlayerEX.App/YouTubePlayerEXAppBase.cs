@@ -22,8 +22,10 @@ using osu.Framework.IO.Stores;
 using osu.Framework.Localisation;   
 using osu.Framework.Logging;
 using osu.Framework.Platform;
+using osuTK;
 using osuTK.Graphics;
 using YoutubeExplode;
+using YouTubePlayerEX.App.Audio;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics;
@@ -77,6 +79,9 @@ namespace YouTubePlayerEX.App
 
         public Bindable<LocalisableString> UpdateManagerVersionText = new Bindable<LocalisableString>();
         public Bindable<bool> RestartRequired = new Bindable<bool>();
+        public Bindable<double> CurrentTrackNormalizeVolume = new Bindable<double>(1);
+
+        protected AudioNormalizationManager AudioNormalizationManager { get; private set; }
 
         protected YouTubePlayerEXAppBase()
         {
@@ -268,6 +273,8 @@ namespace YouTubePlayerEX.App
                 dependencies.Cache(LocalConfig);
 
                 dependencies.Cache(GoogleOAuth2 = new GoogleOAuth2(LocalConfig, !IsDeployedBuild));
+
+                dependencies.Cache(AudioNormalizationManager = new AudioNormalizationManager(this, LocalConfig));
 
                 dependencies.Cache(sentry = new SentryClient(this, GoogleOAuth2));
 
@@ -646,6 +653,16 @@ namespace YouTubePlayerEX.App
             Fonts.AddStore(new EmojiStore(Host.Renderer, Resources));
 
             Logger.Log($"❤️👏 Colored emoji loaded");
+        }
+
+        public void EnableTrackNormlization()
+        {
+            Audio.Tracks.AddAdjustment(osu.Framework.Audio.AdjustableProperty.Volume, CurrentTrackNormalizeVolume);
+        }
+
+        public void DisableTrackNormalization()
+        {
+            Audio.Tracks.RemoveAdjustment(osu.Framework.Audio.AdjustableProperty.Volume, CurrentTrackNormalizeVolume);
         }
     }
 }
