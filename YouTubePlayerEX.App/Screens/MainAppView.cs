@@ -50,6 +50,7 @@ using SharpCompress.Archives.Zip;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Videos.ClosedCaptions;
 using YoutubeExplode.Videos.Streams;
+using YouTubePlayerEX.App.Audio;
 using YouTubePlayerEX.App.Config;
 using YouTubePlayerEX.App.Extensions;
 using YouTubePlayerEX.App.Graphics;
@@ -164,7 +165,8 @@ namespace YouTubePlayerEX.App.Screens
         private FormCheckBox? wasapiExperimental;
 #nullable disable
 
-        private AdaptiveSpriteText videoLoadingProgress, videoInfoDetails, likeCount, dislikeCount, commentCount, commentsContainerTitle, currentTime, totalTime, playlistName;
+        private AdaptiveSpriteText videoLoadingProgress, videoInfoDetails, likeCount, dislikeCount, commentCount, commentsContainerTitle, currentTime, totalTime, playlistName, volumeText;
+        private AdaptiveSpriteText speedText;
         private LinkFlowContainer videoDescription, gameVersion;
         private FillFlowContainer commentContainer, searchResultContainer, playlistItemsView;
 
@@ -621,6 +623,16 @@ namespace YouTubePlayerEX.App.Screens
                                                                             AlwaysPresent = true,
                                                                             Current = { BindTarget = playbackSpeed },
                                                                         },
+                                                                        speedText = new AdaptiveSpriteText
+                                                                        {
+                                                                            Margin = new MarginPadding
+                                                                            {
+                                                                                Top = 7
+                                                                            },
+                                                                            AlwaysPresent = true,
+                                                                            Font = YouTubePlayerEXApp.DefaultFont,
+                                                                            Colour = overlayColourProvider.Content2,
+                                                                        },
                                                                     }
                                                                 }
                                                             }
@@ -673,6 +685,16 @@ namespace YouTubePlayerEX.App.Screens
                                                                             DisplayAsPercentage = true,
                                                                             AlwaysPresent = true,
                                                                             Current = videoVolume,
+                                                                        },
+                                                                        volumeText = new AdaptiveSpriteText
+                                                                        {
+                                                                            Margin = new MarginPadding
+                                                                            {
+                                                                                Top = 7
+                                                                            },
+                                                                            AlwaysPresent = true,
+                                                                            Font = YouTubePlayerEXApp.DefaultFont,
+                                                                            Colour = overlayColourProvider.Content2,
                                                                         },
                                                                     }
                                                                 }
@@ -1193,6 +1215,11 @@ namespace YouTubePlayerEX.App.Screens
                                                             Caption = YTPlayerEXStrings.SFXVolume,
                                                             Current = config.GetBindable<double>(FrameworkSetting.VolumeEffect),
                                                             DisplayAsPercentage = true,
+                                                        }),
+                                                        new SettingsItemV2(new FormCheckBox
+                                                        {
+                                                            Caption = YTPlayerEXStrings.AudioNormalization,
+                                                            Current = appConfig.GetBindable<bool>(YTPlayerEXSetting.AudioNormalization)
                                                         }),
                                                         new AdaptiveSpriteText
                                                         {
@@ -2992,6 +3019,7 @@ namespace YouTubePlayerEX.App.Screens
 
             videoVolume.BindValueChanged(volume =>
             {
+                volumeText.Text = volume.NewValue.ToStandardFormattedString(5, true);
                 if (volume.NewValue > 0.5)
                 {
                     volumeIcon.Icon = FontAwesome.Solid.VolumeUp;
@@ -3146,6 +3174,11 @@ namespace YouTubePlayerEX.App.Screens
             {
                 windowModeDropdownSettings.Hide();
             }
+
+            playbackSpeed.BindValueChanged(speed =>
+            {
+                speedText.Text = speed.NewValue.ToStandardFormattedString(5, true);
+            }, true);
 
             scalingMode.BindValueChanged(_ =>
             {
@@ -4806,6 +4839,17 @@ namespace YouTubePlayerEX.App.Screens
 
         private void addVideoToScreen()
         {
+            string audioFile = app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3";
+
+            AudioNormalization audioNormalization = new AudioNormalization(audioFile);
+
+            if (audioNormalization.IntegratedLoudness == null)
+            {
+                Logger.Log($"Failed to calculate audio normalization values for {api.GetChannel(videoData.Snippet.ChannelId)} - {videoData.Snippet.Title}", LoggingTarget.Runtime, LogLevel.Error);
+            }
+
+            app.CurrentTrackNormalizeVolume.Value = audioNormalization?.IntegratedLoudnessInVolumeOffset ?? AudioNormalizationManager.FALLBACK_VOLUME;
+
             videoContainer.Add(currentVideoSource);
 
             videoLoadingProgress.Text = "";

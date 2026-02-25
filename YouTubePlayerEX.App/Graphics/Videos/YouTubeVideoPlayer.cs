@@ -314,14 +314,14 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         {
             if (drawableTrack != null)
             {
-                if ((drawableTrack.CurrentTime + 10000) >= drawableTrack.Length)
+                if ((drawableTrack.CurrentTime + 5000) >= drawableTrack.Length)
                 {
                     SeekTo(drawableTrack.Length);
                     trackFinished = true;
                     Pause();
                 }
 
-                SeekTo(drawableTrack.CurrentTime + 10000);
+                SeekTo(drawableTrack.CurrentTime + 5000);
                 keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.FastForward10sec, FontAwesome.Solid.Box);
             }
         }
@@ -330,7 +330,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
         {
             if (drawableTrack != null)
             {
-                SeekTo(drawableTrack.CurrentTime - 10000);
+                SeekTo(drawableTrack.CurrentTime - 5000);
                 keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.FastRewind10sec, FontAwesome.Solid.Box);
             }
         }
