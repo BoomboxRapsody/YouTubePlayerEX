@@ -165,7 +165,8 @@ namespace YouTubePlayerEX.App.Screens
         private FormCheckBox? wasapiExperimental;
 #nullable disable
 
-        private AdaptiveSpriteText videoLoadingProgress, videoInfoDetails, likeCount, dislikeCount, commentCount, commentsContainerTitle, currentTime, totalTime, playlistName;
+        private AdaptiveSpriteText videoLoadingProgress, videoInfoDetails, likeCount, dislikeCount, commentCount, commentsContainerTitle, currentTime, totalTime, playlistName, volumeText;
+        private AdaptiveSpriteText speedText;
         private LinkFlowContainer videoDescription, gameVersion;
         private FillFlowContainer commentContainer, searchResultContainer, playlistItemsView;
 
@@ -622,6 +623,16 @@ namespace YouTubePlayerEX.App.Screens
                                                                             AlwaysPresent = true,
                                                                             Current = { BindTarget = playbackSpeed },
                                                                         },
+                                                                        speedText = new AdaptiveSpriteText
+                                                                        {
+                                                                            Margin = new MarginPadding
+                                                                            {
+                                                                                Top = 7
+                                                                            },
+                                                                            AlwaysPresent = true,
+                                                                            Font = YouTubePlayerEXApp.DefaultFont,
+                                                                            Colour = overlayColourProvider.Content2,
+                                                                        },
                                                                     }
                                                                 }
                                                             }
@@ -674,6 +685,16 @@ namespace YouTubePlayerEX.App.Screens
                                                                             DisplayAsPercentage = true,
                                                                             AlwaysPresent = true,
                                                                             Current = videoVolume,
+                                                                        },
+                                                                        volumeText = new AdaptiveSpriteText
+                                                                        {
+                                                                            Margin = new MarginPadding
+                                                                            {
+                                                                                Top = 7
+                                                                            },
+                                                                            AlwaysPresent = true,
+                                                                            Font = YouTubePlayerEXApp.DefaultFont,
+                                                                            Colour = overlayColourProvider.Content2,
                                                                         },
                                                                     }
                                                                 }
@@ -2998,6 +3019,7 @@ namespace YouTubePlayerEX.App.Screens
 
             videoVolume.BindValueChanged(volume =>
             {
+                volumeText.Text = volume.NewValue.ToStandardFormattedString(5, true);
                 if (volume.NewValue > 0.5)
                 {
                     volumeIcon.Icon = FontAwesome.Solid.VolumeUp;
@@ -3152,6 +3174,11 @@ namespace YouTubePlayerEX.App.Screens
             {
                 windowModeDropdownSettings.Hide();
             }
+
+            playbackSpeed.BindValueChanged(speed =>
+            {
+                speedText.Text = speed.NewValue.ToStandardFormattedString(5, true);
+            }, true);
 
             scalingMode.BindValueChanged(_ =>
             {
