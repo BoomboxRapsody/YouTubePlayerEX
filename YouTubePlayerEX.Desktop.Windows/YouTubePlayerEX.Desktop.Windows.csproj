@@ -15,6 +15,9 @@
     <ProjectReference Include="..\YouTubePlayerEX.App\YouTubePlayerEX.App.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="bassloud.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="FFmpeg\linux-x64\libavcodec.so.61">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
