@@ -14,6 +14,7 @@ using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using AngleSharp.Common;
 using DiscordRPC;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
@@ -236,6 +237,9 @@ namespace YouTubePlayerEX.App.Screens
 
         private Bindable<float> scalingBackgroundDim = null!;
 
+        private Bindable<double> speedTextRolling;
+        private Bindable<double> volumeTextRolling;
+
         private BufferedContainer idleBackground;
 
         private SpriteIcon volumeIcon;
@@ -268,6 +272,8 @@ namespace YouTubePlayerEX.App.Screens
         [BackgroundDependencyLoader]
         private void load(ISampleStore sampleStore, FrameworkConfigManager config, YTPlayerEXConfigManager appConfig, GameHost host, Storage storage, OverlayColourProvider overlayColourProvider, TextureStore textures, FrameworkDebugConfigManager debugConfig)
         {
+            speedTextRolling = new Bindable<double>(1);
+            volumeTextRolling = new Bindable<double>(1);
             appliedEffects.Value = new List<InternalShader>();
             window = host.Window;
 
@@ -3019,7 +3025,7 @@ namespace YouTubePlayerEX.App.Screens
 
             videoVolume.BindValueChanged(volume =>
             {
-                volumeText.Text = volume.NewValue.ToStandardFormattedString(5, true);
+                this.TransformBindableTo(volumeTextRolling, volume.NewValue, 400, Easing.OutQuint);
                 if (volume.NewValue > 0.5)
                 {
                     volumeIcon.Icon = FontAwesome.Solid.VolumeUp;
@@ -3177,7 +3183,19 @@ namespace YouTubePlayerEX.App.Screens
 
             playbackSpeed.BindValueChanged(speed =>
             {
-                speedText.Text = speed.NewValue.ToStandardFormattedString(5, true);
+                this.TransformBindableTo(speedTextRolling, speed.NewValue, 400, Easing.OutQuint);
+            }, true);
+
+            speedTextRolling.BindValueChanged(speed =>
+            {
+                int intValue = (int)Math.Round(speed.NewValue * 100);
+                speedText.Text = $"{intValue}%";
+            }, true);
+
+            volumeTextRolling.BindValueChanged(volume =>
+            {
+                int intValue = (int)Math.Round(volume.NewValue * 100);
+                volumeText.Text = $"{intValue}%";
             }, true);
 
             scalingMode.BindValueChanged(_ =>
