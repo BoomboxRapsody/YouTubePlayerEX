@@ -41,5 +41,7 @@ namespace YouTubePlayerEX.Android
         public override Version AssemblyVersion => new Version(packageInfo.VersionName.AsNonNull().Split('-').First());
 
         protected override UpdateManager CreateUpdateManager() => new NoActionUpdateManager();
+
+        public override MediaSession CreateMediaSession() => new AndroidMediaSessionHandler(gameActivity);
     }
 }
