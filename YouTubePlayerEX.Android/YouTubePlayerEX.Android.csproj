@@ -25,7 +25,4 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Maui.Essentials" Version="8.0.3" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="lib\x86\" />
-  </ItemGroup>
 </Project>
