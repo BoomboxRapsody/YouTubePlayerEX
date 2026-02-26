@@ -15,7 +15,7 @@
     <TrimMode>full</TrimMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <RunAOTCompilation>False</RunAOTCompilation>
+    <RunAOTCompilation>false</RunAOTCompilation>
     <PublishTrimmed>False</PublishTrimmed>
   </PropertyGroup>
   <ItemGroup>
@@ -26,8 +26,6 @@
     <PackageReference Include="Microsoft.Maui.Essentials" Version="8.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="lib\arm64-v8a\" />
-    <Folder Include="lib\armeabi-v7a\" />
     <Folder Include="lib\x86\" />
   </ItemGroup>
 </Project>

@@ -333,7 +333,7 @@ namespace YouTubePlayerEX.App
 
             drawableSample.Play();
 
-            this.FadeOut(500, Easing.InQuart).OnComplete(_ => base.Exit());
+            this.FadeOut(500, Easing.InQuart).OnComplete(_ => AppExit());
             this.TransformBindableTo(fadeVolume, 0, 500, Easing.InQuart);
             Audio.Tracks.AddAdjustment(AdjustableProperty.Volume, fadeVolume);
 

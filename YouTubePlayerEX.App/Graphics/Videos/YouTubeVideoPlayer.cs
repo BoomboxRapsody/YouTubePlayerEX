@@ -5,6 +5,7 @@
 
 using System;
 using System.IO;
+using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
@@ -115,65 +116,114 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
             mediaSession?.RegisterControlEvents(mediaSessionControls);
 
-            AddRange(new Drawable[] {
-                drawableTrack = new DrawableTrack(track)
-                {
-                    Clock = framedClock,
-                },
-                new ScalingContainerNew(ScalingMode.Video)
-                {
-                    Children = new Drawable[] {
-                        new DimmableContainer
-                        {
-                            RelativeSizeAxes = Axes.Both,
-                            Child = grayscale = new GrayscaleContainer
+            if (RuntimeInfo.IsDesktop)
+            {
+                AddRange(new Drawable[] {
+                    drawableTrack = new DrawableTrack(track)
+                    {
+                        Clock = framedClock,
+                    },
+                    new ScalingContainerNew(ScalingMode.Video)
+                    {
+                        Children = new Drawable[] {
+                            new DimmableContainer
                             {
                                 RelativeSizeAxes = Axes.Both,
-                                Child = chromatic = new ChromaticContainer
+                                Child = grayscale = new GrayscaleContainer
                                 {
                                     RelativeSizeAxes = Axes.Both,
-                                    Child = bloom = new BloomContainer
+                                    Child = chromatic = new ChromaticContainer
                                     {
                                         RelativeSizeAxes = Axes.Both,
-                                        Child = hueShift = new HueShiftContainer
+                                        Child = bloom = new BloomContainer
                                         {
                                             RelativeSizeAxes = Axes.Both,
-                                            Children = new Drawable[]
+                                            Child = hueShift = new HueShiftContainer
                                             {
-                                                new Box
+                                                RelativeSizeAxes = Axes.Both,
+                                                Children = new Drawable[]
                                                 {
-                                                    RelativeSizeAxes = Axes.Both,
-                                                    Colour = Color4.Black,
-                                                },
-                                                new BufferedContainer
-                                                {
-                                                    RelativeSizeAxes = Axes.Both,
-                                                    DrawOriginal = true,
-                                                    EffectPlacement = EffectPlacement.Behind,
-                                                    BlurSigma = new osuTK.Vector2(256),
-                                                    Child = video = new Video(fileName_Video, false)
+                                                    new Box
                                                     {
                                                         RelativeSizeAxes = Axes.Both,
-                                                        FillMode = FillMode.Fit,
-                                                        Anchor = Anchor.Centre,
-                                                        Origin = Anchor.Centre,
-                                                        Clock = framedClock,
+                                                        Colour = Color4.Black,
+                                                    },
+                                                    new BufferedContainer
+                                                    {
+                                                        RelativeSizeAxes = Axes.Both,
+                                                        DrawOriginal = true,
+                                                        EffectPlacement = EffectPlacement.Behind,
+                                                        BlurSigma = new osuTK.Vector2(256),
+                                                        Child = video = new Video(fileName_Video, false)
+                                                        {
+                                                            RelativeSizeAxes = Axes.Both,
+                                                            FillMode = FillMode.Fit,
+                                                            Anchor = Anchor.Centre,
+                                                            Origin = Anchor.Centre,
+                                                            Clock = framedClock,
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
-                                    },
+                                        },
+                                    }
                                 }
-                            }
-                        },
-                        keyBindingAnimations = new KeyBindingAnimations
-                        {
-                            RelativeSizeAxes = Axes.Both,
-                        },
-                    }
-                },
-                closedCaption = new ClosedCaptionContainer(this, captionTrack)
-            });
+                            },
+                            keyBindingAnimations = new KeyBindingAnimations
+                            {
+                                RelativeSizeAxes = Axes.Both,
+                            },
+                        }
+                    },
+                    closedCaption = new ClosedCaptionContainer(this, captionTrack)
+                });
+            }
+            else
+            {
+                AddRange(new Drawable[] {
+                    drawableTrack = new DrawableTrack(track)
+                    {
+                        Clock = framedClock,
+                    },
+                    new ScalingContainerNew(ScalingMode.Video)
+                    {
+                        Children = new Drawable[] {
+                            new DimmableContainer
+                            {
+                                RelativeSizeAxes = Axes.Both,
+                                Children = new Drawable[]
+                                {
+                                    new Box
+                                    {
+                                        RelativeSizeAxes = Axes.Both,
+                                        Colour = Color4.Black,
+                                    },
+                                    new BufferedContainer
+                                    {
+                                        RelativeSizeAxes = Axes.Both,
+                                        DrawOriginal = true,
+                                        EffectPlacement = EffectPlacement.Behind,
+                                        BlurSigma = new osuTK.Vector2(256),
+                                        Child = video = new Video(fileName_Video, false)
+                                        {
+                                            RelativeSizeAxes = Axes.Both,
+                                            FillMode = FillMode.Fit,
+                                            Anchor = Anchor.Centre,
+                                            Origin = Anchor.Centre,
+                                            Clock = framedClock,
+                                        }
+                                    }
+                                }
+                            },
+                            keyBindingAnimations = new KeyBindingAnimations
+                            {
+                                RelativeSizeAxes = Axes.Both,
+                            },
+                        }
+                    },
+                    closedCaption = new ClosedCaptionContainer(this, captionTrack)
+                });
+            }
 
             rateAdjustClock.Rate = playbackSpeed.Value;
 
@@ -209,25 +259,28 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                 video.FillMode = value.NewValue == AspectRatioMethod.Letterbox ? FillMode.Fit : FillMode.Stretch;
             }, true);
 
-            videoBloomLevel.BindValueChanged(value =>
+            if (RuntimeInfo.IsDesktop)
             {
-                bloom.Strength = value.NewValue;
-            }, true);
+                videoBloomLevel.BindValueChanged(value =>
+                {
+                    bloom.Strength = value.NewValue;
+                }, true);
 
-            videoGrayscaleLevel.BindValueChanged(value =>
-            {
-                grayscale.Strength = value.NewValue;
-            }, true);
+                videoGrayscaleLevel.BindValueChanged(value =>
+                {
+                    grayscale.Strength = value.NewValue;
+                }, true);
 
-            chromaticAberrationStrength.BindValueChanged(value =>
-            {
-                chromatic.Strength = value.NewValue;
-            }, true);
+                chromaticAberrationStrength.BindValueChanged(value =>
+                {
+                    chromatic.Strength = value.NewValue;
+                }, true);
 
-            videoHueShift.BindValueChanged(value =>
-            {
-                hueShift.Strength = value.NewValue / 360;
-            }, true);
+                videoHueShift.BindValueChanged(value =>
+                {
+                    hueShift.Strength = value.NewValue / 360;
+                }, true);
+            }
 
             drawableTrack.Completed += trackCompleted;
         }

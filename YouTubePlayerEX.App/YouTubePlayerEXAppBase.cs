@@ -405,9 +405,14 @@ namespace YouTubePlayerEX.App
         public virtual void AttemptExit()
         {
             if (!OnExiting())
-                Exit();
+                AppExit();
             else
                 Scheduler.AddDelayed(AttemptExit, 2000);
+        }
+
+        public virtual void AppExit()
+        {
+            Exit();
         }
 
         private void trackAudioEffects()

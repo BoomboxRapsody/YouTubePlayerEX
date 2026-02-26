@@ -12,7 +12,7 @@ using Debug = System.Diagnostics.Debug;
 
 namespace YouTubePlayerEX.Android
 {
-    [Activity(Label = "@string/app_name", MainLauncher = true)]
+    [Activity(ConfigurationChanges = DEFAULT_CONFIG_CHANGES, Exported = true, LaunchMode = DEFAULT_LAUNCH_MODE, MainLauncher = true)]
     public class YouTubePlayerEXAppActivity : AndroidGameActivity
     {
         private readonly YouTubePlayerEXAppAndroid game;
@@ -45,7 +45,7 @@ namespace YouTubePlayerEX.Android
             Debug.Assert(WindowManager?.DefaultDisplay != null);
             Debug.Assert(Resources?.DisplayMetrics != null);
 
-            RequestedOrientation = ScreenOrientation.SensorLandscape;
+            RequestedOrientation = ScreenOrientation.Landscape;
         }
     }
 }

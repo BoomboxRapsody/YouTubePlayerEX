@@ -2,12 +2,12 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
-using System.Linq;
 using Android.App;
 using Android.Content.PM;
 using osu.Framework.Allocation;
 using osu.Framework.Development;
 using osu.Framework.Extensions.ObjectExtensions;
+using osuTK;
 using YouTubePlayerEX.App;
 using YouTubePlayerEX.App.Updater;
 
@@ -38,10 +38,15 @@ namespace YouTubePlayerEX.Android
             }
         }
 
-        public override Version AssemblyVersion => new Version(packageInfo.VersionName.AsNonNull().Split('-').First());
+        public override Vector2 ScalingContainerTargetDrawSize => new Vector2(1024, 1024 * DrawHeight / DrawWidth);
+
+        public override Version AssemblyVersion => new Version(packageInfo.VersionName.AsNonNull());
 
         protected override UpdateManager CreateUpdateManager() => new NoActionUpdateManager();
 
-        public override MediaSession CreateMediaSession() => new AndroidMediaSessionHandler(gameActivity);
+        public override void AppExit()
+        {
+            gameActivity.FinishAffinity();
+        }
     }
 }

@@ -257,6 +257,8 @@ namespace YouTubePlayerEX.App.Screens
 
         private YouTubeI18nLangDropdown captionLangDropdown;
 
+        private SettingsItemV2 bloomLevelOptions, chromaticOptions, grayscaleOptions, hueShiftOptions;
+
 #nullable enable
         [Resolved(canBeNull: true)]
         private Online.DiscordRPC? discordRPC { get; set; }
@@ -940,6 +942,11 @@ namespace YouTubePlayerEX.App.Screens
                                                             Caption = YTPlayerEXStrings.FrameLimiter,
                                                             Current = config.GetBindable<FrameSync>(FrameworkSetting.FrameSync),
                                                         }),
+                                                        new SettingsItemV2(new FormEnumDropdown<ExecutionMode>
+                                                        {
+                                                            Caption = "Threading mode",
+                                                            Current = config.GetBindable<ExecutionMode>(FrameworkSetting.ExecutionMode),
+                                                        }),
                                                         windowModeDropdownSettings = new SettingsItemV2(windowModeDropdown = new WindowModeDropdown
                                                         {
                                                             Caption = YTPlayerEXStrings.ScreenMode,
@@ -1149,25 +1156,25 @@ namespace YouTubePlayerEX.App.Screens
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             Colour = overlayColourProvider.Content2,
                                                         },
-                                                        new SettingsItemV2(new FormSliderBar<float>
+                                                        bloomLevelOptions = new SettingsItemV2(new FormSliderBar<float>
                                                         {
                                                             Caption = YTPlayerEXStrings.VideoBloomLevel,
                                                             Current = appConfig.GetBindable<float>(YTPlayerEXSetting.VideoBloomLevel),
                                                             DisplayAsPercentage = true,
                                                         }),
-                                                        new SettingsItemV2(new FormSliderBar<float>
+                                                        chromaticOptions = new SettingsItemV2(new FormSliderBar<float>
                                                         {
                                                             Caption = YTPlayerEXStrings.ChromaticAberration,
                                                             Current = appConfig.GetBindable<float>(YTPlayerEXSetting.ChromaticAberrationStrength),
                                                             DisplayAsPercentage = true,
                                                         }),
-                                                        new SettingsItemV2(new FormSliderBar<float>
+                                                        grayscaleOptions = new SettingsItemV2(new FormSliderBar<float>
                                                         {
                                                             Caption = YTPlayerEXStrings.VideoGrayscaleLevel,
                                                             Current = appConfig.GetBindable<float>(YTPlayerEXSetting.VideoGrayscaleLevel),
                                                             DisplayAsPercentage = true,
                                                         }),
-                                                        new SettingsItemV2(new FormSliderBar<float>
+                                                        hueShiftOptions = new SettingsItemV2(new FormSliderBar<float>
                                                         {
                                                             Caption = YTPlayerEXStrings.VideoHueShift,
                                                             Current = appConfig.GetBindable<float>(YTPlayerEXSetting.VideoHueShift),
@@ -3039,6 +3046,11 @@ namespace YouTubePlayerEX.App.Screens
                     volumeIcon.Icon = FontAwesome.Solid.VolumeMute;
                 }
             }, true);
+
+            if (RuntimeInfo.IsMobile)
+            {
+                idleBackground.Hide(); //dues to mobile device issues
+            }
 
             captionEnabled.BindValueChanged(enabled =>
             {
