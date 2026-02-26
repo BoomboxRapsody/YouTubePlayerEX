@@ -247,9 +247,6 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                     seekArrow.Icon = icon;
                     if (trackAction != SeekAction.PlayPause)
                     {
-                        RepeatCount += 5;
-                        Logger.Log(RepeatCount.ToString());
-                        seekValue.Text = trackAction == SeekAction.FastRewind10sec ? $"- {RepeatCount}" : $"+ {RepeatCount}";
                         content.FadeInFromZero(250, Easing.Out);
                         seekArrow.ScaleTo(new osuTK.Vector2(0.7f, 1));
                         if (trackAction == SeekAction.FastRewind10sec)

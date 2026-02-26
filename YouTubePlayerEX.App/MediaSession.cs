@@ -57,5 +57,6 @@ namespace YouTubePlayerEX.App
         public Action PauseButtonPressed;
         public Action PrevButtonPressed;
         public Action NextButtonPressed;
+        public Action<double> OnSeek;
     } 
 }

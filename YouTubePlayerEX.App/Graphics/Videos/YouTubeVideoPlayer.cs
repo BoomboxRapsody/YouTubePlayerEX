@@ -109,6 +109,10 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                 PrevButtonPressed = FastRewind10Sec,
                 PlayButtonPressed = () => Play(),
                 PauseButtonPressed = () => Pause(),
+                OnSeek = pos =>
+                {
+                    SeekTo(pos);
+                },
             };
 
             mediaSession?.CreateMediaSession(api, fileName_Audio);
@@ -145,20 +149,13 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                                                     RelativeSizeAxes = Axes.Both,
                                                     Colour = Color4.Black,
                                                 },
-                                                new BufferedContainer
+                                                video = new Video(fileName_Video, false)
                                                 {
                                                     RelativeSizeAxes = Axes.Both,
-                                                    DrawOriginal = true,
-                                                    EffectPlacement = EffectPlacement.Behind,
-                                                    BlurSigma = new osuTK.Vector2(256),
-                                                    Child = video = new Video(fileName_Video, false)
-                                                    {
-                                                        RelativeSizeAxes = Axes.Both,
-                                                        FillMode = FillMode.Fit,
-                                                        Anchor = Anchor.Centre,
-                                                        Origin = Anchor.Centre,
-                                                        Clock = framedClock,
-                                                    }
+                                                    FillMode = FillMode.Fit,
+                                                    Anchor = Anchor.Centre,
+                                                    Origin = Anchor.Centre,
+                                                    Clock = framedClock,
                                                 }
                                             }
                                         }
@@ -180,6 +177,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             playbackSpeed.BindValueChanged(v =>
             {
                 rateAdjustClock.Rate = v.NewValue;
+                mediaSession?.UpdatePlaybackSpeed(v.NewValue);
             });
 
             UpdatePreservePitch(config.Get<bool>(YTPlayerEXSetting.AdjustPitchOnSpeedChange));
@@ -323,6 +321,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
 
                 SeekTo(drawableTrack.CurrentTime + 5000);
                 keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.FastForward10sec, FontAwesome.Solid.Box);
+                mediaSession?.UpdateTimestamp(videoData, drawableTrack.CurrentTime);
             }
         }
 
@@ -332,6 +331,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             {
                 SeekTo(drawableTrack.CurrentTime - 5000);
                 keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.FastRewind10sec, FontAwesome.Solid.Box);
+                mediaSession?.UpdateTimestamp(videoData, drawableTrack.CurrentTime);
             }
         }
 
@@ -343,6 +343,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                 framedClock.Stop();
 
                 mediaSession?.UpdatePlayingState(false);
+                mediaSession?.UpdateTimestamp(videoData, drawableTrack.CurrentTime);
 
                 if (isKeyboardAction)
                     keyBindingAnimations.PlaySeekAnimation(KeyBindingAnimations.SeekAction.PlayPause, FontAwesome.Solid.Pause);
@@ -362,6 +363,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
                 }
 
                 mediaSession?.UpdatePlayingState(true);
+                mediaSession?.UpdateTimestamp(videoData, drawableTrack.CurrentTime);
 
                 drawableTrack?.Start();
                 framedClock.Start();

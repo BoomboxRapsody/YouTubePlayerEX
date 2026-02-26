@@ -5,6 +5,7 @@
 
 using System;
 using System.Threading.Tasks;
+using System.Xml;
 using Google.Apis.YouTube.v3.Data;
 using osu.Framework.Extensions;
 using osu.Framework.Logging;
@@ -48,6 +49,8 @@ namespace YouTubePlayerEX.Desktop.Windows.MediaSessionHandler
 
                 smtc.ButtonPressed += smtc_ButtonPressed;
 
+                smtc.PlaybackPositionChangeRequested += smtc_PlaybackPositionChangeRequested;
+
                 smtc.DisplayUpdater.Type = MediaPlaybackType.Music;
 
                 smtc.DisplayUpdater.MusicProperties.Title = "(unknown)";
@@ -57,6 +60,15 @@ namespace YouTubePlayerEX.Desktop.Windows.MediaSessionHandler
 
                 base.YouTubeAPI = youtubeAPI;
             });
+        }
+
+        private void smtc_PlaybackPositionChangeRequested(SystemMediaTransportControls sender, PlaybackPositionChangeRequestedEventArgs args)
+        {
+            TimeSpan timeSpan = args.RequestedPlaybackPosition;
+
+            double ms = timeSpan.TotalMilliseconds;
+
+            controls.OnSeek.Invoke(ms);
         }
 
         public override void UpdateMediaSession(Video video)
@@ -83,14 +95,12 @@ namespace YouTubePlayerEX.Desktop.Windows.MediaSessionHandler
         {
             try
             {
-                /*
                 smtc.UpdateTimelineProperties(new SystemMediaTransportControlsTimelineProperties
                 {
                     StartTime = TimeSpan.Zero,
                     EndTime = XmlConvert.ToTimeSpan(video.ContentDetails.Duration),
-                    Position = TimeSpan.FromSeconds(pos)
+                    Position = TimeSpan.FromSeconds(pos * 0.001f)
                 });
-                */
 
                 mediaPlayer.Position = TimeSpan.FromSeconds(pos * 0.001f);
             }
@@ -103,6 +113,8 @@ namespace YouTubePlayerEX.Desktop.Windows.MediaSessionHandler
         public override void DeleteMediaSession()
         {
             smtc.DisplayUpdater.ClearAll();
+            smtc = null;
+            mediaPlayer.Dispose();
         }
 
         private void smtc_ButtonPressed(SystemMediaTransportControls sender, SystemMediaTransportControlsButtonPressedEventArgs args)
