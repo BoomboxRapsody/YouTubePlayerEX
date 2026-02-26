@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\YouTubePlayerEX.Android.props" />
+  <PropertyGroup>
+    <TargetFramework>net8.0-android</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>YouTubePlayerEX.Android</RootNamespace>
+    <AssemblyName>YouTubePlayerEX.Android</AssemblyName>
+    <Version>0.0.0</Version>
+    <ApplicationVersion Condition=" '$(ApplicationVersion)' == '' ">1</ApplicationVersion>
+    <ApplicationDisplayVersion Condition=" '$(ApplicationDisplayVersion)' == '' ">$(Version)</ApplicationDisplayVersion>
+    <!--
+      Enables trim analyzers and full trimming during Release mode.
+      To learn more, see: https://learn.microsoft.com/dotnet/core/deploying/trimming/trimming-options#trimming-granularity
+    -->
+    <TrimMode>full</TrimMode>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <RunAOTCompilation>False</RunAOTCompilation>
+    <PublishTrimmed>False</PublishTrimmed>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YouTubePlayerEX.App\YouTubePlayerEX.App.csproj" />
+    <ProjectReference Include="..\YouTubePlayerEX-framework\osu.Framework.Android\osu.Framework.Android.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Essentials" Version="8.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="lib\arm64-v8a\" />
+    <Folder Include="lib\armeabi-v7a\" />
+    <Folder Include="lib\x86\" />
+  </ItemGroup>
+</Project>

@@ -22,7 +22,6 @@ using osu.Framework.IO.Stores;
 using osu.Framework.Localisation;   
 using osu.Framework.Logging;
 using osu.Framework.Platform;
-using osuTK;
 using osuTK.Graphics;
 using YoutubeExplode;
 using YouTubePlayerEX.App.Audio;

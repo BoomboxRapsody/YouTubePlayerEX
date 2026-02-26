@@ -28,6 +28,7 @@ namespace YouTubePlayerEX.Desktop.Windows.MediaSessionHandler
 
         public override void CreateMediaSession(YouTubeAPI youtubeAPI, string audioPath)
         {
+            YouTubeAPI = youtubeAPI;
             Task.Run(async () =>
             {
                 mediaPlayer = new MediaPlayer
@@ -54,8 +55,6 @@ namespace YouTubePlayerEX.Desktop.Windows.MediaSessionHandler
                 smtc.DisplayUpdater.MusicProperties.Artist = "(unknown)";
 
                 smtc.DisplayUpdater.Update();
-
-                base.YouTubeAPI = youtubeAPI;
             });
         }
 
