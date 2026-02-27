@@ -100,7 +100,7 @@ namespace YouTubePlayerEX.App.Graphics.Videos
             track = tracks.GetFromStream(File.OpenRead(fileName_Audio), fileName_Audio);
             playbackSpeed = new Bindable<double>(1);
 
-            rateAdjustClock = new StopwatchClock(true);
+            rateAdjustClock = new StopwatchClock(false);
             framedClock = new DecouplingFramedClock(rateAdjustClock);
 
             mediaSessionControls = new MediaSessionControls()
