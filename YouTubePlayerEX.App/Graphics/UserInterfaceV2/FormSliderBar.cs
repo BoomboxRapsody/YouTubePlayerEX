@@ -460,7 +460,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             private Box leftBox = null!;
             private Box rightBox = null!;
             private InnerSliderNub nub = null!;
-            public const float NUB_WIDTH = 10;
+            public const float NUB_WIDTH = 25;
 
             [Resolved]
             private OverlayColourProvider colourProvider { get; set; } = null!;
@@ -478,7 +478,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
                     {
                         RelativeSizeAxes = Axes.Both,
                         Masking = true,
-                        CornerRadius = 5,
+                        CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS / 1.5f,
                         Children = new Drawable[]
                         {
                             leftBox = new Box
