@@ -250,7 +250,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             {
                 base.LoadComplete();
 
-                Content.CornerRadius = 4;
+                Content.CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS / 1.5f;
 
                 Add(triangles = new TrianglesV2
                 {

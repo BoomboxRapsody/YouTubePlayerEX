@@ -90,6 +90,17 @@ namespace YouTubePlayerEX.App.Input.Binding
 
             new KeyBinding(new[] { InputKey.Control, InputKey.F4 }, GlobalAction.ToggleMute),
             new KeyBinding(new[] { InputKey.Control, InputKey.Shift, InputKey.R }, GlobalAction.RestartApp),
+
+            new KeyBinding(new[] { InputKey.Number0 }, GlobalAction.Seek0Percent),
+            new KeyBinding(new[] { InputKey.Number1 }, GlobalAction.Seek10Percent),
+            new KeyBinding(new[] { InputKey.Number2 }, GlobalAction.Seek20Percent),
+            new KeyBinding(new[] { InputKey.Number3 }, GlobalAction.Seek30Percent),
+            new KeyBinding(new[] { InputKey.Number4 }, GlobalAction.Seek40Percent),
+            new KeyBinding(new[] { InputKey.Number5 }, GlobalAction.Seek50Percent),
+            new KeyBinding(new[] { InputKey.Number6 }, GlobalAction.Seek60Percent),
+            new KeyBinding(new[] { InputKey.Number7 }, GlobalAction.Seek70Percent),
+            new KeyBinding(new[] { InputKey.Number8 }, GlobalAction.Seek80Percent),
+            new KeyBinding(new[] { InputKey.Number9 }, GlobalAction.Seek90Percent),
         };
     }
 
@@ -141,5 +152,16 @@ namespace YouTubePlayerEX.App.Input.Binding
 
         ToggleMute,
         RestartApp,
+
+        Seek0Percent,
+        Seek10Percent,
+        Seek20Percent,
+        Seek30Percent,
+        Seek40Percent,
+        Seek50Percent,
+        Seek60Percent,
+        Seek70Percent,
+        Seek80Percent,
+        Seek90Percent,
     }
 }

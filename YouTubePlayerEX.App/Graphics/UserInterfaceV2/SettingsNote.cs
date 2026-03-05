@@ -42,7 +42,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
                 {
                     RelativeSizeAxes = Axes.X,
                     AutoSizeAxes = Axes.Y,
-                    CornerRadius = 5,
+                    CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS / 1.5f,
                     CornerExponent = 2.5f,
                     Masking = true,
                     Children = new Drawable[]

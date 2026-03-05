@@ -82,7 +82,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
                 Anchor = Anchor.Centre,
                 Origin = Anchor.Centre,
                 Masking = true,
-                CornerRadius = 5,
+                CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
                 RelativeSizeAxes = Axes.Both,
                 Children = new Drawable[]
                 {

@@ -15,6 +15,9 @@
     <ProjectReference Include="..\YouTubePlayerEX.App\YouTubePlayerEX.App.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="bassloud.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="FFmpeg\linux-x64\libavcodec.so.61">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -66,10 +69,16 @@
     <None Update="intro.mp4">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="libbassloud.dylib">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="libbassloud.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="runtimes\linux-x64\native\libbassloud.so">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="runtimes\osx\native\libbassloud.dylib">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="runtimes\win-x64\native\bassloud.dll">

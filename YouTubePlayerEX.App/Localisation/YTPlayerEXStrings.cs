@@ -936,9 +936,19 @@ namespace YouTubePlayerEX.App.Localisation
         public static LocalisableString AudioNormalization => new TranslatableString(getKey(@"audio_normalization"), @"Normalize Audio");
 
         /// <summary>
-        /// "Karaoke"
+        /// "Use SDL3 host (Experimental)"
         /// </summary>
-        public static LocalisableString KaraokeEffect => new TranslatableString(getKey(@"karaoke_effect"), "Karaoke");
+        public static LocalisableString UseSDL3 => new TranslatableString(getKey(@"use_sdl3_host"), "Use SDL3 host (Experimental)");
+
+        /// <summary>
+        /// "Logout"
+        /// </summary>
+        public static LocalisableString Logout => new TranslatableString(getKey(@"logout"), @"Logout");
+
+        /// <summary>
+        /// "View channel"
+        /// </summary>
+        public static LocalisableString ViewChannel => new TranslatableString(getKey(@"view_channel"), @"View channel");
 
         private static string getKey(string key) => $@"{prefix}:{key}";
     }

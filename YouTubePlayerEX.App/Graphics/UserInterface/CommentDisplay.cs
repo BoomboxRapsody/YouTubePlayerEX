@@ -69,7 +69,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
             usernameDisplayMode = appConfig.GetBindable<UsernameDisplayMode>(YTPlayerEXSetting.UsernameDisplayMode);
             translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(YTPlayerEXSetting.VideoMetadataTranslateSource);
 
-            CornerRadius = 12;
+            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS;
             Masking = true;
             InternalChildren = new Drawable[]
             {

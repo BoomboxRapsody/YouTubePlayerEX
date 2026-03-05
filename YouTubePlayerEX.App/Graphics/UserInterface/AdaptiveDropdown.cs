@@ -26,7 +26,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterface
 {
     public partial class AdaptiveDropdown<T> : Dropdown<T>, IKeyBindingHandler<GlobalAction>
     {
-        private const float corner_radius = 5;
+        private const float corner_radius = YouTubePlayerEXApp.UI_CORNER_RADIUS / 2.5f;
 
         protected override DropdownHeader CreateHeader() => new AdaptiveDropdownHeader();
 

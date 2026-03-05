@@ -51,7 +51,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
 
             // This doesn't match the latest design spec (should be 5) but is an in-between that feels right to the eye
             // until we move everything over to Form controls.
-            Content.CornerRadius = 10;
+            Content.CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS / 1.5f;
             Content.CornerExponent = 2.5f;
 
             Add(Triangles = new TrianglesV2

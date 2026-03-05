@@ -306,6 +306,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             {
                 ItemsContainer.Padding = new MarginPadding(9);
 
+                MaskingContainer.CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS / 1.5f;
                 MaskingContainer.BorderThickness = FormControlBackground.BORDER_THICKNESS;
                 MaskingContainer.CornerExponent = FormControlBackground.CORNER_EXPONENT;
                 MaskingContainer.BorderColour = colourProvider.Highlight1;

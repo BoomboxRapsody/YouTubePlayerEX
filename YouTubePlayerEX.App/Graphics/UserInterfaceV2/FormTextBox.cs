@@ -210,6 +210,7 @@ namespace YouTubePlayerEX.App.Graphics.UserInterfaceV2
             public InnerTextBox()
             {
                 DrawBorder = false;
+                CornerRadius = 0;
             }
 
             [BackgroundDependencyLoader]

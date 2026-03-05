@@ -9,12 +9,10 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
-using AngleSharp.Common;
 using DiscordRPC;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
@@ -80,7 +78,7 @@ namespace YouTubePlayerEX.App.Screens
     public partial class MainAppView : YouTubePlayerEXScreen, IKeyBindingHandler<GlobalAction>
     {
         private BufferedContainer videoContainer;
-        private AdaptiveButton loadBtn, commentSendButton, searchButton, loadPlaylistBtn, loadPlaylistOpenButton, prevVideoButton, nextVideoButton, declineButton, acceptButton;
+        private AdaptiveButton loadBtn, commentSendButton, searchButton, loadPlaylistBtn, loadPlaylistOpenButton, prevVideoButton, nextVideoButton, declineButton, acceptButton, logoutButton, viewChannelButton;
         private AdaptiveTextBox videoIdBox, commentTextBox, searchTextBox, playlistIdBox;
         private LoadingSpinner spinner;
         private ScheduledDelegate spinnerShow;
@@ -88,7 +86,7 @@ namespace YouTubePlayerEX.App.Screens
         private IdleTracker idleTracker;
         private Container uiContainer;
         private Container uiGradientContainer;
-        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer, reportAbuseOverlay, loadPlaylistContainer, unsubscribeDialog, addPlaylistOverlay, videoSaveLocationOverlay;
+        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer, reportAbuseOverlay, loadPlaylistContainer, unsubscribeDialog, addPlaylistOverlay, videoSaveLocationOverlay, myChannelDialog;
         private SideOverlayContainer playlistOverlay, audioEffectsOverlay, menuOverlay;
         private AdaptiveButtonWithShadow menuOverlayShow;
         private MenuButtonItem loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton, searchOpenButton, reportOpenButton, playlistOpenButton, audioEffectsOpenButton, saveVideoOpenButton;
@@ -100,7 +98,7 @@ namespace YouTubePlayerEX.App.Screens
 
         private LinkFlowContainer madeByText;
 
-        private YouTubeChannelMetadataDisplay youtubeChannelMetadataDisplay;
+        private YouTubeChannelMetadataDisplay youtubeChannelMetadataDisplay, youtubeChannelMetadataDisplay2;
 
         private SettingsItemV2 audioLanguageItem, wasapiExperimentalItem, captionLangOptions;
 
@@ -128,6 +126,11 @@ namespace YouTubePlayerEX.App.Screens
                 audio.OnNewDevice -= onAudioDeviceChanged;
                 audio.OnLostDevice -= onAudioDeviceChanged;
             }
+        }
+
+        public void NumKeyInput(int input)
+        {
+            currentVideoSource?.SeekTo((videoProgress.MaxValue * (input * 0.1)) * 1000);
         }
 
         private void onAudioDeviceChanged(string _)
@@ -209,7 +212,7 @@ namespace YouTubePlayerEX.App.Screens
         private ThumbnailContainerBackground thumbnailContainer;
         private AdaptiveSliderBar<double> seekbar;
         private Bindable<LocalisableString> updateInfomationText;
-        private Bindable<bool> updateButtonEnabled, fpsDisplay, captionEnabled;
+        private Bindable<bool> updateButtonEnabled, fpsDisplay, captionEnabled, use_sdl3;
         private Bindable<AspectRatioMethod> aspectRatioMethod;
         private Bindable<DiscordRichPresenceMode> discordRichPresence;
 
@@ -311,6 +314,7 @@ namespace YouTubePlayerEX.App.Screens
 
             localeBindable = config.GetBindable<string>(FrameworkSetting.Locale);
             fpsDisplay = appConfig.GetBindable<bool>(YTPlayerEXSetting.ShowFpsDisplay);
+            use_sdl3 = config.GetBindable<bool>(FrameworkSetting.UseExperimentalSDL3);
             adjustPitch = appConfig.GetBindable<bool>(YTPlayerEXSetting.AdjustPitchOnSpeedChange);
             videoQuality = appConfig.GetBindable<Config.VideoQuality>(YTPlayerEXSetting.VideoQuality);
             audioLanguage = appConfig.GetBindable<Localisation.Language>(YTPlayerEXSetting.AudioLanguage);
@@ -328,6 +332,14 @@ namespace YouTubePlayerEX.App.Screens
             aspectRatioMethod = appConfig.GetBindable<AspectRatioMethod>(YTPlayerEXSetting.AspectRatioMethod);
 
             windowedResolution.Value = sizeWindowed.Value;
+
+            use_sdl3.BindValueChanged(_ =>
+            {
+                if (game?.RestartAppWhenExited() == true)
+                {
+                    game.AttemptExit();
+                }
+            });
 
             if (window != null)
             {
@@ -886,7 +898,8 @@ namespace YouTubePlayerEX.App.Screens
                                                                 }
                                                                 else
                                                                 {
-                                                                    Task.Run(() => googleOAuth2.SignOut());
+                                                                    hideOverlays();
+                                                                    showOverlayContainer(myChannelDialog);
                                                                 }
                                                             },
                                                         }),
@@ -998,6 +1011,11 @@ namespace YouTubePlayerEX.App.Screens
                                                             Caption = YTPlayerEXStrings.ShowFPS,
                                                             Current = fpsDisplay,
                                                             Hotkey = new Hotkey(GlobalAction.ToggleFPSDisplay),
+                                                        }),
+                                                        new SettingsItemV2(new FormCheckBox
+                                                        {
+                                                            Caption = YTPlayerEXStrings.UseSDL3,
+                                                            Current = use_sdl3,
                                                         }),
                                                         new SettingsItemV2(new FormCheckBox
                                                         {
@@ -2829,6 +2847,76 @@ namespace YouTubePlayerEX.App.Screens
                                 }
                             }
                         },
+                        myChannelDialog = new OverlayContainer
+                        {
+                            Width = 450,
+                            Height = 185,
+                            CornerRadius = YouTubePlayerEXApp.UI_CORNER_RADIUS,
+                            Masking = true,
+                            Origin = Anchor.Centre,
+                            Anchor = Anchor.Centre,
+                            EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                            {
+                                Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                Colour = Color4.Black.Opacity(0.25f),
+                                Offset = new Vector2(0, 2),
+                                Radius = 16,
+                            },
+                            Children = new Drawable[]
+                            {
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Colour = overlayColourProvider.Background5,
+                                },
+                                new AdaptiveSpriteText
+                                {
+                                    Origin = Anchor.TopLeft,
+                                    Anchor = Anchor.TopLeft,
+                                    Text = YTPlayerEXStrings.GoogleAccount,
+                                    Margin = new MarginPadding(16),
+                                    Font = YouTubePlayerEXApp.TorusAlternate.With(size: 30, weight: "Bold"),
+                                    Colour = overlayColourProvider.Content2,
+                                },
+                                youtubeChannelMetadataDisplay2 = new YouTubeChannelMetadataDisplay
+                                {
+                                    RelativeSizeAxes = Axes.X,
+                                    Margin = new MarginPadding(8),
+                                    Size = new Vector2(0.965f, 1f),
+                                    Height = 60,
+                                    Origin = Anchor.Centre,
+                                    Anchor = Anchor.Centre,
+                                    AlwaysPresent = true,
+                                },
+                                logoutButton = new AdaptiveButton
+                                {
+                                    Enabled = { Value = true },
+                                    Origin = Anchor.BottomLeft,
+                                    Anchor = Anchor.BottomLeft,
+                                    Text = YTPlayerEXStrings.Logout,
+                                    Size = new Vector2(200, 45),
+                                    Margin = new MarginPadding(8),
+                                    ClickAction = _ =>
+                                    {
+                                        if (googleOAuth2.SignedIn.Value)
+                                        {
+                                            hideOverlays();
+                                            Task.Run(() => googleOAuth2.SignOut());
+                                        }
+                                    },
+                                },
+                                viewChannelButton = new AdaptiveButton
+                                {
+                                    Enabled = { Value = true },
+                                    Origin = Anchor.BottomRight,
+                                    Anchor = Anchor.BottomRight,
+                                    Text = YTPlayerEXStrings.ViewChannel,
+                                    Size = new Vector2(200, 45),
+                                    BackgroundColour = colours.RedDark,
+                                    Margin = new MarginPadding(8),
+                                },
+                            }
+                        },
                         new Container
                         {
                             RelativeSizeAxes = Axes.Both,
@@ -2859,6 +2947,7 @@ namespace YouTubePlayerEX.App.Screens
             videoSaveLocationOverlay.Hide();
             addPlaylistOverlay.Hide();
             menuOverlay.Hide();
+            myChannelDialog.Hide();
 
             captionEnabled.Disabled = true;
 
@@ -2915,6 +3004,19 @@ namespace YouTubePlayerEX.App.Screens
                     Schedule(() => commentSendButton.Enabled.Value = true);
                     Channel wth = api.GetMineChannel();
                     login.Text = YTPlayerEXStrings.SignedIn(api.GetLocalizedChannelTitle(wth, true));
+
+                    youtubeChannelMetadataDisplay2.UpdateUser(wth);
+
+                    viewChannelButton.ClickAction = _ =>
+                    {
+                        if (googleOAuth2.SignedIn.Value)
+                        {
+                            hideOverlays();
+
+                            if (wth != null)
+                                app.Host.OpenUrlExternally($"https://www.youtube.com/channel/{wth.Id}");
+                        }
+                    };
 
                     if (api.TryToGetMineChannel() != null)
                         commentTextBox.PlaceholderText = YTPlayerEXStrings.CommentWith(api.GetLocalizedChannelTitle(api.GetMineChannel()));
@@ -2991,6 +3093,7 @@ namespace YouTubePlayerEX.App.Screens
             overlayContainers.Add(addPlaylistOverlay);
             overlayContainers.Add(videoSaveLocationOverlay);
             overlayContainers.Add(menuOverlay);
+            overlayContainers.Add(myChannelDialog);
 
             playlistName.Text = "please choose a playlist!";
             playlistAuthor.Text = "[no metadata available]";
@@ -4088,6 +4191,46 @@ namespace YouTubePlayerEX.App.Screens
                 case GlobalAction.IncreasePlaybackSpeed2:
                     playbackSpeed.Value += 0.01;
                     osd.Display(new SpeedChangeToast(playbackSpeed.Value));
+                    return true;
+
+                case GlobalAction.Seek0Percent:
+                    NumKeyInput(0);
+                    return true;
+
+                case GlobalAction.Seek10Percent:
+                    NumKeyInput(1);
+                    return true;
+
+                case GlobalAction.Seek20Percent:
+                    NumKeyInput(2);
+                    return true;
+
+                case GlobalAction.Seek30Percent:
+                    NumKeyInput(3);
+                    return true;
+
+                case GlobalAction.Seek40Percent:
+                    NumKeyInput(4);
+                    return true;
+
+                case GlobalAction.Seek50Percent:
+                    NumKeyInput(5);
+                    return true;
+
+                case GlobalAction.Seek60Percent:
+                    NumKeyInput(6);
+                    return true;
+
+                case GlobalAction.Seek70Percent:
+                    NumKeyInput(7);
+                    return true;
+
+                case GlobalAction.Seek80Percent:
+                    NumKeyInput(8);
+                    return true;
+
+                case GlobalAction.Seek90Percent:
+                    NumKeyInput(9);
                     return true;
             }
 
