@@ -5,7 +5,7 @@ using osu.Framework.Platform;
 using osu.Framework;
 using Velopack;
 
-namespace YouTubePlayerEX.Desktop
+namespace NekoPlayer.Desktop
 {
     public static class Program
     {

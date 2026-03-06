@@ -110,7 +110,7 @@ namespace NekoPlayer.App.Online
         {
             UserCredential credential;
 
-            string credPath = isTestClient_static ? @"YouTubePlayerEX/OAuth2_Dev" : @"YouTubePlayerEX/OAuth2";
+            string credPath = isTestClient_static ? @"NekoPlayer/OAuth2_Dev" : @"NekoPlayer/OAuth2";
             credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                 getAuthConfig(),
                 new[] { "https://www.googleapis.com/auth/youtube.force-ssl" },
