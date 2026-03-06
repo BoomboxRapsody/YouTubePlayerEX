@@ -126,14 +126,12 @@ namespace NekoPlayer.App.Graphics.UserInterface
                                 videoNameText = new AdaptiveTextFlowContainer(f => f.Font = NekoPlayerApp.DefaultFont.With(size: 17, weight: "Regular"))
                                 {
                                     RelativeSizeAxes = Axes.X,
-                                    Text = "[text]",
                                     Colour = overlayColourProvider.Content2,
                                 },
                                 channelNameText = new TruncatingSpriteText
                                 {
                                     RelativeSizeAxes = Axes.X,
                                     Position = new Vector2(0, 17),
-                                    Text = "[channel name]",
                                     Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "SemiBold"),
                                     Colour = overlayColourProvider.Background1,
                                 },
@@ -141,7 +139,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
                                 {
                                     RelativeSizeAxes = Axes.X,
                                     Position = new Vector2(0, (17 + 13)),
-                                    Text = "0 views • 1 year ago",
                                     Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "SemiBold"),
                                     Colour = overlayColourProvider.Background1,
                                 },

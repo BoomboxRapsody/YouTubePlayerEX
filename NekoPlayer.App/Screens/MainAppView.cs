@@ -2104,7 +2104,7 @@ namespace NekoPlayer.App.Screens
                                                         {
                                                             Origin = Anchor.TopLeft,
                                                             Anchor = Anchor.TopLeft,
-                                                            Text = "[playlist name]",
+                                                            Text = "no playlist selected!",
                                                             RelativeSizeAxes = Axes.X,
                                                             Font = NekoPlayerApp.TorusAlternate.With(size: 30, weight: "Bold"),
                                                             Colour = overlayColourProvider.Content2,
@@ -2119,7 +2119,7 @@ namespace NekoPlayer.App.Screens
                                                             Anchor = Anchor.TopLeft,
                                                             RelativeSizeAxes = Axes.X,
                                                             AutoSizeAxes = Axes.Y,
-                                                            Text = "[channel name]",
+                                                            Text = "",
                                                         },
                                                         playlistItemsView = new FillFlowContainer
                                                         {
@@ -3095,8 +3095,8 @@ namespace NekoPlayer.App.Screens
             overlayContainers.Add(menuOverlay);
             overlayContainers.Add(myChannelDialog);
 
-            playlistName.Text = "please choose a playlist!";
-            playlistAuthor.Text = "[no metadata available]";
+            playlistName.Text = "no playlist selected!";
+            playlistAuthor.Text = string.Empty;
 
             infoForNerds.AddText("Codec: ");
             infoForNerds.AddText("[unknown]", f => f.Font = NekoPlayerApp.DefaultFont.With(weight: "Bold"));

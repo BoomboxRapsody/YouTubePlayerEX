@@ -100,7 +100,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
                                 channelName = new AdaptiveTextFlowContainer(f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "SemiBold"))
                                 {
                                     RelativeSizeAxes = Axes.X,
-                                    Text = "[channel name]",
                                     Colour = overlayColourProvider.Background1,
                                 },
                                 commentText = new TruncatingSpriteText
@@ -108,7 +107,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
                                     Font = NekoPlayerApp.DefaultFont.With(size: 17, weight: "Regular"),
                                     RelativeSizeAxes = Axes.X,
                                     Position = new Vector2(0, 13),
-                                    Text = "[text]",
                                     Colour = overlayColourProvider.Content2,
                                 },
                                 translateButton = new RoundedButtonContainer
@@ -144,7 +142,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
                                             {
                                                 translateToText = new AdaptiveSpriteText
                                                 {
-                                                    Text = "[no metadata]",
                                                     Colour = overlayColourProvider.Content2,
                                                     Font = NekoPlayerApp.DefaultFont.With(size: 13.5f, weight: "Regular"),
                                                 },
@@ -199,7 +196,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
                                                         },
                                                         likeCount = new AdaptiveSpriteText
                                                         {
-                                                            Text = "[no metadata]",
                                                             Colour = overlayColourProvider.Content2,
                                                             Font = NekoPlayerApp.DefaultFont.With(size: 13.5f, weight: "Regular"),
                                                         },

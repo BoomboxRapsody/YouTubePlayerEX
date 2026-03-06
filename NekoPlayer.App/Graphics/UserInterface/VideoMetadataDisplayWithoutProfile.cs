@@ -113,14 +113,14 @@ namespace NekoPlayer.App.Graphics.UserInterface
                                 {
                                     Font = NekoPlayerApp.TorusAlternate.With(size: 20, weight: "Bold"),
                                     RelativeSizeAxes = Axes.X,
-                                    Text = "please choose a video!",
+                                    Text = "video not loaded!",
                                     Colour = overlayColourProvider.Content2,
                                 },
                                 desc = new TruncatingSpriteText
                                 {
                                     Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "SemiBold"),
                                     RelativeSizeAxes = Axes.X,
-                                    Text = "[no metadata available]",
+                                    Text = "",
                                     Colour = overlayColourProvider.Foreground2,
                                     Position = new osuTK.Vector2(0, 20),
                                 }
