@@ -41,7 +41,7 @@ namespace NekoPlayer.App.Online
 
         private UserCredential credential;
 
-        public async Task<Userinfo> SignIn()
+        public async Task SignIn()
         {
             credential = await getUserCredentialAsync();
 
@@ -51,15 +51,10 @@ namespace NekoPlayer.App.Online
                 HttpClientInitializer = credential
             });
 
-            // 사용자의 정보를 가져옵니다.
-            Userinfo userInfo = await oauth2Service.Userinfo.Get().ExecuteAsync();
-
             Logger.Log("signed in to google");
 
             SignedIn.Value = true;
             appConfig.SetValue<bool>(NekoPlayerSetting.FinalLoginState, true);
-
-            return userInfo;
         }
 
         public async Task SignOut()
