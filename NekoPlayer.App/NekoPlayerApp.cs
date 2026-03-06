@@ -40,6 +40,7 @@ using NekoPlayer.App.Updater;
 
 namespace NekoPlayer.App
 {
+    //앱이 얼마나 인기가 없으면 star count가 안올라가냐;;;
     [Cached(typeof(NekoPlayerApp))]
     public partial class NekoPlayerApp : NekoPlayerAppBase
     {
