@@ -307,7 +307,7 @@ namespace NekoPlayer.App
         {
             base.UpdateAfterChildren();
 
-            GlobalCursorDisplay.ShowCursor = (UseSystemCursor.Value == false) ? ((screenStack.CurrentScreen as IYouTubePlayerEXScreen)?.CursorVisible ?? false) : false;
+            GlobalCursorDisplay.ShowCursor = (UseSystemCursor.Value == false) ? ((screenStack.CurrentScreen as INekoPlayerScreen)?.CursorVisible ?? false) : false;
         }
 
         protected override bool OnExiting()
