@@ -27,7 +27,7 @@ namespace NekoPlayer.App.Graphics.Containers
         }
 
         [BackgroundDependencyLoader]
-        private void load(YTPlayerEXConfigManager config)
+        private void load(NekoPlayerConfigManager config)
         {
             UserDimLevel = config.GetBindable<double>(NekoPlayerSetting.VideoDimLevel);
 

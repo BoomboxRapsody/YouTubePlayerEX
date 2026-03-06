@@ -52,7 +52,7 @@ namespace NekoPlayer.App.Graphics.Caption
         private Bindable<bool> controlsVisibleState = null!;
 
         [BackgroundDependencyLoader]
-        private void load(YTPlayerEXConfigManager config, SessionStatics sessionStatics)
+        private void load(NekoPlayerConfigManager config, SessionStatics sessionStatics)
         {
             controlsVisibleState = sessionStatics.GetBindable<bool>(Static.IsControlVisible);
             captionEnabled = config.GetBindable<bool>(NekoPlayerSetting.CaptionEnabled);

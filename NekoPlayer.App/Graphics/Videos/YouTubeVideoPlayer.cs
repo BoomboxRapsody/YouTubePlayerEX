@@ -89,7 +89,7 @@ namespace NekoPlayer.App.Graphics.Videos
         private VideoNewShaderContainer bloom, chromatic, grayscale, hueShift = null!;
 
         [BackgroundDependencyLoader]
-        private void load(ITrackStore tracks, YTPlayerEXConfigManager config, ScreenshotManager screenshotManager)
+        private void load(ITrackStore tracks, NekoPlayerConfigManager config, ScreenshotManager screenshotManager)
         {
             uiVisible = screenshotManager.CursorVisibility.GetBoundCopy();
             aspectRatioMethod = config.GetBindable<AspectRatioMethod>(NekoPlayerSetting.AspectRatioMethod);

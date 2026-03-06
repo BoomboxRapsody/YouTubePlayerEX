@@ -19,7 +19,7 @@ namespace NekoPlayer.App.Graphics.Containers
         protected float CurrentScale { get; private set; } = 1;
 
         [BackgroundDependencyLoader]
-        private void load(YTPlayerEXConfigManager appConfig)
+        private void load(NekoPlayerConfigManager appConfig)
         {
             uiScale = appConfig.GetBindable<float>(NekoPlayerSetting.UIScale);
             uiScale.BindValueChanged(args => this.TransformTo(nameof(CurrentScale), args.NewValue, 500, Easing.OutQuart), true);

@@ -46,7 +46,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         private FrameworkConfigManager frameworkConfig { get; set; }
 
         [Resolved]
-        private YTPlayerEXConfigManager appConfig { get; set; }
+        private NekoPlayerConfigManager appConfig { get; set; }
 
         private Bindable<string> localeBindable = new Bindable<string>();
         private Bindable<UsernameDisplayMode> usernameDisplayMode;

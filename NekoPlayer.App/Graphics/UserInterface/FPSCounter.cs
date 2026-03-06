@@ -70,7 +70,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         }
 
         [BackgroundDependencyLoader]
-        private void load(YTPlayerEXConfigManager config, GameHost gameHost, ScreenshotManager screenshotManager, OverlayColourProvider overlayColourProvider)
+        private void load(NekoPlayerConfigManager config, GameHost gameHost, ScreenshotManager screenshotManager, OverlayColourProvider overlayColourProvider)
         {
             uiVisible = screenshotManager.CursorVisibility.GetBoundCopy();
 

@@ -58,7 +58,7 @@ namespace NekoPlayer.App.Graphics.Cursor
         private bool visible;
 
         [BackgroundDependencyLoader]
-        private void load(AudioManager audio, YTPlayerEXConfigManager config, ScreenshotManager? screenshotManager)
+        private void load(AudioManager audio, NekoPlayerConfigManager config, ScreenshotManager? screenshotManager)
         {
             cursorRotate = config.GetBindable<bool>(NekoPlayerSetting.CursorRotation);
 

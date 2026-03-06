@@ -89,7 +89,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         }
 
         [Resolved]
-        private YTPlayerEXConfigManager appConfig { get; set; }
+        private NekoPlayerConfigManager appConfig { get; set; }
 
         protected override bool OnClick(ClickEvent e)
         {

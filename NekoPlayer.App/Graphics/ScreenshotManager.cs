@@ -48,7 +48,7 @@ namespace NekoPlayer.App.Graphics
         private Clipboard clipboard { get; set; } = null!;
 
         [Resolved]
-        private YTPlayerEXConfigManager config { get; set; } = null!;
+        private NekoPlayerConfigManager config { get; set; } = null!;
 
         [Resolved]
         private OnScreenDisplay onScreenDisplay { get; set; } = null!;

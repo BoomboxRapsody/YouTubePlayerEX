@@ -98,7 +98,7 @@ namespace NekoPlayer.App.Utils
             {
                 scope.Contexts["config"] = new
                 {
-                    App = app.Dependencies.Get<YTPlayerEXConfigManager>()?.GetCurrentConfigurationForLogging(),
+                    App = app.Dependencies.Get<NekoPlayerConfigManager>()?.GetCurrentConfigurationForLogging(),
                     Framework = app.Dependencies.Get<FrameworkConfigManager>()?.GetCurrentConfigurationForLogging(),
                 };
 
