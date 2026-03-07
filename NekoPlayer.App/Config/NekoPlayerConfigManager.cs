@@ -70,6 +70,9 @@ namespace NekoPlayer.App.Config
 
             SetDefault(NekoPlayerSetting.DiscordRichPresence, DiscordRichPresenceMode.Full);
             SetDefault(NekoPlayerSetting.AudioNormalization, true);
+
+            SetDefault(NekoPlayerSetting.AccessToken, string.Empty);
+            SetDefault(NekoPlayerSetting.AudioQuality, AudioQuality.PreferHighQuality);
         }
 
         public NekoPlayerConfigManager(Storage storage, IDictionary<NekoPlayerSetting, object> defaultOverrides = null) : base(storage, defaultOverrides)
@@ -134,5 +137,8 @@ namespace NekoPlayer.App.Config
         DiscordRichPresence,
         ClosedCaptionLanguageNew,
         AudioNormalization,
+
+        AccessToken,
+        AudioQuality,
     }
 }

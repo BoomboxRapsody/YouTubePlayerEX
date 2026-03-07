@@ -11,21 +11,6 @@ namespace NekoPlayer.App.Localisation
     [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     public enum Language
     {
-        [Description(@"繁體中文（台灣）")]
-        zh_hant,
-
-        [Description(@"Nederlands")]
-        nl,
-
-        [Description(@"Español")]
-        es,
-
-        [Description(@"Italiano")]
-        it,
-
-        [Description(@"Português")]
-        pt,
-
         [Description(@"English")]
         en,
 
@@ -34,18 +19,6 @@ namespace NekoPlayer.App.Localisation
 
         [Description(@"한국어")]
         ko,
-
-        [Description(@"Français")]
-        fr,
-
-        [Description(@"Русский")]
-        ru,
-
-        [Description(@"Türkçe")]
-        tr,
-
-        [Description(@"Tiếng Việt")]
-        vi,
 
 #if DEBUG
         [Description(@"Debug (show raw keys)")]

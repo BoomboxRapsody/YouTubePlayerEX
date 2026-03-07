@@ -45,6 +45,11 @@ namespace NekoPlayer.App.Online
         {
             credential = await getUserCredentialAsync();
 
+            if (!string.IsNullOrEmpty(appConfig.Get<string>(NekoPlayerSetting.AccessToken)))
+            {
+                await credential.RefreshTokenAsync(CancellationToken.None);
+            }
+
             // OAuth2 API 클라이언트를 생성합니다.
             var oauth2Service = new Oauth2Service(new BaseClientService.Initializer()
             {
@@ -54,7 +59,7 @@ namespace NekoPlayer.App.Online
             Logger.Log("signed in to google");
 
             SignedIn.Value = true;
-            appConfig.SetValue<bool>(NekoPlayerSetting.FinalLoginState, true);
+            appConfig.SetValue<string>(NekoPlayerSetting.AccessToken, GetAccessToken());
         }
 
         public async Task SignOut()
@@ -66,7 +71,7 @@ namespace NekoPlayer.App.Online
                 Logger.Log("signed out to google");
 
                 SignedIn.Value = false;
-                appConfig.SetValue<bool>(NekoPlayerSetting.FinalLoginState, false);
+                appConfig.SetValue<string>(NekoPlayerSetting.AccessToken, string.Empty);
             }
         }
 
@@ -108,11 +113,10 @@ namespace NekoPlayer.App.Online
             string credPath = isTestClient_static ? @"NekoPlayer/OAuth2_Dev" : @"NekoPlayer/OAuth2";
             credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                 getAuthConfig(),
-                new[] { "https://www.googleapis.com/auth/youtube.force-ssl" },
+                new[] { Google.Apis.YouTube.v3.YouTubeService.Scope.YoutubeForceSsl },
                 "user",
                 CancellationToken.None,
-                new FileDataStore(credPath, false),
-                new LocalServerCodeReceiver()
+                new FileDataStore(credPath, false)
             );
 
             return credential;

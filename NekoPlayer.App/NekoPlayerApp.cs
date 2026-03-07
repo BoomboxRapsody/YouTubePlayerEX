@@ -7,8 +7,22 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Google.Apis.YouTube.v3.Data;
+using NekoPlayer.App.Audio.Effects;
+using NekoPlayer.App.Config;
+using NekoPlayer.App.Extensions;
+using NekoPlayer.App.Graphics;
+using NekoPlayer.App.Graphics.Containers;
+using NekoPlayer.App.Graphics.UserInterface;
+using NekoPlayer.App.Localisation;
+using NekoPlayer.App.Online;
+using NekoPlayer.App.Overlays;
+using NekoPlayer.App.Screens;
+using NekoPlayer.App.Updater;
+using NekoPlayer.App.Utils;
 using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -26,17 +40,7 @@ using osu.Framework.Logging;
 using osu.Framework.Screens;
 using osu.Framework.Threading;
 using osuTK;
-using NekoPlayer.App.Audio.Effects;
-using NekoPlayer.App.Config;
-using NekoPlayer.App.Extensions;
-using NekoPlayer.App.Graphics;
-using NekoPlayer.App.Graphics.Containers;
-using NekoPlayer.App.Graphics.UserInterface;
-using NekoPlayer.App.Localisation;
-using NekoPlayer.App.Online;
-using NekoPlayer.App.Overlays;
-using NekoPlayer.App.Screens;
-using NekoPlayer.App.Updater;
+using Vortice.Win32;
 
 namespace NekoPlayer.App
 {
@@ -318,11 +322,11 @@ namespace NekoPlayer.App
 
             Logger.Log("Exiting...", LoggingTarget.Runtime, LogLevel.Debug);
 
-            Schedule(AttemptExit);
+            Schedule(() => AttemptExit());
             return !isExiting;
         }
 
-        public override void AttemptExit()
+        public override void AttemptExit(ShutdownOptions shutdownOptions = ShutdownOptions.None)
         {
             ISample exitSound = Audio.Samples.Get(@"overlay-pop-out");
             DrawableSample drawableSample = new DrawableSample(exitSound);
@@ -333,11 +337,16 @@ namespace NekoPlayer.App
 
             drawableSample.Play();
 
-            this.FadeOut(500, Easing.InQuart).OnComplete(_ => base.Exit());
+            this.FadeOut(500, Easing.InQuart).OnComplete(_ => appQuit(shutdownOptions));
             this.TransformBindableTo(fadeVolume, 0, 500, Easing.InQuart);
             Audio.Tracks.AddAdjustment(AdjustableProperty.Volume, fadeVolume);
 
             isExiting = true;
+        }
+
+        private void appQuit(ShutdownOptions shutdownOptions = ShutdownOptions.None)
+        {
+            Exit();
         }
 
         private bool isExiting = false;

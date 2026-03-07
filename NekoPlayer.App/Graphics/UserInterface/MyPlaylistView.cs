@@ -5,11 +5,9 @@
 
 using System;
 using System.Drawing;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Apis.YouTube.v3.Data;
-using Humanizer;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
@@ -26,7 +24,6 @@ using osuTK.Graphics;
 using PaletteNet;
 using SixLabors.ImageSharp.PixelFormats;
 using NekoPlayer.App.Config;
-using NekoPlayer.App.Extensions;
 using NekoPlayer.App.Graphics.Sprites;
 using NekoPlayer.App.Localisation;
 using NekoPlayer.App.Online;
@@ -36,14 +33,13 @@ using osu.Framework.Extensions;
 
 namespace NekoPlayer.App.Graphics.UserInterface
 {
-    public partial class PlaylistItemView : AdaptiveClickableContainer
+    public partial class MyPlaylistView : AdaptiveClickableContainer
     {
         private Sprite thumbnail = null!;
-        private TruncatingSpriteText videoNameText = null!;
+        private TruncatingSpriteText playlistNameText = null!;
         private TruncatingSpriteText channelNameText = null!;
-        public Action<PlaylistItemView> ClickEvent = null!;
-        private AdaptiveSpriteText viewsText = null!;
-        private AdaptiveSpriteText indexText = null!;
+        public Action<MyPlaylistView> ClickEvent = null!;
+        private AdaptiveSpriteText privacyStatusText = null!;
 
         private Box bgLayer = null!;
 
@@ -61,12 +57,9 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         private Bindable<string> localeBindable = new Bindable<string>();
 
-        private int index;
-
-        public PlaylistItemView(int index)
+        public MyPlaylistView()
             : base(HoverSampleSet.Default)
         {
-            this.index = index;
             Height = 110;
         }
 
@@ -123,20 +116,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
                                     RelativeSizeAxes = Axes.Both,
                                     FillMode = FillMode.Stretch,
                                 },
-                                new Box
-                                {
-                                    RelativeSizeAxes = Axes.X,
-                                    Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0.75f), Color4.Black.Opacity(0)),
-                                    Height = 50,
-                                },
-                                indexText = new TruncatingSpriteText
-                                {
-                                    RelativeSizeAxes = Axes.X,
-                                    Padding = new MarginPadding(8),
-                                    Text = $"#{index + 1}",
-                                    Font = NekoPlayerApp.DefaultFont.With(size: 17, weight: "Regular"),
-                                    Colour = overlayColourProvider.Content2,
-                                },
                                 loading = new LoadingLayer(true, false, false)
                             },
                         },
@@ -152,7 +131,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                             },
                             Children = new Drawable[]
                             {
-                                videoNameText = new TruncatingSpriteText
+                                playlistNameText = new TruncatingSpriteText
                                 {
                                     RelativeSizeAxes = Axes.X,
                                     Font = NekoPlayerApp.DefaultFont.With(size: 17, weight: "Regular"),
@@ -165,7 +144,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                                     Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "SemiBold"),
                                     Colour = overlayColourProvider.Background1,
                                 },
-                                viewsText = new TruncatingSpriteText
+                                privacyStatusText = new TruncatingSpriteText
                                 {
                                     RelativeSizeAxes = Axes.X,
                                     Position = new Vector2(0, (17 + 13)),
@@ -180,7 +159,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
 #pragma warning restore CS8602 // null 가능 참조에 대한 역참조입니다.
         }
 
-        public Video Data = null!;
+        public Playlist Data = null!;
 
         protected override void LoadComplete()
         {
@@ -255,7 +234,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 ClickAction?.Invoke(this);
         }
 
-        public Action<PlaylistItemView>? ClickAction { get; set; }
+        public Action<MyPlaylistView>? ClickAction { get; set; }
 
         protected override bool OnClick(ClickEvent e)
         {
@@ -274,7 +253,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
             {
                 try
                 {
-                    var cachePath = app.Host.CacheStorage.GetStorageForDirectory("videoThumbnailCache").GetFullPath($"{Data.Id}-PlaylistItemView.png");
+                    var cachePath = app.Host.CacheStorage.GetStorageForDirectory("playlistThumbnailCache").GetFullPath($"{Data.Id}-MyPlaylistView.png");
 
                     using (var httpClient = new System.Net.Http.HttpClient())
                     {
@@ -299,9 +278,9 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
                         bgLayer.Alpha = 1;
                         bgLayer.Colour = ColourInfo.GradientHorizontal(bgColor, bgColor.Darken(1f));
-                        videoNameText.Colour = (textColor);
+                        playlistNameText.Colour = (textColor);
                         channelNameText.Colour = (textColor);
-                        viewsText.Colour = (textColor);
+                        privacyStatusText.Colour = (textColor);
                     }
                 }
                 catch (Exception e)
@@ -317,26 +296,41 @@ namespace NekoPlayer.App.Graphics.UserInterface
             {
                 try
                 {
-                    DateTimeOffset? dateTime = Data.Snippet.PublishedAtDateTimeOffset;
-                    DateTime now = DateTime.Now;
                     Channel channelData = api.GetChannel(Data.Snippet.ChannelId);
-                    Video videoData = api.GetVideo(Data.Id);
+                    Playlist playlistData = api.GetPlaylistInfo(Data.Id);
 
                     Schedule(() =>
                     {
                         GetPalette();
 
                         channelNameText.Text = api.GetLocalizedChannelTitle(channelData);
-                        videoNameText.Text = api.GetLocalizedVideoTitle(videoData);
+                        playlistNameText.Text = playlistData.Snippet.Title;
 #pragma warning disable CS8629 // Nullable 값 형식이 null일 수 있습니다.
-                        viewsText.Text = NekoPlayerStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
+                        try
+                        {
+                            switch (playlistData.Status.PrivacyStatus)
+                            {
+                                case "public":
+                                    privacyStatusText.Text = NekoPlayerStrings.Public;
+                                    break;
+                                case "unlisted":
+                                    privacyStatusText.Text = NekoPlayerStrings.Unlisted;
+                                    break;
+                                case "private":
+                                    privacyStatusText.Text = NekoPlayerStrings.Private;
+                                    break;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Error(e, e.GetDescription());
+                        }
 #pragma warning restore CS8629 // Nullable 값 형식이 null일 수 있습니다.
 
                         localeBindable.BindValueChanged(locale =>
                         {
                             channelNameText.Text = api.GetLocalizedChannelTitle(channelData);
-                            videoNameText.Text = api.GetLocalizedVideoTitle(videoData);
-                            viewsText.Text = NekoPlayerStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
+                            playlistNameText.Text = playlistData.Snippet.Title;
                         });
                     });
 

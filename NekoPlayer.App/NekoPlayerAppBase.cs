@@ -271,14 +271,14 @@ namespace NekoPlayer.App
 
                 dependencies.Cache(LocalConfig);
 
-                dependencies.Cache(GoogleOAuth2 = new GoogleOAuth2(LocalConfig, false));
+                dependencies.Cache(GoogleOAuth2 = new GoogleOAuth2(LocalConfig, !IsDeployedBuild));
 
                 dependencies.Cache(AudioNormalizationManager = new AudioNormalizationManager(this, LocalConfig));
 
                 dependencies.Cache(sentry = new SentryClient(this, GoogleOAuth2));
 
                 dependencies.Cache(TranslateAPI = new GoogleTranslate(this, frameworkConfig));
-                dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig, TranslateAPI, LocalConfig, GoogleOAuth2, false));
+                dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig, TranslateAPI, LocalConfig, GoogleOAuth2, !IsDeployedBuild));
 
                 dependencies.Cache(AudioEffectsConfig = new AudioEffectsConfigManager(Storage));
                 dependencies.Cache(SessionStatics = new SessionStatics());
@@ -558,12 +558,12 @@ namespace NekoPlayer.App
         }
         #endregion
 
-        public virtual void AttemptExit()
+        public virtual void AttemptExit(ShutdownOptions shutdownOptions = ShutdownOptions.None)
         {
             if (!OnExiting())
                 Exit();
             else
-                Scheduler.AddDelayed(AttemptExit, 2000);
+                Scheduler.AddDelayed(() => AttemptExit(shutdownOptions), 2000);
         }
 
         protected virtual Container CreateScalingContainer() => new DrawSizePreservingFillContainer();
