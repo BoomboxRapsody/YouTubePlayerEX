@@ -346,26 +346,6 @@ namespace NekoPlayer.App
 
         private void appQuit(ShutdownOptions shutdownOptions = ShutdownOptions.None)
         {
-            switch (RuntimeInfo.OS)
-            {
-                case RuntimeInfo.Platform.Windows:
-                {
-                    switch (shutdownOptions)
-                    {
-                        case ShutdownOptions.None:
-                            break;
-                        case ShutdownOptions.Restart:
-                            ProcessStartInfo startinfo = new ProcessStartInfo("shutdown", "-r -t 0");
-                            Process.Start(startinfo);
-                            break;
-                        case ShutdownOptions.Shutdown:
-                            ProcessStartInfo startinfo2 = new ProcessStartInfo("shutdown", "-s -t 0");
-                            Process.Start(startinfo2);
-                            break;
-                    }
-                    break;
-                }
-            }
             Exit();
         }
 

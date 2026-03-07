@@ -72,6 +72,7 @@ namespace NekoPlayer.App.Config
             SetDefault(NekoPlayerSetting.AudioNormalization, true);
 
             SetDefault(NekoPlayerSetting.AccessToken, string.Empty);
+            SetDefault(NekoPlayerSetting.AudioQuality, AudioQuality.PreferHighQuality);
         }
 
         public NekoPlayerConfigManager(Storage storage, IDictionary<NekoPlayerSetting, object> defaultOverrides = null) : base(storage, defaultOverrides)
@@ -138,5 +139,6 @@ namespace NekoPlayer.App.Config
         AudioNormalization,
 
         AccessToken,
+        AudioQuality,
     }
 }

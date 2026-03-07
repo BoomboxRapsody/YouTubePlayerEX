@@ -990,6 +990,31 @@ namespace NekoPlayer.App.Localisation
         /// </summary>
         public static LocalisableString Restart => new TranslatableString(getKey(@"restart_system"), @"Restart system");
 
+        /// <summary>
+        /// "Audio quality"
+        /// </summary>
+        public static LocalisableString AudioQuality => new TranslatableString(getKey(@"audio_quality"), @"Audio quality");
+
+        /// <summary>
+        /// "Prefer high quality"
+        /// </summary>
+        public static LocalisableString PreferHighQualityAudio => new TranslatableString(getKey(@"prefer_high_quality_audio"), "Prefer high quality");
+
+        /// <summary>
+        /// "Prefer opus codecs first"
+        /// </summary>
+        public static LocalisableString PreferOpus => new TranslatableString(getKey(@"prefer_opus"), @"Prefer opus codecs first");
+
+        /// <summary>
+        /// "Prefer mp4a codecs first"
+        /// </summary>
+        public static LocalisableString PreferMp4a => new TranslatableString(getKey(@"prefer_mp4a"), @"Prefer mp4a codecs first");
+
+        /// <summary>
+        /// "Low quality"
+        /// </summary>
+        public static LocalisableString LowQuality => new TranslatableString(getKey(@"low_quality"), @"Low quality");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

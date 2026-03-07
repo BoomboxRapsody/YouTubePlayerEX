@@ -203,6 +203,7 @@ namespace NekoPlayer.App.Screens
             }, displays);
         }
 
+        private Bindable<Config.AudioQuality> audioQuality;
         private Bindable<Config.VideoQuality> videoQuality;
         private Bindable<HardwareVideoDecoder> hardwareVideoDecoder;
         private Bindable<Localisation.Language> audioLanguage;
@@ -316,6 +317,7 @@ namespace NekoPlayer.App.Screens
             fpsDisplay = appConfig.GetBindable<bool>(NekoPlayerSetting.ShowFpsDisplay);
             use_sdl3 = config.GetBindable<bool>(FrameworkSetting.UseExperimentalSDL3);
             adjustPitch = appConfig.GetBindable<bool>(NekoPlayerSetting.AdjustPitchOnSpeedChange);
+            audioQuality = appConfig.GetBindable<Config.AudioQuality>(NekoPlayerSetting.AudioQuality);
             videoQuality = appConfig.GetBindable<Config.VideoQuality>(NekoPlayerSetting.VideoQuality);
             audioLanguage = appConfig.GetBindable<Localisation.Language>(NekoPlayerSetting.AudioLanguage);
             hardwareVideoDecoder = config.GetBindable<HardwareVideoDecoder>(FrameworkSetting.HardwareVideoDecoder);
@@ -1129,6 +1131,11 @@ namespace NekoPlayer.App.Screens
                                                         {
                                                             Caption = NekoPlayerStrings.VideoQuality,
                                                             Current = videoQuality,
+                                                        }),
+                                                        new SettingsItemV2(new FormEnumDropdown<Config.AudioQuality>
+                                                        {
+                                                            Caption = NekoPlayerStrings.AudioQuality,
+                                                            Current = audioQuality,
                                                         }),
                                                         new SettingsItemV2(new FormCheckBox
                                                         {
@@ -2942,7 +2949,7 @@ namespace NekoPlayer.App.Screens
                                                             Action = () =>
                                                             {
                                                                 hideOverlays();
-                                                                showOverlayContainer(exitOptions);
+                                                                game.AttemptExit();
                                                             },
                                                         },
                                                     }
@@ -3392,6 +3399,17 @@ namespace NekoPlayer.App.Screens
                     Task.Run(async () =>
                     {
                         await SetVideoSource(videoId, true, LoadType.VideoOnly);
+                    });
+                }
+            });
+
+            audioQuality.BindValueChanged(quality =>
+            {
+                if (currentVideoSource != null)
+                {
+                    Task.Run(async () =>
+                    {
+                        await SetVideoSource(videoId, true, LoadType.AudioOnly);
                     });
                 }
             });
@@ -5457,7 +5475,7 @@ namespace NekoPlayer.App.Screens
 
                 if (!File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3") || !File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4"))
                 {
-                    Schedule(() => videoQuality.Disabled = audioLanguage.Disabled = alwaysUseOriginalAudio.Disabled = true);
+                    Schedule(() => videoQuality.Disabled = audioLanguage.Disabled = audioQuality.Disabled = alwaysUseOriginalAudio.Disabled = true);
 
                     if (loadType == LoadType.Full)
                         Directory.CreateDirectory(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}"));
@@ -5468,34 +5486,138 @@ namespace NekoPlayer.App.Screens
 
                     try
                     {
-                        if (alwaysUseOriginalAudio.Value == true)
+                        if (audioQuality.Value == Config.AudioQuality.PreferHighQuality)
                         {
-                            Logger.Log($"Preferred audio language is: {videoData.Snippet.DefaultLanguage}");
-                            // Select best audio stream (highest bitrate)
-                            audioStreamInfo = streamManifest
-                                .GetAudioOnlyStreams()
-                                .Where(s => s.AudioLanguage.Value.Code.Contains(videoData.Snippet.DefaultLanguage))
-                                .TryGetWithHighestBitrate();
+                            if (alwaysUseOriginalAudio.Value == true)
+                            {
+                                Logger.Log($"Preferred audio language is: {videoData.Snippet.DefaultLanguage}");
+                                // Select best audio stream (highest bitrate)
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .Where(s => s.AudioLanguage.Value.Code.Contains(videoData.Snippet.DefaultLanguage))
+                                    .TryGetWithHighestBitrate();
+                            }
+                            else
+                            {
+                                Logger.Log($"Preferred audio language is: {appGlobalConfig.Get<Language>(NekoPlayerSetting.AudioLanguage).ToString()}");
+                                // Select best audio stream (highest bitrate)
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .Where(s => s.AudioLanguage.Value.Code.Contains(appGlobalConfig.Get<Language>(NekoPlayerSetting.AudioLanguage).ToString()))
+                                    .TryGetWithHighestBitrate();
+                            }
+                        }
+                        else if (audioQuality.Value == Config.AudioQuality.PreferMp4a)
+                        {
+                            if (alwaysUseOriginalAudio.Value == true)
+                            {
+                                Logger.Log($"Preferred audio language is: {videoData.Snippet.DefaultLanguage}");
+                                // Select best audio stream (highest bitrate)
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .Where(s => s.AudioLanguage.Value.Code.Contains(videoData.Snippet.DefaultLanguage))
+                                    .Where(s => s.AudioCodec.Contains("mp4a"))
+                                    .TryGetWithHighestBitrate();
+                            }
+                            else
+                            {
+                                Logger.Log($"Preferred audio language is: {appGlobalConfig.Get<Language>(NekoPlayerSetting.AudioLanguage).ToString()}");
+                                // Select best audio stream (highest bitrate)
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .Where(s => s.AudioLanguage.Value.Code.Contains(appGlobalConfig.Get<Language>(NekoPlayerSetting.AudioLanguage).ToString()))
+                                    .Where(s => s.AudioCodec.Contains("mp4a"))
+                                    .TryGetWithHighestBitrate();
+                            }
+                        }
+                        else if (audioQuality.Value == Config.AudioQuality.PreferOpus)
+                        {
+                            if (alwaysUseOriginalAudio.Value == true)
+                            {
+                                Logger.Log($"Preferred audio language is: {videoData.Snippet.DefaultLanguage}");
+                                // Select best audio stream (highest bitrate)
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .Where(s => s.AudioLanguage.Value.Code.Contains(videoData.Snippet.DefaultLanguage))
+                                    .Where(s => s.AudioCodec.Contains("opus"))
+                                    .TryGetWithHighestBitrate();
+                            }
+                            else
+                            {
+                                Logger.Log($"Preferred audio language is: {appGlobalConfig.Get<Language>(NekoPlayerSetting.AudioLanguage).ToString()}");
+                                // Select best audio stream (highest bitrate)
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .Where(s => s.AudioLanguage.Value.Code.Contains(appGlobalConfig.Get<Language>(NekoPlayerSetting.AudioLanguage).ToString()))
+                                    .Where(s => s.AudioCodec.Contains("opus"))
+                                    .TryGetWithHighestBitrate();
+                            }
                         }
                         else
                         {
-                            Logger.Log($"Preferred audio language is: {appGlobalConfig.Get<Language>(NekoPlayerSetting.AudioLanguage).ToString()}");
-                            // Select best audio stream (highest bitrate)
-                            audioStreamInfo = streamManifest
-                                .GetAudioOnlyStreams()
-                                .Where(s => s.AudioLanguage.Value.Code.Contains(appGlobalConfig.Get<Language>(NekoPlayerSetting.AudioLanguage).ToString()))
-                                .TryGetWithHighestBitrate();
+                            if (alwaysUseOriginalAudio.Value == true)
+                            {
+                                Logger.Log($"Preferred audio language is: {videoData.Snippet.DefaultLanguage}");
+                                // Select best audio stream (highest bitrate)
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .Where(s => s.AudioLanguage.Value.Code.Contains(videoData.Snippet.DefaultLanguage))
+                                    .First();
+                            }
+                            else
+                            {
+                                Logger.Log($"Preferred audio language is: {appGlobalConfig.Get<Language>(NekoPlayerSetting.AudioLanguage).ToString()}");
+                                // Select best audio stream (highest bitrate)
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .Where(s => s.AudioLanguage.Value.Code.Contains(appGlobalConfig.Get<Language>(NekoPlayerSetting.AudioLanguage).ToString()))
+                                    .First();
+                            }
                         }
                     }
                     catch (Exception e)
                     {
                         try
                         {
+                            /*
                             // Select best audio stream (highest bitrate)
                             audioStreamInfo = streamManifest
                                 .GetAudioOnlyStreams()
                                 .Where(s => s.AudioLanguage.Value.Code.Contains(videoData.Snippet.DefaultLanguage))
                                 .TryGetWithHighestBitrate();
+                            */
+
+                            if (audioQuality.Value == Config.AudioQuality.PreferHighQuality)
+                            {
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .Where(s => s.AudioLanguage.Value.Code.Contains(videoData.Snippet.DefaultLanguage))
+                                    .TryGetWithHighestBitrate();
+                            }
+                            else if (audioQuality.Value == Config.AudioQuality.PreferMp4a)
+                            {
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .Where(s => s.AudioLanguage.Value.Code.Contains(videoData.Snippet.DefaultLanguage))
+                                    .Where(s => s.AudioCodec.Contains("mp4a"))
+                                    .TryGetWithHighestBitrate();
+                            }
+                            else if (audioQuality.Value == Config.AudioQuality.PreferOpus)
+                            {
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .Where(s => s.AudioLanguage.Value.Code.Contains(videoData.Snippet.DefaultLanguage))
+                                    .Where(s => s.AudioCodec.Contains("opus"))
+                                    .TryGetWithHighestBitrate();
+                            }
+                            else
+                            {
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .Where(s => s.AudioLanguage.Value.Code.Contains(videoData.Snippet.DefaultLanguage))
+                                    .First();
+                            }
+
                             Logger.Error(e, e.GetDescription());
                             Logger.Log($"Prefer default audio language: {videoData.Snippet.DefaultLanguage}");
                         }
@@ -5503,9 +5625,38 @@ namespace NekoPlayer.App.Screens
                         {
                             Logger.Log($"Prefer default audio language failed.\nFalling back to default audio language.");
                             // Select best audio stream (highest bitrate)
+                            /*
                             audioStreamInfo = streamManifest
                                 .GetAudioOnlyStreams()
                                 .TryGetWithHighestBitrate();
+                            */
+
+                            if (audioQuality.Value == Config.AudioQuality.PreferHighQuality)
+                            {
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .TryGetWithHighestBitrate();
+                            }
+                            else if (audioQuality.Value == Config.AudioQuality.PreferMp4a)
+                            {
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .Where(s => s.AudioCodec.Contains("mp4a"))
+                                    .TryGetWithHighestBitrate();
+                            }
+                            else if (audioQuality.Value == Config.AudioQuality.PreferOpus)
+                            {
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .Where(s => s.AudioCodec.Contains("opus"))
+                                    .TryGetWithHighestBitrate();
+                            }
+                            else
+                            {
+                                audioStreamInfo = streamManifest
+                                    .GetAudioOnlyStreams()
+                                    .First();
+                            }
                         }
                     }
 
@@ -5537,8 +5688,15 @@ namespace NekoPlayer.App.Screens
                         onScreenDisplay.Display(toast);
                     }
 
-                    await captionLangDropdown.RefreshCaptionLanguages(videoUrl);
-                    captionEnabled.Disabled = false;
+                    try
+                    {
+                        await captionLangDropdown.RefreshCaptionLanguages(videoUrl);
+                        captionEnabled.Disabled = false;
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e, e.GetDescription());
+                    }
 
                     ClosedCaptionTrack captionTrack = null;
 
@@ -5616,55 +5774,10 @@ namespace NekoPlayer.App.Screens
                     spinnerShow = Scheduler.AddDelayed(() => playVideo(), 0);
                     Schedule(() => thumbnailContainer.Hide());
 
-                    Schedule(() => videoQuality.Disabled = audioLanguage.Disabled = alwaysUseOriginalAudio.Disabled = false);
+                    Schedule(() => videoQuality.Disabled = audioLanguage.Disabled = audioQuality.Disabled = alwaysUseOriginalAudio.Disabled = false);
                 }
                 else
                 {
-                    var streamManifest = await app.YouTubeClient.Videos.Streams.GetManifestAsync(videoUrl);
-
-                    IVideoStreamInfo videoStreamInfo;
-
-                    if (videoQuality.Value == Config.VideoQuality.PreferHighQuality)
-                    {
-                        // Select best video stream (1080p60 in this example)
-                        videoStreamInfo = streamManifest
-                            .GetVideoOnlyStreams()
-                            .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
-                            .TryGetWithHighestVideoQuality();
-
-                        Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
-
-                        onScreenDisplay.Display(toast);
-                    }
-                    else
-                    {
-                        try
-                        {
-                            // Select best video stream (1080p60 in this example)
-                            videoStreamInfo = streamManifest
-                                .GetVideoOnlyStreams()
-                                .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
-                                .Where(s => s.VideoQuality.Label.Contains(app.ParseVideoQuality()))
-                                .TryGetWithHighestVideoQuality();
-
-                            Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
-
-                            onScreenDisplay.Display(toast);
-                        }
-                        catch
-                        {
-                            // Select best video stream (1080p60 in this example)
-                            videoStreamInfo = streamManifest
-                                .GetVideoOnlyStreams()
-                                .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.Mp4)
-                                .TryGetWithHighestVideoQuality();
-
-                            Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
-
-                            onScreenDisplay.Display(toast);
-                        }
-                    }
-
                     await captionLangDropdown.RefreshCaptionLanguages(videoUrl);
                     captionEnabled.Disabled = false;
 
