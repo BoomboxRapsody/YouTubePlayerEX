@@ -239,6 +239,8 @@ namespace NekoPlayer.App.Screens
         private Bindable<SettingsNote.Data> videoQualityWarning = new Bindable<SettingsNote.Data>();
         private Bindable<SettingsNote.Data> hwAccelNote = new Bindable<SettingsNote.Data>();
 
+        private Bindable<CloseButtonAction> closeButtonAction;
+
         private Bindable<float> scalingBackgroundDim = null!;
 
         private Bindable<double> speedTextRolling;
@@ -308,6 +310,7 @@ namespace NekoPlayer.App.Screens
             scalingBackgroundDim = appConfig.GetBindable<float>(NekoPlayerSetting.ScalingBackgroundDim);
             alwaysUseOriginalAudio = appConfig.GetBindable<bool>(NekoPlayerSetting.AlwaysUseOriginalAudio);
             discordRichPresence = appConfig.GetBindable<DiscordRichPresenceMode>(NekoPlayerSetting.DiscordRichPresence);
+            closeButtonAction = appConfig.GetBindable<CloseButtonAction>(NekoPlayerSetting.CloseButtonAction);
 
             captionEnabled = appConfig.GetBindable<bool>(NekoPlayerSetting.CaptionEnabled);
 
@@ -874,6 +877,11 @@ namespace NekoPlayer.App.Screens
                                                             ShowRevertToDefaultButton = false,
                                                             CanBeShown = { BindTarget = displayDropdownCanBeShown }
                                                         },
+                                                        new SettingsItemV2(new FormEnumDropdown<CloseButtonAction>
+                                                        {
+                                                            Caption = NekoPlayerStrings.CloseButtonAction,
+                                                            Current = closeButtonAction,
+                                                        }),
                                                         new SettingsItemV2(new FormEnumDropdown<DiscordRichPresenceMode>
                                                         {
                                                             Caption = NekoPlayerStrings.DiscordRichPresence,
@@ -4739,24 +4747,27 @@ namespace NekoPlayer.App.Screens
                 Schedule(() => item.Expire());
             }
 
+            int i = 0;
+
             foreach (var item in playlists)
             {
                 try
                 {
                     Google.Apis.YouTube.v3.Data.Video videoData = api.GetVideo(item.Snippet.ResourceId.VideoId);
 
-                    PlaylistItemView playlistItemView = new PlaylistItemView(playlists.IndexOf(item))
+                    PlaylistItemView playlistItemView = new PlaylistItemView(i)
                     {
                         RelativeSizeAxes = Axes.X,
                         Enabled = { Value = true },
-                        ClickAction = async v =>
+                    };
+
+                    playlistItemView.ClickAction = async v =>
+                    {
+                        Schedule(async () =>
                         {
-                            Schedule(async () =>
-                            {
-                                playlistItemIndex = playlists.IndexOf(item);
-                                await SetVideoSource(item.Snippet.ResourceId.VideoId);
-                            });
-                        },
+                            playlistItemIndex = playlistItemView.Index;
+                            await SetVideoSource(item.Snippet.ResourceId.VideoId);
+                        });
                     };
 
                     playlistItemViews.Add(playlistItemView);
@@ -4767,6 +4778,8 @@ namespace NekoPlayer.App.Screens
                         playlistItemsView.Add(playlistItemView);
                         playlistItemView.UpdateData();
                     });
+
+                    i++;
                 }
                 catch (Exception e)
                 {
