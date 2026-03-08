@@ -40,6 +40,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>NekoPlayerTrayIconStrings.resx</DependentUpon>
     </Compile>
+    <Compile Update="NekoPlayer_DiscordRPCStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>NekoPlayer_DiscordRPCStrings.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="NekoPlayerTrayIconStrings.ja.resx">
@@ -53,6 +58,10 @@
     <EmbeddedResource Update="NekoPlayerTrayIconStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>NekoPlayerTrayIconStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="NekoPlayer_DiscordRPCStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NekoPlayer_DiscordRPCStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

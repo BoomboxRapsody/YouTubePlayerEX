@@ -4156,7 +4156,7 @@ namespace NekoPlayer.App.Screens
                         discordRPC?.UpdatePresence(new RichPresence()
                         {
                             Details = $"{videoData.Snippet.ChannelTitle} - {videoData.Snippet.Title}",
-                            State = "Watching Video",
+                            State = NekoPlayer_DiscordRPCStrings.WatchingVideo,
                             Assets = new Assets()
                             {
                                 LargeImageKey = videoData.Snippet.Thumbnails.High.Url,
@@ -4169,7 +4169,7 @@ namespace NekoPlayer.App.Screens
                             {
                                 new DiscordRPC.Button
                                 {
-                                    Label = "Watch on YouTube",
+                                    Label = NekoPlayer_DiscordRPCStrings.WatchOnYouTube,
                                     Url = $"https://youtu.be/{videoData.Id}",
                                 }
                             }
@@ -4179,7 +4179,7 @@ namespace NekoPlayer.App.Screens
                     {
                         discordRPC?.UpdatePresence(new RichPresence()
                         {
-                            State = "Idle",
+                            State = NekoPlayer_DiscordRPCStrings.IdleString,
                             Assets = new Assets()
                             {
                                 LargeImageKey = "new_nekoplayer_logo_withbg",
@@ -4195,7 +4195,7 @@ namespace NekoPlayer.App.Screens
                     {
                         discordRPC?.UpdatePresence(new RichPresence()
                         {
-                            State = "Watching Video",
+                            State = NekoPlayer_DiscordRPCStrings.WatchingVideo,
                             Assets = new Assets()
                             {
                                 LargeImageText = "NekoPlayer",
@@ -4205,7 +4205,7 @@ namespace NekoPlayer.App.Screens
                             {
                                 new DiscordRPC.Button
                                 {
-                                    Label = "Watch on YouTube",
+                                    Label = NekoPlayer_DiscordRPCStrings.WatchOnYouTube,
                                     Url = $"https://youtu.be/{videoData.Id}",
                                 }
                             }
@@ -4215,7 +4215,7 @@ namespace NekoPlayer.App.Screens
                     {
                         discordRPC?.UpdatePresence(new RichPresence()
                         {
-                            State = "Idle",
+                            State = NekoPlayer_DiscordRPCStrings.IdleString,
                             Assets = new Assets()
                             {
                                 LargeImageKey = "new_nekoplayer_logo_withbg",
@@ -4233,8 +4233,6 @@ namespace NekoPlayer.App.Screens
             }
         }
 
-        private int partySize = 1;
-
         protected override void LoadComplete()
         {
             base.LoadComplete();
@@ -4242,6 +4240,7 @@ namespace NekoPlayer.App.Screens
             random = new Random();
 
             discordRichPresence.BindValueChanged(mode => updatePresence(mode.NewValue), true);
+            localeBindable.BindValueChanged(_ => updatePresence(discordRichPresence.Value), true);
 
             //check updates for LoadComplete
             if (game.IsDeployedBuild)
