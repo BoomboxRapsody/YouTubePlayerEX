@@ -4165,6 +4165,14 @@ namespace NekoPlayer.App.Screens
                                 SmallImageText = "NekoPlayer",
                                 SmallImageKey = "new_nekoplayer_logo_withbg"
                             },
+                            Buttons = new DiscordRPC.Button[]
+                            {
+                                new DiscordRPC.Button
+                                {
+                                    Label = "Watch on YouTube",
+                                    Url = $"https://youtu.be/{videoData.Id}",
+                                }
+                            }
                         });
                     }
                     else
@@ -4193,6 +4201,14 @@ namespace NekoPlayer.App.Screens
                                 LargeImageText = "NekoPlayer",
                                 LargeImageKey = "new_nekoplayer_logo_withbg"
                             },
+                            Buttons = new DiscordRPC.Button[]
+                            {
+                                new DiscordRPC.Button
+                                {
+                                    Label = "Watch on YouTube",
+                                    Url = $"https://youtu.be/{videoData.Id}",
+                                }
+                            }
                         });
                     }
                     else
