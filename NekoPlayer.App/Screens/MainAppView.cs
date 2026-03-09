@@ -5349,6 +5349,8 @@ namespace NekoPlayer.App.Screens
 
         private void addVideoToScreen()
         {
+            Task.Run(async () => await api.SendPlayerResponseAsync(videoId));
+
             string audioFile = app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3";
 
             AudioNormalization audioNormalization = new AudioNormalization(audioFile);

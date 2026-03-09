@@ -6,6 +6,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -57,8 +58,7 @@ namespace NekoPlayer.App
 
         protected bool LoadFailed { get; set; }
 
-        [Cached]
-        public readonly YoutubeClient YouTubeClient = new YoutubeClient();
+        public YoutubeClient YouTubeClient { get; set; }
 
         protected YouTubeAPI YouTubeService { get; set; }
 
@@ -327,7 +327,8 @@ namespace NekoPlayer.App
                 dependencies.Cache(sentry = new SentryClient(this, GoogleOAuth2));
 
                 dependencies.Cache(TranslateAPI = new GoogleTranslate(this, frameworkConfig));
-                dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig, TranslateAPI, LocalConfig, GoogleOAuth2, !IsDeployedBuild));
+                dependencies.Cache(YouTubeService = new YouTubeAPI(frameworkConfig, TranslateAPI, LocalConfig, GoogleOAuth2, !IsDeployedBuild, new HttpClient()));
+                dependencies.Cache(YouTubeClient = new YoutubeClient());
 
                 dependencies.Cache(AudioEffectsConfig = new AudioEffectsConfigManager(Storage));
                 dependencies.Cache(SessionStatics = new SessionStatics());

@@ -25,6 +25,7 @@
     <PackageReference Include="YouTubePlayerEX.App.Resources" Version="2026.308.1" />
     <PackageReference Include="OSVersionExt" Version="4.1.0" />
     <PackageReference Include="Sentry" Version="6.1.0" />
+    <PackageReference Include="Lazy.Fody" PrivateAssets="all" Version="1.11.0" />
     <PackageReference Include="ppy.LocalisationAnalyser" Version="2025.1208.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

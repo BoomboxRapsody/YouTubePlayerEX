@@ -83,6 +83,14 @@ namespace NekoPlayer.App.Online
             return credential?.Token?.AccessToken;
         }
 
+        public UserCredential GetCredential()
+        {
+            if (!SignedIn.Value)
+                throw new System.Exception();
+
+            return credential;
+        }
+
         private static ClientSecrets getAuthConfig()
         {
             ClientSecrets wth = new ClientSecrets();

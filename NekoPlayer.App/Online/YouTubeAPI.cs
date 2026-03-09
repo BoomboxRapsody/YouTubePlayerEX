@@ -7,16 +7,23 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Crypto.AES;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
+using NekoPlayer.App.Config;
+using NekoPlayer.App.Extensions;
+using NekoPlayer.App.Localisation;
+using NekoPlayer.App.Utils;
 using osu.Framework.Configuration;
 using osu.Framework.Extensions;
 using osu.Framework.Logging;
-using NekoPlayer.App.Config;
-using NekoPlayer.App.Localisation;
+using YoutubeExplode.Exceptions;
 
 namespace NekoPlayer.App.Online
 {
@@ -28,9 +35,12 @@ namespace NekoPlayer.App.Online
 
         private FrameworkConfigManager frameworkConfig;
         private NekoPlayerConfigManager appConfig;
+        private NekoPlayerAppBase app;
 
-        public YouTubeAPI(FrameworkConfigManager frameworkConfig, GoogleTranslate translateApi, NekoPlayerConfigManager appConfig, GoogleOAuth2 googleOAuth2, bool isTestClient)
+        public YouTubeAPI(NekoPlayerAppBase app, FrameworkConfigManager frameworkConfig, GoogleTranslate translateApi, NekoPlayerConfigManager appConfig, GoogleOAuth2 googleOAuth2, bool isTestClient, HttpClient httpClient)
         {
+            Http = httpClient;
+            this.app = app;
             this.frameworkConfig = frameworkConfig;
             this.translateApi = translateApi;
             this.appConfig = appConfig;
@@ -532,7 +542,7 @@ namespace NekoPlayer.App.Online
                 case ClosedCaptionLanguage.Japanese:
                 {
                     return "ja";
-                } 
+                }
             }
             return string.Empty;
         }
@@ -669,6 +679,121 @@ namespace NekoPlayer.App.Online
             var result = response.Items;
 
             return result;
+        }
+
+        private string? _visitorData;
+
+        protected HttpClient Http { get; }
+
+        private async ValueTask<string> ResolveVisitorDataAsync(
+        CancellationToken cancellationToken = default
+    )
+        {
+            if (!string.IsNullOrWhiteSpace(_visitorData))
+                return _visitorData;
+
+            using var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                "https://www.youtube.com/sw.js_data"
+            );
+
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            request.Headers.Add(
+                "User-Agent",
+                $"NekoPlayer/{(app.IsDeployedBuild ? app.Version : "Development")}"
+            );
+
+            if (googleOAuth2.SignedIn.Value)
+            {
+                var plainTextBytes = Encoding.UTF8.GetBytes(googleOAuth2.GetAccessToken());
+
+                request.Headers.Add(
+                    "Authorization",
+                    $"Bearer {googleOAuth2.GetAccessToken()}"
+                );
+            }
+
+            using var response = await Http.SendAsync(request, cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            // TODO: move this to a bridge wrapper
+            var jsonString = await response.Content.ReadAsStringAsync(cancellationToken);
+            if (jsonString.StartsWith(")]}'"))
+                jsonString = jsonString[4..];
+
+            var json = Json.Parse(jsonString);
+
+            // This is just an ordered (but unstructured) blob of data
+            var value = json[0][2][0][0][13].GetStringOrNull();
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new YoutubeExplodeException("Failed to resolve visitor data.");
+            }
+
+            return _visitorData = value;
+        }
+
+        public async Task SendPlayerResponseAsync(
+        string videoId,
+        CancellationToken cancellationToken = default
+    )
+        {
+            var visitorData = await ResolveVisitorDataAsync(cancellationToken);
+
+            // The most optimal client to impersonate is any mobile client, because they
+            // don't require signature deciphering (for both normal and n-parameter signatures).
+            // YouTube now requires Proof of Origin (PO) tokens for most Innertube clients (iOS, Android, etc.),
+            // causing stream downloads to fail with 403 Forbidden errors. The ANDROID_VR client (Oculus Quest)
+            // still works without PO tokens and provides full format access.
+            // https://github.com/Tyrrrz/YoutubeExplode/issues/933
+            using var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                "https://www.youtube.com/youtubei/v1/player"
+            );
+
+            request.Content = new StringContent(
+                // lang=json
+                $$"""
+            {
+              "videoId": "{{Json.Serialize(videoId)}}",
+              "contentCheckOk": true,
+              "context": {
+                "client": {
+                  "clientName": "NekoPlayer",
+                  "clientVersion": "{{app.Version}}",
+                  "visitorData": {{Json.Serialize(visitorData)}},
+                  "hl": "en",
+                  "gl": "US",
+                  "utcOffsetMinutes": 0
+                }
+              }
+            }
+            """
+            );
+
+            // User agent appears to be sometimes required when impersonating Android
+            // https://github.com/iv-org/invidious/issues/3230#issuecomment-1226887639
+            request.Headers.Add(
+                "User-Agent",
+                $"NekoPlayer/{(app.IsDeployedBuild ? app.Version : "Development")}"
+            );
+
+            if (googleOAuth2.SignedIn.Value)
+            {
+                var plainTextBytes = Encoding.UTF8.GetBytes(googleOAuth2.GetAccessToken());
+
+                request.Headers.Add(
+                    "Authorization",
+                    $"Bearer {googleOAuth2.GetAccessToken()}"
+                );
+            }
+
+            using var response = await Http.SendAsync(request, cancellationToken);
+
+            Logger.Log(response.ToString());
+
+            response.EnsureSuccessStatusCode();
         }
 
         public async Task SaveVideoToPlaylist(string playlistId, string videoId)
