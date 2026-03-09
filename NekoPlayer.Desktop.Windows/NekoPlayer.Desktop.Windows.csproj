@@ -22,6 +22,18 @@
     <None Update="bassloud.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="FFmpeg\bin\linux-x64\ffmpeg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FFmpeg\bin\osx-arm64\ffmpeg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FFmpeg\bin\osx-x64\ffmpeg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FFmpeg\bin\win-x64\ffmpeg.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="FFmpeg\linux-x64\libavcodec.so.61">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

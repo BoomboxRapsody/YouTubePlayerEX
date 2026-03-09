@@ -35,31 +35,31 @@
     <EmbeddedResource Include="BuiltInResources\Fonts\**\*" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="NekoPlayerTrayIconStrings.Designer.cs">
+    <Compile Update="Localisation\NekoPlayerTrayIconStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>NekoPlayerTrayIconStrings.resx</DependentUpon>
     </Compile>
-    <Compile Update="NekoPlayer_DiscordRPCStrings.Designer.cs">
+    <Compile Update="Localisation\NekoPlayer_DiscordRPCStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>NekoPlayer_DiscordRPCStrings.resx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Update="NekoPlayerTrayIconStrings.ja.resx">
+    <EmbeddedResource Update="Localisation\NekoPlayerTrayIconStrings.ja.resx">
       <LastGenOutput>NekoPlayerTrayIconStrings.ja.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="NekoPlayerTrayIconStrings.ko.resx">
+    <EmbeddedResource Update="Localisation\NekoPlayerTrayIconStrings.ko.resx">
       <LastGenOutput>NekoPlayerTrayIconStrings.ko.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="NekoPlayerTrayIconStrings.resx">
+    <EmbeddedResource Update="Localisation\NekoPlayerTrayIconStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>NekoPlayerTrayIconStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="NekoPlayer_DiscordRPCStrings.resx">
+    <EmbeddedResource Update="Localisation\NekoPlayer_DiscordRPCStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>NekoPlayer_DiscordRPCStrings.Designer.cs</LastGenOutput>
     </EmbeddedResource>

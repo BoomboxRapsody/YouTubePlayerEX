@@ -618,7 +618,7 @@ namespace NekoPlayer.App.Online
 
         public Playlist GetPlaylistInfo(string playlistId)
         {
-            var part = "snippet";
+            var part = "snippet,status";
             var request = youtubeService.Playlists.List(part);
 
             request.Id = playlistId;
@@ -638,7 +638,7 @@ namespace NekoPlayer.App.Online
             if (!googleOAuth2.SignedIn.Value)
                 return new List<Playlist>();
 
-            var part = "snippet";
+            var part = "snippet,status";
             var request = youtubeService.Playlists.List(part);
 
             request.Mine = true;
@@ -657,7 +657,7 @@ namespace NekoPlayer.App.Online
             if (!googleOAuth2.SignedIn.Value)
                 return new List<Playlist>();
 
-            var part = "snippet";
+            var part = "snippet,status";
             var request = youtubeService.Playlists.List(part);
 
             request.Mine = true;

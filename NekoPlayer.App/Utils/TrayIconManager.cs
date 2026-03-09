@@ -2,10 +2,9 @@
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using Google.Apis.YouTube.v3.Data;
 using NekoPlayer.App.Config;
+using NekoPlayer.App.Localisation;
 using NekoPlayer.App.Online;
 using NekoPlayer.App.Overlays;
 using osu.Framework.Allocation;

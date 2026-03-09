@@ -4197,14 +4197,14 @@ namespace NekoPlayer.App.Screens
                                 SmallImageText = "NekoPlayer",
                                 SmallImageKey = "new_nekoplayer_logo_withbg"
                             },
-                            Buttons = new DiscordRPC.Button[]
-                            {
+                            Buttons =
+                            [
                                 new DiscordRPC.Button
                                 {
                                     Label = buttonLabel,
                                     Url = $"https://youtu.be/{videoData.Id}",
                                 }
-                            }
+                            ]
                         });
                     }
                     else
@@ -4234,14 +4234,14 @@ namespace NekoPlayer.App.Screens
                             {
                                 LargeImageKey = "new_nekoplayer_logo_withbg"
                             },
-                            Buttons = new DiscordRPC.Button[]
-                            {
+                            Buttons =
+                            [
                                 new DiscordRPC.Button
                                 {
                                     Label = buttonLabel,
                                     Url = $"https://youtu.be/{videoData.Id}",
                                 }
-                            }
+                            ]
                         });
                     }
                     else
@@ -5807,18 +5807,18 @@ namespace NekoPlayer.App.Screens
                     {
                         case LoadType.Full:
                         {
-                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3").Build());
-                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4").Build());
+                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3").SetFFmpegPath(app.GetFFmpegPath()).Build());
+                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4").SetFFmpegPath(app.GetFFmpegPath()).Build());
                             break;
                         }
                         case LoadType.AudioOnly:
                         {
-                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3").Build());
+                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3").SetFFmpegPath(app.GetFFmpegPath()).Build());
                             break;
                         }
                         case LoadType.VideoOnly:
                         {
-                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4").Build());
+                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4").SetFFmpegPath(app.GetFFmpegPath()).Build());
                             break;
                         }
                     }

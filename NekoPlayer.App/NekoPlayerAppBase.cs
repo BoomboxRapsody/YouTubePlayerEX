@@ -4,8 +4,10 @@
 #nullable disable
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,6 +25,7 @@ using NekoPlayer.App.Localisation;
 using NekoPlayer.App.Online;
 using NekoPlayer.App.Resources;
 using NekoPlayer.App.Utils;
+using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
@@ -91,6 +94,43 @@ namespace NekoPlayer.App
         protected Storage Storage { get; set; }
 
         private int allowableExceptions;
+
+        public string GetFFmpegPath()
+        {
+            switch (RuntimeInfo.OS)
+            {
+                case RuntimeInfo.Platform.Windows:
+                {
+                    return Directory.GetCurrentDirectory() + "/FFmpeg/bin/win-x64/ffmpeg.exe";
+                }
+                case RuntimeInfo.Platform.Linux:
+                {
+                    return Directory.GetCurrentDirectory() + "/FFmpeg/bin/linux-x64/ffmpeg";
+                }
+                case RuntimeInfo.Platform.macOS:
+                {
+                    switch (RuntimeInformation.ProcessArchitecture)
+                    {
+                        case Architecture.X64:
+                        {
+                            return Directory.GetCurrentDirectory() + "/FFmpeg/bin/osx-x64/ffmpeg";
+                        }
+                        case Architecture.Arm64:
+                        {
+                            return Directory.GetCurrentDirectory() + "/FFmpeg/bin/osx-arm64/ffmpeg";
+                        }
+                        default:
+                        {
+                            throw new PlatformNotSupportedException();
+                        }
+                    }
+                }
+                default:
+                {
+                    throw new PlatformNotSupportedException();
+                }
+            }
+        }
 
         /// <summary>
         /// Allows a maximum of one unhandled exception, per second of execution.
