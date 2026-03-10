@@ -17,6 +17,7 @@ using DiscordRPC;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Humanizer;
+using NAudio.CoreAudioApi;
 using NekoPlayer.App.Audio;
 using NekoPlayer.App.Config;
 using NekoPlayer.App.Extensions;
@@ -100,7 +101,7 @@ namespace NekoPlayer.App.Screens
 
         private YouTubeChannelMetadataDisplay youtubeChannelMetadataDisplay, youtubeChannelMetadataDisplay2;
 
-        private SettingsItemV2 audioLanguageItem, wasapiExperimentalItem, captionLangOptions;
+        private SettingsItemV2 audioLanguageItem, wasapiExperimentalItem, captionLangOptions, systemVolumeControlBase;
 
         private Sample overlayShowSample;
         private Sample overlayHideSample;
@@ -210,6 +211,7 @@ namespace NekoPlayer.App.Screens
         private Bindable<bool> adjustPitch;
         private Bindable<string> localeBindable = new Bindable<string>();
         private FormButton checkForUpdatesButton, login;
+        private FormSliderBar<double> systemVolumeControl;
         private ThumbnailContainerBackground thumbnailContainer;
         private AdaptiveSliderBar<double> seekbar;
         private Bindable<LocalisableString> updateInfomationText;
@@ -281,6 +283,14 @@ namespace NekoPlayer.App.Screens
         private IconButton repeatButton;
 
         private Bindable<bool> trayIconVisible;
+
+        private BindableDouble systemVolume = new BindableDouble
+        {
+            MaxValue = 1,
+            MinValue = 0,
+            Precision = 0.01,
+            Default = 1,
+        };
 
         [BackgroundDependencyLoader]
         private void load(ISampleStore sampleStore, FrameworkConfigManager config, NekoPlayerConfigManager appConfig, GameHost host, Storage storage, OverlayColourProvider overlayColourProvider, TextureStore textures, FrameworkDebugConfigManager debugConfig)
@@ -1256,6 +1266,15 @@ namespace NekoPlayer.App.Screens
                                                             Text = NekoPlayerStrings.Volume,
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             Colour = overlayColourProvider.Content2,
+                                                        },
+                                                        systemVolumeControlBase = new SettingsItemV2(systemVolumeControl = new FormSliderBar<double>
+                                                        {
+                                                            Caption = NekoPlayerStrings.SystemVolume,
+                                                            Current = systemVolume,
+                                                            DisplayAsPercentage = true,
+                                                        })
+                                                        {
+                                                            ShowRevertToDefaultButton = false,
                                                         },
                                                         new SettingsItemV2(new FormSliderBar<double>
                                                         {
@@ -3677,6 +3696,29 @@ namespace NekoPlayer.App.Screens
                 Schedule(() => checkForUpdatesButton.Enabled.Value = enabled.NewValue);
             });
 
+
+            #region System Volume
+            if (RuntimeInfo.OS == RuntimeInfo.Platform.Windows)
+            {
+                MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
+                MMDevice defaultPlaybackDevice = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+
+                systemVolume.Value = defaultPlaybackDevice.AudioEndpointVolume.MasterVolumeLevelScalar;
+
+                //defaultPlaybackDevice.AudioEndpointVolume.OnVolumeNotification += audioEndpointVolume_OnVolumeNotification; //cause bugs
+
+                systemVolume.BindValueChanged(value =>
+                {
+                    defaultPlaybackDevice.AudioEndpointVolume.MasterVolumeLevelScalar = Convert.ToSingle(value.NewValue);
+                });
+
+                systemVolumeControl.Caption = NekoPlayerStrings.SystemVolumeWithDevice(defaultPlaybackDevice.FriendlyName);
+            } else
+            {
+                systemVolumeControlBase.Hide();
+            }
+            #endregion
+
             renderer.BindValueChanged(r =>
             {
                 if (r.NewValue == host.ResolvedRenderer)
@@ -5179,6 +5221,9 @@ namespace NekoPlayer.App.Screens
                     {
                         Task.Run(async () =>
                         {
+                            if (!googleOAuth2.SignedIn.Value)
+                                return; //log in to more actions
+
                             bool result = await api.IsChannelSubscribed(videoData.Snippet.ChannelId);
                             string subscriptionId = await api.GetSubscriptionId(videoData.Snippet.ChannelId);
 
@@ -5423,7 +5468,7 @@ namespace NekoPlayer.App.Screens
 
         public async Task SetVideoSource(string videoId, bool clearCache = false, LoadType loadType = LoadType.Full)
         {
-            this.videoId = videoId;
+            this.videoId = YoutubeExplode.Videos.VideoId.Parse(videoId);
             pausedTime = clearCache ? currentVideoSource.VideoProgress.Value : 0;
             Schedule(() => currentVideoSource?.Expire());
             if (loadVideoContainer.IsVisible == true)
@@ -5495,7 +5540,7 @@ namespace NekoPlayer.App.Screens
                 {
                     case LoadType.Full:
                     {
-                        foreach (var cacheItem in Directory.GetFiles(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}")))
+                        foreach (var cacheItem in Directory.GetFiles(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}")))
                         {
                             File.Delete(cacheItem);
                         }
@@ -5503,12 +5548,12 @@ namespace NekoPlayer.App.Screens
                     }
                     case LoadType.VideoOnly:
                     {
-                        File.Delete(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4");
+                        File.Delete(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.mp4");
                         break;
                     }
                     case LoadType.AudioOnly:
                     {
-                        File.Delete(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3");
+                        File.Delete(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.mp3");
                         break;
                     }
                 }
@@ -5516,7 +5561,7 @@ namespace NekoPlayer.App.Screens
 
             if (videoId.Length != 0)
             {
-                Google.Apis.YouTube.v3.Data.Video videoData = api.GetVideo(videoId);
+                Google.Apis.YouTube.v3.Data.Video videoData = api.GetVideo(this.videoId);
 
                 if (videoData.Status.PrivacyStatus == "private")
                 {
@@ -5537,18 +5582,18 @@ namespace NekoPlayer.App.Screens
                 spinnerShow = Scheduler.AddDelayed(spinner.Show, 0);
 
                 Schedule(() => videoProgress.MaxValue = 1);
-                videoUrl = $"https://youtube.com/watch?v={videoId}";
+                videoUrl = $"https://youtube.com/watch?v={this.videoId}";
 
-                spinnerShow = Scheduler.AddDelayed(() => updateVideoMetadata(videoId), 0);
+                spinnerShow = Scheduler.AddDelayed(() => updateVideoMetadata(this.videoId), 0);
                 Schedule(() => idleBackground.Hide());
                 Schedule(() => thumbnailContainer.Show());
 
-                if (!File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3") || !File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4"))
+                if (!File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.mp3") || !File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.mp4"))
                 {
                     Schedule(() => videoQuality.Disabled = audioLanguage.Disabled = audioQuality.Disabled = alwaysUseOriginalAudio.Disabled = true);
 
                     if (loadType == LoadType.Full)
-                        Directory.CreateDirectory(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}"));
+                        Directory.CreateDirectory(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}"));
 
                     var streamManifest = await app.YouTubeClient.Videos.Streams.GetManifestAsync(videoUrl);
 
@@ -5816,23 +5861,23 @@ namespace NekoPlayer.App.Screens
                     {
                         case LoadType.Full:
                         {
-                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3").SetFFmpegPath(app.GetFFmpegPath()).Build());
-                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4").SetFFmpegPath(app.GetFFmpegPath()).Build());
+                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\audio.mp3").SetFFmpegPath(app.GetFFmpegPath()).Build());
+                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\video.mp4").SetFFmpegPath(app.GetFFmpegPath()).Build());
                             break;
                         }
                         case LoadType.AudioOnly:
                         {
-                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\audio.mp3").SetFFmpegPath(app.GetFFmpegPath()).Build());
+                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\audio.mp3").SetFFmpegPath(app.GetFFmpegPath()).Build());
                             break;
                         }
                         case LoadType.VideoOnly:
                         {
-                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"\video.mp4").SetFFmpegPath(app.GetFFmpegPath()).Build());
+                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\video.mp4").SetFFmpegPath(app.GetFFmpegPath()).Build());
                             break;
                         }
                     }
 
-                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3", captionTrack, videoData, pausedTime)
+                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.mp3", captionTrack, videoData, pausedTime)
                     {
                         RelativeSizeAxes = Axes.Both
                     };
@@ -5889,7 +5934,7 @@ namespace NekoPlayer.App.Screens
                         Logger.Error(e, e.GetDescription());
                     }
 
-                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3", captionTrack, videoData, pausedTime)
+                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.mp4", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.mp3", captionTrack, videoData, pausedTime)
                     {
                         RelativeSizeAxes = Axes.Both
                     };

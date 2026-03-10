@@ -32,9 +32,9 @@ namespace NekoPlayer.App.Localisation
         public static LocalisableString ExportLogs => new TranslatableString(getKey(@"export_logs"), "Export logs");
 
         /// <summary>
-        /// "Load from video ID"
+        /// "Load from video ID or URL"
         /// </summary>
-        public static LocalisableString LoadFromVideoId => new TranslatableString(getKey(@"load_from_video_id"), "Load from video ID");
+        public static LocalisableString LoadFromVideoId => new TranslatableString(getKey(@"load_from_video_id"), "Load from video ID or URL");
 
         /// <summary>
         /// "Load Video"
@@ -1040,6 +1040,16 @@ namespace NekoPlayer.App.Localisation
         /// "When you log in, you may see an "Google hasn’t verified this app" screen. Please feel free to log in."
         /// </summary>
         public static LocalisableString OAuthNote => new TranslatableString(getKey(@"oauth_note"), @"When you log in, you may see an ""Google hasn’t verified this app"" screen. Please feel free to log in.");
+
+        /// <summary>
+        /// "System volume"
+        /// </summary>
+        public static LocalisableString SystemVolume => new TranslatableString(getKey(@"system_volume"), "System volume");
+
+        /// <summary>
+        /// "System volume ({0})"
+        /// </summary>
+        public static LocalisableString SystemVolumeWithDevice(string deviceName) => new TranslatableString(getKey(@"system_volume_with_device"), "System volume ({0})", deviceName);
 
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
