@@ -31,7 +31,7 @@ namespace NekoPlayer.App.Config
             SetDefault(AudioEffectsSetting.ReverbStereoWidth, 1f, 0f, 1f, 0.01f);
 
             SetDefault(AudioEffectsSetting.RotateEnabled, false);
-            SetDefault(AudioEffectsSetting.RotateRate, 1f, 0f, 1f, 0.01f);
+            SetDefault(AudioEffectsSetting.RotateRate, 0.1f, 0f, 1f, 0.01f);
 
             SetDefault(AudioEffectsSetting.EchoEnabled, false);
             SetDefault(AudioEffectsSetting.EchoDryMix, 2f, 0f, 4f, 0.01f);
