@@ -4,17 +4,17 @@
 
 # NekoPlayer
 
-[![Build status](https://github.com/MayoDevStudios/NekoPlayer/actions/workflows/ci.yml/badge.svg?branch=master&event=push)](https://github.com/MayoDevStudios/NekoPlayer/actions/workflows/ci.yml)
-[![GitHub release](https://img.shields.io/github/release/MayoDevStudios/NekoPlayer.svg)](https://github.com/MayoDevStudios/NekoPlayer/releases/latest)
-[![Licence](https://img.shields.io/github/license/MayoDevStudios/NekoPlayer.svg)](https://github.com/MayoDevStudios/NekoPlayer/blob/master/LICENSE.md)
+[![Build status](https://github.com/BoomboxRapsody/NekoPlayer/actions/workflows/ci.yml/badge.svg?branch=master&event=push)](https://github.com/BoomboxRapsody/NekoPlayer/actions/workflows/ci.yml)
+[![GitHub release](https://img.shields.io/github/release/BoomboxRapsody/NekoPlayer.svg)](https://github.com/BoomboxRapsody/NekoPlayer/releases/latest)
+[![Licence](https://img.shields.io/github/license/BoomboxRapsody/NekoPlayer.svg)](https://github.com/BoomboxRapsody/NekoPlayer/blob/master/LICENSE.md)
 [![dev chat](https://discordapp.com/api/guilds/1474931183854026812/widget.png?style=shield)](https://discord.gg/UZWDqQ29ch)
-[![CodeFactor](https://www.codefactor.io/repository/github/MayoDevStudios/NekoPlayer/badge)](https://www.codefactor.io/repository/github/MayoDevStudios/NekoPlayer)
+[![CodeFactor](https://www.codefactor.io/repository/github/BoomboxRapsody/NekoPlayer/badge)](https://www.codefactor.io/repository/github/BoomboxRapsody/NekoPlayer)
 
 The enhanced YouTube video player written in [custom osu-framework](https://github.com/MayoDevStudios/osu-framework).
 
 ### Latest release:
 
-| [Windows 10+ (x64)](https://github.com/MayoDevStudios/NekoPlayer/releases/latest/download/NekoPlayer-win-Setup.exe) | [Linux (x64)](https://github.com/MayoDevStudios/NekoPlayer/releases/latest/download/NekoPlayer-linux-x64.AppImage)
+| [Windows 10+ (x64)](https://github.com/BoomboxRapsody/NekoPlayer/releases/latest/download/NekoPlayer-win-Setup.exe) | [Linux (x64)](https://github.com/BoomboxRapsody/NekoPlayer/releases/latest/download/NekoPlayer-linux-x64.AppImage)
 |--------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
 
 If your platform is unsupported or not listed above, there is still a chance you can run the release or manually build it by following the instructions below.
@@ -34,7 +34,7 @@ When working with the codebase, we recommend using an IDE with intelligent code 
 Clone the repository:
 
 ```shell
-git clone --recurse-submodules https://github.com/MayoDevStudios/NekoPlayer
+git clone --recurse-submodules https://github.com/BoomboxRapsody/NekoPlayer
 cd NekoPlayer
 ```
 
@@ -91,14 +91,14 @@ Supported language: English, Japanese, Korean
 **Note:** FFmpeg binaries are distributed under their original licenses (GPL/LGPL) from the source.
 Please refer to [FFmpeg License](https://www.ffmpeg.org/legal.html) for details.
 
-Please also note that app resources are covered by a separate licence. Please see the [MayoDevStudios/NekoPlayer-resources](https://github.com/MayoDevStudios/NekoPlayer-resources) repository for clarifications.
+Please also note that app resources are covered by a separate licence. Please see the [BoomboxRapsody/NekoPlayer-resources](https://github.com/BoomboxRapsody/NekoPlayer-resources) repository for clarifications.
 
 ## Star History
 
 <a href="https://www.star-history.com/?repos=MayoDevStudios%2FNekoPlayer&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/image?repos=MayoDevStudios/NekoPlayer&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/image?repos=MayoDevStudios/NekoPlayer&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/image?repos=MayoDevStudios/NekoPlayer&type=date&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/image?repos=BoomboxRapsody/NekoPlayer&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/image?repos=BoomboxRapsody/NekoPlayer&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/image?repos=BoomboxRapsody/NekoPlayer&type=date&legend=top-left" />
  </picture>
 </a>
