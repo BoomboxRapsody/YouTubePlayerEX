@@ -3679,7 +3679,7 @@ namespace NekoPlayer.App.Screens
 
             if (game.IsDeployedBuild)
             {
-                gameVersion.AddLink(game.Version, $"https://github.com/BoomboxRapsody/YouTubePlayerEX/releases/{game.Version}", tooltipText: NekoPlayerStrings.ViewChangelog(game.Version));
+                gameVersion.AddLink(game.Version, $"https://github.com/BoomboxRapsody/NekoPlayer/releases/{game.Version}", tooltipText: NekoPlayerStrings.ViewChangelog(game.Version));
             }
             else
             {
