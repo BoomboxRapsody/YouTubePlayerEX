@@ -814,7 +814,7 @@ namespace NekoPlayer.App.Screens
                                     Size = new Vector2(200, 60),
                                     Margin = new MarginPadding(8),
                                 },
-                                videoIdBox = new FocusedTextBox
+                                videoIdBox = new FocusedVideoIdBox
                                 {
                                     Origin = Anchor.CentreRight,
                                     Anchor = Anchor.CentreRight,
@@ -822,6 +822,26 @@ namespace NekoPlayer.App.Screens
                                     FontSize = 30,
                                     Size = new Vector2(385, 60),
                                     Margin = new MarginPadding(8),
+                                    OnEnterKeyPressed = () =>
+                                    {
+                                        if (string.IsNullOrEmpty(videoIdBox.Text))
+                                            return;
+
+                                        Task.Run(async () =>
+                                        {
+                                            try
+                                            {
+                                                Schedule(async () =>
+                                                {
+                                                    await SetVideoSource(videoIdBox.Text);
+                                                });
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Logger.Error(ex, ex.GetDescription());
+                                            }
+                                        });
+                                    }
                                 },
                             }
                         },
@@ -2307,7 +2327,7 @@ namespace NekoPlayer.App.Screens
                                     Size = new Vector2(200, 60),
                                     Margin = new MarginPadding(8),
                                 },
-                                playlistIdBox = new AdaptiveTextBox
+                                playlistIdBox = new FocusedVideoIdBox
                                 {
                                     Origin = Anchor.CentreRight,
                                     Anchor = Anchor.CentreRight,
@@ -2315,6 +2335,13 @@ namespace NekoPlayer.App.Screens
                                     FontSize = 30,
                                     Size = new Vector2(385, 60),
                                     Margin = new MarginPadding(8),
+                                    OnEnterKeyPressed = () =>
+                                    {
+                                        if (string.IsNullOrEmpty(playlistIdBox.Text))
+                                            return;
+
+                                        SetPlaylist(playlistIdBox.Text).FireAndForget();
+                                    }
                                 },
                             }
                         },
@@ -4421,6 +4448,7 @@ namespace NekoPlayer.App.Screens
             {
                 hideOverlays();
                 showOverlayContainer(loadVideoContainer);
+                videoIdBox.TakeFocus();
             };
 
             settingsOverlayShowBtn.Action = () =>
@@ -4776,23 +4804,6 @@ namespace NekoPlayer.App.Screens
                     else
                         hideOverlayContainer(audioEffectsOverlay);
 
-                    return true;
-
-                case GlobalAction.Select:
-                    if (loadVideoContainer.IsVisible)
-                    {
-                        Task.Run(async () =>
-                        {
-                            try
-                            {
-                                await SetVideoSource(videoIdBox.Text);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"¿¹¿Ü ¹ß»ý: {ex.Message}");
-                            }
-                        });
-                    }
                     return true;
 
                 case GlobalAction.PlayPause:
@@ -6242,6 +6253,17 @@ namespace NekoPlayer.App.Screens
                         return NekoPlayerStrings.Unlimited;
                 }
                 return base.GenerateItemText(item);
+            }
+        }
+
+        private partial class FocusedVideoIdBox : FocusedTextBox
+        {
+            public Action OnEnterKeyPressed;
+
+            protected override void OnTextCommitted(bool textChanged)
+            {
+                base.OnTextCommitted(textChanged);
+                OnEnterKeyPressed.Invoke();
             }
         }
 

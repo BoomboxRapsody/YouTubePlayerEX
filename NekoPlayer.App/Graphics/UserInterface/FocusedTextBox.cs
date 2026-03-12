@@ -53,8 +53,8 @@ namespace NekoPlayer.App.Graphics.UserInterface
         [BackgroundDependencyLoader(true)]
         private void load(OverlayColourProvider? colourProvider)
         {
-            BackgroundUnfocused = colourProvider?.Background5 ?? new Color4(10, 10, 10, 255);
-            BackgroundFocused = colourProvider?.Background5 ?? new Color4(10, 10, 10, 255);
+            //BackgroundUnfocused = colourProvider?.Background5 ?? new Color4(10, 10, 10, 255);
+            //BackgroundFocused = colourProvider?.Background5 ?? new Color4(10, 10, 10, 255);
         }
 
         // We may not be focused yet, but we need to handle keyboard input to be able to request focus
@@ -63,7 +63,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         protected override void OnFocus(FocusEvent e)
         {
             base.OnFocus(e);
-            BorderThickness = 0;
+            //BorderThickness = 0;
         }
 
         protected override bool OnKeyDown(KeyDownEvent e)
