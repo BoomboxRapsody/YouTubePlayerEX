@@ -80,7 +80,8 @@ namespace NekoPlayer.App.Screens
     {
         private BufferedContainer videoContainer;
         private AdaptiveButton loadBtn, commentSendButton, searchButton, loadPlaylistBtn, loadPlaylistOpenButton, prevVideoButton, nextVideoButton, declineButton, acceptButton, logoutButton, viewChannelButton;
-        private AdaptiveTextBox videoIdBox, commentTextBox, searchTextBox, playlistIdBox;
+        private AdaptiveTextBox commentTextBox, searchTextBox, playlistIdBox;
+        private FocusedTextBox videoIdBox;
         private LoadingSpinner spinner;
         private ScheduledDelegate spinnerShow;
         private AdaptiveAlertContainer alert;
@@ -813,7 +814,7 @@ namespace NekoPlayer.App.Screens
                                     Size = new Vector2(200, 60),
                                     Margin = new MarginPadding(8),
                                 },
-                                videoIdBox = new AdaptiveTextBox
+                                videoIdBox = new FocusedTextBox
                                 {
                                     Origin = Anchor.CentreRight,
                                     Anchor = Anchor.CentreRight,
@@ -4651,6 +4652,7 @@ namespace NekoPlayer.App.Screens
                     {
                         hideOverlays();
                         showOverlayContainer(loadVideoContainer);
+                        videoIdBox.TakeFocus();
                     }
                     else
                         hideOverlayContainer(loadVideoContainer);
@@ -4777,7 +4779,7 @@ namespace NekoPlayer.App.Screens
                     return true;
 
                 case GlobalAction.Select:
-                    if (isLoadVideoContainerVisible)
+                    if (loadVideoContainer.IsVisible)
                     {
                         Task.Run(async () =>
                         {
