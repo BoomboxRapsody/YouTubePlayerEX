@@ -4450,6 +4450,7 @@ namespace NekoPlayer.App.Screens
             {
                 hideOverlays();
                 showOverlayContainer(searchContainer);
+                searchTextBox.TakeFocus();
             };
 
             reportOpenButton.Action = () =>
@@ -4740,6 +4741,7 @@ namespace NekoPlayer.App.Screens
                     {
                         hideOverlays();
                         showOverlayContainer(searchContainer);
+                        searchTextBox.TakeFocus();
                     }
                     else
                         hideOverlayContainer(searchContainer);
