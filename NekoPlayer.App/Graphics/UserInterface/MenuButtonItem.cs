@@ -26,6 +26,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         private Vector2 iconScale = new Vector2(1f);
         private LocalisableString text;
         private IconUsage iconUsage;
+        private Hotkey hotkey;
 
         public Vector2 IconScale
         {
@@ -63,7 +64,21 @@ namespace NekoPlayer.App.Graphics.UserInterface
             }
         }
 
+        public Hotkey Hotkey
+        {
+            get => hotkey;
+            set
+            {
+                hotkey = value;
+
+                if (hotkeyDisplay != null)
+                    hotkeyDisplay.Hotkey = value;
+            }
+        }
+
         private Box hover, disabledOverlay;
+
+        private HotkeyDisplay hotkeyDisplay;
 
         [BackgroundDependencyLoader]
         private void load(OverlayColourProvider overlayColourProvider)
@@ -115,9 +130,11 @@ namespace NekoPlayer.App.Graphics.UserInterface
                                             Icon = iconUsage,
                                             Colour = overlayColourProvider.Content2,
                                         },
-                                        new Container
+                                        new FillFlowContainer
                                         {
-                                            RelativeSizeAxes = Axes.Both,
+                                            RelativeSizeAxes = Axes.Y,
+                                            AutoSizeAxes = Axes.X,
+                                            Direction = FillDirection.Horizontal,
                                             Padding = new MarginPadding
                                             {
                                                 Vertical = 5,
@@ -129,10 +146,15 @@ namespace NekoPlayer.App.Graphics.UserInterface
                                                 titleText = new TruncatingSpriteText
                                                 {
                                                     Font = NekoPlayerApp.TorusAlternate.With(size: 20, weight: "Bold"),
-                                                    RelativeSizeAxes = Axes.X,
                                                     Text = text,
                                                     Colour = overlayColourProvider.Content2,
                                                 },
+                                                hotkeyDisplay = new HotkeyDisplay
+                                                {
+                                                    Size = new Vector2(10),
+                                                    Hotkey = hotkey,
+                                                    Margin = new MarginPadding { Left = 5, Top = 4 },
+                                                }
                                             }
                                         }
                                     }

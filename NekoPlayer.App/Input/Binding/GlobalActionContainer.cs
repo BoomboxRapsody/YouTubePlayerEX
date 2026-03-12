@@ -101,6 +101,13 @@ namespace NekoPlayer.App.Input.Binding
             new KeyBinding(new[] { InputKey.Number7 }, GlobalAction.Seek70Percent),
             new KeyBinding(new[] { InputKey.Number8 }, GlobalAction.Seek80Percent),
             new KeyBinding(new[] { InputKey.Number9 }, GlobalAction.Seek90Percent),
+
+            new KeyBinding(new[] { InputKey.Alt, InputKey.O }, GlobalAction.OpenLoadVideo),
+            new KeyBinding(new[] { InputKey.Control, InputKey.S }, GlobalAction.OpenSearch),
+
+            new KeyBinding(new[] { InputKey.Alt, InputKey.M }, GlobalAction.OpenMyPlaylists),
+            new KeyBinding(new[] { InputKey.Control, InputKey.M }, GlobalAction.AddPlaylistKey),
+            new KeyBinding(new[] { InputKey.Alt, InputKey.S }, GlobalAction.SaveVideoToPlaylist),
         };
     }
 
@@ -163,5 +170,11 @@ namespace NekoPlayer.App.Input.Binding
         Seek70Percent,
         Seek80Percent,
         Seek90Percent,
+
+        OpenLoadVideo,
+        OpenSearch,
+        OpenMyPlaylists,
+        AddPlaylistKey,
+        SaveVideoToPlaylist
     }
 }

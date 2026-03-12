@@ -2872,6 +2872,7 @@ namespace NekoPlayer.App.Screens
                                                             Icon = FontAwesome.Regular.FolderOpen,
                                                             IconScale = new Vector2(1.2f),
                                                             Text = NekoPlayerStrings.LoadVideo,
+                                                            Hotkey = new Hotkey(GlobalAction.OpenLoadVideo),
                                                         },
                                                         settingsOverlayShowBtn = new MenuButtonItem
                                                         {
@@ -2883,6 +2884,7 @@ namespace NekoPlayer.App.Screens
                                                             Icon = FontAwesome.Solid.Cog,
                                                             IconScale = new Vector2(1.2f),
                                                             Text = NekoPlayerStrings.Settings,
+                                                            Hotkey = new Hotkey(GlobalAction.OpenSettings),
                                                         },
                                                         commentOpenButton = new MenuButtonItem
                                                         {
@@ -2894,6 +2896,7 @@ namespace NekoPlayer.App.Screens
                                                             Icon = FontAwesome.Regular.CommentAlt,
                                                             IconScale = new Vector2(1.2f),
                                                             Text = NekoPlayerStrings.CommentsWithoutCount,
+                                                            Hotkey = new Hotkey(GlobalAction.OpenComments),
                                                         },
                                                         searchOpenButton = new MenuButtonItem
                                                         {
@@ -2905,6 +2908,7 @@ namespace NekoPlayer.App.Screens
                                                             Icon = FontAwesome.Solid.Search,
                                                             IconScale = new Vector2(1.2f),
                                                             Text = NekoPlayerStrings.Search,
+                                                            Hotkey = new Hotkey(GlobalAction.OpenSearch),
                                                         },
                                                         reportOpenButton = new MenuButtonItem
                                                         {
@@ -2916,6 +2920,7 @@ namespace NekoPlayer.App.Screens
                                                             Icon = FontAwesome.Solid.Flag,
                                                             IconScale = new Vector2(1.2f),
                                                             Text = NekoPlayerStrings.Report,
+                                                            Hotkey = new Hotkey(GlobalAction.ReportAbuse),
                                                         },
                                                         playlistOpenButton = new MenuButtonItem
                                                         {
@@ -2927,6 +2932,7 @@ namespace NekoPlayer.App.Screens
                                                             Icon = FontAwesome.Solid.List,
                                                             IconScale = new Vector2(1.2f),
                                                             Text = NekoPlayerStrings.Playlists,
+                                                            Hotkey = new Hotkey(GlobalAction.OpenPlaylist),
                                                         },
                                                         myPlaylistsOpenButton = new MenuButtonItem
                                                         {
@@ -2938,6 +2944,7 @@ namespace NekoPlayer.App.Screens
                                                             Icon = FontAwesome.Solid.List,
                                                             IconScale = new Vector2(1.2f),
                                                             Text = NekoPlayerStrings.MyPlaylists,
+                                                            Hotkey = new Hotkey(GlobalAction.OpenMyPlaylists),
                                                             Action = () =>
                                                             {
                                                                 hideOverlays();
@@ -2954,6 +2961,7 @@ namespace NekoPlayer.App.Screens
                                                             Icon = FontAwesome.Solid.VolumeUp,
                                                             IconScale = new Vector2(1.2f),
                                                             Text = NekoPlayerStrings.AudioEffects,
+                                                            Hotkey = new Hotkey(GlobalAction.OpenAudioEffects),
                                                         },
                                                         saveVideoOpenButton = new MenuButtonItem
                                                         {
@@ -2965,6 +2973,7 @@ namespace NekoPlayer.App.Screens
                                                             Icon = FontAwesome.Regular.Bookmark,
                                                             IconScale = new Vector2(1.2f),
                                                             Text = NekoPlayerStrings.Save,
+                                                            Hotkey = new Hotkey(GlobalAction.SaveVideoToPlaylist),
                                                         },
                                                         newPlaylistOpenButton = new MenuButtonItem
                                                         {
@@ -2976,6 +2985,7 @@ namespace NekoPlayer.App.Screens
                                                             Icon = FontAwesome.Solid.Bookmark,
                                                             IconScale = new Vector2(1.2f),
                                                             Text = NekoPlayerStrings.AddNewPlaylist,
+                                                            Hotkey = new Hotkey(GlobalAction.AddPlaylistKey),
                                                             Action = () =>
                                                             {
                                                                 hideOverlays();
@@ -4636,6 +4646,64 @@ namespace NekoPlayer.App.Screens
                     hideOverlays();
                     return true;
 
+                case GlobalAction.OpenLoadVideo:
+                    if (!loadVideoContainer.IsVisible)
+                    {
+                        hideOverlays();
+                        showOverlayContainer(loadVideoContainer);
+                    }
+                    else
+                        hideOverlayContainer(loadVideoContainer);
+
+                    return true;
+
+                case GlobalAction.OpenSearch:
+                    if (!searchContainer.IsVisible)
+                    {
+                        hideOverlays();
+                        showOverlayContainer(searchContainer);
+                    }
+                    else
+                        hideOverlayContainer(searchContainer);
+
+                    return true;
+
+                case GlobalAction.OpenMyPlaylists:
+                    if (!myPlaylistsOverlay.IsVisible)
+                    {
+                        hideOverlays();
+                        showOverlayContainer(myPlaylistsOverlay);
+                    }
+                    else
+                        hideOverlayContainer(myPlaylistsOverlay);
+
+                    return true;
+
+                case GlobalAction.AddPlaylistKey:
+                    if (!addPlaylistOverlay.IsVisible)
+                    {
+                        hideOverlays();
+                        showOverlayContainer(addPlaylistOverlay);
+                    }
+                    else
+                        hideOverlayContainer(addPlaylistOverlay);
+
+                    return true;
+
+                case GlobalAction.SaveVideoToPlaylist:
+                    if (videoData == null)
+                        return true;
+
+                    if (!videoSaveLocationOverlay.IsVisible)
+                    {
+                        hideOverlays();
+                        showOverlayContainer(videoSaveLocationOverlay);
+                    }
+                    else
+                        hideOverlayContainer(videoSaveLocationOverlay);
+
+                    return true;
+
                 case GlobalAction.OpenSettings:
                     if (!settingsContainer.IsVisible)
                     {
@@ -4659,6 +4727,9 @@ namespace NekoPlayer.App.Screens
                     return true;
 
                 case GlobalAction.ReportAbuse:
+                    if (videoData == null)
+                        return true;
+
                     if (!reportAbuseOverlay.IsVisible)
                     {
                         hideOverlays();
@@ -4670,6 +4741,9 @@ namespace NekoPlayer.App.Screens
                     return true;
 
                 case GlobalAction.OpenComments:
+                    if (videoData == null)
+                        return true;
+
                     if (!commentsContainer.IsVisible)
                     {
                         hideOverlays();
