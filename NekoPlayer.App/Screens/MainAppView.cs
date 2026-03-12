@@ -80,8 +80,7 @@ namespace NekoPlayer.App.Screens
     {
         private BufferedContainer videoContainer;
         private AdaptiveButton loadBtn, commentSendButton, searchButton, loadPlaylistBtn, loadPlaylistOpenButton, prevVideoButton, nextVideoButton, declineButton, acceptButton, logoutButton, viewChannelButton;
-        private AdaptiveTextBox commentTextBox, searchTextBox, playlistIdBox;
-        private FocusedTextBox videoIdBox;
+        private EnhancedFocusedTextBox videoIdBox, playlistIdBox, commentTextBox, searchTextBox;
         private LoadingSpinner spinner;
         private ScheduledDelegate spinnerShow;
         private AdaptiveAlertContainer alert;
@@ -814,7 +813,7 @@ namespace NekoPlayer.App.Screens
                                     Size = new Vector2(200, 60),
                                     Margin = new MarginPadding(8),
                                 },
-                                videoIdBox = new FocusedVideoIdBox
+                                videoIdBox = new EnhancedFocusedTextBox
                                 {
                                     Origin = Anchor.CentreRight,
                                     Anchor = Anchor.CentreRight,
@@ -1790,13 +1789,54 @@ namespace NekoPlayer.App.Screens
                                     {
                                         new Drawable[]
                                         {
-                                            commentTextBox = new AdaptiveTextBox
+                                            commentTextBox = new EnhancedFocusedTextBox
                                             {
                                                 RelativeSizeAxes = Axes.X,
                                                 Size = new Vector2(0.97f, 1f),
                                                 Text = "",
                                                 FontSize = 20,
                                                 Height = 45,
+                                                OnEnterKeyPressed = () =>
+                                                {
+                                                    if (!googleOAuth2.SignedIn.Value)
+                                                        return;
+
+                                                    if (string.IsNullOrEmpty(commentTextBox.Text))
+                                                        return;
+
+                                                    Toast toast = new Toast(NekoPlayerStrings.General, NekoPlayerStrings.CommentAdded);
+                                                    api.SendComment(videoId, commentTextBox.Text);
+
+                                                    Task.Run(async () =>
+                                                    {
+                                                        Channel myChannel = await api.GetMineChannelAsync();
+
+                                                        Comment dummy = new Comment();
+
+                                                        CommentSnippet wth = new CommentSnippet
+                                                        {
+                                                            PublishedAtDateTimeOffset = DateTimeOffset.Now,
+                                                            AuthorChannelId = { Value = myChannel.Id },
+                                                            TextDisplay = commentTextBox.Text,
+                                                            TextOriginal = commentTextBox.Text,
+                                                            LikeCount = 0,
+                                                        };
+
+                                                        dummy.Snippet = wth;
+
+                                                        Schedule(() =>
+                                                        {
+                                                            commentContainer.Add(new CommentDisplay(dummy)
+                                                            {
+                                                                RelativeSizeAxes = Axes.X,
+                                                            });
+                                                        });
+                                                    });
+
+                                                    Schedule(() => onScreenDisplay.Display(toast));
+
+                                                    commentTextBox.Text = string.Empty;
+                                                }
                                             },
                                             commentSendButton = new IconButton
                                             {
@@ -1953,7 +1993,7 @@ namespace NekoPlayer.App.Screens
                                     {
                                         new Drawable[]
                                         {
-                                            searchTextBox = new AdaptiveTextBox
+                                            searchTextBox = new EnhancedFocusedTextBox
                                             {
                                                 RelativeSizeAxes = Axes.X,
                                                 Size = new Vector2(0.97f, 1f),
@@ -1961,6 +2001,13 @@ namespace NekoPlayer.App.Screens
                                                 PlaceholderText = NekoPlayerStrings.SearchPlaceholder,
                                                 FontSize = 20,
                                                 Height = 45,
+                                                OnEnterKeyPressed = () =>
+                                                {
+                                                    if (string.IsNullOrEmpty(searchTextBox.Text))
+                                                        return;
+
+                                                    Schedule(() => Search());
+                                                }
                                             },
                                             searchButton = new IconButton
                                             {
@@ -2327,7 +2374,7 @@ namespace NekoPlayer.App.Screens
                                     Size = new Vector2(200, 60),
                                     Margin = new MarginPadding(8),
                                 },
-                                playlistIdBox = new FocusedVideoIdBox
+                                playlistIdBox = new EnhancedFocusedTextBox
                                 {
                                     Origin = Anchor.CentreRight,
                                     Anchor = Anchor.CentreRight,
@@ -4433,6 +4480,7 @@ namespace NekoPlayer.App.Screens
             {
                 hideOverlays();
                 showOverlayContainer(loadPlaylistContainer);
+                playlistIdBox.TakeFocus();
             };
 
             commentOpenButton.Action = () =>
@@ -6256,7 +6304,7 @@ namespace NekoPlayer.App.Screens
             }
         }
 
-        private partial class FocusedVideoIdBox : FocusedTextBox
+        private partial class EnhancedFocusedTextBox : FocusedTextBox
         {
             public Action OnEnterKeyPressed;
 
