@@ -81,13 +81,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
                     Colour = overlayColourProvider.Background5,
                     Alpha = 1f,
                 },
-                hover = new Box
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    Colour = Color4.White,
-                    Blending = BlendingParameters.Additive,
-                    Alpha = 0,
-                },
                 new Container {
                     RelativeSizeAxes = Axes.Both,
                     Padding = new MarginPadding
@@ -127,7 +120,14 @@ namespace NekoPlayer.App.Graphics.UserInterface
                             }
                         }
                     }
-                }
+                },
+                hover = new Box
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Colour = Color4.White,
+                    Blending = BlendingParameters.Additive,
+                    Alpha = 0,
+                },
             };
         }
 
@@ -145,7 +145,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         protected override bool OnHover(HoverEvent e)
         {
             if (ClickEvent != null)
-                hover.FadeTo(0.1f, 500, Easing.OutQuint);
+                hover.FadeTo(0.2f, 500, Easing.OutQuint);
 
             return base.OnHover(e);
         }

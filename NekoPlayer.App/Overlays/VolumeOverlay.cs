@@ -62,11 +62,12 @@ namespace NekoPlayer.App.Overlays
                     {
                         volumeMeters = new SelectionCycleFillFlowContainer<VolumeMeter>
                         {
+                            Scale = new Vector2(0.8f),
                             Direction = FillDirection.Vertical,
                             AutoSizeAxes = Axes.Both,
                             Anchor = Anchor.CentreLeft,
                             Origin = Anchor.CentreLeft,
-                            Spacing = new Vector2(0, offset),
+                            Spacing = new Vector2(0, -offset),
                             Children = new[]
                             {
                                 volumeMeterEffect = new VolumeMeter(NekoPlayerStrings.SFXVolume, 125, colours.BlueDarker),
@@ -156,14 +157,18 @@ namespace NekoPlayer.App.Overlays
         protected override void PopIn()
         {
             ClearTransforms();
-            this.FadeIn(100);
+            volumeMeters.ScaleTo(1, 500, Easing.OutQuint);
+            volumeMeters.TransformTo("Spacing", new Vector2(0, offset), 500, Easing.OutQuint);
+            this.FadeIn(500, Easing.OutQuint);
 
             schedulePopOut();
         }
 
         protected override void PopOut()
         {
-            this.FadeOut(100);
+            this.FadeOut(250, Easing.InQuint);
+            volumeMeters.ScaleTo(0.8f, 250, Easing.InQuint);
+            volumeMeters.TransformTo("Spacing", new Vector2(0, -offset), 250, Easing.InQuint);
         }
 
         protected override bool OnMouseMove(MouseMoveEvent e)

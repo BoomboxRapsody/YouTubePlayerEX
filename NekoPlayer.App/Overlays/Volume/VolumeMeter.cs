@@ -93,7 +93,7 @@ namespace NekoPlayer.App.Overlays.Volume
             sampleLastPlaybackTime = Time.Current;
 
             Color4 backgroundColour = overlayColourProvider.Background5;
-            meterColour = overlayColourProvider.Content2;
+            meterColour = overlayColourProvider.Light4;
 
             CircularProgress bgProgress;
 
@@ -101,7 +101,7 @@ namespace NekoPlayer.App.Overlays.Volume
             const float progress_size = 0.03f;
             const float progress_end_radius = progress_start_radius + progress_size;
 
-            const float blur_amount = 5;
+            const float blur_amount = 2.5f;
 
             Children = new Drawable[]
             {

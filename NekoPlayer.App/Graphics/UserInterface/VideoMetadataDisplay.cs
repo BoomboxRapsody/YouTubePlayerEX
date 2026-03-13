@@ -96,14 +96,8 @@ namespace NekoPlayer.App.Graphics.UserInterface
                     Colour = overlayColourProvider.Background4,
                     Alpha = 1,
                 },
-                hover = new Box
+                new Container
                 {
-                    RelativeSizeAxes = Axes.Both,
-                    Colour = Color4.White,
-                    Blending = BlendingParameters.Additive,
-                    Alpha = 0,
-                },
-                new Container {
                     RelativeSizeAxes = Axes.Both,
                     Padding = new MarginPadding(7),
                     Children = new Drawable[]
@@ -147,7 +141,14 @@ namespace NekoPlayer.App.Graphics.UserInterface
                             Anchor = Anchor.CentreRight,
                         }
                     }
-                }
+                },
+                hover = new Box
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Colour = Color4.White,
+                    Blending = BlendingParameters.Additive,
+                    Alpha = 0,
+                },
             };
 
             subscribeButton.Action = SubscribeClickAction;

@@ -286,6 +286,7 @@ namespace NekoPlayer.App
         /// </summary>
         public IBindable<bool> IsIdle => idleTracker.IsIdle;
 
+        private OverlayColourScheme colourScheme;
         private SentryClient sentry { get; set; }
 
         [BackgroundDependencyLoader]
@@ -333,6 +334,8 @@ namespace NekoPlayer.App
                 dependencies.Cache(AudioEffectsConfig = new AudioEffectsConfigManager(Storage));
                 dependencies.Cache(SessionStatics = new SessionStatics());
 
+                colourScheme = LocalConfig.Get<OverlayColourScheme>(NekoPlayerSetting.ColourScheme);
+
                 GlobalActionContainer globalBindings;
 
                 AdaptiveMenuSamples menuSamples;
@@ -343,7 +346,7 @@ namespace NekoPlayer.App
 
                 dependencies.CacheAs(colours = new AdaptiveColour());
 
-                dependencies.CacheAs(overlayColourProvider = new OverlayColourProvider(OverlayColourScheme.Aquamarine));
+                dependencies.CacheAs(overlayColourProvider = new OverlayColourProvider(colourScheme));
 
                 Logger.Log($"🎨 OverlayColourProvider loaded");
 

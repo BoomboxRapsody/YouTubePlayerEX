@@ -50,11 +50,11 @@ namespace NekoPlayer.App.Overlays.Volume
         }
 
         [BackgroundDependencyLoader]
-        private void load(AdaptiveColour colours)
+        private void load(AdaptiveColour colours, OverlayColourProvider overlayColourProvider)
         {
-            BackgroundColour = colours.Gray1;
-            hoveredBorderColour = colours.PinkLight;
-            unhoveredBorderColour = colours.Gray1;
+            BackgroundColour = overlayColourProvider.Background5;
+            hoveredBorderColour = overlayColourProvider.Light4;
+            unhoveredBorderColour = overlayColourProvider.Background5;
 
             SpriteIcon icon;
 

@@ -13,6 +13,7 @@ using osu.Framework.Extensions;
 using osu.Framework.Extensions.LocalisationExtensions;
 using osu.Framework.Platform;
 using NekoPlayer.App.Localisation;
+using NekoPlayer.App.Graphics;
 
 namespace NekoPlayer.App.Config
 {
@@ -74,6 +75,8 @@ namespace NekoPlayer.App.Config
             SetDefault(NekoPlayerSetting.AccessToken, string.Empty);
             SetDefault(NekoPlayerSetting.AudioQuality, AudioQuality.PreferHighQuality);
             SetDefault(NekoPlayerSetting.CloseButtonAction, CloseButtonAction.HideToTrayIcon);
+            SetDefault(NekoPlayerSetting.ColourScheme, OverlayColourScheme.Aquamarine);
+            SetDefault(NekoPlayerSetting.ProfileImageShape, ProfileImageShape.Circle);
         }
 
         public NekoPlayerConfigManager(Storage storage, IDictionary<NekoPlayerSetting, object> defaultOverrides = null) : base(storage, defaultOverrides)
@@ -142,5 +145,7 @@ namespace NekoPlayer.App.Config
         AccessToken,
         AudioQuality,
         CloseButtonAction,
+        ColourScheme,
+        ProfileImageShape,
     }
 }

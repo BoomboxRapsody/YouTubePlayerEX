@@ -242,6 +242,8 @@ namespace NekoPlayer.App.Screens
         private Bindable<SettingsNote.Data> oauth_note = new Bindable<SettingsNote.Data>();
         private Bindable<SettingsNote.Data> hwAccelNote = new Bindable<SettingsNote.Data>();
 
+        private Bindable<OverlayColourScheme> colourSchemeBindable;
+        private Bindable<ProfileImageShape> profileImageShape;
         private Bindable<CloseButtonAction> closeButtonAction;
 
         private Bindable<float> scalingBackgroundDim = null!;
@@ -331,6 +333,8 @@ namespace NekoPlayer.App.Screens
             alwaysUseOriginalAudio = appConfig.GetBindable<bool>(NekoPlayerSetting.AlwaysUseOriginalAudio);
             discordRichPresence = appConfig.GetBindable<DiscordRichPresenceMode>(NekoPlayerSetting.DiscordRichPresence);
             closeButtonAction = appConfig.GetBindable<CloseButtonAction>(NekoPlayerSetting.CloseButtonAction);
+            colourSchemeBindable = appConfig.GetBindable<OverlayColourScheme>(NekoPlayerSetting.ColourScheme);
+            profileImageShape = appConfig.GetBindable<ProfileImageShape>(NekoPlayerSetting.ProfileImageShape);
 
             captionEnabled = appConfig.GetBindable<bool>(NekoPlayerSetting.CaptionEnabled);
 
@@ -359,6 +363,14 @@ namespace NekoPlayer.App.Screens
             windowedResolution.Value = sizeWindowed.Value;
 
             use_sdl3.BindValueChanged(_ =>
+            {
+                if (game?.RestartAppWhenExited() == true)
+                {
+                    game.AttemptExit();
+                }
+            });
+
+            colourSchemeBindable.BindValueChanged(_ =>
             {
                 if (game?.RestartAppWhenExited() == true)
                 {
@@ -932,6 +944,16 @@ namespace NekoPlayer.App.Screens
                                                         {
                                                             Caption = NekoPlayerStrings.CloseButtonAction,
                                                             Current = closeButtonAction,
+                                                        }),
+                                                        new SettingsItemV2(new FormEnumDropdown<OverlayColourScheme>
+                                                        {
+                                                            Caption = NekoPlayerStrings.ColourScheme,
+                                                            Current = colourSchemeBindable,
+                                                        }),
+                                                         new SettingsItemV2(new FormEnumDropdown<ProfileImageShape>
+                                                        {
+                                                            Caption = NekoPlayerStrings.ProfileImageShape,
+                                                            Current = profileImageShape,
                                                         }),
                                                         new SettingsItemV2(new FormEnumDropdown<DiscordRichPresenceMode>
                                                         {

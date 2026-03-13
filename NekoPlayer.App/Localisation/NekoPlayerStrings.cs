@@ -1051,6 +1051,26 @@ namespace NekoPlayer.App.Localisation
         /// </summary>
         public static LocalisableString SystemVolumeWithDevice(string deviceName) => new TranslatableString(getKey(@"system_volume_with_device"), "System volume ({0})", deviceName);
 
+        /// <summary>
+        /// "App colour scheme"
+        /// </summary>
+        public static LocalisableString ColourScheme => new TranslatableString(getKey(@"colour_scheme"), "App colour scheme");
+
+        /// <summary>
+        /// "Circle"
+        /// </summary>
+        public static LocalisableString Circle => new TranslatableString(getKey(@"circle"), @"Circle");
+
+        /// <summary>
+        /// "Rounded square"
+        /// </summary>
+        public static LocalisableString Square => new TranslatableString(getKey(@"square"), @"Rounded square");
+
+        /// <summary>
+        /// "Profile image shape"
+        /// </summary>
+        public static LocalisableString ProfileImageShape => new TranslatableString(getKey(@"profile_image_shape"), @"Profile image shape");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }
