@@ -325,7 +325,7 @@ namespace NekoPlayer.App
 
                 dependencies.Cache(AudioNormalizationManager = new AudioNormalizationManager(this, LocalConfig));
 
-                dependencies.Cache(sentry = new SentryClient(this, GoogleOAuth2));
+                dependencies.Cache(sentry = new SentryClient(this, GoogleOAuth2, Storage));
 
                 dependencies.Cache(TranslateAPI = new GoogleTranslate(this, frameworkConfig));
                 dependencies.Cache(YouTubeService = new YouTubeAPI(this, frameworkConfig, TranslateAPI, LocalConfig, GoogleOAuth2, !IsDeployedBuild, new HttpClient()));

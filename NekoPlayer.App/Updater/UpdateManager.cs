@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Logging;
-using NekoPlayer.App.Config;
 using NekoPlayer.App.Extensions;
 
 namespace NekoPlayer.App.Updater

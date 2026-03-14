@@ -125,11 +125,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
             profileImage.Dispose();
         }
 
-        public void PlayClickAudio()
-        {
-            //clickAudio.Play();
-        }
-
         private HoverSounds samples = new HoverClickSounds(HoverSampleSet.Default);
 
         [Resolved]
@@ -137,7 +132,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         protected override bool OnClick(ClickEvent e)
         {
-            PlayClickAudio();
             if (channel != null)
                 app.Host.OpenUrlExternally($"https://www.youtube.com/channel/{channel.Id}");
 

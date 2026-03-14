@@ -6,14 +6,16 @@
 using System;
 using System.Net;
 using System.Net.WebSockets;
+using NekoPlayer.App.Config;
+using NekoPlayer.App.Online;
+using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
 using osu.Framework.Graphics;
 using osu.Framework.Logging;
+using osu.Framework.Platform;
 using Sentry;
-using NekoPlayer.App.Config;
-using NekoPlayer.App.Online;
 
 namespace NekoPlayer.App.Utils
 {
@@ -29,7 +31,7 @@ namespace NekoPlayer.App.Utils
         [Resolved]
         private YouTubeAPI youtubeAPI { get; set; }
 
-        public SentryClient(NekoPlayerAppBase app, GoogleOAuth2 googleOAuth2)
+        public SentryClient(NekoPlayerAppBase app, GoogleOAuth2 googleOAuth2, Storage? storage = null)
         {
             this.app = app;
             this.googleOAuth2 = googleOAuth2;
@@ -42,6 +44,7 @@ namespace NekoPlayer.App.Utils
                 opt.IsEnvironmentUser = false;
                 opt.AutoSessionTracking = true;
                 opt.IsGlobalModeEnabled = true;
+                opt.CacheDirectoryPath = storage?.GetFullPath(string.Empty);
                 opt.Release = app.Version;
             });
         }
@@ -106,6 +109,10 @@ namespace NekoPlayer.App.Utils
                 {
                     app = app.VersionHash,
                 };
+
+                scope.SetTag(@"os", $"{RuntimeInfo.OS} ({Environment.OSVersion})");
+                scope.SetTag(@"version hash", app.VersionHash);
+                scope.SetTag(@"processor count", Environment.ProcessorCount.ToString());
             });
         }
 
@@ -132,6 +139,7 @@ namespace NekoPlayer.App.Utils
 
             Logger.NewEntry -= onEntry;
             session?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

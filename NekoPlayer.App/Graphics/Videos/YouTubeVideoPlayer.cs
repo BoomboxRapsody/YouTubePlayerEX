@@ -13,7 +13,6 @@ using NekoPlayer.App.Graphics.Shaders.New.Bloom;
 using NekoPlayer.App.Graphics.Shaders.New.Chromatic;
 using NekoPlayer.App.Graphics.Shaders.New.Grayscale;
 using NekoPlayer.App.Graphics.Shaders.New.HueShift;
-using NekoPlayer.App.Localisation;
 using NekoPlayer.App.Online;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
