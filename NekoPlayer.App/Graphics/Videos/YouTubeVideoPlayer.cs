@@ -5,6 +5,16 @@
 
 using System;
 using System.IO;
+using NekoPlayer.App.Config;
+using NekoPlayer.App.Graphics.Caption;
+using NekoPlayer.App.Graphics.Containers;
+using NekoPlayer.App.Graphics.Shaders.New;
+using NekoPlayer.App.Graphics.Shaders.New.Bloom;
+using NekoPlayer.App.Graphics.Shaders.New.Chromatic;
+using NekoPlayer.App.Graphics.Shaders.New.Grayscale;
+using NekoPlayer.App.Graphics.Shaders.New.HueShift;
+using NekoPlayer.App.Localisation;
+using NekoPlayer.App.Online;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
 using osu.Framework.Audio.Track;
@@ -18,15 +28,6 @@ using osu.Framework.Graphics.Video;
 using osu.Framework.Timing;
 using osuTK.Graphics;
 using YoutubeExplode.Videos.ClosedCaptions;
-using NekoPlayer.App.Config;
-using NekoPlayer.App.Graphics.Caption;
-using NekoPlayer.App.Graphics.Containers;
-using NekoPlayer.App.Graphics.Shaders.New;
-using NekoPlayer.App.Graphics.Shaders.New.Bloom;
-using NekoPlayer.App.Graphics.Shaders.New.Chromatic;
-using NekoPlayer.App.Graphics.Shaders.New.Grayscale;
-using NekoPlayer.App.Graphics.Shaders.New.HueShift;
-using NekoPlayer.App.Online;
 
 namespace NekoPlayer.App.Graphics.Videos
 {
@@ -88,6 +89,8 @@ namespace NekoPlayer.App.Graphics.Videos
 
         private VideoNewShaderContainer bloom, chromatic, grayscale, hueShift = null!;
 
+        private Bindable<Localisation.Language> uiLanguage;
+
         [BackgroundDependencyLoader]
         private void load(ITrackStore tracks, NekoPlayerConfigManager config, ScreenshotManager screenshotManager)
         {
@@ -99,6 +102,7 @@ namespace NekoPlayer.App.Graphics.Videos
             chromaticAberrationStrength = config.GetBindable<float>(NekoPlayerSetting.ChromaticAberrationStrength);
             track = tracks.GetFromStream(File.OpenRead(fileName_Audio), fileName_Audio);
             playbackSpeed = new Bindable<double>(1);
+            uiLanguage = app.CurrentLanguage.GetBoundCopy();
 
             rateAdjustClock = new StopwatchClock(false);
             framedClock = new DecouplingFramedClock(rateAdjustClock);
@@ -259,6 +263,7 @@ namespace NekoPlayer.App.Graphics.Videos
         protected override void Dispose(bool isDisposing)
         {
             base.Dispose(isDisposing);
+            uiLanguage.UnbindEvents();
             mediaSession?.UnregisterControlEvents();
             mediaSession?.DeleteMediaSession();
 
@@ -277,10 +282,19 @@ namespace NekoPlayer.App.Graphics.Videos
             return drawableTrack.IsRunning;
         }
 
+        [Resolved]
+        private NekoPlayerApp app { get; set; }
+
         protected override void LoadComplete()
         {
             base.LoadComplete();
             mediaSession?.UpdateMediaSession(videoData);
+
+            uiLanguage.BindValueChanged(lang =>
+            {
+                mediaSession?.UpdateMediaSession(videoData);
+            });
+
             mediaSession?.UpdateTimestamp(videoData, 0);
         }
 

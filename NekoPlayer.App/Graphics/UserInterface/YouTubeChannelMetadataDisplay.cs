@@ -41,16 +41,12 @@ namespace NekoPlayer.App.Graphics.UserInterface
         [Resolved]
         private NekoPlayerAppBase app { get; set; }
 
-        private Bindable<string> localeBindable = new Bindable<string>();
-        private Bindable<UsernameDisplayMode> usernameDisplayMode;
-        private Bindable<VideoMetadataTranslateSource> translationSource = new Bindable<VideoMetadataTranslateSource>();
+        private Bindable<Localisation.Language> uiLanguage;
 
         [BackgroundDependencyLoader]
         private void load(OverlayColourProvider overlayColourProvider)
         {
-            localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
-            usernameDisplayMode = appConfig.GetBindable<UsernameDisplayMode>(NekoPlayerSetting.UsernameDisplayMode);
-            translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(NekoPlayerSetting.VideoMetadataTranslateSource);
+            uiLanguage = app.CurrentLanguage.GetBoundCopy();
 
             CornerRadius = NekoPlayerApp.UI_CORNER_RADIUS;
             Masking = true;
@@ -145,11 +141,20 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         public void UpdateUser(Channel channel)
         {
+            uiLanguage.UnbindEvents();
             Task.Run(async () =>
             {
                 videoName.Text = api.GetLocalizedChannelTitle(channel);
                 desc.Text = channel.Snippet.CustomUrl;
                 profileImage.UpdateProfileImage(channel.Id);
+            });
+
+            uiLanguage.BindValueChanged(locale =>
+            {
+                Task.Run(async () =>
+                {
+                    videoName.Text = api.GetLocalizedChannelTitle(channel);
+                });
             });
         }
     }

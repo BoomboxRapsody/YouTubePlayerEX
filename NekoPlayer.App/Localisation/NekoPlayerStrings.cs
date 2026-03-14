@@ -1071,6 +1071,36 @@ namespace NekoPlayer.App.Localisation
         /// </summary>
         public static LocalisableString ProfileImageShape => new TranslatableString(getKey(@"profile_image_shape"), @"Profile image shape");
 
+        /// <summary>
+        /// "Sort by"
+        /// </summary>
+        public static LocalisableString SortDefault => new TranslatableString(getKey(@"sort_title"), @"Sort by");
+
+        /// <summary>
+        /// "Top"
+        /// </summary>
+        public static LocalisableString CommentsSortTop => new TranslatableString(getKey(@"sort_top"), @"Top");
+
+        /// <summary>
+        /// "Newest"
+        /// </summary>
+        public static LocalisableString CommentsSortNewest => new TranslatableString(getKey(@"sort_newest"), @"Newest");
+
+        /// <summary>
+        /// "User interface"
+        /// </summary>
+        public static LocalisableString UserInterface => new TranslatableString(getKey(@"user_interface"), @"User interface");
+
+        /// <summary>
+        /// "No comments here..."
+        /// </summary>
+        public static LocalisableString NoComments => new TranslatableString(getKey(@"no_comments"), @"No comments here...");
+
+        /// <summary>
+        /// "whatever else?"
+        /// </summary>
+        public static LocalisableString NoCommentsDesc => new TranslatableString(getKey(@"no_comments_desc"), @"whatever else?");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

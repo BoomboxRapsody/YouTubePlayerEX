@@ -48,9 +48,8 @@ namespace NekoPlayer.App.Graphics.UserInterface
         [Resolved]
         private NekoPlayerConfigManager appConfig { get; set; } = null!;
 
-        private Bindable<string> localeBindable = new Bindable<string>();
+        private Bindable<Localisation.Language> uiLanguage;
         private Bindable<UsernameDisplayMode> usernameDisplayMode = null!;
-        private Bindable<VideoMetadataTranslateSource> translationSource = new Bindable<VideoMetadataTranslateSource>();
 
         public CommentDisplay(Comment comment)
         {
@@ -65,9 +64,8 @@ namespace NekoPlayer.App.Graphics.UserInterface
         [BackgroundDependencyLoader]
         private void load(OverlayColourProvider overlayColourProvider)
         {
-            localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
+            uiLanguage = app.CurrentLanguage.GetBoundCopy();
             usernameDisplayMode = appConfig.GetBindable<UsernameDisplayMode>(NekoPlayerSetting.UsernameDisplayMode);
-            translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(NekoPlayerSetting.VideoMetadataTranslateSource);
 
             CornerRadius = NekoPlayerApp.UI_CORNER_RADIUS;
             Masking = true;
@@ -246,6 +244,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         public void UpdateData()
         {
+            uiLanguage.UnbindEvents();
             Task.Run(async () =>
             {
                 try
@@ -274,7 +273,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                             channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
                         }, true);
 
-                        localeBindable.BindValueChanged(locale =>
+                        uiLanguage.BindValueChanged(locale =>
                         {
                             channelName.Text = string.Empty;
                             channelName.Text = api.GetLocalizedChannelTitle(channelData);

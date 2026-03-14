@@ -7,6 +7,12 @@ using System;
 using System.Threading.Tasks;
 using Google.Apis.YouTube.v3.Data;
 using Humanizer;
+using NekoPlayer.App.Config;
+using NekoPlayer.App.Extensions;
+using NekoPlayer.App.Graphics.Sprites;
+using NekoPlayer.App.Localisation;
+using NekoPlayer.App.Online;
+using NekoPlayer.App.Utils;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
@@ -21,12 +27,7 @@ using osuTK.Graphics;
 using PaletteNet;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using NekoPlayer.App.Config;
-using NekoPlayer.App.Extensions;
-using NekoPlayer.App.Graphics.Sprites;
-using NekoPlayer.App.Localisation;
-using NekoPlayer.App.Online;
-using NekoPlayer.App.Utils;
+using YoutubeExplode.Videos.ClosedCaptions;
 
 namespace NekoPlayer.App.Graphics.UserInterface
 {
@@ -65,14 +66,14 @@ namespace NekoPlayer.App.Graphics.UserInterface
         [Resolved]
         private NekoPlayerAppBase app { get; set; }
 
-        private Bindable<string> localeBindable = new Bindable<string>();
+        private Bindable<Localisation.Language> uiLanguage;
         private Bindable<UsernameDisplayMode> usernameDisplayMode;
         private Bindable<VideoMetadataTranslateSource> translationSource = new Bindable<VideoMetadataTranslateSource>();
 
         [BackgroundDependencyLoader]
         private void load(OverlayColourProvider overlayColourProvider)
         {
-            localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
+            uiLanguage = app.CurrentLanguage.GetBoundCopy();
             usernameDisplayMode = appConfig.GetBindable<UsernameDisplayMode>(NekoPlayerSetting.UsernameDisplayMode);
             translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(NekoPlayerSetting.VideoMetadataTranslateSource);
 
@@ -245,6 +246,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         public void UpdateVideo(string videoId)
         {
+            uiLanguage.UnbindEvents();
             Task.Run(async () =>
             {
                 videoData = api.GetVideo(videoId);
@@ -258,7 +260,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
                 GetPalette();
 
-                localeBindable.BindValueChanged(locale =>
+                uiLanguage.BindValueChanged(locale =>
                 {
                     Task.Run(async () =>
                     {

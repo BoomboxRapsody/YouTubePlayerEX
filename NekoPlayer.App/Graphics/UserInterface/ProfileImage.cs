@@ -78,18 +78,17 @@ namespace NekoPlayer.App.Graphics.UserInterface
             };
         }
 
-        private Sample clickAudio;
+        private Bindable<Localisation.Language> uiLanguage;
 
         [BackgroundDependencyLoader]
         private void load(ISampleStore tracks, OverlayColourProvider overlayColourProvider)
         {
+            uiLanguage = app.CurrentLanguage.GetBoundCopy();
             BorderColour = overlayColourProvider.Light4;
             BorderThickness = 0;
 
             profileImageShape = appConfig.GetBindable<ProfileImageShape>(NekoPlayerSetting.ProfileImageShape);
-            usernameDisplayMode = appConfig.GetBindable<UsernameDisplayMode>(NekoPlayerSetting.UsernameDisplayMode);
             translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(NekoPlayerSetting.VideoMetadataTranslateSource);
-            clickAudio = tracks.Get("button-select.wav");
 
             profileImageShape.BindValueChanged(shape =>
             {
@@ -153,6 +152,8 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         public void UpdateProfileImage(string channelId)
         {
+            translationSource.UnbindEvents();
+            uiLanguage.UnbindEvents();
             Task.Run(async () =>
             {
                 channel = api.GetChannel(channelId);
@@ -169,12 +170,16 @@ namespace NekoPlayer.App.Graphics.UserInterface
                         TooltipText = NekoPlayerStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel, true), Convert.ToInt32(channel.Statistics.SubscriberCount).ToMetric(decimals: 2));
                     });
                 }, true);
+
+                uiLanguage.BindValueChanged(locale =>
+                {
+                    Task.Run(async () =>
+                    {
+                        TooltipText = NekoPlayerStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel, true), Convert.ToInt32(channel.Statistics.SubscriberCount).ToMetric(decimals: 2));
+                    });
+                }, true);
             });
         }
-
-        private Bindable<UsernameDisplayMode> usernameDisplayMode;
-
-        private CancellationTokenSource profileImageCancellationSource = new CancellationTokenSource();
 
         public async Task GetProfileImage(string url, CancellationToken cancellationToken = default)
         {

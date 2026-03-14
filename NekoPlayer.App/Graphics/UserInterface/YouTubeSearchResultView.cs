@@ -50,7 +50,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         [Resolved]
         private NekoPlayerConfigManager appConfig { get; set; } = null!;
 
-        private Bindable<string> localeBindable = new Bindable<string>();
+        private Bindable<Localisation.Language> uiLanguage;
 
         public YouTubeSearchResultView()
             : base(HoverSampleSet.Default)
@@ -64,7 +64,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         [BackgroundDependencyLoader]
         private void load(OverlayColourProvider overlayColourProvider)
         {
-            localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
+            uiLanguage = app.CurrentLanguage.GetBoundCopy();
 
             CornerRadius = NekoPlayerApp.UI_CORNER_RADIUS;
             Masking = true;
@@ -228,6 +228,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         public void UpdateData()
         {
+            uiLanguage.UnbindEvents();
             Task.Run(async () =>
             {
                 try
@@ -247,7 +248,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                             viewsText.Text = NekoPlayerStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
 #pragma warning restore CS8629 // Nullable 값 형식이 null일 수 있습니다.
 
-                            localeBindable.BindValueChanged(locale =>
+                            uiLanguage.BindValueChanged(locale =>
                             {
                                 channelNameText.Text = api.GetLocalizedChannelTitle(channelData, true);
                                 videoNameText.Text = api.GetLocalizedVideoTitle(videoData);
@@ -268,7 +269,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                             videoNameText.Text = playlistData.Snippet.Title;
                             viewsText.Text = string.Empty;
 
-                            localeBindable.BindValueChanged(locale =>
+                            uiLanguage.BindValueChanged(locale =>
                             {
                                 channelNameText.Text = api.GetLocalizedChannelTitle(channelData, true);
                                 videoNameText.Text = playlistData.Snippet.Title;

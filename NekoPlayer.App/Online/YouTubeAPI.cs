@@ -291,6 +291,8 @@ namespace NekoPlayer.App.Online
 
         public IList<CommentThread> GetCommentThread(string videoId, CommentThreadsResource.ListRequest.OrderEnum orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Time)
         {
+            Logger.Log($"[NekoPlayer] GetCommentThread called with params ({videoId}, {orderEnum.ToString()})");
+
             var part = "snippet,replies";
             var request = youtubeService.CommentThreads.List(part);
 

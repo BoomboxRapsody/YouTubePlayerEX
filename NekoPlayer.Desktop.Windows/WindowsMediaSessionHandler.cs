@@ -75,8 +75,8 @@ namespace NekoPlayer.Desktop.Windows
         {
             Task.Run(async () =>
             {
-                smtc.DisplayUpdater.MusicProperties.Title = video.Snippet.Title;
-                smtc.DisplayUpdater.MusicProperties.Artist = YouTubeAPI.GetChannel(video.Snippet.ChannelId).Snippet.Title;
+                smtc.DisplayUpdater.MusicProperties.Title = YouTubeAPI.GetLocalizedVideoTitle(video);
+                smtc.DisplayUpdater.MusicProperties.Artist = YouTubeAPI.GetLocalizedChannelTitle(YouTubeAPI.GetChannel(video.Snippet.ChannelId));
                 smtc.DisplayUpdater.Thumbnail = RandomAccessStreamReference.CreateFromUri(new Uri(video.Snippet.Thumbnails.High.Url));
 
                 smtc.DisplayUpdater.Update();

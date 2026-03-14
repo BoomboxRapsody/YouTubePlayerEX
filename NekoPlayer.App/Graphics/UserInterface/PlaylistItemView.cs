@@ -10,9 +10,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Apis.YouTube.v3.Data;
 using Humanizer;
+using NekoPlayer.App.Config;
+using NekoPlayer.App.Extensions;
+using NekoPlayer.App.Graphics.Sprites;
+using NekoPlayer.App.Localisation;
+using NekoPlayer.App.Online;
+using NekoPlayer.App.Utils;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
+using osu.Framework.Extensions;
 using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
@@ -21,18 +28,12 @@ using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Events;
+using osu.Framework.Logging;
 using osuTK;
 using osuTK.Graphics;
 using PaletteNet;
 using SixLabors.ImageSharp.PixelFormats;
-using NekoPlayer.App.Config;
-using NekoPlayer.App.Extensions;
-using NekoPlayer.App.Graphics.Sprites;
-using NekoPlayer.App.Localisation;
-using NekoPlayer.App.Online;
-using NekoPlayer.App.Utils;
-using osu.Framework.Logging;
-using osu.Framework.Extensions;
+using YoutubeExplode.Videos.ClosedCaptions;
 
 namespace NekoPlayer.App.Graphics.UserInterface
 {
@@ -59,7 +60,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         [Resolved]
         private NekoPlayerConfigManager appConfig { get; set; } = null!;
 
-        private Bindable<string> localeBindable = new Bindable<string>();
+        private Bindable<Localisation.Language> uiLanguage;
 
         public int Index;
 
@@ -76,7 +77,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         [BackgroundDependencyLoader]
         private void load(OverlayColourProvider? overlayColourProvider, AdaptiveColour colour)
         {
-            localeBindable = frameworkConfig.GetBindable<string>(FrameworkSetting.Locale);
+            uiLanguage = app.CurrentLanguage.GetBoundCopy();
 
             BorderColour = overlayColourProvider?.Highlight1 ?? colour.Yellow;
             CornerRadius = NekoPlayerApp.UI_CORNER_RADIUS;
@@ -313,6 +314,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         public void UpdateData()
         {
+            uiLanguage.UnbindEvents();
             Task.Run(async () =>
             {
                 try
@@ -332,7 +334,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                         viewsText.Text = NekoPlayerStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
 #pragma warning restore CS8629 // Nullable 값 형식이 null일 수 있습니다.
 
-                        localeBindable.BindValueChanged(locale =>
+                        uiLanguage.BindValueChanged(locale =>
                         {
                             channelNameText.Text = api.GetLocalizedChannelTitle(channelData);
                             videoNameText.Text = api.GetLocalizedVideoTitle(videoData);

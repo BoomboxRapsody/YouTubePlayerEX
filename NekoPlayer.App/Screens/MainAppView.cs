@@ -111,6 +111,7 @@ namespace NekoPlayer.App.Screens
         private FormDropdown<Playlist> myPlaylistsDropdown;
 
         private Container overlayFadeContainer;
+        private Container commentsEmpty;
         private RoundedButtonContainer dislikeButton;
 
         protected override void Dispose(bool isDisposing)
@@ -268,6 +269,8 @@ namespace NekoPlayer.App.Screens
 
         private YouTubeI18nLangDropdown captionLangDropdown;
 
+        private GhostIcon ghostIcon;
+
 #nullable enable
         [Resolved(canBeNull: true)]
         private Online.DiscordRPC? discordRPC { get; set; }
@@ -293,6 +296,17 @@ namespace NekoPlayer.App.Screens
             Precision = 0.01,
             Default = 1,
         };
+
+        private Bindable<CommentsSortCriteria> CommentsSort = new Bindable<CommentsSortCriteria>(CommentsSortCriteria.Top);
+
+        public enum CommentsSortCriteria
+        {
+            [LocalisableDescription(typeof(NekoPlayerStrings), nameof(NekoPlayerStrings.CommentsSortTop))]
+            Top,
+
+            [LocalisableDescription(typeof(NekoPlayerStrings), nameof(NekoPlayerStrings.CommentsSortNewest))]
+            Newest,
+        }
 
         [BackgroundDependencyLoader]
         private void load(ISampleStore sampleStore, FrameworkConfigManager config, NekoPlayerConfigManager appConfig, GameHost host, Storage storage, OverlayColourProvider overlayColourProvider, TextureStore textures, FrameworkDebugConfigManager debugConfig)
@@ -930,30 +944,10 @@ namespace NekoPlayer.App.Screens
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             Colour = overlayColourProvider.Content2,
                                                         },
-                                                        new SettingsItemV2(new FormEnumDropdown<Language>
-                                                        {
-                                                            Caption = NekoPlayerStrings.Language,
-                                                            Current = game.CurrentLanguage,
-                                                            AlwaysShowSearchBar = true,
-                                                        })
-                                                        {
-                                                            ShowRevertToDefaultButton = false,
-                                                            CanBeShown = { BindTarget = displayDropdownCanBeShown }
-                                                        },
                                                         new SettingsItemV2(new FormEnumDropdown<CloseButtonAction>
                                                         {
                                                             Caption = NekoPlayerStrings.CloseButtonAction,
                                                             Current = closeButtonAction,
-                                                        }),
-                                                        new SettingsItemV2(new FormEnumDropdown<OverlayColourScheme>
-                                                        {
-                                                            Caption = NekoPlayerStrings.ColourScheme,
-                                                            Current = colourSchemeBindable,
-                                                        }),
-                                                         new SettingsItemV2(new FormEnumDropdown<ProfileImageShape>
-                                                        {
-                                                            Caption = NekoPlayerStrings.ProfileImageShape,
-                                                            Current = profileImageShape,
                                                         }),
                                                         new SettingsItemV2(new FormEnumDropdown<DiscordRichPresenceMode>
                                                         {
@@ -964,11 +958,6 @@ namespace NekoPlayer.App.Screens
                                                         {
                                                             Caption = NekoPlayerStrings.VideoMetadataTranslateSource,
                                                             Current = appConfig.GetBindable<VideoMetadataTranslateSource>(NekoPlayerSetting.VideoMetadataTranslateSource),
-                                                        }),
-                                                        new SettingsItemV2(new FormEnumDropdown<UsernameDisplayMode>
-                                                        {
-                                                            Caption = NekoPlayerStrings.UsernameDisplayMode,
-                                                            Current = usernameDisplayMode,
                                                         }),
                                                         new SettingsItemV2(login = new FormButton
                                                         {
@@ -1011,21 +1000,34 @@ namespace NekoPlayer.App.Screens
                                                         new AdaptiveSpriteText
                                                         {
                                                             Font = NekoPlayerApp.TorusAlternate.With(size: 30),
-                                                            Text = NekoPlayerStrings.Graphics,
+                                                            Text = NekoPlayerStrings.UserInterface,
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             Colour = overlayColourProvider.Content2,
                                                         },
-                                                        new SettingsItemV2(new FormEnumDropdown<AspectRatioMethod>
+                                                        new SettingsItemV2(new FormEnumDropdown<Language>
                                                         {
-                                                            Caption = NekoPlayerStrings.AspectRatioMethod,
-                                                            Current = aspectRatioMethod,
-                                                            Hotkey = new Hotkey(GlobalAction.CycleAspectRatio),
+                                                            Caption = NekoPlayerStrings.Language,
+                                                            Current = game.CurrentLanguage,
+                                                            AlwaysShowSearchBar = true,
+                                                        })
+                                                        {
+                                                            ShowRevertToDefaultButton = false,
+                                                            CanBeShown = { BindTarget = displayDropdownCanBeShown }
+                                                        },
+                                                        new SettingsItemV2(new FormEnumDropdown<UsernameDisplayMode>
+                                                        {
+                                                            Caption = NekoPlayerStrings.UsernameDisplayMode,
+                                                            Current = usernameDisplayMode,
                                                         }),
-                                                        new SettingsItemV2(new FormSliderBar<double>
+                                                        new SettingsItemV2(new FormEnumDropdown<OverlayColourScheme>
                                                         {
-                                                            Caption = NekoPlayerStrings.VideoDimLevel,
-                                                            Current = appConfig.GetBindable<double>(NekoPlayerSetting.VideoDimLevel),
-                                                            DisplayAsPercentage = true,
+                                                            Caption = NekoPlayerStrings.ColourScheme,
+                                                            Current = colourSchemeBindable,
+                                                        }),
+                                                        new SettingsItemV2(new FormEnumDropdown<ProfileImageShape>
+                                                        {
+                                                            Caption = NekoPlayerStrings.ProfileImageShape,
+                                                            Current = profileImageShape,
                                                         }),
                                                         new SettingsItemV2(new FormSliderBar<float>
                                                         {
@@ -1035,6 +1037,18 @@ namespace NekoPlayer.App.Screens
                                                             KeyboardStep = 0.01f,
                                                             LabelFormat = v => $@"{v:0.##}x",
                                                         }),
+                                                        new SettingsItemV2(new FormCheckBox
+                                                        {
+                                                            Caption = NekoPlayerStrings.UseSystemCursor,
+                                                            Current = appConfig.GetBindable<bool>(NekoPlayerSetting.UseSystemCursor),
+                                                        }),
+                                                        new AdaptiveSpriteText
+                                                        {
+                                                            Font = NekoPlayerApp.TorusAlternate.With(size: 30),
+                                                            Text = NekoPlayerStrings.Graphics,
+                                                            Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
+                                                            Colour = overlayColourProvider.Content2,
+                                                        },
                                                         new SettingsItemV2(new FrameSyncDropdown
                                                         {
                                                             Caption = NekoPlayerStrings.FrameLimiter,
@@ -1097,11 +1111,6 @@ namespace NekoPlayer.App.Screens
                                                             Caption = NekoPlayerStrings.ShowFPS,
                                                             Current = fpsDisplay,
                                                             Hotkey = new Hotkey(GlobalAction.ToggleFPSDisplay),
-                                                        }),
-                                                        new SettingsItemV2(new FormCheckBox
-                                                        {
-                                                            Caption = NekoPlayerStrings.UseSystemCursor,
-                                                            Current = appConfig.GetBindable<bool>(NekoPlayerSetting.UseSystemCursor),
                                                         }),
                                                         safeAreaConsiderationsCanBeShown = new SettingsItemV2(new FormCheckBox
                                                         {
@@ -1199,6 +1208,18 @@ namespace NekoPlayer.App.Screens
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             Colour = overlayColourProvider.Content2,
                                                         },
+                                                        new SettingsItemV2(new FormEnumDropdown<AspectRatioMethod>
+                                                        {
+                                                            Caption = NekoPlayerStrings.AspectRatioMethod,
+                                                            Current = aspectRatioMethod,
+                                                            Hotkey = new Hotkey(GlobalAction.CycleAspectRatio),
+                                                        }),
+                                                        new SettingsItemV2(new FormSliderBar<double>
+                                                        {
+                                                            Caption = NekoPlayerStrings.VideoDimLevel,
+                                                            Current = appConfig.GetBindable<double>(NekoPlayerSetting.VideoDimLevel),
+                                                            DisplayAsPercentage = true,
+                                                        }),
                                                         new SettingsItemV2(hwAccelCheckbox = new FormCheckBox
                                                         {
                                                             Caption = NekoPlayerStrings.UseHardwareAcceleration,
@@ -1790,6 +1811,13 @@ namespace NekoPlayer.App.Screens
                                     Font = NekoPlayerApp.TorusAlternate.With(size: 30, weight: "Bold"),
                                     Colour = overlayColourProvider.Content2,
                                 },
+                                new OverlaySortTabControl<CommentsSortCriteria>
+                                {
+                                    Origin = Anchor.TopRight,
+                                    Anchor = Anchor.TopRight,
+                                    Current = CommentsSort,
+                                    Margin = new MarginPadding(20),
+                                },
                                 new GridContainer
                                 {
                                     Margin = new MarginPadding
@@ -1897,6 +1925,57 @@ namespace NekoPlayer.App.Screens
                                                     Spacing = new Vector2(0, 4),
                                                     AlwaysPresent = true,
                                                 }
+                                            }
+                                        },
+                                        commentsEmpty = new Container
+                                        {
+                                            RelativeSizeAxes = Axes.Both,
+                                            Children = new Drawable[]
+                                            {
+                                                new FillFlowContainer
+                                                {
+                                                    Direction = FillDirection.Vertical,
+                                                    Anchor = Anchor.Centre,
+                                                    Origin = Anchor.Centre,
+                                                    Width = 300,
+                                                    AutoSizeAxes = Axes.Y,
+                                                    Children = new Drawable[]
+                                                    {
+                                                        new Container
+                                                        {
+                                                            Anchor = Anchor.TopCentre,
+                                                            Origin = Anchor.TopCentre,
+                                                            Margin = new MarginPadding(10),
+                                                            Size = new Vector2(50),
+                                                            Child = ghostIcon = new GhostIcon
+                                                            {
+                                                                RelativeSizeAxes = Axes.Both,
+                                                            },
+                                                            Colour = overlayColourProvider.Content2,
+                                                        },
+                                                        new AdaptiveSpriteText
+                                                        {
+                                                            Anchor = Anchor.TopCentre,
+                                                            Origin = Anchor.TopCentre,
+                                                            Font = NekoPlayerApp.TorusAlternate.With(size: 32, weight: "Bold"),
+                                                            Text = NekoPlayerStrings.NoComments,
+                                                            Colour = overlayColourProvider.Content2,
+                                                        },
+                                                        new LinkFlowContainer
+                                                        {
+                                                            Alpha = 1,
+                                                            AlwaysPresent = true,
+                                                            Anchor = Anchor.TopCentre,
+                                                            Origin = Anchor.TopCentre,
+                                                            Padding = new MarginPadding { Top = 20 },
+                                                            RelativeSizeAxes = Axes.X,
+                                                            AutoSizeAxes = Axes.Y,
+                                                            TextAnchor = Anchor.Centre,
+                                                            Text = NekoPlayerStrings.NoCommentsDesc,
+                                                            Colour = overlayColourProvider.Foreground2,
+                                                        }
+                                                    }
+                                                },
                                             }
                                         }
                                     }
@@ -4422,6 +4501,12 @@ namespace NekoPlayer.App.Screens
         {
             base.LoadComplete();
 
+            ghostIcon.Loop(t =>
+                t.MoveToY(-10, 2000, Easing.InOutSine)
+                 .Then()
+                 .MoveToY(0, 2000, Easing.InOutSine)
+            );
+
             discordRichPresence.BindValueChanged(mode => updatePresence(mode.NewValue), true);
             localeBindable.BindValueChanged(_ => updatePresence(discordRichPresence.Value), true);
             trayIconVisible.BindValueChanged(_ => updatePresence(discordRichPresence.Value), true);
@@ -5484,8 +5569,20 @@ namespace NekoPlayer.App.Screens
                     };
                 });
 
+                CommentThreadsResource.ListRequest.OrderEnum orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Relevance;
+
+                switch (CommentsSort.Value)
+                {
+                    case CommentsSortCriteria.Top:
+                        orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Relevance;
+                        break;
+                    case CommentsSortCriteria.Newest:
+                        orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Time;
+                        break;
+                }
+
                 // comments area
-                IList<CommentThread> commentThreadData = api.GetCommentThread(videoId);
+                IList<CommentThread> commentThreadData = api.GetCommentThread(videoId, orderEnum);
                 foreach (CommentThread item in commentThreadData)
                 {
                     if (item.Snippet.IsPublic == true)
@@ -5506,6 +5603,49 @@ namespace NekoPlayer.App.Screens
 #pragma warning restore CS4014 // 이 호출을 대기하지 않으므로 호출이 완료되기 전에 현재 메서드가 계속 실행됩니다.
                     }
                 }
+
+                CommentsSort.BindValueChanged(sort =>
+                {
+                    foreach (var item in commentContainer.Children)
+                    {
+                        Schedule(() => item.Expire());
+                    }
+
+                    CommentThreadsResource.ListRequest.OrderEnum orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Relevance;
+
+                    switch (sort.NewValue)
+                    {
+                        case CommentsSortCriteria.Top:
+                            orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Relevance;
+                            break;
+                        case CommentsSortCriteria.Newest:
+                            orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Time;
+                            break;
+                    }
+
+                    // comments area
+                    IList<CommentThread> commentThreadData = api.GetCommentThread(videoId, orderEnum);
+                    foreach (CommentThread item in commentThreadData)
+                    {
+                        if (item.Snippet.IsPublic == true)
+                        {
+#pragma warning disable CS4014 // 이 호출을 대기하지 않으므로 호출이 완료되기 전에 현재 메서드가 계속 실행됩니다.
+                            Task.Run(async () =>
+                            {
+                                Comment comment = await api.GetComment(item.Id);
+
+                                Schedule(() =>
+                                {
+                                    commentContainer.Add(new CommentDisplay(comment)
+                                    {
+                                        RelativeSizeAxes = Axes.X,
+                                    });
+                                });
+                            });
+#pragma warning restore CS4014 // 이 호출을 대기하지 않으므로 호출이 완료되기 전에 현재 메서드가 계속 실행됩니다.
+                        }
+                    }
+                });
 
                 usernameDisplayMode.BindValueChanged(locale =>
                 {
@@ -5633,6 +5773,7 @@ namespace NekoPlayer.App.Screens
             this.videoId = YoutubeExplode.Videos.VideoId.Parse(videoId);
             pausedTime = clearCache ? currentVideoSource.VideoProgress.Value : 0;
             Schedule(() => currentVideoSource?.Expire());
+            CommentsSort.UnbindEvents();
             if (loadVideoContainer.IsVisible == true)
             {
                 Schedule(() => hideOverlayContainer(loadVideoContainer));
