@@ -955,6 +955,13 @@ namespace NekoPlayer.App.Screens
                                                             BackgroundColour = colours.YellowDarker.Darken(0.5f),
                                                             Action = () => Task.Run(exportLogs),
                                                         },
+                                                        new SettingsButtonV2
+                                                        {
+                                                            Text = NekoPlayerStrings.ReportBugs,
+                                                            TooltipText = NekoPlayerStrings.ReportBugsDesc,
+                                                            Padding = new MarginPadding { Horizontal = 30 },
+                                                            Action = () => host.OpenUrlExternally("https://github.com/BoomboxRapsody/NekoPlayer/issues"),
+                                                        },
                                                         new AdaptiveSpriteText
                                                         {
                                                             Font = NekoPlayerApp.TorusAlternate.With(size: 30),
