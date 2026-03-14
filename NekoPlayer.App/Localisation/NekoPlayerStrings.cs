@@ -1101,6 +1101,16 @@ namespace NekoPlayer.App.Localisation
         /// </summary>
         public static LocalisableString NoCommentsDesc => new TranslatableString(getKey(@"no_comments_desc"), @"whatever else?");
 
+        /// <summary>
+        /// "Mute system sounds"
+        /// </summary>
+        public static LocalisableString SystemMute => new TranslatableString(getKey(@"system_sound_mute"), @"Mute system sounds");
+
+        /// <summary>
+        /// "This setting mutes NekoPlayer sounds and other apps, and system sounds."
+        /// </summary>
+        public static LocalisableString SystemMuteDesc => new TranslatableString(getKey(@"system_sound_mute_desc"), @"This setting mutes NekoPlayer sounds and other apps, and system sounds.");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

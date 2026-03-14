@@ -244,7 +244,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         public void UpdateData()
         {
-            uiLanguage.UnbindEvents();
             Task.Run(async () =>
             {
                 try

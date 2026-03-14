@@ -69,6 +69,7 @@ using SharpCompress.Archives.Zip;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Videos.ClosedCaptions;
 using YoutubeExplode.Videos.Streams;
+using static Google.Apis.YouTube.v3.CommentThreadsResource.ListRequest;
 using static NekoPlayer.App.NekoPlayerApp;
 using Container = osu.Framework.Graphics.Containers.Container;
 using Language = NekoPlayer.App.Localisation.Language;
@@ -271,6 +272,8 @@ namespace NekoPlayer.App.Screens
 
         private GhostIcon ghostIcon;
 
+        private Bindable<bool> systemSoundMute = new Bindable<bool>();
+
 #nullable enable
         [Resolved(canBeNull: true)]
         private Online.DiscordRPC? discordRPC { get; set; }
@@ -278,7 +281,7 @@ namespace NekoPlayer.App.Screens
 
         //effects
         private Bindable<bool> reverbEnabled, rotateEnabled, echoEnabled, distortionEnabled, karaokeEnabled;
-        private FillFlowContainer reverbSettings, rotateSettings, echoSettings, distortionSettings;
+        private FillFlowContainer reverbSettings, rotateSettings, echoSettings, distortionSettings, volumeOptions;
 
         private Bindable<bool> repeat = new Bindable<bool>();
 
@@ -1330,33 +1333,50 @@ namespace NekoPlayer.App.Screens
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             Colour = overlayColourProvider.Content2,
                                                         },
-                                                        systemVolumeControlBase = new SettingsItemV2(systemVolumeControl = new FormSliderBar<double>
+                                                        new SettingsItemV2(new FormCheckBox
                                                         {
-                                                            Caption = NekoPlayerStrings.SystemVolume,
-                                                            Current = systemVolume,
-                                                            DisplayAsPercentage = true,
-                                                        })
+                                                            Caption = NekoPlayerStrings.SystemMute,
+                                                            HintText = NekoPlayerStrings.SystemMuteDesc,
+                                                            Current = systemSoundMute,
+                                                        }),
+                                                        volumeOptions = new FillFlowContainer
                                                         {
-                                                            ShowRevertToDefaultButton = false,
+                                                            Direction = FillDirection.Vertical,
+                                                            RelativeSizeAxes = Axes.X,
+                                                            AutoSizeAxes = Axes.Y,
+                                                            Masking = true,
+                                                            Spacing = new Vector2(0, 4),
+                                                            Children = new Drawable[]
+                                                            {
+                                                                systemVolumeControlBase = new SettingsItemV2(systemVolumeControl = new FormSliderBar<double>
+                                                                {
+                                                                    Caption = NekoPlayerStrings.SystemVolume,
+                                                                    Current = systemVolume,
+                                                                    DisplayAsPercentage = true,
+                                                                })
+                                                                {
+                                                                    ShowRevertToDefaultButton = false,
+                                                                },
+                                                                new SettingsItemV2(new FormSliderBar<double>
+                                                                {
+                                                                    Caption = NekoPlayerStrings.MasterVolume,
+                                                                    Current = config.GetBindable<double>(FrameworkSetting.VolumeUniversal),
+                                                                    DisplayAsPercentage = true,
+                                                                }),
+                                                                new SettingsItemV2(new FormSliderBar<double>
+                                                                {
+                                                                    Caption = NekoPlayerStrings.VideoVolume,
+                                                                    Current = videoVolume,
+                                                                    DisplayAsPercentage = true,
+                                                                }),
+                                                                new SettingsItemV2(new FormSliderBar<double>
+                                                                {
+                                                                    Caption = NekoPlayerStrings.SFXVolume,
+                                                                    Current = config.GetBindable<double>(FrameworkSetting.VolumeEffect),
+                                                                    DisplayAsPercentage = true,
+                                                                }),
+                                                            }
                                                         },
-                                                        new SettingsItemV2(new FormSliderBar<double>
-                                                        {
-                                                            Caption = NekoPlayerStrings.MasterVolume,
-                                                            Current = config.GetBindable<double>(FrameworkSetting.VolumeUniversal),
-                                                            DisplayAsPercentage = true,
-                                                        }),
-                                                        new SettingsItemV2(new FormSliderBar<double>
-                                                        {
-                                                            Caption = NekoPlayerStrings.VideoVolume,
-                                                            Current = videoVolume,
-                                                            DisplayAsPercentage = true,
-                                                        }),
-                                                        new SettingsItemV2(new FormSliderBar<double>
-                                                        {
-                                                            Caption = NekoPlayerStrings.SFXVolume,
-                                                            Current = config.GetBindable<double>(FrameworkSetting.VolumeEffect),
-                                                            DisplayAsPercentage = true,
-                                                        }),
                                                         new SettingsItemV2(new FormCheckBox
                                                         {
                                                             Caption = NekoPlayerStrings.AudioNormalization,
@@ -1858,31 +1878,7 @@ namespace NekoPlayer.App.Screens
                                                     Toast toast = new Toast(NekoPlayerStrings.General, NekoPlayerStrings.CommentAdded);
                                                     api.SendComment(videoId, commentTextBox.Text);
 
-                                                    Task.Run(async () =>
-                                                    {
-                                                        Channel myChannel = await api.GetMineChannelAsync();
-
-                                                        Comment dummy = new Comment();
-
-                                                        CommentSnippet wth = new CommentSnippet
-                                                        {
-                                                            PublishedAtDateTimeOffset = DateTimeOffset.Now,
-                                                            AuthorChannelId = { Value = myChannel.Id },
-                                                            TextDisplay = commentTextBox.Text,
-                                                            TextOriginal = commentTextBox.Text,
-                                                            LikeCount = 0,
-                                                        };
-
-                                                        dummy.Snippet = wth;
-
-                                                        Schedule(() =>
-                                                        {
-                                                            commentContainer.Add(new CommentDisplay(dummy)
-                                                            {
-                                                                RelativeSizeAxes = Axes.X,
-                                                            });
-                                                        });
-                                                    });
+                                                    Scheduler.AddDelayed(() => updateComments(videoId), 2000);
 
                                                     Schedule(() => onScreenDisplay.Display(toast));
 
@@ -3820,6 +3816,16 @@ namespace NekoPlayer.App.Screens
                 updateAudioEffectsVisibility();
             });
 
+            systemSoundMute.BindValueChanged(_ =>
+            {
+                volumeOptions.ClearTransforms();
+                volumeOptions.AutoSizeDuration = 400;
+                volumeOptions.AutoSizeEasing = Easing.OutQuint;
+
+                updateVolumeSettingsVisibility();
+            });
+            updateVolumeSettingsVisibility();
+
             rotateEnabled.BindValueChanged(_ =>
             {
                 rotateSettings.ClearTransforms();
@@ -3907,6 +3913,13 @@ namespace NekoPlayer.App.Screens
                 });
 
                 systemVolumeControl.Caption = NekoPlayerStrings.SystemVolumeWithDevice(defaultPlaybackDevice.FriendlyName);
+
+                systemSoundMute.Value = defaultPlaybackDevice.AudioEndpointVolume.Mute;
+
+                systemSoundMute.BindValueChanged(value =>
+                {
+                    defaultPlaybackDevice.AudioEndpointVolume.Mute = value.NewValue;
+                });
             } else
             {
                 systemVolumeControlBase.Hide();
@@ -3982,6 +3995,21 @@ namespace NekoPlayer.App.Screens
                         distortionSettings.ResizeHeightTo(0, 400, Easing.OutQuint);
 
                     distortionSettings.AutoSizeAxes = distortionEnabled.Value != false ? Axes.Y : Axes.None;
+                }
+                catch
+                {
+                }
+            }
+
+            void updateVolumeSettingsVisibility()
+            {
+                try
+                {
+                    //reverb
+                    if (systemSoundMute.Value == true)
+                        volumeOptions.ResizeHeightTo(0, 400, Easing.OutQuint);
+
+                    volumeOptions.AutoSizeAxes = systemSoundMute.Value != true ? Axes.Y : Axes.None;
                 }
                 catch
                 {
@@ -5256,6 +5284,60 @@ namespace NekoPlayer.App.Screens
             public override LocalisableString TooltipText => NekoPlayerStrings.PlaybackSpeed(Current.Value);
         }
 
+        private void updateComments(string videoId)
+        {
+            Schedule(() =>
+            {
+                foreach (var item in commentContainer.Children)
+                {
+                    Schedule(() => item.Expire());
+                }
+
+                commentCount.Text = videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : NekoPlayerStrings.DisabledByUploader;
+                commentsContainerTitle.Text = NekoPlayerStrings.Comments(videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : NekoPlayerStrings.Disabled);
+
+                CommentThreadsResource.ListRequest.OrderEnum orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Relevance;
+
+                switch (CommentsSort.Value)
+                {
+                    case CommentsSortCriteria.Top:
+                        orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Relevance;
+                        break;
+                    case CommentsSortCriteria.Newest:
+                        orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Time;
+                        break;
+                }
+
+                // comments area
+                IList<CommentThread> commentThreadData = api.GetCommentThread(videoId, orderEnum);
+                foreach (CommentThread item in commentThreadData)
+                {
+                    if (item.Snippet.IsPublic == true)
+                    {
+#pragma warning disable CS4014 // 이 호출을 대기하지 않으므로 호출이 완료되기 전에 현재 메서드가 계속 실행됩니다.
+                        Task.Run(async () =>
+                        {
+                            Comment comment = await api.GetComment(item.Id);
+
+                            Schedule(() =>
+                            {
+                                commentContainer.Add(new CommentDisplay(comment)
+                                {
+                                    RelativeSizeAxes = Axes.X,
+                                });
+                            });
+                        });
+#pragma warning restore CS4014 // 이 호출을 대기하지 않으므로 호출이 완료되기 전에 현재 메서드가 계속 실행됩니다.
+                    }
+                }
+
+                if (commentThreadData.Count > 0)
+                    commentsEmpty.Hide();
+                else
+                    commentsEmpty.Show();
+            });
+        }
+
         private void updateRatingButtons(string videoId, bool ratingButtonsEnabled)
         {
             if (!googleOAuth2.SignedIn.Value)
@@ -5481,7 +5563,7 @@ namespace NekoPlayer.App.Screens
                     }));
                 }
                 sessionStatics.GetBindable<string>(Static.CurrentThumbnailUrl).Value = videoData.Snippet.Thumbnails.High.Url;
-                commentCount.Text = videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : NekoPlayerStrings.DisabledByUploader;
+                //commentCount.Text = videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : NekoPlayerStrings.DisabledByUploader;
                 /*
                 try
                 {
@@ -5499,8 +5581,10 @@ namespace NekoPlayer.App.Screens
                 DateTime.TryParseExact(uploadDateRaw, @"yyyy-MM-dd\THH:mm:ss\Z", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var uploadDate);
 
                 //likeCount.Text = videoData.Statistics.LikeCount != null ? Convert.ToDouble(videoData.Statistics.LikeCount).ToMetric(decimals: 2) : Convert.ToDouble(ReturnYouTubeDislike.GetDislikes(videoId).RawLikes).ToMetric(decimals: 2);
-                commentsContainerTitle.Text = NekoPlayerStrings.Comments(videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : NekoPlayerStrings.Disabled);
+                //commentsContainerTitle.Text = NekoPlayerStrings.Comments(videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : NekoPlayerStrings.Disabled);
                 videoInfoDetails.Text = NekoPlayerStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), uploadDate.ToString());
+
+                updateComments(videoId);
 
                 refreshLikeDislikeCount(videoId);
 
@@ -5586,31 +5670,7 @@ namespace NekoPlayer.App.Screens
                         Toast toast = new Toast(NekoPlayerStrings.General, NekoPlayerStrings.CommentAdded);
                         api.SendComment(videoId, commentTextBox.Text);
 
-                        Task.Run(async () =>
-                        {
-                            Channel myChannel = await api.GetMineChannelAsync();
-
-                            Comment dummy = new Comment();
-
-                            CommentSnippet wth = new CommentSnippet
-                            {
-                                PublishedAtDateTimeOffset = DateTimeOffset.Now,
-                                AuthorChannelId = { Value = myChannel.Id },
-                                TextDisplay = commentTextBox.Text,
-                                TextOriginal = commentTextBox.Text,
-                                LikeCount = 0,
-                            };
-
-                            dummy.Snippet = wth;
-
-                            Schedule(() =>
-                            {
-                                commentContainer.Add(new CommentDisplay(dummy)
-                                {
-                                    RelativeSizeAxes = Axes.X,
-                                });
-                            });
-                        });
+                        Scheduler.AddDelayed(() => updateComments(videoId), 2000);
 
                         Schedule(() => onScreenDisplay.Display(toast));
 
@@ -5618,87 +5678,9 @@ namespace NekoPlayer.App.Screens
                     };
                 });
 
-                CommentThreadsResource.ListRequest.OrderEnum orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Relevance;
-
-                switch (CommentsSort.Value)
-                {
-                    case CommentsSortCriteria.Top:
-                        orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Relevance;
-                        break;
-                    case CommentsSortCriteria.Newest:
-                        orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Time;
-                        break;
-                }
-
-                // comments area
-                IList<CommentThread> commentThreadData = api.GetCommentThread(videoId, orderEnum);
-                foreach (CommentThread item in commentThreadData)
-                {
-                    if (item.Snippet.IsPublic == true)
-                    {
-#pragma warning disable CS4014 // 이 호출을 대기하지 않으므로 호출이 완료되기 전에 현재 메서드가 계속 실행됩니다.
-                        Task.Run(async () =>
-                        {
-                            Comment comment = await api.GetComment(item.Id);
-
-                            Schedule(() =>
-                            {
-                                commentContainer.Add(new CommentDisplay(comment)
-                                {
-                                    RelativeSizeAxes = Axes.X,
-                                });
-                            });
-                        });
-#pragma warning restore CS4014 // 이 호출을 대기하지 않으므로 호출이 완료되기 전에 현재 메서드가 계속 실행됩니다.
-                    }
-                }
-
-                if (commentThreadData.Count > 0)
-                    commentsEmpty.Hide();
-                else
-                    commentsEmpty.Show();
-
                 CommentsSort.BindValueChanged(sort =>
                 {
-                    foreach (var item in commentContainer.Children)
-                    {
-                        Schedule(() => item.Expire());
-                    }
-
-                    CommentThreadsResource.ListRequest.OrderEnum orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Relevance;
-
-                    switch (sort.NewValue)
-                    {
-                        case CommentsSortCriteria.Top:
-                            orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Relevance;
-                            break;
-                        case CommentsSortCriteria.Newest:
-                            orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Time;
-                            break;
-                    }
-
-                    // comments area
-                    IList<CommentThread> commentThreadData = api.GetCommentThread(videoId, orderEnum);
-                    foreach (CommentThread item in commentThreadData)
-                    {
-                        if (item.Snippet.IsPublic == true)
-                        {
-#pragma warning disable CS4014 // 이 호출을 대기하지 않으므로 호출이 완료되기 전에 현재 메서드가 계속 실행됩니다.
-                            Task.Run(async () =>
-                            {
-                                Comment comment = await api.GetComment(item.Id);
-
-                                Schedule(() =>
-                                {
-                                    commentContainer.Add(new CommentDisplay(comment)
-                                    {
-                                        RelativeSizeAxes = Axes.X,
-                                    });
-                                });
-                            });
-#pragma warning restore CS4014 // 이 호출을 대기하지 않으므로 호출이 완료되기 전에 현재 메서드가 계속 실행됩니다.
-                        }
-                    }
+                    updateComments(videoId);
                 });
 
                 usernameDisplayMode.BindValueChanged(locale =>
