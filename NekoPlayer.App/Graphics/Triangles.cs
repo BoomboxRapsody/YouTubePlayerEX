@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
+// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
 using System;
@@ -146,8 +146,8 @@ namespace NekoPlayer.App.Graphics
                 TriangleParticle particle = parts[i];
 
                 // Scale moved distance by the size of the triangle. Smaller triangles should move more slowly.
-                float newY = particle.Position.Y + Math.Max(0.5f, particle.Scale) * movedDistance;
-                float bottomY = newY + triangle_size * particle.Scale * equilateral_triangle_ratio / DrawHeight;
+                float newY = particle.Position.Y + (Math.Max(0.5f, particle.Scale) * movedDistance);
+                float bottomY = newY + (triangle_size * particle.Scale * equilateral_triangle_ratio / DrawHeight);
 
                 if (bottomY < 0)
                 {
@@ -244,7 +244,7 @@ namespace NekoPlayer.App.Graphics
             float u1 = 1 - nextRandom(); //uniform(0,1] random floats
             float u2 = 1 - nextRandom();
             float randStdNormal = (float)(Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2)); // random normal(0,1)
-            float scale = Math.Max(TriangleScale * (mean + std_dev * randStdNormal), 0.1f); // random normal(mean,stdDev^2)
+            float scale = Math.Max(TriangleScale * (mean + (std_dev * randStdNormal)), 0.1f); // random normal(mean,stdDev^2)
 
             return new TriangleParticle { Scale = scale };
         }
