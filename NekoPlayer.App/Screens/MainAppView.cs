@@ -311,6 +311,8 @@ namespace NekoPlayer.App.Screens
             Newest,
         }
 
+        private SettingsItemV2 systemMuteSwitchBase;
+
         [BackgroundDependencyLoader]
         private void load(ISampleStore sampleStore, FrameworkConfigManager config, NekoPlayerConfigManager appConfig, GameHost host, Storage storage, OverlayColourProvider overlayColourProvider, TextureStore textures, FrameworkDebugConfigManager debugConfig)
         {
@@ -1333,7 +1335,7 @@ namespace NekoPlayer.App.Screens
                                                             Padding = new MarginPadding { Horizontal = 30, Vertical = 12 },
                                                             Colour = overlayColourProvider.Content2,
                                                         },
-                                                        new SettingsItemV2(new FormCheckBox
+                                                        systemMuteSwitchBase = new SettingsItemV2(new FormCheckBox
                                                         {
                                                             Caption = NekoPlayerStrings.SystemMute,
                                                             HintText = NekoPlayerStrings.SystemMuteDesc,
@@ -3924,9 +3926,11 @@ namespace NekoPlayer.App.Screens
                 {
                     defaultPlaybackDevice.AudioEndpointVolume.Mute = value.NewValue;
                 });
-            } else
+            }
+            else
             {
                 systemVolumeControlBase.Hide();
+                systemMuteSwitchBase.Hide();
             }
             #endregion
 
@@ -5300,17 +5304,7 @@ namespace NekoPlayer.App.Screens
                 commentCount.Text = videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : NekoPlayerStrings.DisabledByUploader;
                 commentsContainerTitle.Text = NekoPlayerStrings.Comments(videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : NekoPlayerStrings.Disabled);
 
-                CommentThreadsResource.ListRequest.OrderEnum orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Relevance;
-
-                switch (CommentsSort.Value)
-                {
-                    case CommentsSortCriteria.Top:
-                        orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Relevance;
-                        break;
-                    case CommentsSortCriteria.Newest:
-                        orderEnum = CommentThreadsResource.ListRequest.OrderEnum.Time;
-                        break;
-                }
+                OrderEnum orderEnum = CommentsSort.Value == CommentsSortCriteria.Top ? OrderEnum.Relevance : OrderEnum.Time;
 
                 // comments area
                 IList<CommentThread> commentThreadData = api.GetCommentThread(videoId, orderEnum);
@@ -5810,6 +5804,14 @@ namespace NekoPlayer.App.Screens
 
         public async Task SetVideoSource(string videoId, bool clearCache = false, LoadType loadType = LoadType.Full)
         {
+            if (string.IsNullOrEmpty(videoId))
+            {
+                Toast toast = new Toast(NekoPlayerStrings.General, NekoPlayerStrings.NoVideoIdError);
+
+                onScreenDisplay.Display(toast);
+                return;
+            }
+
             this.videoId = YoutubeExplode.Videos.VideoId.Parse(videoId);
             pausedTime = clearCache ? currentVideoSource.VideoProgress.Value : 0;
             Schedule(() => currentVideoSource?.Expire());
@@ -6292,9 +6294,11 @@ namespace NekoPlayer.App.Screens
             }
             else
             {
+                /*
                 Toast toast = new Toast(NekoPlayerStrings.General, NekoPlayerStrings.NoVideoIdError);
 
                 onScreenDisplay.Display(toast);
+                */
             }
         }
 

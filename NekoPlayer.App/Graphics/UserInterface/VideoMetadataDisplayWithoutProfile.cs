@@ -191,9 +191,12 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 {
                     Color4 bgColor = Color.FromArgb((int)rgbColor);
                     Color4 textColor = Color.FromArgb((int)rgbTextColor);
-                    bgLayer.Colour = ColourInfo.GradientHorizontal(bgColor, bgColor.Darken(1f));
-                    videoName.Colour = (textColor);
-                    desc.Colour = (textColor);
+                    Schedule(() =>
+                    {
+                        bgLayer.Colour = ColourInfo.GradientHorizontal(bgColor, bgColor.Darken(1f));
+                        videoName.Colour = (textColor);
+                        desc.Colour = (textColor);
+                    });
                 }
             });
         }
@@ -218,8 +221,11 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 DateTimeOffset? dateTime = videoData.Snippet.PublishedAtDateTimeOffset;
                 DateTimeOffset now = DateTimeOffset.Now;
                 Channel channelData = api.GetChannel(videoData.Snippet.ChannelId);
-                videoName.Text = api.GetLocalizedVideoTitle(videoData);
-                updateDescText();
+                Schedule(() =>
+                {
+                    videoName.Text = api.GetLocalizedVideoTitle(videoData);
+                    updateDescText();
+                });
 
                 GetPalette();
 
@@ -227,8 +233,11 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 {
                     Task.Run(async () =>
                     {
-                        Schedule(() => videoName.Text = api.GetLocalizedVideoTitle(videoData));
-                        updateDescText();
+                        Schedule(() =>
+                        {
+                            videoName.Text = api.GetLocalizedVideoTitle(videoData);
+                            updateDescText();
+                        });
                     });
                 });
 
@@ -236,7 +245,10 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 {
                     Task.Run(async () =>
                     {
-                        updateDescText();
+                        Schedule(() =>
+                        {
+                            updateDescText();
+                        });
                     });
                 }, true);
 
@@ -244,8 +256,11 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 {
                     Task.Run(async () =>
                     {
-                        videoName.Text = api.GetLocalizedVideoTitle(videoData);
-                        updateDescText();
+                        Schedule(() =>
+                        {
+                            videoName.Text = api.GetLocalizedVideoTitle(videoData);
+                            updateDescText();
+                        });
                     });
                 }, true);
             });

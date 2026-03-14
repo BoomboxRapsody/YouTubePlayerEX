@@ -242,17 +242,23 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
                         Schedule(() =>
                         {
-                            channelNameText.Text = api.GetLocalizedChannelTitle(channelData, true);
-                            videoNameText.Text = api.GetLocalizedVideoTitle(videoData);
-#pragma warning disable CS8629 // Nullable 값 형식이 null일 수 있습니다.
-                            viewsText.Text = NekoPlayerStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
-#pragma warning restore CS8629 // Nullable 값 형식이 null일 수 있습니다.
-
-                            uiLanguage.BindValueChanged(locale =>
+                            Schedule(() =>
                             {
                                 channelNameText.Text = api.GetLocalizedChannelTitle(channelData, true);
                                 videoNameText.Text = api.GetLocalizedVideoTitle(videoData);
+#pragma warning disable CS8629 // Nullable 값 형식이 null일 수 있습니다.
                                 viewsText.Text = NekoPlayerStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
+#pragma warning restore CS8629 // Nullable 값 형식이 null일 수 있습니다.
+                            });
+
+                            uiLanguage.BindValueChanged(locale =>
+                            {
+                                Schedule(() =>
+                                {
+                                    channelNameText.Text = api.GetLocalizedChannelTitle(channelData, true);
+                                    videoNameText.Text = api.GetLocalizedVideoTitle(videoData);
+                                    viewsText.Text = NekoPlayerStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
+                                });
                             });
                         });
                     }
@@ -265,15 +271,21 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
                         Schedule(() =>
                         {
-                            channelNameText.Text = api.GetLocalizedChannelTitle(channelData, true);
-                            videoNameText.Text = playlistData.Snippet.Title;
-                            viewsText.Text = string.Empty;
-
-                            uiLanguage.BindValueChanged(locale =>
+                            Schedule(() =>
                             {
                                 channelNameText.Text = api.GetLocalizedChannelTitle(channelData, true);
                                 videoNameText.Text = playlistData.Snippet.Title;
                                 viewsText.Text = string.Empty;
+                            });
+
+                            uiLanguage.BindValueChanged(locale =>
+                            {
+                                Schedule(() =>
+                                {
+                                    channelNameText.Text = api.GetLocalizedChannelTitle(channelData, true);
+                                    videoNameText.Text = playlistData.Snippet.Title;
+                                    viewsText.Text = string.Empty;
+                                });
                             });
                         });
                     }
