@@ -266,19 +266,25 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
                         usernameDisplayMode.BindValueChanged(locale =>
                         {
-                            channelName.Text = string.Empty;
-                            channelName.Text = api.GetLocalizedChannelTitle(channelData);
-                            channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
-                            channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+                            Schedule(() =>
+                            {
+                                channelName.Text = string.Empty;
+                                channelName.Text = api.GetLocalizedChannelTitle(channelData);
+                                channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+                                channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+                            });
                         }, true);
 
                         uiLanguage.BindValueChanged(locale =>
                         {
-                            channelName.Text = string.Empty;
-                            channelName.Text = api.GetLocalizedChannelTitle(channelData);
-                            channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
-                            channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
-                            translateToText.Text = NekoPlayerStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
+                            Schedule(() =>
+                            {
+                                channelName.Text = string.Empty;
+                                channelName.Text = api.GetLocalizedChannelTitle(channelData);
+                                channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+                                channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+                                translateToText.Text = NekoPlayerStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
+                            });
                         });
                     });
                 }

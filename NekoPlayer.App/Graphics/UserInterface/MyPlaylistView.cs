@@ -331,8 +331,11 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
                         uiLanguage.BindValueChanged(locale =>
                         {
-                            channelNameText.Text = api.GetLocalizedChannelTitle(channelData);
-                            playlistNameText.Text = playlistData.Snippet.Title;
+                            Schedule(() =>
+                            {
+                                channelNameText.Text = api.GetLocalizedChannelTitle(channelData);
+                                playlistNameText.Text = playlistData.Snippet.Title;
+                            });
                         });
                     });
 

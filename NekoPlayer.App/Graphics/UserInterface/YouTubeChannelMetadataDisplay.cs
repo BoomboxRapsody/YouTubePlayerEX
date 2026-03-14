@@ -144,16 +144,22 @@ namespace NekoPlayer.App.Graphics.UserInterface
             uiLanguage.UnbindEvents();
             Task.Run(async () =>
             {
-                videoName.Text = api.GetLocalizedChannelTitle(channel);
-                desc.Text = channel.Snippet.CustomUrl;
-                profileImage.UpdateProfileImage(channel.Id);
+                Schedule(() =>
+                {
+                    videoName.Text = api.GetLocalizedChannelTitle(channel);
+                    desc.Text = channel.Snippet.CustomUrl;
+                    profileImage.UpdateProfileImage(channel.Id);
+                });
             });
 
             uiLanguage.BindValueChanged(locale =>
             {
                 Task.Run(async () =>
                 {
-                    videoName.Text = api.GetLocalizedChannelTitle(channel);
+                    Schedule(() =>
+                    {
+                        videoName.Text = api.GetLocalizedChannelTitle(channel);
+                    });
                 });
             });
         }

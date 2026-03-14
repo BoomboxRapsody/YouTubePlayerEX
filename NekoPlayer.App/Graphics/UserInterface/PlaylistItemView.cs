@@ -328,17 +328,23 @@ namespace NekoPlayer.App.Graphics.UserInterface
                     {
                         GetPalette();
 
-                        channelNameText.Text = api.GetLocalizedChannelTitle(channelData);
-                        videoNameText.Text = api.GetLocalizedVideoTitle(videoData);
-#pragma warning disable CS8629 // Nullable 값 형식이 null일 수 있습니다.
-                        viewsText.Text = NekoPlayerStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
-#pragma warning restore CS8629 // Nullable 값 형식이 null일 수 있습니다.
-
-                        uiLanguage.BindValueChanged(locale =>
+                        Schedule(() =>
                         {
                             channelNameText.Text = api.GetLocalizedChannelTitle(channelData);
                             videoNameText.Text = api.GetLocalizedVideoTitle(videoData);
+#pragma warning disable CS8629 // Nullable 값 형식이 null일 수 있습니다.
                             viewsText.Text = NekoPlayerStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
+#pragma warning restore CS8629 // Nullable 값 형식이 null일 수 있습니다.
+                        });
+
+                        uiLanguage.BindValueChanged(locale =>
+                        {
+                            Schedule(() =>
+                            {
+                                channelNameText.Text = api.GetLocalizedChannelTitle(channelData);
+                                videoNameText.Text = api.GetLocalizedVideoTitle(videoData);
+                                viewsText.Text = NekoPlayerStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), dateTime.Value.DateTime.Humanize(dateToCompareAgainst: now));
+                            });
                         });
                     });
 

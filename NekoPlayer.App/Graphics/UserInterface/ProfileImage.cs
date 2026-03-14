@@ -161,13 +161,19 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 {
                     await GetProfileImage(channel.Snippet.Thumbnails.High.Url);
                 });
-                TooltipText = NekoPlayerStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel, true), Convert.ToInt32(channel.Statistics.SubscriberCount).ToMetric(decimals: 2));
+                Schedule(() =>
+                {
+                    TooltipText = NekoPlayerStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel, true), Convert.ToInt32(channel.Statistics.SubscriberCount).ToMetric(decimals: 2));
+                });
 
                 translationSource.BindValueChanged(locale =>
                 {
                     Task.Run(async () =>
                     {
-                        TooltipText = NekoPlayerStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel, true), Convert.ToInt32(channel.Statistics.SubscriberCount).ToMetric(decimals: 2));
+                        Schedule(() =>
+                        {
+                            TooltipText = NekoPlayerStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel, true), Convert.ToInt32(channel.Statistics.SubscriberCount).ToMetric(decimals: 2));
+                        });
                     });
                 }, true);
 
@@ -175,7 +181,10 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 {
                     Task.Run(async () =>
                     {
-                        TooltipText = NekoPlayerStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel, true), Convert.ToInt32(channel.Statistics.SubscriberCount).ToMetric(decimals: 2));
+                        Schedule(() =>
+                        {
+                            TooltipText = NekoPlayerStrings.ProfileImageTooltip(api.GetLocalizedChannelTitle(channel, true), Convert.ToInt32(channel.Statistics.SubscriberCount).ToMetric(decimals: 2));
+                        });
                     });
                 }, true);
             });
