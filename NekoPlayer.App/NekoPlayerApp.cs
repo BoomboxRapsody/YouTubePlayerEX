@@ -212,7 +212,7 @@ namespace NekoPlayer.App
         protected override void Dispose(bool isDisposing)
         {
             base.Dispose(isDisposing);
-            discord_rpc.Dispose();
+            discord_rpc?.Dispose();
         }
 
         private Bindable<bool> applySafeAreaConsiderations = null!;
