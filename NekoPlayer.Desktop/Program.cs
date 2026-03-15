@@ -22,11 +22,11 @@ namespace NekoPlayer.Desktop
             };
 
             if (DebugUtils.IsDebugBuild)
-                gameName = "NekoPlayer_development";
+                gameName = "NekoPlayer-development";
 
             using (GameHost host = Host.GetSuitableDesktopHost(gameName, hostOptions))
             {
-                host.AllowBenchmarkUnlimitedFrames = true;
+                //host.AllowBenchmarkUnlimitedFrames = true;
                 host.Run(new NekoPlayerAppDesktop());
             }
         }

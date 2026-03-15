@@ -99,9 +99,9 @@ namespace NekoPlayer.App.Overlays
         /// <returns>An object representing the registration, that may be disposed to stop tracking the <see cref="ConfigManager{T}"/>.</returns>
         public IDisposable BeginTracking(object source, ITrackableConfigManager configManager)
         {
-            Debug.Assert(ThreadSafety.IsUpdateThread);
+            //Debug.Assert(ThreadSafety.IsUpdateThread);
 
-            ArgumentNullException.ThrowIfNull(configManager);
+            //ArgumentNullException.ThrowIfNull(configManager);
 
             if (trackedConfigManagers.ContainsKey((source, configManager)))
                 throw new InvalidOperationException($"{nameof(configManager)} is already registered.");

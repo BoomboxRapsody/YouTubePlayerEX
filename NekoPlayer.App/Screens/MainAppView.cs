@@ -65,6 +65,7 @@ using osu.Framework.Statistics;
 using osu.Framework.Threading;
 using osuTK;
 using osuTK.Graphics;
+using osuTK.Input;
 using SharpCompress.Archives.Zip;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Videos.ClosedCaptions;
@@ -80,7 +81,8 @@ namespace NekoPlayer.App.Screens
     public partial class MainAppView : NekoPlayerScreen, IKeyBindingHandler<GlobalAction>, INekoPlayerAppMessageHandler
     {
         private BufferedContainer videoContainer;
-        private AdaptiveButton loadBtn, commentSendButton, searchButton, loadPlaylistBtn, loadPlaylistOpenButton, prevVideoButton, nextVideoButton, declineButton, acceptButton, logoutButton, viewChannelButton;
+        private AdaptiveButton loadBtn, commentSendButton, searchButton, loadPlaylistBtn, loadPlaylistOpenButton, declineButton, acceptButton, logoutButton, viewChannelButton;
+        private ControlBarButton prevVideoButton, nextVideoButton;
         private EnhancedFocusedTextBox videoIdBox, playlistIdBox, commentTextBox, searchTextBox;
         private LoadingSpinner spinner;
         private ScheduledDelegate spinnerShow;
@@ -215,7 +217,7 @@ namespace NekoPlayer.App.Screens
         private FormButton checkForUpdatesButton, login;
         private FormSliderBar<double> systemVolumeControl;
         private ThumbnailContainerBackground thumbnailContainer;
-        private AdaptiveSliderBar<double> seekbar;
+        private NekoPlayerSeekBar<double> seekbar;
         private Bindable<LocalisableString> updateInfomationText;
         private Bindable<bool> updateButtonEnabled, fpsDisplay, captionEnabled, use_sdl3;
         private Bindable<AspectRatioMethod> aspectRatioMethod;
@@ -288,7 +290,7 @@ namespace NekoPlayer.App.Screens
         protected T GetShaderByType<T>() where T : InternalShader, new()
             => shaderManager.LocalInternalShader<T>();
 
-        private IconButton repeatButton;
+        private ControlBarIconButton repeatButton;
 
         private Bindable<bool> trayIconVisible;
 
@@ -553,7 +555,7 @@ namespace NekoPlayer.App.Screens
                                     Anchor = Anchor.BottomCentre,
                                     Origin = Anchor.BottomCentre,
                                     RelativeSizeAxes = Axes.X,
-                                    Height = 100,
+                                    Height = 85,
                                     Masking = true,
                                     CornerRadius = NekoPlayerApp.UI_CORNER_RADIUS,
                                     EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
@@ -570,6 +572,17 @@ namespace NekoPlayer.App.Screens
                                             RelativeSizeAxes = Axes.Both,
                                             Colour = overlayColourProvider.Background5,
                                             Alpha = 1f,
+                                        },
+                                        totalTime = new AdaptiveSpriteText
+                                        {
+                                            Anchor = Anchor.CentreRight,
+                                            Origin = Anchor.CentreRight,
+                                            Margin = new MarginPadding
+                                            {
+                                                Right = 16,
+                                            },
+                                            Text = "0:00",
+                                            Colour = overlayColourProvider.Content2,
                                         },
                                         new FillFlowContainer {
                                             RelativeSizeAxes = Axes.Both,
@@ -594,15 +607,9 @@ namespace NekoPlayer.App.Screens
                                                             Anchor = Anchor.TopLeft,
                                                             Origin = Anchor.TopLeft,
                                                             Text = "0:00",
+                                                            Alpha = 0,
                                                             Colour = overlayColourProvider.Content2,
                                                         },
-                                                        totalTime = new AdaptiveSpriteText
-                                                        {
-                                                            Anchor = Anchor.TopRight,
-                                                            Origin = Anchor.TopRight,
-                                                            Text = "0:00",
-                                                            Colour = overlayColourProvider.Content2,
-                                                        }
                                                     },
                                                 },
                                                 new FillFlowContainer
@@ -612,66 +619,103 @@ namespace NekoPlayer.App.Screens
                                                     Spacing = new Vector2(8, 0),
                                                     Children = new Drawable[]
                                                     {
-                                                        prevVideoButton = new IconButton
+                                                        new Container
                                                         {
-                                                            Enabled = { Value = false },
-                                                            Icon = FontAwesome.Solid.FastBackward,
-                                                            TooltipText = NekoPlayerStrings.PreviousVideo,
-                                                            IconColour = overlayColourProvider.Content2,
-                                                            ClickAction = async _ =>
+                                                            AutoSizeAxes = Axes.X,
+                                                            Height = 30,
+                                                            Masking = true,
+                                                            CornerRadius = 15,
+                                                            Children = new Drawable[]
                                                             {
-                                                                if (playlists.Count > 0)
+                                                                new Box
                                                                 {
-                                                                    if (playlistItemIndex != 0)
-                                                                        playlistItemIndex--;
+                                                                    RelativeSizeAxes = Axes.Both,
+                                                                    Colour = overlayColourProvider.Background3,
+                                                                    Alpha = 1f,
+                                                                },
+                                                                new FillFlowContainer
+                                                                {
+                                                                    AutoSizeAxes = Axes.Both,
+                                                                    //Spacing = new Vector2(8, 0),
+                                                                    Direction = FillDirection.Horizontal,
+                                                                    Children = new Drawable[]
+                                                                    {
+                                                                        prevVideoButton = new ControlBarIconButton(true)
+                                                                        {
+                                                                            Width = 40,
+                                                                            Enabled = { Value = false },
+                                                                            Icon = FontAwesome.Solid.FastBackward,
+                                                                            TooltipText = NekoPlayerStrings.PreviousVideo,
+                                                                            IconColour = overlayColourProvider.Content2,
+                                                                            BackgroundColour = overlayColourProvider.Background3,
+                                                                            IconScale = new Vector2(0.85f),
+                                                                            ClickAction = async _ =>
+                                                                            {
+                                                                                if (playlists.Count > 0)
+                                                                                {
+                                                                                    if (playlistItemIndex != 0)
+                                                                                        playlistItemIndex--;
 
-                                                                    await SetVideoSource(playlists[playlistItemIndex].Snippet.ResourceId.VideoId);
-                                                                }
-                                                            }
-                                                        },
-                                                        playPause = new IconButton
-                                                        {
-                                                            Enabled = { Value = true },
-                                                            Icon = FontAwesome.Solid.Play,
-                                                            TooltipText = NekoPlayerStrings.Play,
-                                                            IconColour = overlayColourProvider.Content2,
-                                                            ClickAction = _ =>
-                                                            {
-                                                                if (currentVideoSource != null)
-                                                                {
-                                                                    if (currentVideoSource.IsPlaying())
-                                                                        currentVideoSource.Pause();
-                                                                    else
-                                                                        currentVideoSource.Play();
-                                                                }
-                                                            }
-                                                        },
-                                                        nextVideoButton = new IconButton
-                                                        {
-                                                            Enabled = { Value = false },
-                                                            Icon = FontAwesome.Solid.FastForward,
-                                                            TooltipText = NekoPlayerStrings.NextVideo,
-                                                            IconColour = overlayColourProvider.Content2,
-                                                            ClickAction = async _ =>
-                                                            {
-                                                                if (playlists.Count > 0)
-                                                                {
-                                                                    if (playlistItemIndex != playlists.Count - 1)
-                                                                        playlistItemIndex++;
+                                                                                    await SetVideoSource(playlists[playlistItemIndex].Snippet.ResourceId.VideoId);
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        playPause = new ControlBarIconButton(true)
+                                                                        {
+                                                                            Width = 40,
+                                                                            Enabled = { Value = true },
+                                                                            Icon = FontAwesome.Solid.Play,
+                                                                            TooltipText = NekoPlayerStrings.Play,
+                                                                            IconColour = overlayColourProvider.Content2,
+                                                                            BackgroundColour = overlayColourProvider.Background3,
+                                                                            IconScale = new Vector2(0.85f),
+                                                                            ClickAction = _ =>
+                                                                            {
+                                                                                if (currentVideoSource != null)
+                                                                                {
+                                                                                    if (currentVideoSource.IsPlaying())
+                                                                                        currentVideoSource.Pause();
+                                                                                    else
+                                                                                        currentVideoSource.Play();
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        nextVideoButton = new ControlBarIconButton(true)
+                                                                        {
+                                                                            Width = 40,
+                                                                            Enabled = { Value = false },
+                                                                            Icon = FontAwesome.Solid.FastForward,
+                                                                            TooltipText = NekoPlayerStrings.NextVideo,
+                                                                            IconColour = overlayColourProvider.Content2,
+                                                                            BackgroundColour = overlayColourProvider.Background3,
+                                                                            IconScale = new Vector2(0.85f),
+                                                                            ClickAction = async _ =>
+                                                                            {
+                                                                                if (playlists.Count > 0)
+                                                                                {
+                                                                                    if (playlistItemIndex != playlists.Count - 1)
+                                                                                        playlistItemIndex++;
 
-                                                                    await SetVideoSource(playlists[playlistItemIndex].Snippet.ResourceId.VideoId);
+                                                                                    await SetVideoSource(playlists[playlistItemIndex].Snippet.ResourceId.VideoId);
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        repeatButton = new ControlBarIconButton(true)
+                                                                        {
+                                                                            Width = 40,
+                                                                            Enabled = { Value = true },
+                                                                            Icon = FontAwesome.Solid.Sync,
+                                                                            TooltipText = NekoPlayerStrings.Repeat,
+                                                                            IconColour = overlayColourProvider.Content2,
+                                                                            BackgroundColour = overlayColourProvider.Content2,
+                                                                            IconScale = new Vector2(0.85f),
+                                                                            ClickAction = _ =>
+                                                                            {
+                                                                                updateRepeatState();
+                                                                            }
+                                                                        },
+                                                                    }
                                                                 }
-                                                            }
-                                                        },
-                                                        repeatButton = new IconButton
-                                                        {
-                                                            Enabled = { Value = true },
-                                                            Icon = FontAwesome.Solid.Sync,
-                                                            TooltipText = NekoPlayerStrings.Repeat,
-                                                            IconColour = overlayColourProvider.Content2,
-                                                            ClickAction = _ =>
-                                                            {
-                                                                updateRepeatState();
                                                             }
                                                         },
                                                         new Container
@@ -686,7 +730,7 @@ namespace NekoPlayer.App.Screens
                                                                 {
                                                                     RelativeSizeAxes = Axes.Both,
                                                                     Colour = overlayColourProvider.Background3,
-                                                                    Alpha = 0.7f,
+                                                                    Alpha = 1f,
                                                                 },
                                                                 new FillFlowContainer
                                                                 {
@@ -748,7 +792,7 @@ namespace NekoPlayer.App.Screens
                                                                 {
                                                                     RelativeSizeAxes = Axes.Both,
                                                                     Colour = overlayColourProvider.Background3,
-                                                                    Alpha = 0.7f,
+                                                                    Alpha = 1f,
                                                                 },
                                                                 new FillFlowContainer
                                                                 {
@@ -3392,6 +3436,8 @@ namespace NekoPlayer.App.Screens
 
             thumbnailContainer.BlurTo(Vector2.Divide(new Vector2(10, 10), 1));
 
+            repeatButton.BackgroundColour = overlayColourProvider.Content2;
+
             RegisterOverlayContainer(loadVideoContainer);
             overlayFadeContainer.Hide();
             RegisterOverlayContainer(settingsContainer);
@@ -3568,7 +3614,7 @@ namespace NekoPlayer.App.Screens
 
             commentsDisabled = true;
 
-            playPause.BackgroundColour = searchButton.BackgroundColour = commentSendButton.BackgroundColour = nextVideoButton.BackgroundColour = prevVideoButton.BackgroundColour = loadPlaylistOpenButton.BackgroundColour = repeatButton.BackgroundColour = overlayColourProvider.Background3;
+            searchButton.BackgroundColour = commentSendButton.BackgroundColour = loadPlaylistOpenButton.BackgroundColour = overlayColourProvider.Background3;
 
             hwAccelCheckbox.Current.Default = hardwareVideoDecoder.Default != HardwareVideoDecoder.None;
             hwAccelCheckbox.Current.Value = hardwareVideoDecoder.Value != HardwareVideoDecoder.None;
@@ -3588,17 +3634,6 @@ namespace NekoPlayer.App.Screens
 
             playlistName.Text = NekoPlayerStrings.PlaylistNotLoaded;
             playlistAuthor.Text = NekoPlayerStrings.PlaylistNotLoadedDesc;
-
-            infoForNerds.AddText("Codec: ");
-            infoForNerds.AddText("[unknown]", f => f.Font = NekoPlayerApp.DefaultFont.With(weight: "Bold"));
-            infoForNerds.AddText("\nWidth: ");
-            infoForNerds.AddText("[unknown]", f => f.Font = NekoPlayerApp.DefaultFont.With(weight: "Bold"));
-            infoForNerds.AddText("\nHeight: ");
-            infoForNerds.AddText("[unknown]", f => f.Font = NekoPlayerApp.DefaultFont.With(weight: "Bold"));
-            infoForNerds.AddText("\nFPS: ");
-            infoForNerds.AddText("[unknown]", f => f.Font = NekoPlayerApp.DefaultFont.With(weight: "Bold"));
-            infoForNerds.AddText("\nBitrate: ");
-            infoForNerds.AddText("[unknown]", f => f.Font = NekoPlayerApp.DefaultFont.With(weight: "Bold"));
 
             audio.OnNewDevice += onAudioDeviceChanged;
             audio.OnLostDevice += onAudioDeviceChanged;
@@ -4171,7 +4206,7 @@ namespace NekoPlayer.App.Screens
 
         private SettingsItemV2 windowModeDropdownSettings;
 
-        private partial class RoundedSliderBarWithoutTooltip : RoundedSliderBar<double>
+        private partial class RoundedSliderBarWithoutTooltip : NekoPlayerSeekBar<double>
         {
             public override LocalisableString TooltipText => "";
         }
@@ -4233,7 +4268,8 @@ namespace NekoPlayer.App.Screens
         private void updateRepeatState()
         {
             repeat.Value = !repeat.Value;
-            repeatButton.BackgroundColour = repeat.Value ? overlayColourProvider1.Content2 : overlayColourProvider1.Background3;
+            repeatButton.SetBackgroundVisibility(repeat.Value);
+            //repeatButton.BackgroundColour = repeat.Value ? overlayColourProvider1.Content2 : overlayColourProvider1.Background3;
             repeatButton.IconColour = repeat.Value ? overlayColourProvider1.Background3 : overlayColourProvider1.Content2;
         }
 
@@ -4776,6 +4812,30 @@ namespace NekoPlayer.App.Screens
         [Resolved]
         private VolumeOverlay volume { get; set; }
 
+        protected override bool OnKeyDown(KeyDownEvent e)
+        {
+            if (currentVideoSource == null)
+                return true;
+
+            if (e.Key >= Key.Number0 && e.Key <= Key.Number9)
+            {
+                int digit = e.Key - Key.Number0;
+                double target = currentVideoSource.VideoProgress.MaxValue * (digit / 10.0);
+
+                currentVideoSource?.SeekTo(target * 1000);
+            }
+
+            if (e.Key >= Key.Keypad0 && e.Key <= Key.Keypad9)
+            {
+                int digit = e.Key - Key.Keypad0;
+                double target = currentVideoSource.VideoProgress.MaxValue * (digit / 10.0);
+
+                currentVideoSource?.SeekTo(target * 1000);
+            }
+
+            return true;
+        }
+
         public bool OnPressed(KeyBindingPressEvent<GlobalAction> e)
         {
             if (e.Target is TextBox)
@@ -4822,46 +4882,6 @@ namespace NekoPlayer.App.Screens
                     playbackSpeed.Value += 0.01;
                     osd.Display(new SpeedChangeToast(playbackSpeed.Value));
                     return true;
-
-                case GlobalAction.Seek0Percent:
-                    NumKeyInput(0);
-                    return true;
-
-                case GlobalAction.Seek10Percent:
-                    NumKeyInput(1);
-                    return true;
-
-                case GlobalAction.Seek20Percent:
-                    NumKeyInput(2);
-                    return true;
-
-                case GlobalAction.Seek30Percent:
-                    NumKeyInput(3);
-                    return true;
-
-                case GlobalAction.Seek40Percent:
-                    NumKeyInput(4);
-                    return true;
-
-                case GlobalAction.Seek50Percent:
-                    NumKeyInput(5);
-                    return true;
-
-                case GlobalAction.Seek60Percent:
-                    NumKeyInput(6);
-                    return true;
-
-                case GlobalAction.Seek70Percent:
-                    NumKeyInput(7);
-                    return true;
-
-                case GlobalAction.Seek80Percent:
-                    NumKeyInput(8);
-                    return true;
-
-                case GlobalAction.Seek90Percent:
-                    NumKeyInput(9);
-                    return true;
             }
 
             if (e.Repeat)
@@ -4883,6 +4903,10 @@ namespace NekoPlayer.App.Screens
 
                 case GlobalAction.Back:
                     hideOverlays();
+                    return true;
+
+                case GlobalAction.ToggleRepeatVideo:
+                    updateRepeatState();
                     return true;
 
                 case GlobalAction.OpenLoadVideo:
@@ -5230,7 +5254,10 @@ namespace NekoPlayer.App.Screens
 
                 videoPlaying.Value = currentVideoSource.IsPlaying();
 
+                string currentTime;
+
                 TimeSpan duration = TimeSpan.FromSeconds(currentVideoSource.VideoProgress.Value);
+                /*
                 if (duration.Hours > 0)
                 {
                     currentTime.Text = $"{duration.Hours.ToString("00")}:{duration.Minutes.ToString("00")}:{duration.Seconds.ToString("00")}";
@@ -5239,13 +5266,27 @@ namespace NekoPlayer.App.Screens
                 {
                     currentTime.Text = $"{duration.Minutes.ToString("0")}:{duration.Seconds.ToString("00")}";
                 }
+                */
+
+                if (duration.Hours > 0)
+                {
+                    currentTime = $"{duration.Hours.ToString("00")}:{duration.Minutes.ToString("00")}:{duration.Seconds.ToString("00")}";
+                }
+                else
+                {
+                    currentTime = $"{duration.Minutes.ToString("0")}:{duration.Seconds.ToString("00")}";
+                }
+
+                seekbar.NubText = $"{currentTime}";
 
                 if (seekbar.IsDragged == false)
                     videoProgress.Value = currentVideoSource.VideoProgress.Value;
             }
         }
 
-        private IconButton playPause;
+        private TimeSpan totalTimeSpan;
+
+        private ControlBarIconButton playPause;
 
         private bool commentsDisabled = false;
 
@@ -6204,7 +6245,7 @@ namespace NekoPlayer.App.Screens
                         }
                         else
                         {
-                            currentVideoSource.UpdateCaptionTrack(null);
+                            currentVideoSource?.UpdateCaptionTrack(null);
                         }
                     }
                     catch (Exception e)

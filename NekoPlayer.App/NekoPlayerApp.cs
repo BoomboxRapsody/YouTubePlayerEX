@@ -173,7 +173,7 @@ namespace NekoPlayer.App
 
             loadComponentSingleFile(screenshotManager, Add, true);
 
-            if (RuntimeInfo.IsDesktop)
+            if (RuntimeInfo.IsDesktop && IsDeployedBuild)
                 loadComponentSingleFile(discord_rpc = new Online.DiscordRPC(), Add, true);
 
             loadComponentSingleFile(fpsCounter = new FPSCounter

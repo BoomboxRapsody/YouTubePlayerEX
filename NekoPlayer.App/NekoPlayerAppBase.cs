@@ -317,6 +317,8 @@ namespace NekoPlayer.App
 
                 CurrentLanguage.BindValueChanged(val => frameworkLocale.Value = val.NewValue.ToCultureCode());
 
+                RequestUpdateWindowTitle(string.Empty);
+
                 InitialiseFonts();
 
                 dependencies.Cache(LocalConfig);
@@ -325,11 +327,11 @@ namespace NekoPlayer.App
 
                 dependencies.Cache(AudioNormalizationManager = new AudioNormalizationManager(this, LocalConfig));
 
-                dependencies.Cache(sentry = new SentryClient(this, GoogleOAuth2, Storage));
-
                 dependencies.Cache(TranslateAPI = new GoogleTranslate(this, frameworkConfig));
                 dependencies.Cache(YouTubeService = new YouTubeAPI(this, frameworkConfig, TranslateAPI, LocalConfig, GoogleOAuth2, !IsDeployedBuild, new HttpClient()));
                 dependencies.Cache(YouTubeClient = new YoutubeClient());
+
+                dependencies.Cache(sentry = new SentryClient(this, GoogleOAuth2, YouTubeService, Storage));
 
                 dependencies.Cache(AudioEffectsConfig = new AudioEffectsConfigManager(Storage));
                 dependencies.Cache(SessionStatics = new SessionStatics());
@@ -393,8 +395,6 @@ namespace NekoPlayer.App
                 Logger.Log($"Scaling container loaded");
 
                 trackAudioEffects();
-
-                sentry.PostInit();
             }
             catch (Exception ex)
             {
@@ -648,11 +648,11 @@ namespace NekoPlayer.App
             if (Host.Window == null)
                 return;
 
-            string newTitle = "NekoPlayer";
+            string newTitle = IsDeployedBuild ? "NekoPlayer" : "NekoPlayer (development)";
 
             if (!string.IsNullOrEmpty(customTitle))
             {
-                newTitle = $"NekoPlayer | {customTitle}";
+                newTitle = IsDeployedBuild ? $"NekoPlayer | {customTitle}" : $"NekoPlayer (development) | {customTitle}";
             }
 
             if (newTitle != Host.Window.Title)

@@ -151,7 +151,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                         Hide();
                     }
                 });
-            }, true);
+            });
 
             drawClock = gameHost.DrawThread.Clock;
             updateClock = gameHost.UpdateThread.Clock;
