@@ -131,6 +131,11 @@ namespace NekoPlayer.App.Graphics.UserInterface
             Enabled.BindValueChanged(enabledChanged, true);
         }
 
+        public void SetBackgroundVisibility(bool active)
+        {
+            Background.Alpha = active ? 1 : 0;
+        }
+
         [BackgroundDependencyLoader]
         private void load(OverlayColourProvider overlayColourProvider)
         {

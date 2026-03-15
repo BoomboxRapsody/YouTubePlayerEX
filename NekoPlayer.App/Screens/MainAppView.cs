@@ -698,13 +698,14 @@ namespace NekoPlayer.App.Screens
                                                                                 }
                                                                             }
                                                                         },
-                                                                        repeatButton = new ControlBarIconButton
+                                                                        repeatButton = new ControlBarIconButton(true)
                                                                         {
                                                                             Width = 40,
                                                                             Enabled = { Value = true },
                                                                             Icon = FontAwesome.Solid.Sync,
                                                                             TooltipText = NekoPlayerStrings.Repeat,
                                                                             IconColour = overlayColourProvider.Content2,
+                                                                            BackgroundColour = overlayColourProvider.Content2,
                                                                             ClickAction = _ =>
                                                                             {
                                                                                 updateRepeatState();
@@ -3432,6 +3433,8 @@ namespace NekoPlayer.App.Screens
 
             thumbnailContainer.BlurTo(Vector2.Divide(new Vector2(10, 10), 1));
 
+            repeatButton.BackgroundColour = overlayColourProvider.Content2;
+
             RegisterOverlayContainer(loadVideoContainer);
             overlayFadeContainer.Hide();
             RegisterOverlayContainer(settingsContainer);
@@ -4273,7 +4276,8 @@ namespace NekoPlayer.App.Screens
         private void updateRepeatState()
         {
             repeat.Value = !repeat.Value;
-            repeatButton.BackgroundColour = repeat.Value ? overlayColourProvider1.Content2 : overlayColourProvider1.Background3;
+            repeatButton.SetBackgroundVisibility(repeat.Value);
+            //repeatButton.BackgroundColour = repeat.Value ? overlayColourProvider1.Content2 : overlayColourProvider1.Background3;
             repeatButton.IconColour = repeat.Value ? overlayColourProvider1.Background3 : overlayColourProvider1.Content2;
         }
 
