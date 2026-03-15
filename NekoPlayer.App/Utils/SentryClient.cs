@@ -53,16 +53,6 @@ namespace NekoPlayer.App.Utils
         {
             if (session == null)
                 return;
-
-            isLoginState = googleOAuth2.SignedIn.GetBoundCopy();
-            isLoginState.BindValueChanged(e =>
-            {
-                SentrySdk.ConfigureScope(s => s.User = new SentryUser
-                {
-                    Username = e.NewValue ? youtubeAPI.GetMineChannel().Snippet.Title : "Guest User",
-                    Id = e.NewValue ? $"{(youtubeAPI.GetMineChannel().Id != null ? youtubeAPI.GetMineChannel().Id : 0)}" : "0",
-                });
-            }, true);
         }
 
         private void onEntry(LogEntry entry)
@@ -108,6 +98,12 @@ namespace NekoPlayer.App.Utils
                 scope.Contexts["hashes"] = new
                 {
                     app = app.VersionHash,
+                };
+
+                scope.User = new SentryUser
+                {
+                    Username = googleOAuth2.SignedIn.Value ? youtubeAPI.GetMineChannel().Snippet.Title : "Guest User",
+                    Id = googleOAuth2.SignedIn.Value ? $"{(youtubeAPI.GetMineChannel().Id ?? "{not logged in}")}" : "{not logged in}",
                 };
 
                 scope.SetTag(@"os", $"{RuntimeInfo.OS} ({Environment.OSVersion})");
