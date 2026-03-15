@@ -5321,6 +5321,12 @@ namespace NekoPlayer.App.Screens
                             videoDescription.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
                         else if (NekoPlayerDescriptionParser.IsYouTubeVideo(item.Value))
                             videoDescription.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
+                        else if (NekoPlayerDescriptionParser.IsDiscord(item.Value))
+                            videoDescription.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
+                        else if (NekoPlayerDescriptionParser.IsYouTubeChannel(item.Value))
+                            videoDescription.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
+                        else if (NekoPlayerDescriptionParser.IsTwitch(item.Value))
+                            videoDescription.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
                         else
                             videoDescription.AddLink(item.Value, item.Value);
                         break;
@@ -5328,7 +5334,7 @@ namespace NekoPlayer.App.Screens
                         videoDescription.AddLink(item.Value, $"https://www.youtube.com/{item.Value}");
                         break;
                     case YouTubeDescriptionTokenType.Hashtag:
-                        videoDescription.AddLink(item.Value, $"https://www.youtube.com/hashtag/{item.Value}");
+                        videoDescription.AddLink(item.Value, $"https://www.youtube.com/hashtag/{item.Value.Replace("#", string.Empty)}");
                         break;
                     case YouTubeDescriptionTokenType.Timestamp:
                         videoDescription.AddArbitraryDrawable(new TimestampButton(item.Value)

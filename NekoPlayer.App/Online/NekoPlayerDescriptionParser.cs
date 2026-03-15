@@ -24,7 +24,34 @@ namespace NekoPlayer.App.Online
 
         public static bool IsYouTubeVideo(string url)
         {
+            if (url.Contains("youtu.be"))
+                return true;
+
             if (url.Contains("youtube.com/watch?v="))
+                return true;
+
+            return false;
+        }
+
+        public static bool IsDiscord(string url)
+        {
+            if (url.Contains("discord.com"))
+                return true;
+
+            return false;
+        }
+
+        public static bool IsTwitch(string url)
+        {
+            if (url.Contains("twitch.tv"))
+                return true;
+
+            return false;
+        }
+
+        public static bool IsYouTubeChannel(string url)
+        {
+            if (url.Contains("youtube.com/channel/"))
                 return true;
 
             return false;
@@ -71,7 +98,7 @@ namespace NekoPlayer.App.Online
                     tokens.Add(new YouTubeDescriptionTextToken
                     {
                         Type = YouTubeDescriptionTokenType.Hashtag,
-                        Value = match.Value.Replace("#", string.Empty)
+                        Value = match.Value
                     });
                 }
                 else
