@@ -28,13 +28,13 @@ namespace NekoPlayer.App.Utils
 
         private Bindable<bool> isLoginState { get; set; }
 
-        [Resolved]
         private YouTubeAPI youtubeAPI { get; set; }
 
-        public SentryClient(NekoPlayerAppBase app, GoogleOAuth2 googleOAuth2, Storage? storage = null)
+        public SentryClient(NekoPlayerAppBase app, GoogleOAuth2 googleOAuth2, YouTubeAPI youtubeAPI, Storage? storage = null)
         {
             this.app = app;
             this.googleOAuth2 = googleOAuth2;
+            this.youtubeAPI = youtubeAPI;
 
             Logger.NewEntry += onEntry;
 
