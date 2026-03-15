@@ -144,7 +144,8 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 {
                     if (visible.NewValue)
                     {
-                        Show();
+                        if (showFpsDisplay.Value)
+                            Show();
                     }
                     else
                     {

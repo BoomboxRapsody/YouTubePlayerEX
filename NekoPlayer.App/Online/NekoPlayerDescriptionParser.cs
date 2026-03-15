@@ -10,6 +10,9 @@ namespace NekoPlayer.App.Online
     {
         public static bool IsTwitter(string url)
         {
+            if (url.Contains("dropbox.com"))
+                return false;
+
             if (url.Contains("x.com"))
                 return true;
 
@@ -30,7 +33,7 @@ namespace NekoPlayer.App.Online
         public static List<YouTubeDescriptionTextToken> Parse(string input)
         {
             var tokens = new List<YouTubeDescriptionTextToken>();
-            var regex = new Regex(@"https?://[^\s]+|@\w+|\d{1,2}:\d{2}(?::\d{2})?");
+            var regex = new Regex(@"https?://[^\s]+|@\w+|#\w+|\d{1,2}:\d{2}(?::\d{2})?");
 
             int lastIndex = 0;
 
@@ -63,6 +66,14 @@ namespace NekoPlayer.App.Online
                         Value = match.Value
                     });
                 }
+                else if (match.Value.StartsWith("#"))
+                {
+                    tokens.Add(new YouTubeDescriptionTextToken
+                    {
+                        Type = YouTubeDescriptionTokenType.Hashtag,
+                        Value = match.Value.Replace("#", string.Empty)
+                    });
+                }
                 else
                 {
                     tokens.Add(new YouTubeDescriptionTextToken
@@ -80,7 +91,7 @@ namespace NekoPlayer.App.Online
                 tokens.Add(new YouTubeDescriptionTextToken
                 {
                     Type = YouTubeDescriptionTokenType.Text,
-                    Value = input.Substring(lastIndex)
+                    Value = input[lastIndex..]
                 });
             }
 

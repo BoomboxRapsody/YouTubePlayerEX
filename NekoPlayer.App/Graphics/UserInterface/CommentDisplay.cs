@@ -251,10 +251,10 @@ namespace NekoPlayer.App.Graphics.UserInterface
                             commentText.AddLink(item.Value, item.Value);
                         break;
                     case YouTubeDescriptionTokenType.Mention:
-                        if (api.GetChannelExistsViaHandle(item.Value))
-                            commentText.AddLink(item.Value, $"https://www.youtube.com/{item.Value}");
-                        else
-                            commentText.AddText(item.Value);
+                        commentText.AddLink(item.Value, $"https://www.youtube.com/{item.Value}");
+                        break;
+                    case YouTubeDescriptionTokenType.Hashtag:
+                        commentText.AddLink(item.Value, $"https://www.youtube.com/hashtag/{item.Value}");
                         break;
                     case YouTubeDescriptionTokenType.Timestamp:
                         commentText.AddArbitraryDrawable(new TimestampButton(item.Value)

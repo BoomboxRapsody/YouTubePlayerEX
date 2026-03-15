@@ -9,5 +9,6 @@ namespace NekoPlayer.App.Online
         Url,
         Mention,
         Timestamp,
+        Hashtag,
     }
 }
