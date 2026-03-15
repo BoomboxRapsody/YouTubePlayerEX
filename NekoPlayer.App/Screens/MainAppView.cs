@@ -10,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -37,6 +38,7 @@ using NekoPlayer.App.Overlays.OSD;
 using NekoPlayer.App.Overlays.Volume;
 using NekoPlayer.App.Updater;
 using NekoPlayer.App.Utils;
+using OpenTabletDriver.Native.Windows.Input;
 using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -70,6 +72,7 @@ using SharpCompress.Archives.Zip;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Videos.ClosedCaptions;
 using YoutubeExplode.Videos.Streams;
+using static System.Net.Mime.MediaTypeNames;
 using static Google.Apis.YouTube.v3.CommentThreadsResource.ListRequest;
 using Container = osu.Framework.Graphics.Containers.Container;
 using Language = NekoPlayer.App.Localisation.Language;
@@ -5302,38 +5305,59 @@ namespace NekoPlayer.App.Screens
 
         private bool commentsDisabled = false;
 
-        /*
+        
         public void GetLocalizedVideoDescriptionRemake(Google.Apis.YouTube.v3.Data.Video videoData)
         {
-            string[] splitArg = new string[] { " " };
-
             string str = api.GetLocalizedVideoDescription(videoData);
-            string pattern = @"https?://[^\s/$.?#].[^\s]*"; // Basic URL pattern
+            /*
+            var regex = new Regex(@"https?://[^\s]+");
 
-            videoDescription.Text = "";
+            int lastIndex = 0;
 
-            MatchCollection matches = Regex.Matches(str, pattern);
-            foreach (Match match in matches)
+            foreach (Match match in regex.Matches(str))
             {
-                Logger.Log($"Found URL: {match.Value}");
-                // To get the end part of a specific match:
-                string url = match.Value;
-                string lastSegment = url.Split('/').Last();
-                if (url.Contains("https://"))
+                // URL 이전의 plain text
+                if (match.Index > lastIndex)
                 {
-                    videoDescription.AddText(str[..str.IndexOf(url)]);
-                    videoDescription.AddLink(str[str.IndexOf("https://")..(url.Length + str.IndexOf("https://"))], str[str.IndexOf("https://")..(url.Length + str.IndexOf("https://"))]);
-                    videoDescription.AddText(str[(url.Length + str.IndexOf("https://"))..]);
+                    string text = str.Substring(lastIndex, match.Index - lastIndex);
+                    //Console.WriteLine($"TEXT: {text}");
+                    videoDescription.AddText(text);
                 }
-                else
+
+                // URL
+                //Console.WriteLine($"URL: {match.Value}");
+                videoDescription.AddLink(match.Value, match.Value);
+
+                lastIndex = match.Index + match.Length;
+            }
+
+            // 마지막 남은 text
+            if (lastIndex < str.Length)
+            {
+                string text = str.Substring(lastIndex);
+                //Console.WriteLine($"TEXT: {text}");
+                videoDescription.AddText(text);
+            }
+            */
+
+            List<YouTubeDescriptionTextToken> list = NekoPlayerDescriptionParser.Parse(str);
+
+            foreach (YouTubeDescriptionTextToken item in list)
+            {
+                switch (item.Type)
                 {
-                    videoDescription.AddText(str[..str.IndexOf("http://")]);
-                    videoDescription.AddLink(str[str.IndexOf("http://")..(url.Length + str.IndexOf("https://"))], str[str.IndexOf("http://")..(url.Length + str.IndexOf("https://"))]);
-                    videoDescription.AddText(str[(url.Length + str.IndexOf("https://"))..]);
+                    case YouTubeDescriptionTokenType.Text:
+                        videoDescription.AddText(item.Value);
+                        break;
+                    case YouTubeDescriptionTokenType.Url:
+                        videoDescription.AddLink(item.Value, item.Value);
+                        break;
+                    case YouTubeDescriptionTokenType.Mention:
+                        videoDescription.AddLink(item.Value, $"https://www.youtube.com/{item.Value}");
+                        break;
                 }
             }
         }
-        */
 
         private partial class PlaybackSpeedSliderBar : RoundedSliderBar<double>
         {
@@ -5373,6 +5397,12 @@ namespace NekoPlayer.App.Screens
                                 commentContainer.Add(new CommentDisplay(item)
                                 {
                                     RelativeSizeAxes = Axes.X,
+                                    TimestampClicked = second =>
+                                    {
+                                        Logger.Log(second.ToString());
+                                        hideOverlays();
+                                        seekTo((second / 60) * 1000);
+                                    }
                                 });
                             });
                         });
@@ -5606,7 +5636,8 @@ namespace NekoPlayer.App.Screens
                 DateTime now = DateTime.Now;
                 if (!string.IsNullOrEmpty(api.GetLocalizedVideoDescription(videoData)))
                 {
-                    Schedule(() => videoDescription.Text = api.GetLocalizedVideoDescription(videoData));
+                    //Schedule(() => videoDescription.Text = api.GetLocalizedVideoDescription(videoData));
+                    Schedule(() => GetLocalizedVideoDescriptionRemake(videoData));
                 }
                 else
                 {
