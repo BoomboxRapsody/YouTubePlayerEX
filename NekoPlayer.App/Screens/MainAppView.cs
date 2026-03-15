@@ -4328,12 +4328,14 @@ namespace NekoPlayer.App.Screens
 
         private void showOverlayContainer(OverlayContainer overlayContent)
         {
+            /*
             duckOperation = game.Duck(new DuckParameters
             {
                 DuckVolumeTo = 1,
                 DuckDuration = 100,
                 RestoreDuration = 100,
             });
+            */
 
             if (overlayContent is SideOverlayContainer)
             {
@@ -4365,7 +4367,7 @@ namespace NekoPlayer.App.Screens
 
         private void hideOverlayContainer(OverlayContainer overlayContent)
         {
-            duckOperation?.Dispose();
+            //duckOperation?.Dispose();
             if (overlayContent is SideOverlayContainer)
             {
                 overlayContent.IsVisible = false;
@@ -4598,6 +4600,7 @@ namespace NekoPlayer.App.Screens
             );
 
             discordRichPresence.BindValueChanged(mode => updatePresence(mode.NewValue), true);
+            usernameDisplayMode.BindValueChanged(_ => updatePresence(discordRichPresence.Value), true);
             localeBindable.BindValueChanged(_ => updatePresence(discordRichPresence.Value), true);
             trayIconVisible.BindValueChanged(_ => updatePresence(discordRichPresence.Value), true);
 
@@ -5731,6 +5734,7 @@ namespace NekoPlayer.App.Screens
                 {
                     Schedule(() =>
                     {
+                        game.RequestUpdateWindowTitle($"{api.GetLocalizedChannelTitle(api.GetChannel(videoData.Snippet.ChannelId))} - {api.GetLocalizedVideoTitle(videoData)}");
                         if (api.TryToGetMineChannel() != null)
                             commentTextBox.PlaceholderText = NekoPlayerStrings.CommentWith(api.GetLocalizedChannelTitle(api.GetMineChannel()));
                     });
