@@ -22,6 +22,7 @@ using NekoPlayer.App.Extensions;
 using NekoPlayer.App.Graphics.Sprites;
 using NekoPlayer.App.Localisation;
 using NekoPlayer.App.Online;
+using osu.Framework.Logging;
 
 namespace NekoPlayer.App.Graphics.UserInterface
 {
@@ -250,11 +251,20 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 {
                     DateTimeOffset? dateTime = commentData.Snippet.PublishedAtDateTimeOffset;
                     DateTimeOffset now = DateTime.Now;
-                    Channel channelData = api.GetChannel(commentData.Snippet.AuthorChannelId.Value);
+                    Channel channelData = null;
+
+                    try
+                    {
+                        channelData = api.GetChannel(commentData.Snippet.AuthorChannelId.Value);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Error(e, e.GetDescription());
+                    }
 
                     Schedule(() =>
                     {
-                        channelName.Text = api.GetLocalizedChannelTitle(channelData);
+                        channelName.Text = channelData != null ? api.GetLocalizedChannelTitle(channelData) : commentData.Snippet.AuthorDisplayName;
                         channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
 #pragma warning disable CS8629 // Nullable 값 형식이 null일 수 있습니다.
                         channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
@@ -269,7 +279,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                             Schedule(() =>
                             {
                                 channelName.Text = string.Empty;
-                                channelName.Text = api.GetLocalizedChannelTitle(channelData);
+                                channelName.Text = channelData != null ? api.GetLocalizedChannelTitle(channelData) : commentData.Snippet.AuthorDisplayName;
                                 channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
                                 channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
                             });
@@ -280,7 +290,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                             Schedule(() =>
                             {
                                 channelName.Text = string.Empty;
-                                channelName.Text = api.GetLocalizedChannelTitle(channelData);
+                                channelName.Text = channelData != null ? api.GetLocalizedChannelTitle(channelData) : commentData.Snippet.AuthorDisplayName;
                                 channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
                                 channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
                                 translateToText.Text = NekoPlayerStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
