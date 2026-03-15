@@ -3950,7 +3950,6 @@ namespace NekoPlayer.App.Screens
                 Schedule(() => checkForUpdatesButton.Enabled.Value = enabled.NewValue);
             });
 
-
             #region System Volume
             if (RuntimeInfo.OS == RuntimeInfo.Platform.Windows)
             {
@@ -5305,7 +5304,6 @@ namespace NekoPlayer.App.Screens
 
         private bool commentsDisabled = false;
 
-        
         public void GetLocalizedVideoDescriptionRemake(Google.Apis.YouTube.v3.Data.Video videoData)
         {
             string str = api.GetLocalizedVideoDescription(videoData);
