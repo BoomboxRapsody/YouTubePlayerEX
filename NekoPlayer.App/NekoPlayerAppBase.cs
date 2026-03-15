@@ -37,7 +37,7 @@ using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Handlers.Mouse;
 using osu.Framework.IO.Stores;
-using osu.Framework.Localisation;   
+using osu.Framework.Localisation;
 using osu.Framework.Logging;
 using osu.Framework.Platform;
 using osuTK.Graphics;
