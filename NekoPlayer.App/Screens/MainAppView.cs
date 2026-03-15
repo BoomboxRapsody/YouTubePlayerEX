@@ -6326,7 +6326,7 @@ namespace NekoPlayer.App.Screens
                         }
                         else
                         {
-                            currentVideoSource.UpdateCaptionTrack(null);
+                            currentVideoSource?.UpdateCaptionTrack(null);
                         }
                     }
                     catch (Exception e)
