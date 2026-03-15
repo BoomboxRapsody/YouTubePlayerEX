@@ -66,6 +66,7 @@ using osu.Framework.Statistics;
 using osu.Framework.Threading;
 using osuTK;
 using osuTK.Graphics;
+using osuTK.Input;
 using SharpCompress.Archives.Zip;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Videos.ClosedCaptions;
@@ -4815,6 +4816,30 @@ namespace NekoPlayer.App.Screens
         [Resolved]
         private VolumeOverlay volume { get; set; }
 
+        protected override bool OnKeyDown(KeyDownEvent e)
+        {
+            if (currentVideoSource == null)
+                return true;
+
+            if (e.Key >= Key.Number0 && e.Key <= Key.Number9)
+            {
+                int digit = e.Key - Key.Number0;
+                double target = currentVideoSource.VideoProgress.MaxValue * (digit / 10.0);
+
+                currentVideoSource?.SeekTo(target * 1000);
+            }
+
+            if (e.Key >= Key.Keypad0 && e.Key <= Key.Keypad9)
+            {
+                int digit = e.Key - Key.Keypad0;
+                double target = currentVideoSource.VideoProgress.MaxValue * (digit / 10.0);
+
+                currentVideoSource?.SeekTo(target * 1000);
+            }
+
+            return true;
+        }
+
         public bool OnPressed(KeyBindingPressEvent<GlobalAction> e)
         {
             if (e.Target is TextBox)
@@ -4861,46 +4886,6 @@ namespace NekoPlayer.App.Screens
                     playbackSpeed.Value += 0.01;
                     osd.Display(new SpeedChangeToast(playbackSpeed.Value));
                     return true;
-
-                case GlobalAction.Seek0Percent:
-                    NumKeyInput(0);
-                    return true;
-
-                case GlobalAction.Seek10Percent:
-                    NumKeyInput(1);
-                    return true;
-
-                case GlobalAction.Seek20Percent:
-                    NumKeyInput(2);
-                    return true;
-
-                case GlobalAction.Seek30Percent:
-                    NumKeyInput(3);
-                    return true;
-
-                case GlobalAction.Seek40Percent:
-                    NumKeyInput(4);
-                    return true;
-
-                case GlobalAction.Seek50Percent:
-                    NumKeyInput(5);
-                    return true;
-
-                case GlobalAction.Seek60Percent:
-                    NumKeyInput(6);
-                    return true;
-
-                case GlobalAction.Seek70Percent:
-                    NumKeyInput(7);
-                    return true;
-
-                case GlobalAction.Seek80Percent:
-                    NumKeyInput(8);
-                    return true;
-
-                case GlobalAction.Seek90Percent:
-                    NumKeyInput(9);
-                    return true;
             }
 
             if (e.Repeat)
@@ -4922,6 +4907,10 @@ namespace NekoPlayer.App.Screens
 
                 case GlobalAction.Back:
                     hideOverlays();
+                    return true;
+
+                case GlobalAction.ToggleRepeatVideo:
+                    updateRepeatState();
                     return true;
 
                 case GlobalAction.OpenLoadVideo:
