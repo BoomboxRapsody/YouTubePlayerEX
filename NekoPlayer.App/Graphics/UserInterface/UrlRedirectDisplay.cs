@@ -3,6 +3,7 @@
 
 #nullable disable
 
+using NekoPlayer.App.Config;
 using NekoPlayer.App.Graphics.Sprites;
 using NekoPlayer.App.Online;
 using osu.Framework.Allocation;
@@ -37,11 +38,16 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         private SpriteIcon icon;
         private Bindable<Localisation.Language> uiLanguage = null!;
+        private Bindable<UsernameDisplayMode> usernameDisplayMode = null!;
+
+        [Resolved]
+        private NekoPlayerConfigManager appConfig { get; set; } = null!;
 
         [BackgroundDependencyLoader]
         private void load(OverlayColourProvider overlayColourProvider)
         {
             uiLanguage = app.CurrentLanguage.GetBoundCopy();
+            usernameDisplayMode = appConfig.GetBindable<UsernameDisplayMode>(NekoPlayerSetting.UsernameDisplayMode);
             AutoSizeAxes = Axes.Both;
 
             AddRangeInternal(new Drawable[]
@@ -105,6 +111,41 @@ namespace NekoPlayer.App.Graphics.UserInterface
                         displayName.Text = api.GetLocalizedVideoTitle(video);
                     });
                 });
+            }
+            else if (NekoPlayerDescriptionParser.IsYouTubeChannel(url))
+            {
+                icon.Icon = FontAwesome.Brands.Youtube;
+
+                string channelId = url.Replace("https://www.youtube.com/channel/", string.Empty);
+                Google.Apis.YouTube.v3.Data.Channel channel = api.GetChannel(channelId);
+
+                displayName.Text = api.GetLocalizedChannelTitle(channel);
+
+                uiLanguage.BindValueChanged(locale =>
+                {
+                    Schedule(() =>
+                    {
+                        displayName.Text = api.GetLocalizedChannelTitle(channel);
+                    });
+                });
+
+                usernameDisplayMode.BindValueChanged(locale =>
+                {
+                    Schedule(() =>
+                    {
+                        displayName.Text = api.GetLocalizedChannelTitle(channel);
+                    });
+                });
+            }
+            else if (NekoPlayerDescriptionParser.IsDiscord(url))
+            {
+                icon.Icon = FontAwesome.Brands.Discord;
+                displayName.Text = "discord";
+            }
+            else if (NekoPlayerDescriptionParser.IsTwitch(url))
+            {
+                icon.Icon = FontAwesome.Brands.Twitch;
+                displayName.Text = url.Replace("https://www.twitch.tv/", string.Empty).Replace("https://twitch.tv/", string.Empty);
             }
             else if (NekoPlayerDescriptionParser.IsTwitter(url))
             {

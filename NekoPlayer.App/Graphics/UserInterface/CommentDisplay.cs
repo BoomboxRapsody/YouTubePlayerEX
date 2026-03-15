@@ -247,14 +247,20 @@ namespace NekoPlayer.App.Graphics.UserInterface
                             commentText.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
                         else if (NekoPlayerDescriptionParser.IsYouTubeVideo(item.Value))
                             commentText.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
+                        else if (NekoPlayerDescriptionParser.IsDiscord(item.Value))
+                            commentText.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
+                        else if (NekoPlayerDescriptionParser.IsYouTubeChannel(item.Value))
+                            commentText.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
+                        else if (NekoPlayerDescriptionParser.IsTwitch(item.Value))
+                            commentText.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
                         else
                             commentText.AddLink(item.Value, item.Value);
                         break;
                     case YouTubeDescriptionTokenType.Mention:
-                        if (api.GetChannelExistsViaHandle(item.Value))
-                            commentText.AddLink(item.Value, $"https://www.youtube.com/{item.Value}");
-                        else
-                            commentText.AddText(item.Value);
+                        commentText.AddLink(item.Value, $"https://www.youtube.com/{item.Value}");
+                        break;
+                    case YouTubeDescriptionTokenType.Hashtag:
+                        commentText.AddLink(item.Value, $"https://www.youtube.com/hashtag/{item.Value.Replace("#", string.Empty)}");
                         break;
                     case YouTubeDescriptionTokenType.Timestamp:
                         commentText.AddArbitraryDrawable(new TimestampButton(item.Value)
