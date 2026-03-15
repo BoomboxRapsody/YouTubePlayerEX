@@ -436,7 +436,6 @@ namespace NekoPlayer.App
         private Bindable<bool> rotateEnabled = null!;
         private Bindable<bool> echoEnabled = null!;
         private Bindable<bool> distortionEnabled = null!;
-        private Bindable<bool> karaokeEnabled = null!;
 
         private Bindable<float> reverbWetMix = null!;
         private Bindable<float> reverbRoomSize = null!;
