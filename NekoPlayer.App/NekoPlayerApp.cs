@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using Google.Apis.YouTube.v3.Data;
 using NekoPlayer.App.Audio.Effects;
@@ -22,7 +20,6 @@ using NekoPlayer.App.Online;
 using NekoPlayer.App.Overlays;
 using NekoPlayer.App.Screens;
 using NekoPlayer.App.Updater;
-using NekoPlayer.App.Utils;
 using osu.Framework;
 using osu.Framework.Allocation;
 using osu.Framework.Audio;
@@ -40,7 +37,6 @@ using osu.Framework.Logging;
 using osu.Framework.Screens;
 using osu.Framework.Threading;
 using osuTK;
-using Vortice.Win32;
 
 namespace NekoPlayer.App
 {
