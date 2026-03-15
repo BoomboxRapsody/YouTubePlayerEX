@@ -26,7 +26,7 @@ namespace NekoPlayer.Desktop
 
             using (GameHost host = Host.GetSuitableDesktopHost(gameName, hostOptions))
             {
-                host.AllowBenchmarkUnlimitedFrames = true;
+                //host.AllowBenchmarkUnlimitedFrames = true;
                 host.Run(new NekoPlayerAppDesktop());
             }
         }
