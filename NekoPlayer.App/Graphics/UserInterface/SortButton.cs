@@ -9,7 +9,7 @@ using osu.Framework.Input.Events;
 
 namespace NekoPlayer.App.Graphics.UserInterface
 {
-    public partial class SortButton : Container
+    public partial class SortButton : CircularContainer
     {
         private const int transition_duration = 200;
 
@@ -23,7 +23,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
             AutoSizeAxes = Axes.X;
             Height = 20;
             Masking = true;
-            CornerRadius = 3;
             AddRangeInternal(new Drawable[]
             {
                 background = new Box

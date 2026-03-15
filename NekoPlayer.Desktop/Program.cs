@@ -22,7 +22,7 @@ namespace NekoPlayer.Desktop
             };
 
             if (DebugUtils.IsDebugBuild)
-                gameName = "NekoPlayer_development";
+                gameName = "NekoPlayer-development";
 
             using (GameHost host = Host.GetSuitableDesktopHost(gameName, hostOptions))
             {

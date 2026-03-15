@@ -649,6 +649,7 @@ namespace NekoPlayer.App.Screens
                                                                             TooltipText = NekoPlayerStrings.PreviousVideo,
                                                                             IconColour = overlayColourProvider.Content2,
                                                                             BackgroundColour = overlayColourProvider.Background3,
+                                                                            IconScale = new Vector2(0.85f),
                                                                             ClickAction = async _ =>
                                                                             {
                                                                                 if (playlists.Count > 0)
@@ -668,6 +669,7 @@ namespace NekoPlayer.App.Screens
                                                                             TooltipText = NekoPlayerStrings.Play,
                                                                             IconColour = overlayColourProvider.Content2,
                                                                             BackgroundColour = overlayColourProvider.Background3,
+                                                                            IconScale = new Vector2(0.85f),
                                                                             ClickAction = _ =>
                                                                             {
                                                                                 if (currentVideoSource != null)
@@ -687,6 +689,7 @@ namespace NekoPlayer.App.Screens
                                                                             TooltipText = NekoPlayerStrings.NextVideo,
                                                                             IconColour = overlayColourProvider.Content2,
                                                                             BackgroundColour = overlayColourProvider.Background3,
+                                                                            IconScale = new Vector2(0.85f),
                                                                             ClickAction = async _ =>
                                                                             {
                                                                                 if (playlists.Count > 0)
@@ -706,6 +709,7 @@ namespace NekoPlayer.App.Screens
                                                                             TooltipText = NekoPlayerStrings.Repeat,
                                                                             IconColour = overlayColourProvider.Content2,
                                                                             BackgroundColour = overlayColourProvider.Content2,
+                                                                            IconScale = new Vector2(0.85f),
                                                                             ClickAction = _ =>
                                                                             {
                                                                                 updateRepeatState();
@@ -3611,7 +3615,7 @@ namespace NekoPlayer.App.Screens
 
             commentsDisabled = true;
 
-            searchButton.BackgroundColour = repeatButton.BackgroundColour = commentSendButton.BackgroundColour = loadPlaylistOpenButton.BackgroundColour = overlayColourProvider.Background3;
+            searchButton.BackgroundColour = commentSendButton.BackgroundColour = loadPlaylistOpenButton.BackgroundColour = overlayColourProvider.Background3;
 
             hwAccelCheckbox.Current.Default = hardwareVideoDecoder.Default != HardwareVideoDecoder.None;
             hwAccelCheckbox.Current.Value = hardwareVideoDecoder.Value != HardwareVideoDecoder.None;
