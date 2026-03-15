@@ -393,8 +393,6 @@ namespace NekoPlayer.App
                 Logger.Log($"Scaling container loaded");
 
                 trackAudioEffects();
-
-                sentry.PostInit();
             }
             catch (Exception ex)
             {

@@ -49,12 +49,6 @@ namespace NekoPlayer.App.Utils
             });
         }
 
-        public void PostInit()
-        {
-            if (session == null)
-                return;
-        }
-
         private void onEntry(LogEntry entry)
         {
             if (entry.Level != LogLevel.Error)

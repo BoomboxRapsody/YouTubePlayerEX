@@ -3636,17 +3636,6 @@ namespace NekoPlayer.App.Screens
             playlistName.Text = NekoPlayerStrings.PlaylistNotLoaded;
             playlistAuthor.Text = NekoPlayerStrings.PlaylistNotLoadedDesc;
 
-            infoForNerds.AddText("Codec: ");
-            infoForNerds.AddText("[unknown]", f => f.Font = NekoPlayerApp.DefaultFont.With(weight: "Bold"));
-            infoForNerds.AddText("\nWidth: ");
-            infoForNerds.AddText("[unknown]", f => f.Font = NekoPlayerApp.DefaultFont.With(weight: "Bold"));
-            infoForNerds.AddText("\nHeight: ");
-            infoForNerds.AddText("[unknown]", f => f.Font = NekoPlayerApp.DefaultFont.With(weight: "Bold"));
-            infoForNerds.AddText("\nFPS: ");
-            infoForNerds.AddText("[unknown]", f => f.Font = NekoPlayerApp.DefaultFont.With(weight: "Bold"));
-            infoForNerds.AddText("\nBitrate: ");
-            infoForNerds.AddText("[unknown]", f => f.Font = NekoPlayerApp.DefaultFont.With(weight: "Bold"));
-
             audio.OnNewDevice += onAudioDeviceChanged;
             audio.OnLostDevice += onAudioDeviceChanged;
             audioDeviceDropdown.Current = audio.AudioDevice;
