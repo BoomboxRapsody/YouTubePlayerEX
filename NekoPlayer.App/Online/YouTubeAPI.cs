@@ -521,7 +521,10 @@ namespace NekoPlayer.App.Online
             }
             else
             {
-                return channel.Snippet.CustomUrl;
+                if (!string.IsNullOrEmpty(channel.Snippet.CustomUrl))
+                    return channel.Snippet.CustomUrl;
+                else
+                    return GetLocalizedChannelTitleOnlyOne(channel);
             }
         }
 

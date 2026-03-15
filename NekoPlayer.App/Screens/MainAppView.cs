@@ -589,7 +589,7 @@ namespace NekoPlayer.App.Screens
                                             Padding = new MarginPadding(16),
                                             Spacing = new Vector2(0, 8),
                                             Children = new Drawable[] {
-                                                seekbar = new RoundedSliderBarWithoutTooltip
+                                                seekbar = new RoundedSeekBar
                                                 {
                                                     RelativeSizeAxes = Axes.X,
                                                     PlaySamplesOnAdjust = false,
@@ -4206,7 +4206,7 @@ namespace NekoPlayer.App.Screens
 
         private SettingsItemV2 windowModeDropdownSettings;
 
-        private partial class RoundedSliderBarWithoutTooltip : NekoPlayerSeekBar<double>
+        private partial class RoundedSeekBar : NekoPlayerSeekBar<double>
         {
             public override LocalisableString TooltipText => "";
         }
