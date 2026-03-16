@@ -36,6 +36,8 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         public Action<double> TimestampClicked;
 
+        private LoadingLayer loading;
+
         [Resolved]
         private YouTubeAPI api { get; set; } = null!;
 
@@ -214,7 +216,8 @@ namespace NekoPlayer.App.Graphics.UserInterface
                             }
                         }
                     }
-                }
+                },
+                loading = new LoadingLayer(true, false, true),
             };
         }
 
@@ -243,18 +246,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                         commentText.AddText(item.Value);
                         break;
                     case YouTubeDescriptionTokenType.Url:
-                        if (NekoPlayerDescriptionParser.IsTwitter(item.Value))
-                            commentText.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
-                        else if (NekoPlayerDescriptionParser.IsYouTubeVideo(item.Value))
-                            commentText.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
-                        else if (NekoPlayerDescriptionParser.IsDiscord(item.Value))
-                            commentText.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
-                        else if (NekoPlayerDescriptionParser.IsYouTubeChannel(item.Value))
-                            commentText.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
-                        else if (NekoPlayerDescriptionParser.IsTwitch(item.Value))
-                            commentText.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
-                        else
-                            commentText.AddLink(item.Value, item.Value);
+                        commentText.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
                         break;
                     case YouTubeDescriptionTokenType.Mention:
                         commentText.AddLink(item.Value, $"https://www.youtube.com/{item.Value}");
@@ -278,9 +270,11 @@ namespace NekoPlayer.App.Graphics.UserInterface
             {
                 try
                 {
+                    Schedule(() => loading.Show());
                     DateTimeOffset? dateTime = commentData.Snippet.TopLevelComment.Snippet.PublishedAtDateTimeOffset;
                     DateTimeOffset now = DateTime.Now;
-                    Channel channelData = null!;
+#nullable enable
+                    Channel? channelData = null;
 
                     try
                     {
@@ -290,6 +284,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                     {
                         Logger.Error(e, e.GetDescription());
                     }
+#nullable disable
 
                     Schedule(() =>
                     {
@@ -326,6 +321,8 @@ namespace NekoPlayer.App.Graphics.UserInterface
                                 //translateToText.Text = NekoPlayerStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
                             });
                         });
+
+                        Schedule(() => loading.Hide());
                     });
                 }
                 catch

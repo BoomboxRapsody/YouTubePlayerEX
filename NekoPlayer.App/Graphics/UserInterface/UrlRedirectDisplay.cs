@@ -3,6 +3,8 @@
 
 #nullable disable
 
+using System.Threading.Tasks;
+using HtmlAgilityPack;
 using NekoPlayer.App.Config;
 using NekoPlayer.App.Graphics.Sprites;
 using NekoPlayer.App.Online;
@@ -44,7 +46,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         private NekoPlayerConfigManager appConfig { get; set; } = null!;
 
         [BackgroundDependencyLoader]
-        private void load(OverlayColourProvider overlayColourProvider)
+        private async Task load(OverlayColourProvider overlayColourProvider)
         {
             uiLanguage = app.CurrentLanguage.GetBoundCopy();
             usernameDisplayMode = appConfig.GetBindable<UsernameDisplayMode>(NekoPlayerSetting.UsernameDisplayMode);
@@ -95,63 +97,87 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 }
             });
 
-            if (NekoPlayerDescriptionParser.IsYouTubeVideo(url))
+#pragma warning disable CS4014 // 이 호출을 대기하지 않으므로 호출이 완료되기 전에 현재 메서드가 계속 실행됩니다.
+            Task.Run(async () =>
             {
-                icon.Icon = FontAwesome.Brands.Youtube;
+                string title = await GetTitleFromLink(url);
 
-                string videoId = VideoId.Parse(url);
-                Google.Apis.YouTube.v3.Data.Video video = api.GetVideo(videoId);
-
-                displayName.Text = api.GetLocalizedVideoTitle(video);
-
-                uiLanguage.BindValueChanged(locale =>
+                if (NekoPlayerDescriptionParser.IsYouTubeVideo(url))
                 {
-                    Schedule(() =>
+                    icon.Icon = FontAwesome.Brands.Youtube;
+
+                    string videoId = VideoId.Parse(url);
+                    Google.Apis.YouTube.v3.Data.Video video = api.GetVideo(videoId);
+
+                    displayName.Text = api.GetLocalizedVideoTitle(video);
+
+                    uiLanguage.BindValueChanged(locale =>
                     {
-                        displayName.Text = api.GetLocalizedVideoTitle(video);
+                        Schedule(() =>
+                        {
+                            displayName.Text = api.GetLocalizedVideoTitle(video);
+                        });
                     });
-                });
-            }
-            else if (NekoPlayerDescriptionParser.IsYouTubeChannel(url))
-            {
-                icon.Icon = FontAwesome.Brands.Youtube;
-
-                string channelId = url.Replace("https://www.youtube.com/channel/", string.Empty);
-                Google.Apis.YouTube.v3.Data.Channel channel = api.GetChannel(channelId);
-
-                displayName.Text = api.GetLocalizedChannelTitle(channel);
-
-                uiLanguage.BindValueChanged(locale =>
+                }
+                else if (NekoPlayerDescriptionParser.IsYouTubeChannel(url))
                 {
-                    Schedule(() =>
-                    {
-                        displayName.Text = api.GetLocalizedChannelTitle(channel);
-                    });
-                });
+                    icon.Icon = FontAwesome.Brands.Youtube;
 
-                usernameDisplayMode.BindValueChanged(locale =>
-                {
-                    Schedule(() =>
+                    string channelId = url.Replace("https://www.youtube.com/channel/", string.Empty);
+                    Google.Apis.YouTube.v3.Data.Channel channel = api.GetChannel(channelId);
+
+                    displayName.Text = api.GetLocalizedChannelTitle(channel);
+
+                    uiLanguage.BindValueChanged(locale =>
                     {
-                        displayName.Text = api.GetLocalizedChannelTitle(channel);
+                        Schedule(() =>
+                        {
+                            displayName.Text = api.GetLocalizedChannelTitle(channel);
+                        });
                     });
-                });
-            }
-            else if (NekoPlayerDescriptionParser.IsDiscord(url))
+
+                    usernameDisplayMode.BindValueChanged(locale =>
+                    {
+                        Schedule(() =>
+                        {
+                            displayName.Text = api.GetLocalizedChannelTitle(channel);
+                        });
+                    });
+                }
+                else if (NekoPlayerDescriptionParser.IsDiscord(url))
+                {
+                    icon.Icon = FontAwesome.Brands.Discord;
+                    displayName.Text = title;
+                }
+                else if (NekoPlayerDescriptionParser.IsTwitch(url))
+                {
+                    icon.Icon = FontAwesome.Brands.Twitch;
+                    displayName.Text = title;
+                }
+                else if (NekoPlayerDescriptionParser.IsTwitter(url))
+                {
+                    icon.Icon = FontAwesome.Brands.Twitter;
+                    displayName.Text = title;
+                }
+                else
+                {
+                    icon.Icon = FontAwesome.Solid.Globe;
+                    displayName.Text = title;
+                }
+            });
+#pragma warning restore CS4014 // 이 호출을 대기하지 않으므로 호출이 완료되기 전에 현재 메서드가 계속 실행됩니다.
+        }
+
+        public async Task<string> GetTitleFromLink(string url)
+        {
+            var web = new HtmlWeb
             {
-                icon.Icon = FontAwesome.Brands.Discord;
-                displayName.Text = "discord";
-            }
-            else if (NekoPlayerDescriptionParser.IsTwitch(url))
-            {
-                icon.Icon = FontAwesome.Brands.Twitch;
-                displayName.Text = url.Replace("https://www.twitch.tv/", string.Empty).Replace("https://twitch.tv/", string.Empty);
-            }
-            else if (NekoPlayerDescriptionParser.IsTwitter(url))
-            {
-                icon.Icon = FontAwesome.Brands.Twitter;
-                displayName.Text = url.Replace("https://x.com/", string.Empty).Replace("https://twitter.com/", string.Empty);
-            }
+                OverrideEncoding = System.Text.Encoding.UTF8,
+                UserAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.52 Safari/537.36",
+            };
+            var doc = await web.LoadFromWebAsync(url);
+            var titleNode = doc.DocumentNode.SelectSingleNode("//title");
+            return titleNode?.InnerText?.Trim() ?? url;
         }
 
         [Resolved]

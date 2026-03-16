@@ -5317,18 +5317,7 @@ namespace NekoPlayer.App.Screens
                         videoDescription.AddText(item.Value);
                         break;
                     case YouTubeDescriptionTokenType.Url:
-                        if (NekoPlayerDescriptionParser.IsTwitter(item.Value))
-                            videoDescription.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
-                        else if (NekoPlayerDescriptionParser.IsYouTubeVideo(item.Value))
-                            videoDescription.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
-                        else if (NekoPlayerDescriptionParser.IsDiscord(item.Value))
-                            videoDescription.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
-                        else if (NekoPlayerDescriptionParser.IsYouTubeChannel(item.Value))
-                            videoDescription.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
-                        else if (NekoPlayerDescriptionParser.IsTwitch(item.Value))
-                            videoDescription.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
-                        else
-                            videoDescription.AddLink(item.Value, item.Value);
+                        videoDescription.AddArbitraryDrawable(new UrlRedirectDisplay(item.Value));
                         break;
                     case YouTubeDescriptionTokenType.Mention:
                         videoDescription.AddLink(item.Value, $"https://www.youtube.com/{item.Value}");
