@@ -92,7 +92,7 @@ namespace NekoPlayer.App.Input.Binding
             new KeyBinding(new[] { InputKey.Control, InputKey.Shift, InputKey.R }, GlobalAction.RestartApp),
 
             new KeyBinding(new[] { InputKey.Alt, InputKey.O }, GlobalAction.OpenLoadVideo),
-            new KeyBinding(new[] { InputKey.Control, InputKey.S }, GlobalAction.OpenSearch),
+            new KeyBinding(new[] { InputKey.Slash }, GlobalAction.OpenSearch),
 
             new KeyBinding(new[] { InputKey.Alt, InputKey.M }, GlobalAction.OpenMyPlaylists),
             new KeyBinding(new[] { InputKey.Control, InputKey.M }, GlobalAction.AddPlaylistKey),

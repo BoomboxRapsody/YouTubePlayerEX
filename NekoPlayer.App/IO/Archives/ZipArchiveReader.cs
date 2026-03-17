@@ -11,6 +11,7 @@ using System.Text;
 using Microsoft.Toolkit.HighPerformance;
 using osu.Framework.Extensions;
 using osu.Framework.IO.Stores;
+using SharpCompress.Archives;
 using SharpCompress.Archives.Zip;
 using SharpCompress.Common;
 using SharpCompress.Readers;
@@ -28,16 +29,18 @@ namespace NekoPlayer.App.IO.Archives
         public static readonly ArchiveEncoding DEFAULT_ENCODING;
 
         private readonly Stream archiveStream;
-        private readonly ZipArchive archive;
-
-        private readonly Dictionary<string, ZipArchiveEntry> entries = new Dictionary<string, ZipArchiveEntry>();
+        private readonly IWritableArchive archive;
 
         static ZipArchiveReader()
         {
             // Required to support rare code pages.
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            DEFAULT_ENCODING = new ArchiveEncoding(Encoding.GetEncoding(932), Encoding.GetEncoding(932));
+            DEFAULT_ENCODING = new ArchiveEncoding
+            {
+                Default = Encoding.GetEncoding(932),
+                Password = Encoding.GetEncoding(932),
+            };
         }
 
         public ZipArchiveReader(Stream archiveStream, string name = null)
@@ -45,22 +48,16 @@ namespace NekoPlayer.App.IO.Archives
         {
             this.archiveStream = archiveStream;
 
-            archive = ZipArchive.Open(archiveStream, new ReaderOptions
+            archive = ZipArchive.OpenArchive(archiveStream, new ReaderOptions
             {
                 ArchiveEncoding = DEFAULT_ENCODING
             });
-
-            // Cache all non-directory entries in the archive and store them in a dictionary for fast lookup
-            foreach (var entry in archive.Entries.Where(e => !e.IsDirectory))
-            {
-                if (entry.Key != null)
-                    entries[entry.Key] = entry;
-            }
         }
 
         public override Stream GetStream(string name)
         {
-            if (!entries.TryGetValue(name, out var entry))
+            IArchiveEntry entry = archive.Entries.SingleOrDefault(e => e.Key == name);
+            if (entry == null)
                 return null;
 
             using (Stream s = entry.OpenEntryStream())
