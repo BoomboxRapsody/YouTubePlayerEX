@@ -5,8 +5,4 @@ updates:
   schedule:
     interval: monthly
     time: "17:00"
-  open-pull-requests-limit: 0 # disabled until https://github.com/dependabot/dependabot-core/issues/369 is resolved.
-  ignore:
-  - dependency-name: SharpCompress
-    versions:
-    - 0.39.0
+  open-pull-requests-limit: 0 # disabled until https://github.com/dependabot/dependabot-core/issues/369 is resolved
