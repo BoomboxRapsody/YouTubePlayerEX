@@ -18,6 +18,7 @@ using osu.Framework.Input.Events;
 using osu.Framework.Platform;
 using osuTK.Graphics;
 using YoutubeExplode.Videos;
+using YoutubeExplode.Playlists;
 
 namespace NekoPlayer.App.Graphics.UserInterface
 {
@@ -119,6 +120,15 @@ namespace NekoPlayer.App.Graphics.UserInterface
                         });
                     });
                 }
+                else if (NekoPlayerDescriptionParser.IsYouTubePlaylist(url))
+                {
+                    icon.Icon = FontAwesome.Brands.Youtube;
+
+                    string playlistId = PlaylistId.Parse(url);
+                    Google.Apis.YouTube.v3.Data.Playlist video = api.GetPlaylistInfo(videoId);
+
+                    displayName.Text = video.Snippet.Title;
+                }
                 else if (NekoPlayerDescriptionParser.IsYouTubeChannel(url))
                 {
                     icon.Icon = FontAwesome.Brands.Youtube;
@@ -212,10 +222,12 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         protected override bool OnClick(ClickEvent e)
         {
-            if (!NekoPlayerDescriptionParser.IsYouTubeVideo(url))
-                host.OpenUrlExternally(url);
-            else
+            if (NekoPlayerDescriptionParser.IsYouTubeVideo(url))
                 app.AppMessageHandler.SelectVideo(url);
+            if (NekoPlayerDescriptionParser.IsYouTubePlaylist(url))
+                app.AppMessageHandler.SelectPlaylist(url);
+            else
+                host.OpenUrlExternally(url);
 
             return base.OnClick(e);
         }
