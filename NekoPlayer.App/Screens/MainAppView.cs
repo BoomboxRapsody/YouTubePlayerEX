@@ -67,6 +67,8 @@ using osuTK;
 using osuTK.Graphics;
 using osuTK.Input;
 using SharpCompress.Archives.Zip;
+using SharpCompress.Common;
+using SharpCompress.Writers.Zip;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Videos.ClosedCaptions;
 using YoutubeExplode.Videos.Streams;
@@ -2379,6 +2381,7 @@ namespace NekoPlayer.App.Screens
                                     Icon = FontAwesome.Regular.FolderOpen,
                                     Margin = new MarginPadding(16),
                                     IconScale = new Vector2(1.2f),
+                                    Alpha = 0,
                                     TooltipText = NekoPlayerStrings.LoadFromPlaylistId,
                                 },
                                 new Container
@@ -3131,6 +3134,7 @@ namespace NekoPlayer.App.Screens
                                                             Icon = FontAwesome.Regular.FolderOpen,
                                                             IconScale = new Vector2(1.2f),
                                                             Text = NekoPlayerStrings.LoadVideo,
+                                                            Alpha = 0,
                                                             Hotkey = new Hotkey(GlobalAction.OpenLoadVideo),
                                                         },
                                                         settingsOverlayShowBtn = new MenuButtonItem
@@ -4920,18 +4924,6 @@ namespace NekoPlayer.App.Screens
                     updateRepeatState();
                     return true;
 
-                case GlobalAction.OpenLoadVideo:
-                    if (!loadVideoContainer.IsVisible)
-                    {
-                        hideOverlays();
-                        showOverlayContainer(loadVideoContainer);
-                        videoIdBox.TakeFocus();
-                    }
-                    else
-                        hideOverlayContainer(loadVideoContainer);
-
-                    return true;
-
                 case GlobalAction.OpenSearch:
                     if (!searchContainer.IsVisible)
                     {
@@ -6397,12 +6389,12 @@ namespace NekoPlayer.App.Screens
                 var logStorage = Logger.Storage;
 
                 using (var outStream = exportStorage.CreateFileSafely(archive_filename))
-                using (var zip = ZipArchive.Create())
+                using (var zip = ZipArchive.CreateArchive())
                 {
                     foreach (string? f in logStorage.GetFiles(string.Empty, "*.log"))
                         FileUtils.AttemptOperation(z => z.AddEntry(f, logStorage.GetStream(f), closeStream: true), zip, throwOnFailure: false);
 
-                    zip.SaveTo(outStream);
+                    zip.SaveTo(outStream, new ZipWriterOptions(CompressionType.Deflate));
                 }
             }
             catch
