@@ -195,7 +195,7 @@ namespace NekoPlayer.App.Online
                             {
                                 try
                                 {
-                                    bufferSize = await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                                    bufferSize = await stream.ReadAsync(buffer).ConfigureAwait(false);
                                 }
                                 // netcoreapp2.x throws an IOException on stream disposal; others throw ObjectDispoesdException
                                 catch (Exception e) when (e is ObjectDisposedException || e is IOException)
