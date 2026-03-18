@@ -125,7 +125,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                     icon.Icon = FontAwesome.Brands.Youtube;
 
                     string playlistId = PlaylistId.Parse(url);
-                    Google.Apis.YouTube.v3.Data.Playlist video = api.GetPlaylistInfo(videoId);
+                    Google.Apis.YouTube.v3.Data.Playlist video = api.GetPlaylistInfo(playlistId);
 
                     displayName.Text = video.Snippet.Title;
                 }
