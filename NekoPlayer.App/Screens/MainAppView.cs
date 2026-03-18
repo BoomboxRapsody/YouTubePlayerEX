@@ -67,6 +67,8 @@ using osuTK;
 using osuTK.Graphics;
 using osuTK.Input;
 using SharpCompress.Archives.Zip;
+using SharpCompress.Common;
+using SharpCompress.Writers.Zip;
 using YoutubeExplode.Converter;
 using YoutubeExplode.Videos.ClosedCaptions;
 using YoutubeExplode.Videos.Streams;
