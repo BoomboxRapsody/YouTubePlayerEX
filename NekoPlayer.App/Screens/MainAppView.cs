@@ -6387,12 +6387,12 @@ namespace NekoPlayer.App.Screens
                 var logStorage = Logger.Storage;
 
                 using (var outStream = exportStorage.CreateFileSafely(archive_filename))
-                using (var zip = ZipArchive.Create())
+                using (var zip = ZipArchive.CreateArchive())
                 {
                     foreach (string? f in logStorage.GetFiles(string.Empty, "*.log"))
                         FileUtils.AttemptOperation(z => z.AddEntry(f, logStorage.GetStream(f), closeStream: true), zip, throwOnFailure: false);
 
-                    zip.SaveTo(outStream);
+                    zip.SaveTo(outStream, new ZipWriterOptions(CompressionType.Deflate));
                 }
             }
             catch
