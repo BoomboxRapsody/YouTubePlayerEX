@@ -391,7 +391,7 @@ namespace NekoPlayer.App.Screens
 
                 if (!DiscordInstallationChecker.IsDiscordInstalled()) 
                 {
-                    discordNotInstalledNote.Value = new SettingsNote.Data(NekoPlayerStrings.DiscordNotInstalled, SettingsNote.Type.Informational)
+                    discordNotInstalledNote.Value = new SettingsNote.Data(NekoPlayerStrings.DiscordNotInstalled, SettingsNote.Type.Informational);
                 }
             }
 
