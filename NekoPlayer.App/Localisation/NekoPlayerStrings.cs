@@ -1121,6 +1121,11 @@ namespace NekoPlayer.App.Localisation
         /// </summary>
         public static LocalisableString ReportBugsDesc => new TranslatableString(getKey(@"report_bugs_desc"), @"Report a problem with the app to the developers.");
 
+        /// <summary>
+        /// "Discord is not installed. Please install Discord and share your activities with your friends!"
+        /// </summary>
+        public static LocalisableString DiscordNotInstalled => new TranslatableString(getKey(@"discord_not_installed"), @"Discord is not installed. Please install Discord and share your activities with your friends!");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }
