@@ -2575,7 +2575,7 @@ namespace NekoPlayer.App.Screens
                                     Size = new Vector2(200, 60),
                                     Margin = new MarginPadding(8),
                                 },
-                                playlistIdBox = new EnhancedFocusedTextBoxf
+                                playlistIdBox = new EnhancedFocusedTextBox
                                 {
                                     Origin = Anchor.CentreRight,
                                     Anchor = Anchor.CentreRight,
