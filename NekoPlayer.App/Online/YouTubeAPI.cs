@@ -65,7 +65,10 @@ namespace NekoPlayer.App.Online
             Logger.Log($"Google Translate, YouTube API loaded");
         }
 
-        public Channel GetChannel(string channelId)
+        public Channel? TryGetChannel(string channelId)
+            => GetChannel(channelId) ?? null;
+
+        public Channel? GetChannel(string channelId)
         {
             var part = "statistics,snippet,brandingSettings,id,localizations";
             var request = youtubeService.Channels.List(part);
@@ -79,7 +82,10 @@ namespace NekoPlayer.App.Online
 
             var result = response.Items.First();
 
-            return result;
+            if (result != null)
+                return result;
+
+            return null;
         }
 
         public bool GetChannelExistsViaHandle(string handle)
