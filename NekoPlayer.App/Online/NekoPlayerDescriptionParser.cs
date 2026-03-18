@@ -33,6 +33,14 @@ namespace NekoPlayer.App.Online
             return false;
         }
 
+        public static bool IsYouTubePlaylist(string url)
+        {
+            if (url.Contains("youtube.com/playlist?list="))
+                return true;
+
+            return false;
+        }
+
         public static bool IsDiscord(string url)
         {
             if (url.Contains("discord.com"))
