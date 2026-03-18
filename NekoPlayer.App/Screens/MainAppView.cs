@@ -246,6 +246,7 @@ namespace NekoPlayer.App.Screens
         private Bindable<SettingsNote.Data> videoQualityWarning = new Bindable<SettingsNote.Data>();
         private Bindable<SettingsNote.Data> oauth_note = new Bindable<SettingsNote.Data>();
         private Bindable<SettingsNote.Data> hwAccelNote = new Bindable<SettingsNote.Data>();
+        private Bindable<SettingsNote.Data> discordNotInstalledNote = new Bindable<SettingsNote.Data>();
 
         private Bindable<OverlayColourScheme> colourSchemeBindable;
         private Bindable<ProfileImageShape> profileImageShape;
@@ -387,6 +388,11 @@ namespace NekoPlayer.App.Screens
             if (RuntimeInfo.OS == RuntimeInfo.Platform.Windows) 
             {
                 discordRichPresence.Disabled = !DiscordInstallationChecker.IsDiscordInstalled();
+
+                if (!DiscordInstallationChecker.IsDiscordInstalled()) 
+                {
+                    discordNotInstalledNote.Value = new SettingsNote.Data(NekoPlayerStrings.DiscordNotInstalled, SettingsNote.Type.Informational)
+                }
             }
 
             use_sdl3.BindValueChanged(_ =>
@@ -1038,7 +1044,10 @@ namespace NekoPlayer.App.Screens
                                                         {
                                                             Caption = NekoPlayerStrings.DiscordRichPresence,
                                                             Current = discordRichPresence,
-                                                        }),
+                                                        })
+                                                        {
+                                                            Note = { BindTarget = discordNotInstalledNote },
+                                                        },
                                                         new SettingsItemV2(new FormEnumDropdown<VideoMetadataTranslateSource>
                                                         {
                                                             Caption = NekoPlayerStrings.VideoMetadataTranslateSource,
@@ -2566,7 +2575,7 @@ namespace NekoPlayer.App.Screens
                                     Size = new Vector2(200, 60),
                                     Margin = new MarginPadding(8),
                                 },
-                                playlistIdBox = new EnhancedFocusedTextBox
+                                playlistIdBox = new EnhancedFocusedTextBoxf
                                 {
                                     Origin = Anchor.CentreRight,
                                     Anchor = Anchor.CentreRight,
