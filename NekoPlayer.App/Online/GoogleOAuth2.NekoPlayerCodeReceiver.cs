@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
+// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
 #nullable disable
@@ -326,7 +326,7 @@ namespace NekoPlayer.App.Online
                 {
                     string fullResponse = $"HTTP/1.1 200 OK\r\n\r\n{_closePageResponse}";
                     var response = Encoding.UTF8.GetBytes(fullResponse);
-                    await stream.WriteAsync(response, 0, response.Length, cancellationToken).ConfigureAwait(false);
+                    await stream.WriteAsync(response, cancellationToken).ConfigureAwait(false);
                     await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
                 }
 
@@ -453,7 +453,7 @@ namespace NekoPlayer.App.Online
                 context.Response.SendChunked = false;
                 context.Response.KeepAlive = false;
                 var output = context.Response.OutputStream;
-                await output.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+                await output.WriteAsync(bytes).ConfigureAwait(false);
                 await output.FlushAsync().ConfigureAwait(false);
                 output.Close();
                 context.Response.Close();
