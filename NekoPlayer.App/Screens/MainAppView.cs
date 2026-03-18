@@ -384,6 +384,11 @@ namespace NekoPlayer.App.Screens
 
             windowedResolution.Value = sizeWindowed.Value;
 
+            if (RuntimeInfo.OS == RuntimeInfo.Platform.Windows) 
+            {
+                discordRichPresence.Disabled = !DiscordInstallationChecker.IsDiscordInstalled();
+            }
+
             use_sdl3.BindValueChanged(_ =>
             {
                 if (game?.RestartAppWhenExited() == true)
