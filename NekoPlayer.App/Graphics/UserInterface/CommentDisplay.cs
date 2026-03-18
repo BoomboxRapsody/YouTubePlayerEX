@@ -273,57 +273,92 @@ namespace NekoPlayer.App.Graphics.UserInterface
                     Schedule(() => loading.Show());
                     DateTimeOffset? dateTime = commentData.Snippet.TopLevelComment.Snippet.PublishedAtDateTimeOffset;
                     DateTimeOffset now = DateTime.Now;
-#nullable enable
-                    Channel? channelData = null;
 
                     try
                     {
-                        channelData = api.GetChannel(commentData.Snippet.TopLevelComment.Snippet.AuthorChannelId.Value);
+                        Channel? channelData = api.TryGetChannel(commentData.Snippet.TopLevelComment.Snippet.AuthorChannelId.Value);
+
+                        Schedule(() =>
+                        {
+                            channelName.Text = channelData != null ? api.GetLocalizedChannelTitle(channelData) : commentData.Snippet.TopLevelComment.Snippet.AuthorDisplayName;
+                            channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+#pragma warning disable CS8629 // Nullable 값 형식이 null일 수 있습니다.
+                            channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+#pragma warning restore CS8629 // Nullable 값 형식이 null일 수 있습니다.
+                            setText(commentData.Snippet.TopLevelComment.Snippet.TextOriginal);
+                            likeCount.Text = Convert.ToInt32(commentData.Snippet.TopLevelComment.Snippet.LikeCount).ToStandardFormattedString(0);
+                            //translateToText.Text = NekoPlayerStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
+                            profileImage.UpdateProfileImage(commentData.Snippet.TopLevelComment.Snippet.AuthorChannelId.Value);
+                            replyCount.Text = Convert.ToInt32(commentData.Snippet.TotalReplyCount).ToStandardFormattedString(0);
+
+                            usernameDisplayMode.BindValueChanged(locale =>
+                            {
+                                Schedule(() =>
+                                {
+                                    channelName.Text = string.Empty;
+                                    channelName.Text = channelData != null ? api.GetLocalizedChannelTitle(channelData) : commentData.Snippet.TopLevelComment.Snippet.AuthorDisplayName;
+                                    channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+                                    channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+                                });
+                            }, true);
+
+                            uiLanguage.BindValueChanged(locale =>
+                            {
+                                Schedule(() =>
+                                {
+                                    channelName.Text = string.Empty;
+                                    channelName.Text = channelData != null ? api.GetLocalizedChannelTitle(channelData) : commentData.Snippet.TopLevelComment.Snippet.AuthorDisplayName;
+                                    channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+                                    channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+                                    //translateToText.Text = NekoPlayerStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
+                                });
+                            });
+
+                            Schedule(() => loading.Hide());
+                        });
                     }
                     catch (Exception e)
                     {
                         Logger.Error(e, e.GetDescription());
-                    }
-#nullable disable
-
-                    Schedule(() =>
-                    {
-                        channelName.Text = channelData != null ? api.GetLocalizedChannelTitle(channelData) : commentData.Snippet.TopLevelComment.Snippet.AuthorDisplayName;
-                        channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+                        Schedule(() =>
+                        {
+                            channelName.Text = commentData.Snippet.TopLevelComment.Snippet.AuthorDisplayName;
+                            channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
 #pragma warning disable CS8629 // Nullable 값 형식이 null일 수 있습니다.
-                        channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+                            channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
 #pragma warning restore CS8629 // Nullable 값 형식이 null일 수 있습니다.
-                        setText(commentData.Snippet.TopLevelComment.Snippet.TextOriginal);
-                        likeCount.Text = Convert.ToInt32(commentData.Snippet.TopLevelComment.Snippet.LikeCount).ToStandardFormattedString(0);
-                        //translateToText.Text = NekoPlayerStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
-                        profileImage.UpdateProfileImage(commentData.Snippet.TopLevelComment.Snippet.AuthorChannelId.Value);
-                        replyCount.Text = Convert.ToInt32(commentData.Snippet.TotalReplyCount).ToStandardFormattedString(0);
+                            setText(commentData.Snippet.TopLevelComment.Snippet.TextOriginal);
+                            likeCount.Text = Convert.ToInt32(commentData.Snippet.TopLevelComment.Snippet.LikeCount).ToStandardFormattedString(0);
+                            //translateToText.Text = NekoPlayerStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
+                            profileImage.UpdateProfileImage(commentData.Snippet.TopLevelComment.Snippet.AuthorChannelId.Value);
+                            replyCount.Text = Convert.ToInt32(commentData.Snippet.TotalReplyCount).ToStandardFormattedString(0);
 
-                        usernameDisplayMode.BindValueChanged(locale =>
-                        {
-                            Schedule(() =>
+                            usernameDisplayMode.BindValueChanged(locale =>
                             {
-                                channelName.Text = string.Empty;
-                                channelName.Text = channelData != null ? api.GetLocalizedChannelTitle(channelData) : commentData.Snippet.TopLevelComment.Snippet.AuthorDisplayName;
-                                channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
-                                channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
-                            });
-                        }, true);
+                                Schedule(() =>
+                                {
+                                    channelName.Text = string.Empty;
+                                    channelName.Text = commentData.Snippet.TopLevelComment.Snippet.AuthorDisplayName;
+                                    channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+                                    channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+                                });
+                            }, true);
 
-                        uiLanguage.BindValueChanged(locale =>
-                        {
-                            Schedule(() =>
+                            uiLanguage.BindValueChanged(locale =>
                             {
-                                channelName.Text = string.Empty;
-                                channelName.Text = channelData != null ? api.GetLocalizedChannelTitle(channelData) : commentData.Snippet.TopLevelComment.Snippet.AuthorDisplayName;
-                                channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
-                                channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
-                                //translateToText.Text = NekoPlayerStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
+                                Schedule(() =>
+                                {
+                                    channelName.Text = string.Empty;
+                                    channelName.Text = commentData.Snippet.TopLevelComment.Snippet.AuthorDisplayName;
+                                    channelName.AddText(" • ", f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+                                    channelName.AddText(dateTime.Value.Humanize(dateToCompareAgainst: now), f => f.Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "Regular"));
+                                    //translateToText.Text = NekoPlayerStrings.TranslateTo(app.CurrentLanguage.Value.GetLocalisableDescription());
+                                });
                             });
+
+                            Schedule(() => loading.Hide());
                         });
-
-                        Schedule(() => loading.Hide());
-                    });
+                    }
                 }
                 catch
                 {

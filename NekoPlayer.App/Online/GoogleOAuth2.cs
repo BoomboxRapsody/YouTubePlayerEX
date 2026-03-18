@@ -14,6 +14,7 @@ using Google.Apis.Util.Store;
 using osu.Framework.Bindables;
 using osu.Framework.Logging;
 using NekoPlayer.App.Config;
+using osu.Framework.Development;
 
 namespace NekoPlayer.App.Online
 {
@@ -118,13 +119,14 @@ namespace NekoPlayer.App.Online
         {
             UserCredential credential;
 
-            string credPath = isTestClient_static ? @"NekoPlayer/OAuth2_Dev" : @"NekoPlayer/OAuth2";
+            string credPath = (isTestClient_static || DebugUtils.IsDebugBuild) ? @"NekoPlayer-development/OAuth2" : @"NekoPlayer/OAuth2";
             credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                 getAuthConfig(),
                 new[] { Google.Apis.YouTube.v3.YouTubeService.Scope.YoutubeForceSsl },
                 "user",
                 CancellationToken.None,
-                new FileDataStore(credPath, false)
+                new FileDataStore(credPath, false),
+                new NekoPlayerCodeReceiver()
             );
 
             return credential;
