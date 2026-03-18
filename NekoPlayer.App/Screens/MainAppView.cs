@@ -4922,18 +4922,6 @@ namespace NekoPlayer.App.Screens
                     updateRepeatState();
                     return true;
 
-                case GlobalAction.OpenLoadVideo:
-                    if (!loadVideoContainer.IsVisible)
-                    {
-                        hideOverlays();
-                        showOverlayContainer(loadVideoContainer);
-                        videoIdBox.TakeFocus();
-                    }
-                    else
-                        hideOverlayContainer(loadVideoContainer);
-
-                    return true;
-
                 case GlobalAction.OpenSearch:
                     if (!searchContainer.IsVisible)
                     {
