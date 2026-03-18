@@ -2379,6 +2379,7 @@ namespace NekoPlayer.App.Screens
                                     Icon = FontAwesome.Regular.FolderOpen,
                                     Margin = new MarginPadding(16),
                                     IconScale = new Vector2(1.2f),
+                                    Alpha = 0,
                                     TooltipText = NekoPlayerStrings.LoadFromPlaylistId,
                                 },
                                 new Container
@@ -3131,6 +3132,7 @@ namespace NekoPlayer.App.Screens
                                                             Icon = FontAwesome.Regular.FolderOpen,
                                                             IconScale = new Vector2(1.2f),
                                                             Text = NekoPlayerStrings.LoadVideo,
+                                                            Alpha = 0,
                                                             Hotkey = new Hotkey(GlobalAction.OpenLoadVideo),
                                                         },
                                                         settingsOverlayShowBtn = new MenuButtonItem
