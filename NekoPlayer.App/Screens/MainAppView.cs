@@ -5840,7 +5840,7 @@ namespace NekoPlayer.App.Screens
 
             videoContainer.Add(currentVideoSource);
 
-            videoLoadingProgress.Text = "";
+            //Schedule(() => videoLoadingProgress.Text = "");
 
             videoProgress.BindValueChanged(seek =>
             {
@@ -6018,8 +6018,8 @@ namespace NekoPlayer.App.Screens
                     return;
                 }
 
-                IProgress<double> audioDownloadProgress = new Progress<double>((percent) => videoLoadingProgress.Text = $"Downloading audio cache: {(percent * 100):N0}%");
-                IProgress<double> videoDownloadProgress = new Progress<double>((percent) => videoLoadingProgress.Text = $"Downloading video cache: {(percent * 100):N0}%");
+                //IProgress<double> audioDownloadProgress = new Progress<double>((percent) => videoLoadingProgress.Text = $"Downloading audio cache: {(percent * 100):N0}%");
+                //IProgress<double> videoDownloadProgress = new Progress<double>((percent) => videoLoadingProgress.Text = $"Downloading video cache: {(percent * 100):N0}%");
 
                 spinnerShow = Scheduler.AddDelayed(spinner.Show, 0);
 
@@ -6301,18 +6301,18 @@ namespace NekoPlayer.App.Screens
                     {
                         case LoadType.Full:
                         {
-                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\audio.mp3").SetFFmpegPath(app.GetFFmpegPath()).Build(), audioDownloadProgress);
-                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\video.webm").SetFFmpegPath(app.GetFFmpegPath()).Build(), videoDownloadProgress);
+                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\audio.mp3").SetFFmpegPath(app.GetFFmpegPath()).Build());
+                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\video.webm").SetFFmpegPath(app.GetFFmpegPath()).Build());
                             break;
                         }
                         case LoadType.AudioOnly:
                         {
-                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\audio.mp3").SetFFmpegPath(app.GetFFmpegPath()).Build(), audioDownloadProgress);
+                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\audio.mp3").SetFFmpegPath(app.GetFFmpegPath()).Build());
                             break;
                         }
                         case LoadType.VideoOnly:
                         {
-                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\video.webm").SetFFmpegPath(app.GetFFmpegPath()).Build(), videoDownloadProgress);
+                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\video.webm").SetFFmpegPath(app.GetFFmpegPath()).Build());
                             break;
                         }
                     }
