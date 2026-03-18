@@ -6475,12 +6475,6 @@ namespace NekoPlayer.App.Screens
             Task.Run(async () => SetVideoSource(id));
         }
 
-        public void SelectPlaylist(string id)
-        {
-            Schedule(() => hideOverlays());
-            Task.Run(async () => SetPlaylist(id));
-        }
-
 #nullable enable
         /// <summary>
         /// Contrary to <see cref="Display.Equals(osu.Framework.Platform.Display?)"/>, this comparer disregards the value of <see cref="Display.Bounds"/>.
