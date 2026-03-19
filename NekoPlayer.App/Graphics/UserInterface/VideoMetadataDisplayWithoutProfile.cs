@@ -59,16 +59,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
             usernameDisplayMode = appConfig.GetBindable<UsernameDisplayMode>(NekoPlayerSetting.UsernameDisplayMode);
             translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(NekoPlayerSetting.VideoMetadataTranslateSource);
 
-            CornerRadius = NekoPlayerApp.UI_CORNER_RADIUS;
-            Masking = true;
-
-            EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
-            {
-                Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
-                Colour = Color4.Black.Opacity(0.25f),
-                Offset = new Vector2(0, 2),
-                Radius = 16,
-            };
+            Masking = false;
 
             Shear = new Vector2(0.2f, 0);
 
@@ -78,16 +69,16 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 bgLayer = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
-                    Colour = overlayColourProvider.Background5,
-                    Alpha = 1f,
+                    Colour = ColourInfo.GradientHorizontal(overlayColourProvider.Background5.Opacity(0.75f), overlayColourProvider.Background5.Opacity(0f)),
+                    Alpha = 0.7f,
                 },
                 new Container {
                     RelativeSizeAxes = Axes.Both,
                     Padding = new MarginPadding
                     {
-                        Vertical = 7,
+                        Vertical = 18,
                         Right = 7,
-                        Left = 4,
+                        Left = 14,
                     },
                     Shear = new Vector2(-0.2f, 0),
                     Children = new Drawable[]
@@ -145,7 +136,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         protected override bool OnHover(HoverEvent e)
         {
             if (ClickEvent != null)
-                hover.FadeTo(0.2f, 500, Easing.OutQuint);
+                bgLayer.FadeTo(1f, 500, Easing.OutQuint);
 
             return base.OnHover(e);
         }
@@ -155,7 +146,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
             base.OnHoverLost(e);
 
             if (ClickEvent != null)
-                hover.FadeOut(500, Easing.OutQuint);
+                bgLayer.FadeTo(0.7f, 500, Easing.OutQuint);
         }
 
         protected override void LoadComplete()
@@ -184,16 +175,23 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 IBitmapHelper bitmapHelper = new BitmapHelper(bitmap);
                 PaletteBuilder paletteBuilder = new PaletteBuilder();
                 Palette palette = paletteBuilder.Generate(bitmapHelper);
-                int? rgbColor = palette.MutedSwatch.Rgb;
-                int? rgbTextColor = palette.MutedSwatch.TitleTextColor;
+                int? rgbColor = palette.VibrantSwatch.Rgb;
+                int? rgbTextColor = palette.VibrantSwatch.TitleTextColor;
 
-                if (rgbColor != null && rgbTextColor != null)
+                if (rgbColor != null)
                 {
                     Color4 bgColor = Color.FromArgb((int)rgbColor);
+                    Schedule(() =>
+                    {
+                        bgLayer.Colour = ColourInfo.GradientHorizontal(bgColor.Opacity(0.75f), bgColor.Opacity(0f));
+                    });
+                }
+
+                if (rgbTextColor != null)
+                {
                     Color4 textColor = Color.FromArgb((int)rgbTextColor);
                     Schedule(() =>
                     {
-                        bgLayer.Colour = ColourInfo.GradientHorizontal(bgColor, bgColor.Darken(1f));
                         videoName.Colour = (textColor);
                         desc.Colour = (textColor);
                     });

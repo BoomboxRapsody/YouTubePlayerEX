@@ -511,7 +511,7 @@ namespace NekoPlayer.App.Screens
                             {
                                 new Box
                                 {
-                                    Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0.35f), Color4.Black.Opacity(0)),
+                                    Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0.45f), Color4.Black.Opacity(0)),
                                     Origin = Anchor.TopLeft,
                                     Anchor = Anchor.TopLeft,
                                     RelativeSizeAxes = Axes.X,
@@ -519,7 +519,7 @@ namespace NekoPlayer.App.Screens
                                 },
                                 new Box
                                 {
-                                    Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0), Color4.Black.Opacity(0.35f)),
+                                    Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0), Color4.Black.Opacity(0.45f)),
                                     Origin = Anchor.BottomLeft,
                                     Anchor = Anchor.BottomLeft,
                                     RelativeSizeAxes = Axes.X,
@@ -535,10 +535,11 @@ namespace NekoPlayer.App.Screens
                             {
                                 videoMetadataDisplay = new VideoMetadataDisplayWithoutProfile
                                 {
-                                    Width = 500,
-                                    Height = 60,
+                                    Width = 520,
+                                    Height = 70,
                                     Origin = Anchor.TopLeft,
                                     Anchor = Anchor.TopLeft,
+                                    Position = new Vector2(-18, -18),
                                     Margin = new MarginPadding
                                     {
                                         Left = 8,
