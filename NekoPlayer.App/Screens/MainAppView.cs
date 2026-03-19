@@ -5040,6 +5040,17 @@ namespace NekoPlayer.App.Screens
 
                     return true;
 
+                case GlobalAction.OpenMenu:
+                    if (!menuOverlay.IsVisible)
+                    {
+                        hideOverlays();
+                        showOverlayContainer(menuOverlay);
+                    }
+                    else
+                        hideOverlayContainer(menuOverlay);
+
+                    return true;
+
                 case GlobalAction.AddPlaylistKey:
                     if (!addPlaylistOverlay.IsVisible)
                     {

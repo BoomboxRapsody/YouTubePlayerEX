@@ -101,11 +101,6 @@ namespace NekoPlayer.App.Graphics.Caption
                         spriteText.Font = NekoPlayerApp.Hungeul.With(size: 24);
                         break;
                     }
-                    case UIFont.Futehodo_MaruGothic:
-                    {
-                        spriteText.Font = NekoPlayerApp.Futehodo_MaruGothic.With(size: 24);
-                        break;
-                    }
                 }
             }, true);
 
