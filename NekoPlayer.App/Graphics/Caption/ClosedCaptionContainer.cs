@@ -127,7 +127,7 @@ namespace NekoPlayer.App.Graphics.Caption
             };
             */
 
-            this.TransformBindableTo(bottomMargin, state ? 90 : 0, 500, Easing.OutQuint);
+            this.TransformBindableTo(bottomMargin, state ? 45 : 0, 500, Easing.OutQuint);
         }
 
         protected override void Update()

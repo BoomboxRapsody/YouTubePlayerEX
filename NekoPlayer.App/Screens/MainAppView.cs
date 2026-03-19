@@ -218,7 +218,7 @@ namespace NekoPlayer.App.Screens
         private FormButton checkForUpdatesButton, login;
         private FormSliderBar<double> systemVolumeControl;
         private ThumbnailContainerBackground thumbnailContainer;
-        private NekoPlayerSeekBar<double> seekbar;
+        private RoundedSliderBar<double> seekbar;
         private Bindable<LocalisableString> updateInfomationText;
         private Bindable<bool> updateButtonEnabled, fpsDisplay, captionEnabled, use_sdl3;
         private Bindable<AspectRatioMethod> aspectRatioMethod;
@@ -293,6 +293,8 @@ namespace NekoPlayer.App.Screens
             => shaderManager.LocalInternalShader<T>();
 
         private ControlBarIconButton repeatButton;
+
+        private AdaptiveSpriteText timeText;
 
         private Bindable<bool> trayIconVisible;
 
@@ -563,13 +565,15 @@ namespace NekoPlayer.App.Screens
                                         },
                                     }
                                 },
-                                new Container {
+                                new Container
+                                {
                                     Anchor = Anchor.BottomCentre,
                                     Origin = Anchor.BottomCentre,
                                     RelativeSizeAxes = Axes.X,
-                                    Height = 85,
-                                    Masking = true,
-                                    CornerRadius = NekoPlayerApp.UI_CORNER_RADIUS,
+                                    Height = 75,
+                                    Masking = false,
+                                    //CornerRadius = NekoPlayerApp.UI_CORNER_RADIUS,
+                                    /*
                                     EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
                                     {
                                         Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
@@ -577,29 +581,19 @@ namespace NekoPlayer.App.Screens
                                         Offset = new Vector2(0, 2),
                                         Radius = 16,
                                     },
+                                    */
                                     Children = new Drawable[]
                                     {
                                         new Box
                                         {
                                             RelativeSizeAxes = Axes.Both,
                                             Colour = overlayColourProvider.Background5,
-                                            Alpha = 1f,
-                                        },
-                                        totalTime = new AdaptiveSpriteText
-                                        {
-                                            Anchor = Anchor.CentreRight,
-                                            Origin = Anchor.CentreRight,
-                                            Margin = new MarginPadding
-                                            {
-                                                Right = 16,
-                                            },
-                                            Text = "0:00",
-                                            Colour = overlayColourProvider.Content2,
+                                            Alpha = 0f,
                                         },
                                         new FillFlowContainer {
                                             RelativeSizeAxes = Axes.Both,
                                             Padding = new MarginPadding(16),
-                                            Spacing = new Vector2(0, 8),
+                                            Spacing = new Vector2(0, 4),
                                             Children = new Drawable[] {
                                                 seekbar = new RoundedSeekBar
                                                 {
@@ -627,6 +621,7 @@ namespace NekoPlayer.App.Screens
                                                 new AdaptiveRoundedScrollContainer(Direction.Horizontal)
                                                 {
                                                     ScrollbarVisible = false,
+                                                    Masking = false,
                                                     RelativeSizeAxes = Axes.Both,
                                                     Children = new Drawable[]
                                                     {
@@ -645,6 +640,13 @@ namespace NekoPlayer.App.Screens
                                                                     Height = 30,
                                                                     Masking = true,
                                                                     CornerRadius = 15,
+                                                                    EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                                                                    {
+                                                                        Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                                                        Colour = Color4.Black.Opacity(0.25f),
+                                                                        Offset = new Vector2(0, 2),
+                                                                        Radius = 16,
+                                                                    },
                                                                     Children = new Drawable[]
                                                                     {
                                                                         new Box
@@ -744,6 +746,13 @@ namespace NekoPlayer.App.Screens
                                                                     Height = 30,
                                                                     Masking = true,
                                                                     CornerRadius = 15,
+                                                                    EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                                                                    {
+                                                                        Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                                                        Colour = Color4.Black.Opacity(0.25f),
+                                                                        Offset = new Vector2(0, 2),
+                                                                        Radius = 16,
+                                                                    },
                                                                     Children = new Drawable[]
                                                                     {
                                                                         new Box
@@ -806,6 +815,13 @@ namespace NekoPlayer.App.Screens
                                                                     Height = 30,
                                                                     Masking = true,
                                                                     CornerRadius = 15,
+                                                                    EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                                                                    {
+                                                                        Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                                                        Colour = Color4.Black.Opacity(0.25f),
+                                                                        Offset = new Vector2(0, 2),
+                                                                        Radius = 16,
+                                                                    },
                                                                     Children = new Drawable[]
                                                                     {
                                                                         new Box
@@ -858,6 +874,53 @@ namespace NekoPlayer.App.Screens
                                                                                     AlwaysPresent = true,
                                                                                     Font = NekoPlayerApp.DefaultFont,
                                                                                     Colour = overlayColourProvider.Content2,
+                                                                                },
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                },
+                                                                new Container
+                                                                {
+                                                                    AutoSizeAxes = Axes.X,
+                                                                    Height = 30,
+                                                                    Masking = true,
+                                                                    CornerRadius = 15,
+                                                                    EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                                                                    {
+                                                                        Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                                                        Colour = Color4.Black.Opacity(0.25f),
+                                                                        Offset = new Vector2(0, 2),
+                                                                        Radius = 16,
+                                                                    },
+                                                                    Children = new Drawable[]
+                                                                    {
+                                                                        new Box
+                                                                        {
+                                                                            RelativeSizeAxes = Axes.Both,
+                                                                            Colour = overlayColourProvider.Background3,
+                                                                            Alpha = 1f,
+                                                                        },
+                                                                        new FillFlowContainer
+                                                                        {
+                                                                            AutoSizeAxes = Axes.Both,
+                                                                            Spacing = new Vector2(8, 0),
+                                                                            Direction = FillDirection.Horizontal,
+                                                                            Padding = new MarginPadding
+                                                                            {
+                                                                                Horizontal = 8
+                                                                            },
+                                                                            Children = new Drawable[]
+                                                                            {
+                                                                                timeText = new AdaptiveSpriteText
+                                                                                {
+                                                                                    Margin = new MarginPadding
+                                                                                    {
+                                                                                        Top = 7
+                                                                                    },
+                                                                                    AlwaysPresent = true,
+                                                                                    Font = NekoPlayerApp.DefaultFont,
+                                                                                    Colour = overlayColourProvider.Content2,
+                                                                                    Text = "0:00 / 0:00"
                                                                                 },
                                                                             }
                                                                         }
@@ -4236,7 +4299,7 @@ namespace NekoPlayer.App.Screens
 
         private SettingsItemV2 windowModeDropdownSettings;
 
-        private partial class RoundedSeekBar : NekoPlayerSeekBar<double>
+        private partial class RoundedSeekBar : RoundedSliderBar<double>
         {
             public override LocalisableString TooltipText => "";
         }
@@ -5310,7 +5373,7 @@ namespace NekoPlayer.App.Screens
                     currentTime = $"{duration.Minutes.ToString("0")}:{duration.Seconds.ToString("00")}";
                 }
 
-                seekbar.NubText = $"{currentTime}";
+                timeText.Text = $"{currentTime} / {totalTimeText}";
 
                 if (seekbar.IsDragged == false)
                     videoProgress.Value = currentVideoSource.VideoProgress.Value;
@@ -5810,16 +5873,21 @@ namespace NekoPlayer.App.Screens
                 }
 
                 TimeSpan duration = XmlConvert.ToTimeSpan(videoData.ContentDetails.Duration);
+                videoDuration = duration;
                 if (duration.Hours > 0)
                 {
-                    totalTime.Text = $"{duration.Hours.ToString("0")}:{duration.Minutes.ToString("00")}:{duration.Seconds.ToString("00")}";
+                    totalTimeText = $"{duration.Hours.ToString("0")}:{duration.Minutes.ToString("00")}:{duration.Seconds.ToString("00")}";
                 }
                 else
                 {
-                    totalTime.Text = $"{duration.Minutes.ToString("0")}:{duration.Seconds.ToString("00")}";
+                    totalTimeText = $"{duration.Minutes.ToString("0")}:{duration.Seconds.ToString("00")}";
                 }
             });
         }
+
+        private string totalTimeText;
+
+        private TimeSpan videoDuration;
 
         private Bindable<UsernameDisplayMode> usernameDisplayMode;
 

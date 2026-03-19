@@ -715,10 +715,6 @@ namespace NekoPlayer.App
 
             Logger.Log($"Font family loaded: Hungeul");
 
-            AddFont(Resources, @"Fonts/CaptionFonts/Futehodo_MaruGothic/Futehodo_MaruGothic-Regular");
-
-            Logger.Log($"Font family loaded: Futehodo_MaruGothic");
-
             Fonts.AddStore(new EmojiStore(Host.Renderer, Resources));
 
             Logger.Log($"❤️👏 Colored emoji loaded");
