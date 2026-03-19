@@ -6,14 +6,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NekoPlayer.App.Graphics;
+using NekoPlayer.App.Localisation;
 using osu.Framework;
 using osu.Framework.Configuration;
 using osu.Framework.Configuration.Tracking;
 using osu.Framework.Extensions;
 using osu.Framework.Extensions.LocalisationExtensions;
 using osu.Framework.Platform;
-using NekoPlayer.App.Localisation;
-using NekoPlayer.App.Graphics;
+using static NekoPlayer.App.Screens.MainAppView;
 
 namespace NekoPlayer.App.Config
 {
@@ -77,6 +78,7 @@ namespace NekoPlayer.App.Config
             SetDefault(NekoPlayerSetting.CloseButtonAction, CloseButtonAction.HideToTrayIcon);
             SetDefault(NekoPlayerSetting.ColourScheme, OverlayColourScheme.Aquamarine);
             SetDefault(NekoPlayerSetting.ProfileImageShape, ProfileImageShape.Circle);
+            SetDefault(NekoPlayerSetting.CommentsSortCriteria, CommentsSortCriteria.Top);
         }
 
         public NekoPlayerConfigManager(Storage storage, IDictionary<NekoPlayerSetting, object> defaultOverrides = null) : base(storage, defaultOverrides)
@@ -147,5 +149,6 @@ namespace NekoPlayer.App.Config
         CloseButtonAction,
         ColourScheme,
         ProfileImageShape,
+        CommentsSortCriteria,
     }
 }

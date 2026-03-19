@@ -306,7 +306,7 @@ namespace NekoPlayer.App.Screens
             Default = 1,
         };
 
-        private Bindable<CommentsSortCriteria> CommentsSort = new Bindable<CommentsSortCriteria>(CommentsSortCriteria.Top);
+        private Bindable<CommentsSortCriteria> CommentsSort;
 
         public enum CommentsSortCriteria
         {
@@ -339,6 +339,7 @@ namespace NekoPlayer.App.Screens
             trayIconVisible = sessionStatics.GetBindable<bool>(Static.WindowIsTray);
 
             usernameDisplayMode = appConfig.GetBindable<UsernameDisplayMode>(NekoPlayerSetting.UsernameDisplayMode);
+            CommentsSort = appConfig.GetBindable<CommentsSortCriteria>(NekoPlayerSetting.CommentsSortCriteria);
 
             var renderer = config.GetBindable<RendererType>(FrameworkSetting.Renderer);
             automaticRendererInUse = renderer.Value == RendererType.Automatic;
