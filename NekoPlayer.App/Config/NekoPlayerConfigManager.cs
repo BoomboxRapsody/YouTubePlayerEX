@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using NekoPlayer.App.Graphics;
 using NekoPlayer.App.Localisation;
 using osu.Framework;
