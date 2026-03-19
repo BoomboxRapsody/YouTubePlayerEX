@@ -101,11 +101,6 @@ namespace NekoPlayer.App.Graphics.Caption
                         spriteText.Font = NekoPlayerApp.Hungeul.With(size: 24);
                         break;
                     }
-                    case UIFont.Futehodo_MaruGothic:
-                    {
-                        spriteText.Font = NekoPlayerApp.Futehodo_MaruGothic.With(size: 24);
-                        break;
-                    }
                 }
             }, true);
 
@@ -127,7 +122,7 @@ namespace NekoPlayer.App.Graphics.Caption
             };
             */
 
-            this.TransformBindableTo(bottomMargin, state ? 90 : 0, 500, Easing.OutQuint);
+            this.TransformBindableTo(bottomMargin, state ? 45 : 0, 500, Easing.OutQuint);
         }
 
         protected override void Update()

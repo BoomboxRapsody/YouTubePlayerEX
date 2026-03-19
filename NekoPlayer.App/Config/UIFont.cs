@@ -12,8 +12,5 @@ namespace NekoPlayer.App.Config
 
         [Description("헌글")]
         Hungeul,
-
-        [Description("ふてほど丸ゴシック")]
-        Futehodo_MaruGothic
     }
 }

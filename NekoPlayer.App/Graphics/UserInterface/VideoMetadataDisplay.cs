@@ -218,8 +218,8 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 IBitmapHelper bitmapHelper = new BitmapHelper(bitmap);
                 PaletteBuilder paletteBuilder = new PaletteBuilder();
                 Palette palette = paletteBuilder.Generate(bitmapHelper);
-                int? rgbColor = palette.MutedSwatch.Rgb;
-                int? rgbTextColor = palette.MutedSwatch.TitleTextColor;
+                int? rgbColor = palette.VibrantSwatch.Rgb;
+                int? rgbTextColor = palette.VibrantSwatch.TitleTextColor;
 
                 if (rgbColor != null && rgbTextColor != null)
                 {
