@@ -5827,7 +5827,7 @@ namespace NekoPlayer.App.Screens
         {
             //Task.Run(async () => await api.SendPlayerResponseAsync(videoId));
 
-            string audioFile = app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.mp3";
+            string audioFile = app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{videoId}") + @"/audio.ogg";
 
             AudioNormalization audioNormalization = new AudioNormalization(audioFile);
 
@@ -5840,7 +5840,7 @@ namespace NekoPlayer.App.Screens
 
             videoContainer.Add(currentVideoSource);
 
-            //Schedule(() => videoLoadingProgress.Text = "");
+            Schedule(() => videoLoadingProgress.Text = "");
 
             videoProgress.BindValueChanged(seek =>
             {
@@ -5997,7 +5997,7 @@ namespace NekoPlayer.App.Screens
                     }
                     case LoadType.AudioOnly:
                     {
-                        File.Delete(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.mp3");
+                        File.Delete(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.ogg");
                         break;
                     }
                 }
@@ -6018,8 +6018,8 @@ namespace NekoPlayer.App.Screens
                     return;
                 }
 
-                //IProgress<double> audioDownloadProgress = new Progress<double>((percent) => videoLoadingProgress.Text = $"Downloading audio cache: {(percent * 100):N0}%");
-                //IProgress<double> videoDownloadProgress = new Progress<double>((percent) => videoLoadingProgress.Text = $"Downloading video cache: {(percent * 100):N0}%");
+                IProgress<double> audioDownloadProgress = new Progress<double>((percent) => videoLoadingProgress.Text = $"Downloading audio cache: {(percent * 100):N0}%");
+                IProgress<double> videoDownloadProgress = new Progress<double>((percent) => videoLoadingProgress.Text = $"Downloading video cache: {(percent * 100):N0}%");
 
                 spinnerShow = Scheduler.AddDelayed(spinner.Show, 0);
 
@@ -6030,7 +6030,7 @@ namespace NekoPlayer.App.Screens
                 Schedule(() => idleBackground.Hide());
                 Schedule(() => thumbnailContainer.Show());
 
-                if (!File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.mp3") || !File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.webm"))
+                if (!File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.ogg") || !File.Exists(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.webm"))
                 {
                     Schedule(() => videoQuality.Disabled = audioLanguage.Disabled = audioQuality.Disabled = alwaysUseOriginalAudio.Disabled = true);
 
@@ -6221,26 +6221,59 @@ namespace NekoPlayer.App.Screens
 
                     if (videoQuality.Value == Config.VideoQuality.PreferHighQuality)
                     {
-                        // Select best video stream (1080p60 in this example)
-                        videoStreamInfo = streamManifest
-                            .GetVideoOnlyStreams()
-                            .TryGetWithHighestVideoQuality();
+                        try
+                        {
+                            // Select best video stream (1080p60 in this example)
+                            videoStreamInfo = streamManifest
+                                .GetVideoOnlyStreams()
+                                .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.WebM)
+                                .TryGetWithHighestVideoQuality();
 
-                        Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
+                            Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
 
-                        onScreenDisplay.Display(toast);
+                            onScreenDisplay.Display(toast);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Error(e, e.GetDescription());
+                            // Select best video stream (1080p60 in this example)
+                            videoStreamInfo = streamManifest
+                                .GetVideoOnlyStreams()
+                                .TryGetWithHighestVideoQuality();
+
+                            Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
+
+                            onScreenDisplay.Display(toast);
+                        }
                     }
                     else
                     {
-                        // Select best video stream (1080p60 in this example)
-                        videoStreamInfo = streamManifest
-                            .GetVideoOnlyStreams()
-                            .Where(s => s.VideoQuality.Label.Contains(app.ParseVideoQuality()))
-                            .TryGetWithHighestVideoQuality();
+                        try
+                        {
+                            // Select best video stream (1080p60 in this example)
+                            videoStreamInfo = streamManifest
+                                .GetVideoOnlyStreams()
+                                .Where(s => s.Container == YoutubeExplode.Videos.Streams.Container.WebM)
+                                .Where(s => s.VideoQuality.Label.Contains(app.ParseVideoQuality()))
+                                .TryGetWithHighestVideoQuality();
 
-                        Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
+                            Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
 
-                        onScreenDisplay.Display(toast);
+                            onScreenDisplay.Display(toast);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Error(e, e.GetDescription());
+                            // Select best video stream (1080p60 in this example)
+                            videoStreamInfo = streamManifest
+                                .GetVideoOnlyStreams()
+                                .Where(s => s.VideoQuality.Label.Contains(app.ParseVideoQuality()))
+                                .TryGetWithHighestVideoQuality();
+
+                            Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
+
+                            onScreenDisplay.Display(toast);
+                        }
                     }
 
                     try
@@ -6301,23 +6334,23 @@ namespace NekoPlayer.App.Screens
                     {
                         case LoadType.Full:
                         {
-                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\audio.mp3").SetFFmpegPath(app.GetFFmpegPath()).Build());
-                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\video.webm").SetFFmpegPath(app.GetFFmpegPath()).Build());
+                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\audio.ogg").SetFFmpegPath(app.GetFFmpegPath()).SetPreset(ConversionPreset.UltraFast).Build(), audioDownloadProgress);
+                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\video.webm").SetFFmpegPath(app.GetFFmpegPath()).SetPreset(ConversionPreset.UltraFast).Build(), videoDownloadProgress);
                             break;
                         }
                         case LoadType.AudioOnly:
                         {
-                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\audio.mp3").SetFFmpegPath(app.GetFFmpegPath()).Build());
+                            await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\audio.ogg").SetFFmpegPath(app.GetFFmpegPath()).SetPreset(ConversionPreset.UltraFast).Build(), audioDownloadProgress);
                             break;
                         }
                         case LoadType.VideoOnly:
                         {
-                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\video.webm").SetFFmpegPath(app.GetFFmpegPath()).Build());
+                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\video.webm").SetFFmpegPath(app.GetFFmpegPath()).SetPreset(ConversionPreset.UltraFast).Build(), videoDownloadProgress);
                             break;
                         }
                     }
 
-                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.webm", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.mp3", captionTrack, videoData, pausedTime)
+                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.webm", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.ogg", captionTrack, videoData, pausedTime)
                     {
                         RelativeSizeAxes = Axes.Both
                     };
@@ -6374,7 +6407,7 @@ namespace NekoPlayer.App.Screens
                         Logger.Error(e, e.GetDescription());
                     }
 
-                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.webm", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.mp3", captionTrack, videoData, pausedTime)
+                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.webm", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.ogg", captionTrack, videoData, pausedTime)
                     {
                         RelativeSizeAxes = Axes.Both
                     };

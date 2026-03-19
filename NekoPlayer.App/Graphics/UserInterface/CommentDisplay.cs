@@ -90,7 +90,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                         new FillFlowContainer
                         {
                             RelativeSizeAxes = Axes.X,
-                            Margin = new MarginPadding
+                            Padding = new MarginPadding
                             {
                                 Top = 5,
                                 Left = 42,
