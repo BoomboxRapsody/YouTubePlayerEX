@@ -382,11 +382,11 @@ namespace NekoPlayer.App.Screens
 
             windowedResolution.Value = sizeWindowed.Value;
 
-            if (RuntimeInfo.OS == RuntimeInfo.Platform.Windows) 
+            if (RuntimeInfo.OS == RuntimeInfo.Platform.Windows)
             {
                 discordRichPresence.Disabled = !DiscordInstallationChecker.IsDiscordInstalled();
 
-                if (!DiscordInstallationChecker.IsDiscordInstalled()) 
+                if (!DiscordInstallationChecker.IsDiscordInstalled())
                 {
                     discordNotInstalledNote.Value = new SettingsNote.Data(NekoPlayerStrings.DiscordNotInstalled, SettingsNote.Type.Informational);
                 }
@@ -6371,15 +6371,8 @@ namespace NekoPlayer.App.Screens
 
                     ClosedCaptionTrack captionTrack = null;
 
-                    try
-                    {
-                        videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel(videoStreamInfo.VideoQuality.Label);
-                        audioQualitySettings.Caption = NekoPlayerStrings.AudioQualityWithLabel(audioStreamInfo.AudioCodec);
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e, e.GetDescription());
-                    }
+                    videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel(videoStreamInfo.VideoQuality.Label);
+                    audioQualitySettings.Caption = NekoPlayerStrings.AudioQualityWithLabel(audioStreamInfo.AudioCodec);
 
                     try
                     {
