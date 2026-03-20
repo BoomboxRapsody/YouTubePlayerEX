@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
+// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
 #nullable enable
@@ -127,7 +127,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
             AccentColour = overlayColourProvider.Content2;
             BackgroundColour = overlayColourProvider.Content2.Darken(1);
             Nub.AccentColour = AccentColour;
-
 
             mainContent.EdgeEffect = new EdgeEffectParameters
             {
