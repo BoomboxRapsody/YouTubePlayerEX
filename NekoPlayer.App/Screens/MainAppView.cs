@@ -6331,7 +6331,7 @@ namespace NekoPlayer.App.Screens
                             Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
 
                             onScreenDisplay.Display(toast);
-                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel(videoStreamInfo.VideoQuality.Label);
+                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel($"{videoStreamInfo.VideoQuality.Label}, {videoStreamInfo.VideoCodec}");
                         }
                         catch (Exception e)
                         {
@@ -6344,7 +6344,7 @@ namespace NekoPlayer.App.Screens
                             Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
 
                             onScreenDisplay.Display(toast);
-                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel(videoStreamInfo.VideoQuality.Label);
+                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel($"{videoStreamInfo.VideoQuality.Label}, {videoStreamInfo.VideoCodec}");
                         }
                     }
                     else
@@ -6361,7 +6361,7 @@ namespace NekoPlayer.App.Screens
                             Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
 
                             onScreenDisplay.Display(toast);
-                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel(videoStreamInfo.VideoQuality.Label);
+                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel($"{videoStreamInfo.VideoQuality.Label}, {videoStreamInfo.VideoCodec}");
                         }
                         catch (Exception e)
                         {
@@ -6375,7 +6375,7 @@ namespace NekoPlayer.App.Screens
                             Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
 
                             onScreenDisplay.Display(toast);
-                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel(videoStreamInfo.VideoQuality.Label);
+                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel($"{videoStreamInfo.VideoQuality.Label}, {videoStreamInfo.VideoCodec}");
                         }
                     }
 
@@ -6683,7 +6683,7 @@ namespace NekoPlayer.App.Screens
                             Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
 
                             onScreenDisplay.Display(toast);
-                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel(videoStreamInfo.VideoQuality.Label);
+                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel($"{videoStreamInfo.VideoQuality.Label}, {videoStreamInfo.VideoCodec}");
                         }
                         catch (Exception e)
                         {
@@ -6696,7 +6696,7 @@ namespace NekoPlayer.App.Screens
                             Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
 
                             onScreenDisplay.Display(toast);
-                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel(videoStreamInfo.VideoQuality.Label);
+                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel($"{videoStreamInfo.VideoQuality.Label}, {videoStreamInfo.VideoCodec}");
                         }
                     }
                     else
@@ -6713,7 +6713,7 @@ namespace NekoPlayer.App.Screens
                             Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
 
                             onScreenDisplay.Display(toast);
-                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel(videoStreamInfo.VideoQuality.Label);
+                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel($"{videoStreamInfo.VideoQuality.Label}, {videoStreamInfo.VideoCodec}");
                         }
                         catch (Exception e)
                         {
@@ -6727,7 +6727,7 @@ namespace NekoPlayer.App.Screens
                             Toast toast = new Toast(NekoPlayerStrings.VideoQuality, videoStreamInfo.VideoQuality.Label);
 
                             onScreenDisplay.Display(toast);
-                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel(videoStreamInfo.VideoQuality.Label);
+                            videoQualitySettings.Caption = NekoPlayerStrings.VideoQualityWithLabel($"{videoStreamInfo.VideoQuality.Label}, {videoStreamInfo.VideoCodec}");
                         }
                     }
 
