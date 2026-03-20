@@ -25,7 +25,11 @@ namespace NekoPlayer.App.Graphics.UserInterfaceV2
         /// <summary>
         /// Caption describing this slider bar, displayed on top of the controls.
         /// </summary>
-        public LocalisableString Caption { get; init; }
+        public LocalisableString Caption
+        {
+            get => header.Caption;
+            set => header.Caption = value;
+        }
 
         /// <summary>
         /// Hint text containing an extended description of this slider bar, displayed in a tooltip when hovering the caption.

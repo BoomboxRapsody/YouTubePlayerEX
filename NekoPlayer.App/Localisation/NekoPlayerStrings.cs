@@ -1141,6 +1141,16 @@ namespace NekoPlayer.App.Localisation
         /// </summary>
         public static LocalisableString Beta => new TranslatableString(getKey(@"release_stream_beta"), @"Beta (unstable)");
 
+        /// <summary>
+        /// "Video quality ({0})"
+        /// </summary>
+        public static LocalisableString VideoQualityWithLabel(string quality) => new TranslatableString(getKey(@"video_quality_with_label"), "Video quality ({0})", quality);
+
+        /// <summary>
+        /// "Audio quality ({0})"
+        /// </summary>
+        public static LocalisableString AudioQualityWithLabel(string quality) => new TranslatableString(getKey(@"audio_quality_with_label"), "Audio quality ({0})", quality);
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }
