@@ -40,7 +40,12 @@ namespace NekoPlayer.App.Screens
 
             LoadComponentAsync(loadableScreen = CreateLoadableScreen());
 
-            LoadComponentAsync(spinner = new LoadingLayer(true, true, false), _ =>
+            LoadComponentAsync(spinner = new LoadingSpinner(true, false)
+            {
+                Anchor = Anchor.BottomRight,
+                Origin = Anchor.BottomRight,
+                Margin = new MarginPadding(40),
+            }, _ =>
             {
                 AddInternal(spinner);
                 spinnerShow = Scheduler.AddDelayed(spinner.Show, 200);
