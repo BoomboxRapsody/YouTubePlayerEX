@@ -225,7 +225,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                     updateDescText();
                 });
 
-                GetPalette();
+                //GetPalette();
 
                 uiLanguage.BindValueChanged(locale =>
                 {

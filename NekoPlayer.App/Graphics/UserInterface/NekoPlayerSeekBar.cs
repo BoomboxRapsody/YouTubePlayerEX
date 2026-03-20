@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
+// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
 #nullable enable
@@ -22,7 +22,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
     public partial class NekoPlayerSeekBar<T> : AdaptiveSliderBar<T>
         where T : struct, INumber<T>, IMinMaxValue<T>
     {
-        protected readonly SliderNubWithText Nub;
+        protected readonly SliderNubRemake Nub;
         protected readonly Box LeftBox;
         protected readonly Box RightBox;
         private readonly Container nubContainer;
@@ -38,18 +38,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
             {
                 accentColour = value;
                 LeftBox.Colour = value;
-            }
-        }
-
-        private LocalisableString nubText;
-
-        public LocalisableString NubText
-        {
-            get => nubText;
-            set
-            {
-                nubText = value;
-                Nub.Text = value;
             }
         }
 
@@ -101,7 +89,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                         {
                             LeftBox = new Box
                             {
-                                Height = SliderNubRemake.HEIGHT  / 2,
+                                Height = SliderNubRemake.HEIGHT / 2,
                                 Colour = AccentColour,
                                 RelativeSizeAxes = Axes.None,
                                 Anchor = Anchor.CentreLeft,
@@ -138,8 +126,15 @@ namespace NekoPlayer.App.Graphics.UserInterface
         {
             AccentColour = overlayColourProvider.Content2;
             BackgroundColour = overlayColourProvider.Content2.Darken(1);
-            Nub.TextColour = overlayColourProvider.Background5;
             Nub.AccentColour = AccentColour;
+
+            mainContent.EdgeEffect = new EdgeEffectParameters
+            {
+                Type = EdgeEffectType.Glow,
+                Colour = Color4.White.Opacity(0),
+                Hollow = true,
+                Radius = 5,
+            };
         }
 
         protected override void Update()
@@ -157,26 +152,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
             {
                 Alpha = disabled ? 0.3f : 1;
             }, true);
-        }
-
-        protected override void OnFocus(FocusEvent e)
-        {
-            base.OnFocus(e);
-
-            mainContent.EdgeEffect = new EdgeEffectParameters
-            {
-                Type = EdgeEffectType.Glow,
-                Colour = AccentColour.Darken(1).Opacity(0.5f),
-                Hollow = true,
-                Radius = 5,
-            };
-        }
-
-        protected override void OnFocusLost(FocusLostEvent e)
-        {
-            base.OnFocusLost(e);
-
-            mainContent.EdgeEffect = default;
         }
 
         protected override bool OnHover(HoverEvent e)
@@ -202,13 +177,25 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         private void updateGlow()
         {
-            //Nub.Glowing = !Current.Disabled && (IsHovered || IsDragged);
-            if (!Current.Disabled && (IsHovered || IsDragged))
+            if (IsHovered)
             {
-                FadeEdgeEffectTo(Color4.White.Opacity(0.1f), 40, Easing.OutQuint);
-            } else
+                LeftBox.ResizeHeightTo(SliderNubRemake.HEIGHT, 500, Easing.OutQuint);
+                RightBox.ResizeHeightTo(SliderNubRemake.HEIGHT, 500, Easing.OutQuint);
+            }
+            else
             {
-                FadeEdgeEffectTo(Color4.White.Opacity(0), 800, Easing.OutQuint);
+                LeftBox.ResizeHeightTo(SliderNubRemake.HEIGHT / 2, 500, Easing.OutQuint);
+                RightBox.ResizeHeightTo(SliderNubRemake.HEIGHT / 2, 500, Easing.OutQuint);
+            }
+
+            Nub.Glowing = !Current.Disabled && (IsHovered);
+            if (!Current.Disabled && (IsHovered))
+            {
+                mainContent.FadeEdgeEffectTo(AccentColour.Darken(1).Opacity(0.5f), 40, Easing.OutQuint);
+            }
+            else
+            {
+                mainContent.FadeEdgeEffectTo(AccentColour.Darken(1).Opacity(0f), 800, Easing.OutQuint);
             }
         }
 
@@ -224,7 +211,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
             Nub.MoveToX(value, 250, Easing.OutQuint);
         }
 
-        public partial class SliderNub : SliderNubWithText
+        public partial class SliderNub : SliderNubRemake
         {
             public Action? OnDoubleClicked { get; init; }
 

@@ -218,7 +218,7 @@ namespace NekoPlayer.App.Screens
         private FormButton checkForUpdatesButton, login;
         private FormSliderBar<double> systemVolumeControl;
         private ThumbnailContainerBackground thumbnailContainer;
-        private RoundedSliderBar<double> seekbar;
+        private NekoPlayerSeekBar<double> seekbar;
         private Bindable<LocalisableString> updateInfomationText;
         private Bindable<bool> updateButtonEnabled, fpsDisplay, captionEnabled, use_sdl3;
         private Bindable<AspectRatioMethod> aspectRatioMethod;
@@ -307,15 +307,6 @@ namespace NekoPlayer.App.Screens
         };
 
         private Bindable<CommentsSortCriteria> CommentsSort;
-
-        public enum CommentsSortCriteria
-        {
-            [LocalisableDescription(typeof(NekoPlayerStrings), nameof(NekoPlayerStrings.CommentsSortTop))]
-            Top,
-
-            [LocalisableDescription(typeof(NekoPlayerStrings), nameof(NekoPlayerStrings.CommentsSortNewest))]
-            Newest,
-        }
 
         private SettingsItemV2 systemMuteSwitchBase;
 
@@ -511,7 +502,7 @@ namespace NekoPlayer.App.Screens
                             {
                                 new Box
                                 {
-                                    Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0.45f), Color4.Black.Opacity(0)),
+                                    Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0.65f), Color4.Black.Opacity(0)),
                                     Origin = Anchor.TopLeft,
                                     Anchor = Anchor.TopLeft,
                                     RelativeSizeAxes = Axes.X,
@@ -519,7 +510,7 @@ namespace NekoPlayer.App.Screens
                                 },
                                 new Box
                                 {
-                                    Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0), Color4.Black.Opacity(0.45f)),
+                                    Colour = ColourInfo.GradientVertical(Color4.Black.Opacity(0), Color4.Black.Opacity(0.65f)),
                                     Origin = Anchor.BottomLeft,
                                     Anchor = Anchor.BottomLeft,
                                     RelativeSizeAxes = Axes.X,
@@ -4301,7 +4292,7 @@ namespace NekoPlayer.App.Screens
 
         private SettingsItemV2 windowModeDropdownSettings;
 
-        private partial class RoundedSeekBar : RoundedSliderBar<double>
+        private partial class RoundedSeekBar : NekoPlayerSeekBar<double>
         {
             public override LocalisableString TooltipText => "";
         }
@@ -5387,6 +5378,8 @@ namespace NekoPlayer.App.Screens
                 }
 
                 timeText.Text = $"{currentTime} / {totalTimeText}";
+
+                currentVideoSource?.UpdateSeekingState(seekbar.IsDragged);
 
                 if (seekbar.IsDragged == false)
                     videoProgress.Value = currentVideoSource.VideoProgress.Value;

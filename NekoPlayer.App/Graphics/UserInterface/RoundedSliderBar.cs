@@ -125,6 +125,14 @@ namespace NekoPlayer.App.Graphics.UserInterface
         {
             AccentColour = Nub.Colour = overlayColourProvider.Content2;
             BackgroundColour = overlayColourProvider.Content2.Darken(1);
+
+            mainContent.EdgeEffect = new EdgeEffectParameters
+            {
+                Type = EdgeEffectType.Glow,
+                Colour = Color4.White.Opacity(0),
+                Hollow = true,
+                Radius = 5,
+            };
         }
 
         protected override void Update()
@@ -142,26 +150,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
             {
                 Alpha = disabled ? 0.3f : 1;
             }, true);
-        }
-
-        protected override void OnFocus(FocusEvent e)
-        {
-            base.OnFocus(e);
-
-            mainContent.EdgeEffect = new EdgeEffectParameters
-            {
-                Type = EdgeEffectType.Glow,
-                Colour = AccentColour.Darken(1).Opacity(0.5f),
-                Hollow = true,
-                Radius = 5,
-            };
-        }
-
-        protected override void OnFocusLost(FocusLostEvent e)
-        {
-            base.OnFocusLost(e);
-
-            mainContent.EdgeEffect = default;
         }
 
         protected override bool OnHover(HoverEvent e)
@@ -187,13 +175,14 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         private void updateGlow()
         {
-            //Nub.Glowing = !Current.Disabled && (IsHovered || IsDragged);
-            if (!Current.Disabled && (IsHovered || IsDragged))
+            Nub.Glowing = !Current.Disabled && (IsHovered);
+            if (!Current.Disabled && (IsHovered))
             {
-                FadeEdgeEffectTo(Color4.White.Opacity(0.1f), 40, Easing.OutQuint);
-            } else
+                mainContent.FadeEdgeEffectTo(AccentColour.Darken(1).Opacity(0.5f), 40, Easing.OutQuint);
+            }
+            else
             {
-                FadeEdgeEffectTo(Color4.White.Opacity(0), 800, Easing.OutQuint);
+                mainContent.FadeEdgeEffectTo(AccentColour.Darken(1).Opacity(0f), 800, Easing.OutQuint);
             }
         }
 
