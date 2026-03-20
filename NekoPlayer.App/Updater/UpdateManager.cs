@@ -4,10 +4,13 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using NekoPlayer.App.Config;
+using NekoPlayer.App.Extensions;
+using osu.Framework;
 using osu.Framework.Allocation;
+using osu.Framework.Bindables;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Logging;
-using NekoPlayer.App.Extensions;
 
 namespace NekoPlayer.App.Updater
 {
@@ -21,8 +24,22 @@ namespace NekoPlayer.App.Updater
                                          GetType() != typeof(UpdateManager);
 
         [Resolved]
+        private NekoPlayerConfigManager config { get; set; } = null!;
+
+        [Resolved]
         private NekoPlayerAppBase app { get; set; } = null!;
 
+        protected IBindable<ReleaseStream> ReleaseStream => releaseStream;
+
+        private readonly Bindable<ReleaseStream> releaseStream = new Bindable<ReleaseStream>();
+
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            config.BindWith(NekoPlayerSetting.ReleaseStream, releaseStream);
+            releaseStream.BindValueChanged(_ => CheckForUpdate());
+        }
 
         /// <summary>
         /// Immediately checks for any available update.

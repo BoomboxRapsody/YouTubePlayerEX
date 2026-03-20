@@ -1126,6 +1126,31 @@ namespace NekoPlayer.App.Localisation
         /// </summary>
         public static LocalisableString DiscordNotInstalled => new TranslatableString(getKey(@"discord_not_installed"), @"Discord is not installed. Please install Discord and share your activities with your friends!");
 
+        /// <summary>
+        /// "Release stream"
+        /// </summary>
+        public static LocalisableString ReleaseStream => new TranslatableString(getKey(@"release_stream"), @"Release stream");
+
+        /// <summary>
+        /// "Stable"
+        /// </summary>
+        public static LocalisableString Stable => new TranslatableString(getKey(@"release_stream_stable"), @"Stable");
+
+        /// <summary>
+        /// "Beta (unstable)"
+        /// </summary>
+        public static LocalisableString Beta => new TranslatableString(getKey(@"release_stream_beta"), @"Beta (unstable)");
+
+        /// <summary>
+        /// "Video quality ({0})"
+        /// </summary>
+        public static LocalisableString VideoQualityWithLabel(string quality) => new TranslatableString(getKey(@"video_quality_with_label"), "Video quality ({0})", quality);
+
+        /// <summary>
+        /// "Audio quality ({0})"
+        /// </summary>
+        public static LocalisableString AudioQualityWithLabel(string quality) => new TranslatableString(getKey(@"audio_quality_with_label"), "Audio quality ({0})", quality);
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }
