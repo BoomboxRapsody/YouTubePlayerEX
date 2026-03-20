@@ -41,7 +41,7 @@ namespace NekoPlayer.Desktop.Windows.Updater
 
             try
             {
-                IUpdateSource updateSource = new GithubSource(@"https://github.com/BoomboxRapsody/NekoPlayer", null, false);
+                IUpdateSource updateSource = new GithubSource(@"https://github.com/BoomboxRapsody/NekoPlayer", null, ReleaseStream.Value == App.Config.ReleaseStream.Beta);
                 Velopack.UpdateManager updateManager = new Velopack.UpdateManager(updateSource, new UpdateOptions
                 {
                     AllowVersionDowngrade = true

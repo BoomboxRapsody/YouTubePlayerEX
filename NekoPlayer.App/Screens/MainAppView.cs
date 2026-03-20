@@ -313,6 +313,8 @@ namespace NekoPlayer.App.Screens
 
         private SettingsItemV2 systemMuteSwitchBase;
 
+        protected Bindable<ReleaseStream> ReleaseStream;
+
         [BackgroundDependencyLoader]
         private void load(ISampleStore sampleStore, FrameworkConfigManager config, NekoPlayerConfigManager appConfig, GameHost host, Storage storage, OverlayColourProvider overlayColourProvider, TextureStore textures, FrameworkDebugConfigManager debugConfig)
         {
@@ -331,6 +333,7 @@ namespace NekoPlayer.App.Screens
             isAnyOverlayOpen = sessionStatics.GetBindable<bool>(Static.IsAnyOverlayOpen);
             videoPlaying = sessionStatics.GetBindable<bool>(Static.IsVideoPlaying);
             trayIconVisible = sessionStatics.GetBindable<bool>(Static.WindowIsTray);
+            ReleaseStream = appConfig.GetBindable<ReleaseStream>(NekoPlayerSetting.ReleaseStream);
 
             usernameDisplayMode = appConfig.GetBindable<UsernameDisplayMode>(NekoPlayerSetting.UsernameDisplayMode);
             CommentsSort = appConfig.GetBindable<CommentsSortCriteria>(NekoPlayerSetting.CommentsSortCriteria);
@@ -1131,7 +1134,7 @@ namespace NekoPlayer.App.Screens
                                                         releaseStreamSelectorButtonCore = new SettingsItemV2(new FormEnumDropdown<ReleaseStream>
                                                         {
                                                             Caption = NekoPlayerStrings.ReleaseStream,
-                                                            Current = appConfig.GetBindable<ReleaseStream>(NekoPlayerSetting.ReleaseStream)
+                                                            Current = ReleaseStream,
                                                         }),
                                                         checkForUpdatesButtonCore = new SettingsItemV2(checkForUpdatesButton = new FormButton
                                                         {
@@ -3542,6 +3545,8 @@ namespace NekoPlayer.App.Screens
             RegisterOverlayContainer(myChannelDialog);
             RegisterOverlayContainer(myPlaylistsOverlay);
             RegisterOverlayContainer(exitOptions);
+
+            ReleaseStream.BindValueChanged(async _ => await checkForUpdates());
 
             captionEnabled.Disabled = true;
 

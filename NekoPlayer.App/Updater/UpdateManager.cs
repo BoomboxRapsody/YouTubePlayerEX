@@ -38,7 +38,7 @@ namespace NekoPlayer.App.Updater
             base.LoadComplete();
 
             config.BindWith(NekoPlayerSetting.ReleaseStream, releaseStream);
-            releaseStream.BindValueChanged(_ => CheckForUpdate());
+            //releaseStream.BindValueChanged(_ => CheckForUpdate());
         }
 
         /// <summary>
