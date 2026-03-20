@@ -78,6 +78,8 @@ namespace NekoPlayer.App.Config
             SetDefault(NekoPlayerSetting.ColourScheme, OverlayColourScheme.Aquamarine);
             SetDefault(NekoPlayerSetting.ProfileImageShape, ProfileImageShape.Circle);
             SetDefault(NekoPlayerSetting.CommentsSortCriteria, CommentsSortCriteria.Top);
+
+            SetDefault(NekoPlayerSetting.ReleaseStream, ReleaseStream.Stable);
         }
 
         public NekoPlayerConfigManager(Storage storage, IDictionary<NekoPlayerSetting, object> defaultOverrides = null) : base(storage, defaultOverrides)
@@ -149,5 +151,6 @@ namespace NekoPlayer.App.Config
         ColourScheme,
         ProfileImageShape,
         CommentsSortCriteria,
+        ReleaseStream,
     }
 }

@@ -1124,10 +1124,12 @@ namespace NekoPlayer.App.Screens
                                                                     showOverlayContainer(myChannelDialog);
                                                                 }
                                                             },
-                                                        })
+                                                        }),
+                                                        releaseStreamSelectorButtonCore = new SettingsItemV2(new FormEnumDropdown<ReleaseStream>
                                                         {
-                                                            Note = { BindTarget = oauth_note },
-                                                        },
+                                                            Caption = NekoPlayerStrings.ReleaseStream,
+                                                            Current = appConfig.GetBindable<ReleaseStream>(NekoPlayerSetting.ReleaseStream)
+                                                        }),
                                                         checkForUpdatesButtonCore = new SettingsItemV2(checkForUpdatesButton = new FormButton
                                                         {
                                                             Caption = NekoPlayerStrings.CheckUpdate,
@@ -4270,7 +4272,7 @@ namespace NekoPlayer.App.Screens
 
         public override bool CursorVisible => (isControlVisible || isAnyOverlayOpen.Value);
 
-        private SettingsItemV2 resolutionFullscreenDropdownCore, resolutionWindowedDropdownCore, displayDropdownCore, minimiseOnFocusLossCheckboxCore, checkForUpdatesButtonCore;
+        private SettingsItemV2 resolutionFullscreenDropdownCore, resolutionWindowedDropdownCore, displayDropdownCore, minimiseOnFocusLossCheckboxCore, checkForUpdatesButtonCore, releaseStreamSelectorButtonCore;
 
         private FormCheckBox hwAccelCheckbox;
 
@@ -4700,7 +4702,10 @@ namespace NekoPlayer.App.Screens
             }
 
             if (!game.IsDeployedBuild)
+            {
+                releaseStreamSelectorButtonCore.Hide();
                 checkForUpdatesButtonCore.Hide();
+            }
 
             sessionStatics.GetBindable<bool>(Static.IsControlVisible).Value = true;
 
