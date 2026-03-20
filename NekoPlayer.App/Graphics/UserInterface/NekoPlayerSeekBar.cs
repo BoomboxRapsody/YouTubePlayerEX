@@ -124,9 +124,8 @@ namespace NekoPlayer.App.Graphics.UserInterface
         [BackgroundDependencyLoader(true)]
         private void load(OverlayColourProvider overlayColourProvider)
         {
-            AccentColour = overlayColourProvider.Content2;
+            AccentColour = Nub.Colour = overlayColourProvider.Content2;
             BackgroundColour = overlayColourProvider.Content2.Darken(1);
-            Nub.AccentColour = AccentColour;
 
             mainContent.EdgeEffect = new EdgeEffectParameters
             {
