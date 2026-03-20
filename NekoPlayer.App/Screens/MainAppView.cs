@@ -5713,6 +5713,7 @@ namespace NekoPlayer.App.Screens
                 }
                 else
                 {
+                    videoDescription.Text = string.Empty;
                     Schedule(() => videoDescription.AddText(NekoPlayerStrings.NoDescription, text =>
                     {
                         text.Font = NekoPlayerApp.DefaultFont.With(weight: "SemiBold");
