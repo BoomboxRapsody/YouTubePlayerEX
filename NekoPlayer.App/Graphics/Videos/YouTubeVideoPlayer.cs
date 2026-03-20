@@ -44,6 +44,8 @@ namespace NekoPlayer.App.Graphics.Videos
         private StopwatchClock rateAdjustClock = null!;
         private DecouplingFramedClock framedClock = null!;
 
+        private BufferedContainer blurContainer;
+
         private Bindable<double> playbackSpeed = null!;
         private double resumeFromTime;
         private bool trackFinished = false;
@@ -89,6 +91,37 @@ namespace NekoPlayer.App.Graphics.Videos
         private VideoNewShaderContainer bloom, chromatic, grayscale, hueShift = null!;
 
         private Bindable<Localisation.Language> uiLanguage;
+
+        private bool lastPlayingState = false;
+        private bool isSeeking = false;
+
+        public void UpdateSeekingState(bool seeking)
+        {
+            if (isSeeking == seeking)
+                return;
+
+            isSeeking = seeking;
+
+            if (seeking)
+            {
+                lastPlayingState = IsPlaying();
+                if (lastPlayingState == true)
+                {
+                    Pause();
+                }
+                blurContainer.BlurTo(new osuTK.Vector2(10), 250, Easing.OutQuint);
+                blurContainer.FadeColour(Color4.Gray, 250, Easing.OutQuint);
+            }
+            else
+            {
+                if (lastPlayingState == true)
+                {
+                    Play();
+                }
+                blurContainer.BlurTo(new osuTK.Vector2(0), 250, Easing.OutQuint);
+                blurContainer.FadeColour(Color4.White, 250, Easing.OutQuint);
+            }
+        }
 
         [BackgroundDependencyLoader]
         private void load(ITrackStore tracks, NekoPlayerConfigManager config, ScreenshotManager screenshotManager)
@@ -147,18 +180,25 @@ namespace NekoPlayer.App.Graphics.Videos
                                             RelativeSizeAxes = Axes.Both,
                                             Children = new Drawable[]
                                             {
-                                                new Box
+                                                blurContainer = new BufferedContainer
                                                 {
                                                     RelativeSizeAxes = Axes.Both,
-                                                    Colour = Color4.Black,
-                                                },
-                                                video = new Video(fileName_Video, false)
-                                                {
-                                                    RelativeSizeAxes = Axes.Both,
-                                                    FillMode = FillMode.Fit,
-                                                    Anchor = Anchor.Centre,
-                                                    Origin = Anchor.Centre,
-                                                    Clock = framedClock,
+                                                    Children = new Drawable[]
+                                                    {
+                                                        new Box
+                                                        {
+                                                            RelativeSizeAxes = Axes.Both,
+                                                            Colour = Color4.Black,
+                                                        },
+                                                        video = new Video(fileName_Video, false)
+                                                        {
+                                                            RelativeSizeAxes = Axes.Both,
+                                                            FillMode = FillMode.Fit,
+                                                            Anchor = Anchor.Centre,
+                                                            Origin = Anchor.Centre,
+                                                            Clock = framedClock,
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
