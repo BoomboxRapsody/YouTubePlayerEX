@@ -5984,6 +5984,8 @@ namespace NekoPlayer.App.Screens
         private string videoId = string.Empty;
         private double pausedTime = 0;
 
+        private string videoFile = string.Empty;
+
         [Resolved]
         private NekoPlayerConfigManager appGlobalConfig { get; set; }
 
@@ -6384,6 +6386,15 @@ namespace NekoPlayer.App.Screens
                         }
                     }
 
+                    if (videoStreamInfo.VideoCodec.Contains("avc1"))
+                    {
+                        videoFile = app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.mp4";
+                    }
+                    else
+                    {
+                        videoFile = app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.webm";
+                    }
+
                     try
                     {
                         await captionLangDropdown.RefreshCaptionLanguages(videoUrl);
@@ -6443,7 +6454,7 @@ namespace NekoPlayer.App.Screens
                         case LoadType.Full:
                         {
                             await app.YouTubeClient.Videos.DownloadAsync([audioStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\audio.ogg").SetFFmpegPath(app.GetFFmpegPath()).SetPreset(ConversionPreset.UltraFast).Build(), audioDownloadProgress);
-                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\video.webm").SetFFmpegPath(app.GetFFmpegPath()).SetPreset(ConversionPreset.UltraFast).Build(), videoDownloadProgress);
+                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(videoFile).SetFFmpegPath(app.GetFFmpegPath()).SetPreset(ConversionPreset.UltraFast).Build(), videoDownloadProgress);
                             break;
                         }
                         case LoadType.AudioOnly:
@@ -6453,12 +6464,12 @@ namespace NekoPlayer.App.Screens
                         }
                         case LoadType.VideoOnly:
                         {
-                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"\video.webm").SetFFmpegPath(app.GetFFmpegPath()).SetPreset(ConversionPreset.UltraFast).Build(), videoDownloadProgress);
+                            await app.YouTubeClient.Videos.DownloadAsync([videoStreamInfo], new ConversionRequestBuilder(videoFile).SetFFmpegPath(app.GetFFmpegPath()).SetPreset(ConversionPreset.UltraFast).Build(), videoDownloadProgress);
                             break;
                         }
                     }
 
-                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.webm", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.ogg", captionTrack, videoData, pausedTime)
+                    currentVideoSource = new YouTubeVideoPlayer(videoFile, app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.ogg", captionTrack, videoData, pausedTime)
                     {
                         RelativeSizeAxes = Axes.Both
                     };
@@ -6774,7 +6785,16 @@ namespace NekoPlayer.App.Screens
                         Logger.Error(e, e.GetDescription());
                     }
 
-                    currentVideoSource = new YouTubeVideoPlayer(app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.webm", app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.ogg", captionTrack, videoData, pausedTime)
+                    if (videoStreamInfo.VideoCodec.Contains("avc1"))
+                    {
+                        videoFile = app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.mp4";
+                    }
+                    else
+                    {
+                        videoFile = app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.webm";
+                    }
+
+                    currentVideoSource = new YouTubeVideoPlayer(videoFile, app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.ogg", captionTrack, videoData, pausedTime)
                     {
                         RelativeSizeAxes = Axes.Both
                     };
