@@ -6785,6 +6785,15 @@ namespace NekoPlayer.App.Screens
                         Logger.Error(e, e.GetDescription());
                     }
 
+                    if (videoStreamInfo.VideoCodec.Contains("avc1"))
+                    {
+                        videoFile = app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.mp4";
+                    }
+                    else
+                    {
+                        videoFile = app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/video.webm";
+                    }
+
                     currentVideoSource = new YouTubeVideoPlayer(videoFile, app.Host.CacheStorage.GetStorageForDirectory("videos").GetFullPath($"{this.videoId}") + @"/audio.ogg", captionTrack, videoData, pausedTime)
                     {
                         RelativeSizeAxes = Axes.Both
