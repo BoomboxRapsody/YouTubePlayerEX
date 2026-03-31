@@ -14,8 +14,8 @@ The enhanced YouTube video player written in [custom osu-framework](https://gith
 
 ### Latest release:
 
-| [Windows 10+ (x64)](https://github.com/BoomboxRapsody/NekoPlayer/releases/latest/download/NekoPlayer-win-Setup.exe) | [Linux (x64)](https://github.com/BoomboxRapsody/NekoPlayer/releases/latest/download/NekoPlayer-linux-x64.AppImage)
-|--------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| [Windows 10+ (x64)](https://github.com/BoomboxRapsody/NekoPlayer/releases/latest/download/NekoPlayer-win-Setup.exe) |
+|--------------------------------------------------------------------------------------|
 
 If your platform is unsupported or not listed above, there is still a chance you can run the release or manually build it by following the instructions below.
 
