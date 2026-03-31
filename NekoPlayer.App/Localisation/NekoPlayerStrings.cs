@@ -847,9 +847,9 @@ namespace NekoPlayer.App.Localisation
         public static LocalisableString ClosedCaptions => new TranslatableString(getKey(@"closed_captions"), @"Closed captions");
 
         /// <summary>
-        /// "Summarize via ChatGPT"
+        /// "Summarize video"
         /// </summary>
-        public static LocalisableString SummarizeViaGPT => new TranslatableString(getKey(@"summarize_via_gpt"), @"Summarize via ChatGPT");
+        public static LocalisableString SummarizeViaGPT => new TranslatableString(getKey(@"summarize_via_gpt"), @"Summarize video");
 
         /// <summary>
         /// "{0} Summarize this video"
@@ -1137,9 +1137,9 @@ namespace NekoPlayer.App.Localisation
         public static LocalisableString Stable => new TranslatableString(getKey(@"release_stream_stable"), @"Stable");
 
         /// <summary>
-        /// "Beta (unstable)"
+        /// "Nightly build (unstable)"
         /// </summary>
-        public static LocalisableString Beta => new TranslatableString(getKey(@"release_stream_beta"), @"Beta (unstable)");
+        public static LocalisableString Beta => new TranslatableString(getKey(@"release_stream_beta"), @"Nightly build (unstable)");
 
         /// <summary>
         /// "Video quality ({0})"
@@ -1150,6 +1150,11 @@ namespace NekoPlayer.App.Localisation
         /// "Audio quality ({0})"
         /// </summary>
         public static LocalisableString AudioQualityWithLabel(string quality) => new TranslatableString(getKey(@"audio_quality_with_label"), "Audio quality ({0})", quality);
+
+        /// <summary>
+        /// "Jump to {0}"
+        /// </summary>
+        public static LocalisableString JumpTo(string timestamp) => new TranslatableString(getKey(@"jump_to"), "Jump to {0}", timestamp);
 
         private static string getKey(string key) => $@"{prefix}:{key}";
     }

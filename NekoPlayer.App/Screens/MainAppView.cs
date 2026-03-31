@@ -4240,7 +4240,10 @@ namespace NekoPlayer.App.Screens
             if (updateManager == null || game == null)
                 return;
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            // ------------------------------
+            //                              |
+            //                              v      bro what
+            CancellationTokenSource nanahiraSingsHope = new CancellationTokenSource();
 
             game.UpdateManagerVersionText.Value = NekoPlayerStrings.CheckingUpdate;
 
@@ -4248,7 +4251,7 @@ namespace NekoPlayer.App.Screens
 
             try
             {
-                bool foundUpdate = await updateManager.CheckForUpdateAsync(cancellationTokenSource.Token).ConfigureAwait(true);
+                bool foundUpdate = await updateManager.CheckForUpdateAsync(nanahiraSingsHope.Token).ConfigureAwait(true);
 
                 if (!foundUpdate)
                 {
@@ -5461,7 +5464,7 @@ namespace NekoPlayer.App.Screens
                     Schedule(() => item.Expire());
                 }
 
-                commentCount.Text = videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : NekoPlayerStrings.DisabledByUploader;
+                commentCount.Text = videoData.Statistics.CommentCount != null ? Convert.ToDouble(videoData.Statistics.CommentCount).ToMetric(decimals: 2) : NekoPlayerStrings.DisabledByUploader;
                 commentsContainerTitle.Text = NekoPlayerStrings.Comments(videoData.Statistics.CommentCount != null ? Convert.ToInt32(videoData.Statistics.CommentCount).ToStandardFormattedString(0) : NekoPlayerStrings.Disabled);
 
                 OrderEnum orderEnum = CommentsSort.Value == CommentsSortCriteria.Top ? OrderEnum.Relevance : OrderEnum.Time;

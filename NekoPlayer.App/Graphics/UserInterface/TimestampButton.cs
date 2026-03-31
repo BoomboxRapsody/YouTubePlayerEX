@@ -5,6 +5,7 @@
 
 using System;
 using NekoPlayer.App.Graphics.Sprites;
+using NekoPlayer.App.Localisation;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -25,6 +26,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
             this.text = text;
             Enabled.Value = true;
             Masking = true;
+            TooltipText = NekoPlayerStrings.JumpTo(text);
         }
 
         [BackgroundDependencyLoader]
