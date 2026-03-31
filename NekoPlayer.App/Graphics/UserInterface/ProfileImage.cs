@@ -81,7 +81,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         private Bindable<Localisation.Language> uiLanguage;
 
         [BackgroundDependencyLoader]
-        private void load(ISampleStore tracks, OverlayColourProvider overlayColourProvider)
+        private void load(OverlayColourProvider overlayColourProvider)
         {
             uiLanguage = app.CurrentLanguage.GetBoundCopy();
             BorderColour = overlayColourProvider.Light4;
