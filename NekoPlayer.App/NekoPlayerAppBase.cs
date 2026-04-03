@@ -681,7 +681,6 @@ namespace NekoPlayer.App
             Logger.Log($"Font family loaded: Pretendard");
             */
 
-            /*
             AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-Bold");
             AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-Light");
             AddFont(Resources, @"Fonts/UIFonts/Torus/Torus-Regular");
@@ -693,24 +692,6 @@ namespace NekoPlayer.App
             AddFont(Resources, @"Fonts/UIFonts/Torus-Alternate/Torus-Alternate-SemiBold");
 
             Logger.Log($"Font family loaded: Torus");
-            */
-
-            AddFont(Resources, @"Fonts/UIFonts/Rubik/Rubik-Black");
-            AddFont(Resources, @"Fonts/UIFonts/Rubik/Rubik-BlackItalic");
-            AddFont(Resources, @"Fonts/UIFonts/Rubik/Rubik-Bold");
-            AddFont(Resources, @"Fonts/UIFonts/Rubik/Rubik-BoldItalic");
-            AddFont(Resources, @"Fonts/UIFonts/Rubik/Rubik-ExtraBold");
-            AddFont(Resources, @"Fonts/UIFonts/Rubik/Rubik-ExtraBoldItalic");
-            AddFont(Resources, @"Fonts/UIFonts/Rubik/Rubik-Light");
-            AddFont(Resources, @"Fonts/UIFonts/Rubik/Rubik-LightItalic");
-            AddFont(Resources, @"Fonts/UIFonts/Rubik/Rubik-Medium");
-            AddFont(Resources, @"Fonts/UIFonts/Rubik/Rubik-MediumItalic");
-            AddFont(Resources, @"Fonts/UIFonts/Rubik/Rubik-Regular");
-            AddFont(Resources, @"Fonts/UIFonts/Rubik/Rubik-RegularItalic");
-            AddFont(Resources, @"Fonts/UIFonts/Rubik/Rubik-SemiBold");
-            AddFont(Resources, @"Fonts/UIFonts/Rubik/Rubik-SemiBoldItalic");
-
-            Logger.Log($"Font family loaded: Rubik");
 
             AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Regular");
             AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Bold");
