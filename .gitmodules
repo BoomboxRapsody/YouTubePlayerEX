@@ -1,3 +1,6 @@
 [submodule "osu-framework"]
 	path = NekoPlayer-framework
 	url = https://github.com/BoomboxRapsody/osu-framework.git
+[submodule "YoutubeExplode"]
+	path = YoutubeExplode
+	url = https://github.com/BoomboxRapsody/YoutubeExplode

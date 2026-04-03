@@ -4530,7 +4530,6 @@ namespace NekoPlayer.App.Screens
 
                     trickcal_is_good_game.ClickAction = async _ =>
                     {
-                        ClearPlaylistItems();
                         await SetVideoSource(item.Id.VideoId);
                     };
 
@@ -4734,7 +4733,6 @@ namespace NekoPlayer.App.Screens
 
             loadBtn.ClickAction = async _ =>
             {
-                ClearPlaylistItems();
                 await SetVideoSource(videoIdBox.Text);
             };
 
@@ -6003,6 +6001,7 @@ namespace NekoPlayer.App.Screens
             }
 
             this.videoId = YoutubeExplode.Videos.VideoId.Parse(videoId);
+            ClearPlaylistItems();
             pausedTime = clearCache ? currentVideoSource.VideoProgress.Value : 0;
             Schedule(() => currentVideoSource?.Expire());
             CommentsSort.UnbindEvents();
