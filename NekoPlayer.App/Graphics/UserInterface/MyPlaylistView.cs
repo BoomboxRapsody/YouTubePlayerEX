@@ -160,7 +160,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                             RelativeSizeAxes = Axes.Both,
                             Padding = new MarginPadding
                             {
-                                Top = 25,
+                                Top = 5,
                                 Bottom = 5,
                                 Left = 200,
                                 Right = 5,
@@ -172,10 +172,9 @@ namespace NekoPlayer.App.Graphics.UserInterface
                                     Enabled = { Value = true },
                                     Origin = Anchor.TopRight,
                                     Anchor = Anchor.TopRight,
-                                    Size = new Vector2(40, 40),
+                                    Size = new Vector2(25, 25),
                                     Icon = FontAwesome.Regular.Edit,
-                                    Margin = new MarginPadding(16),
-                                    IconScale = new Vector2(1.2f),
+                                    IconScale = new Vector2(0.7f),
                                     TooltipText = NekoPlayerStrings.EditPlaylist,
                                     Action = () =>
                                     {

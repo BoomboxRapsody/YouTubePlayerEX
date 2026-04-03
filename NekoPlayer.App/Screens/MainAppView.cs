@@ -3032,7 +3032,7 @@ namespace NekoPlayer.App.Screens
                                 }
                             }
                         },
-                        addPlaylistOverlay = new OverlayContainer
+                        editPlaylistOverlay = new OverlayContainer
                         {
                             Size = new Vector2(1f, 1f),
                             Width = 450,
@@ -3122,7 +3122,7 @@ namespace NekoPlayer.App.Screens
                                                                 updatePlaylistButton = new AdaptiveButton
                                                                 {
                                                                     Enabled = { Value = true },
-                                                                    Text = NekoPlayerStrings.Create,
+                                                                    Text = NekoPlayerStrings.Apply,
                                                                     Size = new Vector2(200, 60),
                                                                     Margin = new MarginPadding(4),
                                                                 },
@@ -3136,7 +3136,7 @@ namespace NekoPlayer.App.Screens
                                 }
                             }
                         },
-                        editPlaylistOverlay = new OverlayContainer
+                        addPlaylistOverlay = new OverlayContainer
                         {
                             Size = new Vector2(1f, 1f),
                             Width = 450,
@@ -3163,7 +3163,7 @@ namespace NekoPlayer.App.Screens
                                 {
                                     Origin = Anchor.TopLeft,
                                     Anchor = Anchor.TopLeft,
-                                    Text = NekoPlayerStrings.EditPlaylist,
+                                    Text = NekoPlayerStrings.AddNewPlaylist,
                                     Margin = new MarginPadding(16),
                                     Font = NekoPlayerApp.TorusAlternate.With(size: 30, weight: "Bold"),
                                     Colour = overlayColourProvider.Content2,
@@ -3694,17 +3694,6 @@ namespace NekoPlayer.App.Screens
                         });
                     });
 
-                    Task.Run(async () =>
-                    {
-                        IList<Playlist> playlists = await api.GetMyPlaylistItemsAsync();
-
-                        Schedule(() =>
-                        {
-                            myPlaylistsDropdown.Items = playlists;
-                            myPlaylistsDropdown.Current.Value = playlists[0];
-                        });
-                    });
-
                     if (videoId != null)
                         Task.Run(async () => updateVideoMetadata(videoId));
 
@@ -3712,68 +3701,7 @@ namespace NekoPlayer.App.Screens
 
                     Schedule(() => myPlaylistsOpenButton.Enabled.Value = true);
 
-                    Task.Run(async () =>
-                    {
-                        IList<Playlist> playlists = await api.GetMyPlaylistItemsAsync();
-
-                        foreach (Playlist playlist in playlists)
-                        {
-                            MyPlaylistView playlistItemView = new MyPlaylistView()
-                            {
-                                RelativeSizeAxes = Axes.X,
-                                Enabled = { Value = true },
-                                ClickAction = async v =>
-                                {
-                                    Schedule(async () =>
-                                    {
-                                        SetPlaylist(playlist.Id).FireAndForget();
-                                    });
-                                },
-                                OptionsClickEvent = async data =>
-                                {
-                                    Schedule(async () =>
-                                    {
-                                        hideOverlays();
-
-                                        editPlaylistTitleBox.Current.Value = data.Snippet.Title;
-                                        try
-                                        {
-                                            switch (data.Status.PrivacyStatus)
-                                            {
-                                                case "public":
-                                                    editPlaylistPrivacyStatusDropdown.Current.Value = PrivacyStatus.Public;
-                                                    break;
-                                                case "unlisted":
-                                                    editPlaylistPrivacyStatusDropdown.Current.Value = PrivacyStatus.Unlisted;
-                                                    break;
-                                                case "private":
-                                                    editPlaylistPrivacyStatusDropdown.Current.Value = PrivacyStatus.Private;
-                                                    break;
-                                            }
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            Logger.Error(e, e.GetDescription());
-                                        }
-
-                                        showOverlayContainer(editPlaylistOverlay);
-
-                                        updatePlaylistButton.Action = async () =>
-                                        {
-                                            api.UpdatePlaylistInfo(data.Id, editPlaylistTitleBox.Current.Value, editPlaylistPrivacyStatusDropdown.Current.Value);
-                                        };
-                                    });
-                                },
-                            };
-
-                            Schedule(() =>
-                            {
-                                playlistItemView.Data = playlist;
-                                myPlaylistItemsView.Add(playlistItemView);
-                                playlistItemView.UpdateData();
-                            });
-                        }
-                    });
+                    fetchMyPlaylists();
                     #endregion
 
                     Schedule(() => commentSendButton.Enabled.Value = true);
@@ -4293,6 +4221,99 @@ namespace NekoPlayer.App.Screens
                 {
                 }
             }
+        }
+
+        private void fetchMyPlaylists()
+        {
+            if (!googleOAuth2.SignedIn.Value)
+                return;
+
+            foreach (var item in myPlaylistItemsView.Children)
+            {
+                Schedule(() => item.Expire());
+            }
+
+            Task.Run(async () =>
+            {
+                IList<Playlist> playlists = await api.GetMyPlaylistItemsAsync();
+
+                Schedule(() =>
+                {
+                    myPlaylistsDropdown.Items = playlists;
+                    myPlaylistsDropdown.Current.Value = playlists[0];
+                });
+            });
+
+            Task.Run(async () =>
+            {
+                IList<Playlist> playlists = await api.GetMyPlaylistItemsAsync();
+
+                foreach (Playlist playlist in playlists)
+                {
+                    MyPlaylistView playlistItemView = new MyPlaylistView()
+                    {
+                        RelativeSizeAxes = Axes.X,
+                        Enabled = { Value = true },
+                        ClickAction = async v =>
+                        {
+                            Schedule(async () =>
+                            {
+                                SetPlaylist(playlist.Id).FireAndForget();
+                            });
+                        },
+                        OptionsClickEvent = async data =>
+                        {
+                            Schedule(async () =>
+                            {
+                                hideOverlays();
+
+                                editPlaylistTitleBox.Current.Value = data.Snippet.Title;
+                                switch (data.Status.PrivacyStatus)
+                                {
+                                    case "public":
+                                        editPlaylistPrivacyStatusDropdown.Current.Value = PrivacyStatus.Public;
+                                        break;
+                                    case "unlisted":
+                                        editPlaylistPrivacyStatusDropdown.Current.Value = PrivacyStatus.Unlisted;
+                                        break;
+                                    case "private":
+                                        editPlaylistPrivacyStatusDropdown.Current.Value = PrivacyStatus.Private;
+                                        break;
+                                }
+
+                                showOverlayContainer(editPlaylistOverlay);
+
+                                updatePlaylistButton.Action = async () =>
+                                {
+                                    await Task.Run(async () =>
+                                    {
+                                        Schedule(async () =>
+                                        {
+                                            hideOverlays();
+                                        });
+
+                                        await api.UpdatePlaylistInfo(data.Id, editPlaylistTitleBox.Current.Value, editPlaylistPrivacyStatusDropdown.Current.Value);
+
+                                        await Task.Delay(1000);
+
+                                        Schedule(async () =>
+                                        {
+                                            fetchMyPlaylists();
+                                        });
+                                    });
+                                };
+                            });
+                        },
+                    };
+
+                    Schedule(() =>
+                    {
+                        playlistItemView.Data = playlist;
+                        myPlaylistItemsView.Add(playlistItemView);
+                        playlistItemView.UpdateData();
+                    });
+                }
+            });
         }
 
         private void saveVideoToPlaylist(string videoId)

@@ -184,7 +184,7 @@ namespace NekoPlayer.App.Online
             request.Execute();
         }
 
-        public void UpdatePlaylistInfo(string playlistId, string title, PrivacyStatus privacyStatus)
+        public async Task UpdatePlaylistInfo(string playlistId, string title, PrivacyStatus privacyStatus)
         {
             if (!googleOAuth2.SignedIn.Value)
                 return;
@@ -207,7 +207,7 @@ namespace NekoPlayer.App.Online
 
             request.AccessToken = googleOAuth2.GetAccessToken();
 
-            request.Execute();
+            await request.ExecuteAsync();
         }
 
         public IList<VideoAbuseReportReasonItem>? TryToGetVideoAbuseReportReasons()
