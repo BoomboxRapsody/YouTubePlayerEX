@@ -54,6 +54,8 @@ namespace NekoPlayer.App
 
         public static FontUsage TorusAlternate = FontUsage.Default.With("Torus-Alternate", 16, "Regular");
 
+        public static FontUsage Rubik = FontUsage.Default.With("Rubik", 16, "Regular");
+
         private BindableNumber<double> sampleVolume = null!;
         private FPSCounter fpsCounter;
         private Container topMostOverlayContent, overlayContainer, leftFloatingOverlayContent;
