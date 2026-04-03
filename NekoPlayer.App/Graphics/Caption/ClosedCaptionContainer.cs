@@ -91,7 +91,7 @@ namespace NekoPlayer.App.Graphics.Caption
             {
                 switch (v.NewValue)
                 {
-                    case UIFont.Torus:
+                    case UIFont.Rubik:
                     {
                         spriteText.Font = NekoPlayerApp.DefaultFont.With(size: 24);
                         break;

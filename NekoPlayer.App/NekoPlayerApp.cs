@@ -46,13 +46,13 @@ namespace NekoPlayer.App
     {
         private ScreenStack screenStack;
 
-        public static FontUsage DefaultFont = FontUsage.Default.With("Torus", 16, "Regular");
+        public static FontUsage DefaultFont = FontUsage.Default.With("Rubik", 16, "Regular");
 
         public static FontUsage Hungeul = FontUsage.Default.With("Hungeul", 16, "Regular");
 
         public static FontUsage Futehodo_MaruGothic = FontUsage.Default.With("Futehodo_MaruGothic", 16, "Regular");
 
-        public static FontUsage TorusAlternate = FontUsage.Default.With("Torus-Alternate", 16, "Regular");
+        public static FontUsage Rubik = FontUsage.Default.With("Rubik", 16, "Regular");
 
         private BindableNumber<double> sampleVolume = null!;
         private FPSCounter fpsCounter;
