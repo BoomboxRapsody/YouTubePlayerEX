@@ -3447,6 +3447,7 @@ namespace NekoPlayer.App.Screens
                                                             Text = NekoPlayerStrings.Exit,
                                                             Action = () =>
                                                             {
+                                                                overlayHideSample.Volume.Value = 0;
                                                                 hideOverlays();
                                                                 game.AttemptExit();
                                                             },
