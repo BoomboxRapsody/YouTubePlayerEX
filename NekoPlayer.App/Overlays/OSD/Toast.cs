@@ -23,7 +23,7 @@ namespace NekoPlayer.App.Overlays.OSD
             set => extraText.Text = value.ToUpper();
         }
 
-        private const int toast_minimum_width = 900;
+        private const int toast_minimum_width = 600;
 
         private readonly Container content;
         private readonly Box background;
