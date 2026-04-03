@@ -1933,7 +1933,7 @@ namespace NekoPlayer.App.Screens
                                                             videoInfoDetails = new AdaptiveSpriteText
                                                             {
                                                                 RelativeSizeAxes = Axes.X,
-                                                                Font = NekoPlayerApp.DefaultFont.With(weight: "Black"),
+                                                                Font = NekoPlayerApp.DefaultFont.With(weight: "Bold"),
                                                                 Colour = overlayColourProvider.Content2,
                                                                 AlwaysPresent = true,
                                                             },

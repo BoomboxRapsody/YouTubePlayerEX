@@ -62,7 +62,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         public NekoPlayerSeekBar()
         {
             Height = SliderNubRemake.HEIGHT;
-            RangePadding = SliderNubWithText.DEFAULT_EXPANDED_SIZE / 2;
+            RangePadding = SliderNubRemake.DEFAULT_EXPANDED_SIZE / 2;
             ResetToDefault = () =>
             {
                 if (!Current.Disabled)

@@ -33,8 +33,8 @@ namespace NekoPlayer.App.Graphics.UserInterface
 {
     public partial class VideoMetadataDisplayWithoutProfile : CompositeDrawable
     {
-        private TruncatingSpriteText videoName;
-        private TruncatingSpriteText desc;
+        private AdaptiveSpriteText videoName;
+        private AdaptiveSpriteText desc;
         public Action<VideoMetadataDisplayWithoutProfile> ClickEvent;
 
         private Box bgLayer, hover;
@@ -65,12 +65,12 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
             InternalChildren = new Drawable[]
             {
-                samples,
+                //samples,
                 bgLayer = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
                     Colour = ColourInfo.GradientHorizontal(overlayColourProvider.Background5.Opacity(0.75f), overlayColourProvider.Background5.Opacity(0f)),
-                    Alpha = 0.7f,
+                    Alpha = 0f,
                 },
                 new Container {
                     RelativeSizeAxes = Axes.Both,
@@ -93,19 +93,19 @@ namespace NekoPlayer.App.Graphics.UserInterface
                             },
                             Children = new Drawable[]
                             {
-                                videoName = new TruncatingSpriteText
+                                videoName = new AdaptiveSpriteText
                                 {
                                     Font = NekoPlayerApp.TorusAlternate.With(size: 20, weight: "Bold"),
                                     RelativeSizeAxes = Axes.X,
                                     Text = NekoPlayerStrings.VideoNotLoaded,
-                                    Colour = overlayColourProvider.Content2,
+                                    Colour = Color4.White,
                                 },
-                                desc = new TruncatingSpriteText
+                                desc = new AdaptiveSpriteText
                                 {
                                     Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "SemiBold"),
                                     RelativeSizeAxes = Axes.X,
                                     Text = NekoPlayerStrings.VideoNotLoadedDesc,
-                                    Colour = overlayColourProvider.Foreground2,
+                                    Colour = Color4.Gray,
                                     Position = new osuTK.Vector2(0, 20),
                                 }
                             }
@@ -133,6 +133,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         private HoverSounds samples = new HoverClickSounds(HoverSampleSet.Default);
 
+        /*
         protected override bool OnHover(HoverEvent e)
         {
             if (ClickEvent != null)
@@ -148,6 +149,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
             if (ClickEvent != null)
                 bgLayer.FadeTo(0.7f, 500, Easing.OutQuint);
         }
+        */
 
         protected override void LoadComplete()
         {
