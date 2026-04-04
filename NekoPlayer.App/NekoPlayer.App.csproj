@@ -36,6 +36,7 @@
   <ItemGroup>
     <EmbeddedResource Include="BuiltInResources\Shaders\**\*" />
     <EmbeddedResource Include="BuiltInResources\Fonts\**\*" />
+    <EmbeddedResource Include="BuiltInResources\Samples\**\*" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Localisation\NekoPlayerTrayIconStrings.Designer.cs">

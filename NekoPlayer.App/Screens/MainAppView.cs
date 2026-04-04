@@ -99,6 +99,17 @@ namespace NekoPlayer.App.Screens
         private VideoMetadataDisplay videoMetadataDisplayDetails;
         private RoundedButtonContainer commentOpenButtonDetails, likeButton;
 
+        private string[] broWhat = new[]
+        {
+            @"cuayo",
+            @"cuayo1",
+            @"cuayo2",
+            @"cuayo3",
+            @"ner",
+            @"speaki_ner",
+            @"speaki1",
+        };
+
         private FormEnumDropdown<PrivacyStatus> playlistPrivacyStatusDropdown, editPlaylistPrivacyStatusDropdown;
 
         private LinkFlowContainer madeByText;
@@ -4597,6 +4608,12 @@ namespace NekoPlayer.App.Screens
                 RestoreDuration = 100,
             });
             */
+
+            if ((overlayContent == commentsContainer) && (commentContainer.Children.Count == 0))
+            {
+                Sample sample = audio.Samples.Get(broWhat[Random.Shared.Next(0, broWhat.Length)]);
+                sample.Play();
+            }
 
             if (overlayContent is SideOverlayContainer)
             {
