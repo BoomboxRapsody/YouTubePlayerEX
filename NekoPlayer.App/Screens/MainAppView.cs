@@ -82,7 +82,7 @@ namespace NekoPlayer.App.Screens
     public partial class MainAppView : NekoPlayerScreen, IKeyBindingHandler<GlobalAction>, INekoPlayerAppMessageHandler
     {
         private BufferedContainer videoContainer;
-        private AdaptiveButton loadBtn, commentSendButton, searchButton, loadPlaylistBtn, loadPlaylistOpenButton, declineButton, acceptButton, logoutButton, viewChannelButton;
+        private AdaptiveButton loadBtn, commentSendButton, searchButton, loadPlaylistBtn, loadPlaylistOpenButton, declineButton, acceptButton, logoutButton, viewChannelButton, updatePlaylistButton;
         private ControlBarButton prevVideoButton, nextVideoButton;
         private EnhancedFocusedTextBox videoIdBox, playlistIdBox, commentTextBox, searchTextBox;
         private LoadingSpinner spinner;
@@ -91,7 +91,7 @@ namespace NekoPlayer.App.Screens
         private IdleTracker idleTracker;
         private Container uiContainer;
         private Container uiGradientContainer;
-        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer, reportAbuseOverlay, loadPlaylistContainer, unsubscribeDialog, addPlaylistOverlay, videoSaveLocationOverlay, myChannelDialog;
+        private OverlayContainer loadVideoContainer, settingsContainer, videoDescriptionContainer, commentsContainer, videoInfoExpertOverlay, searchContainer, reportAbuseOverlay, loadPlaylistContainer, unsubscribeDialog, addPlaylistOverlay, videoSaveLocationOverlay, myChannelDialog, editPlaylistOverlay;
         private SideOverlayContainer playlistOverlay, audioEffectsOverlay, menuOverlay, myPlaylistsOverlay, exitOptions;
         private AdaptiveButtonWithShadow menuOverlayShow;
         private MenuButtonItem loadBtnOverlayShow, settingsOverlayShowBtn, commentOpenButton, searchOpenButton, reportOpenButton, playlistOpenButton, audioEffectsOpenButton, saveVideoOpenButton, newPlaylistOpenButton, myPlaylistsOpenButton;
@@ -99,7 +99,18 @@ namespace NekoPlayer.App.Screens
         private VideoMetadataDisplay videoMetadataDisplayDetails;
         private RoundedButtonContainer commentOpenButtonDetails, likeButton;
 
-        private FormEnumDropdown<PrivacyStatus> playlistPrivacyStatusDropdown;
+        private string[] broWhat = new[]
+        {
+            @"cuayo",
+            @"cuayo1",
+            @"cuayo2",
+            @"cuayo3",
+            @"ner",
+            @"speaki_ner",
+            @"speaki1",
+        };
+
+        private FormEnumDropdown<PrivacyStatus> playlistPrivacyStatusDropdown, editPlaylistPrivacyStatusDropdown;
 
         private LinkFlowContainer madeByText;
 
@@ -110,7 +121,7 @@ namespace NekoPlayer.App.Screens
         private Sample overlayShowSample;
         private Sample overlayHideSample;
         private AdaptiveButtonV2 reportButton;
-        private FormTextBox reportComment, playlistTitleBox;
+        private FormTextBox reportComment, playlistTitleBox, editPlaylistTitleBox;
 
         private FormDropdown<Playlist> myPlaylistsDropdown;
 
@@ -1933,7 +1944,7 @@ namespace NekoPlayer.App.Screens
                                                             videoInfoDetails = new AdaptiveSpriteText
                                                             {
                                                                 RelativeSizeAxes = Axes.X,
-                                                                Font = NekoPlayerApp.DefaultFont.With(weight: "Black"),
+                                                                Font = NekoPlayerApp.DefaultFont.With(weight: "Bold"),
                                                                 Colour = overlayColourProvider.Content2,
                                                                 AlwaysPresent = true,
                                                             },
@@ -3032,6 +3043,110 @@ namespace NekoPlayer.App.Screens
                                 }
                             }
                         },
+                        editPlaylistOverlay = new OverlayContainer
+                        {
+                            Size = new Vector2(1f, 1f),
+                            Width = 450,
+                            Height = 250,
+                            CornerRadius = NekoPlayerApp.UI_CORNER_RADIUS,
+                            Masking = true,
+                            Origin = Anchor.Centre,
+                            Anchor = Anchor.Centre,
+                            EdgeEffect = new osu.Framework.Graphics.Effects.EdgeEffectParameters
+                            {
+                                Type = osu.Framework.Graphics.Effects.EdgeEffectType.Shadow,
+                                Colour = Color4.Black.Opacity(0.25f),
+                                Offset = new Vector2(0, 2),
+                                Radius = 16,
+                            },
+                            Children = new Drawable[]
+                            {
+                                new Box
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Colour = overlayColourProvider.Background5,
+                                },
+                                new AdaptiveSpriteText
+                                {
+                                    Origin = Anchor.TopLeft,
+                                    Anchor = Anchor.TopLeft,
+                                    Text = NekoPlayerStrings.EditPlaylist,
+                                    Margin = new MarginPadding(16),
+                                    Font = NekoPlayerApp.TorusAlternate.With(size: 30, weight: "Bold"),
+                                    Colour = overlayColourProvider.Content2,
+                                },
+                                new Container
+                                {
+                                    RelativeSizeAxes = Axes.Both,
+                                    Padding = new MarginPadding
+                                    {
+                                        Horizontal = 16,
+                                        Bottom = 16,
+                                        Top = 56,
+                                    },
+                                    Children = new Drawable[] {
+                                        new AdaptiveScrollContainer
+                                        {
+                                            RelativeSizeAxes = Axes.Both,
+                                            ScrollbarVisible = false,
+                                            Children = new Drawable[]
+                                            {
+                                                new FillFlowContainer
+                                                {
+                                                    RelativeSizeAxes = Axes.X,
+                                                    AutoSizeAxes = Axes.Y,
+                                                    Direction = FillDirection.Vertical,
+                                                    Spacing = new Vector2(4),
+                                                    Children = new Drawable[]
+                                                    {
+                                                        editPlaylistTitleBox = new FormTextBox
+                                                        {
+                                                            RelativeSizeAxes = Axes.X,
+                                                            Height = 50,
+                                                            Caption = NekoPlayerStrings.Title,
+                                                            PlaceholderText = NekoPlayerStrings.TitlePlaceholder,
+                                                        },
+                                                        editPlaylistPrivacyStatusDropdown = new FormEnumDropdown<PrivacyStatus>
+                                                        {
+                                                            RelativeSizeAxes = Axes.X,
+                                                            Height = 50,
+                                                            Caption = NekoPlayerStrings.PrivacyStatus,
+                                                        },
+                                                        new FillFlowContainer
+                                                        {
+                                                            RelativeSizeAxes = Axes.X,
+                                                            AutoSizeAxes = Axes.Y,
+                                                            Direction = FillDirection.Horizontal,
+                                                            Children = new Drawable[]
+                                                            {
+                                                                new AdaptiveButton
+                                                                {
+                                                                    Enabled = { Value = true },
+                                                                    Text = NekoPlayerStrings.Cancel,
+                                                                    Size = new Vector2(200, 60),
+                                                                    Margin = new MarginPadding(4),
+                                                                    Action = () =>
+                                                                    {
+                                                                        hideOverlayContainer(editPlaylistOverlay);
+                                                                    }
+                                                                },
+                                                                updatePlaylistButton = new AdaptiveButton
+                                                                {
+                                                                    Enabled = { Value = true },
+                                                                    Text = NekoPlayerStrings.Apply,
+                                                                    Size = new Vector2(200, 60),
+                                                                    Margin = new MarginPadding(4),
+                                                                },
+                                                            },
+                                                        },
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
                         addPlaylistOverlay = new OverlayContainer
                         {
                             Size = new Vector2(1f, 1f),
@@ -3343,6 +3458,7 @@ namespace NekoPlayer.App.Screens
                                                             Text = NekoPlayerStrings.Exit,
                                                             Action = () =>
                                                             {
+                                                                overlayHideSample.Volume.Value = 0;
                                                                 hideOverlays();
                                                                 game.AttemptExit();
                                                             },
@@ -3545,6 +3661,7 @@ namespace NekoPlayer.App.Screens
             RegisterOverlayContainer(myChannelDialog);
             RegisterOverlayContainer(myPlaylistsOverlay);
             RegisterOverlayContainer(exitOptions);
+            RegisterOverlayContainer(editPlaylistOverlay);
 
             ReleaseStream.BindValueChanged(async _ => await checkForUpdates());
 
@@ -3589,17 +3706,6 @@ namespace NekoPlayer.App.Screens
                         });
                     });
 
-                    Task.Run(async () =>
-                    {
-                        IList<Playlist> playlists = await api.GetMyPlaylistItemsAsync();
-
-                        Schedule(() =>
-                        {
-                            myPlaylistsDropdown.Items = playlists;
-                            myPlaylistsDropdown.Current.Value = playlists[0];
-                        });
-                    });
-
                     if (videoId != null)
                         Task.Run(async () => updateVideoMetadata(videoId));
 
@@ -3607,33 +3713,7 @@ namespace NekoPlayer.App.Screens
 
                     Schedule(() => myPlaylistsOpenButton.Enabled.Value = true);
 
-                    Task.Run(async () =>
-                    {
-                        IList<Playlist> playlists = await api.GetMyPlaylistItemsAsync();
-
-                        foreach (Playlist playlist in playlists)
-                        {
-                            MyPlaylistView playlistItemView = new MyPlaylistView()
-                            {
-                                RelativeSizeAxes = Axes.X,
-                                Enabled = { Value = true },
-                                ClickAction = async v =>
-                                {
-                                    Schedule(async () =>
-                                    {
-                                        SetPlaylist(playlist.Id).FireAndForget();
-                                    });
-                                },
-                            };
-
-                            Schedule(() =>
-                            {
-                                playlistItemView.Data = playlist;
-                                myPlaylistItemsView.Add(playlistItemView);
-                                playlistItemView.UpdateData();
-                            });
-                        }
-                    });
+                    fetchMyPlaylists();
                     #endregion
 
                     Schedule(() => commentSendButton.Enabled.Value = true);
@@ -4155,6 +4235,99 @@ namespace NekoPlayer.App.Screens
             }
         }
 
+        private void fetchMyPlaylists()
+        {
+            if (!googleOAuth2.SignedIn.Value)
+                return;
+
+            foreach (var item in myPlaylistItemsView.Children)
+            {
+                Schedule(() => item.Expire());
+            }
+
+            Task.Run(async () =>
+            {
+                IList<Playlist> playlists = await api.GetMyPlaylistItemsAsync();
+
+                Schedule(() =>
+                {
+                    myPlaylistsDropdown.Items = playlists;
+                    myPlaylistsDropdown.Current.Value = playlists[0];
+                });
+            });
+
+            Task.Run(async () =>
+            {
+                IList<Playlist> playlists = await api.GetMyPlaylistItemsAsync();
+
+                foreach (Playlist playlist in playlists)
+                {
+                    MyPlaylistView playlistItemView = new MyPlaylistView()
+                    {
+                        RelativeSizeAxes = Axes.X,
+                        Enabled = { Value = true },
+                        ClickAction = async v =>
+                        {
+                            Schedule(async () =>
+                            {
+                                SetPlaylist(playlist.Id).FireAndForget();
+                            });
+                        },
+                        OptionsClickEvent = async data =>
+                        {
+                            Schedule(async () =>
+                            {
+                                hideOverlays();
+
+                                editPlaylistTitleBox.Current.Value = data.Snippet.Title;
+                                switch (data.Status.PrivacyStatus)
+                                {
+                                    case "public":
+                                        editPlaylistPrivacyStatusDropdown.Current.Value = PrivacyStatus.Public;
+                                        break;
+                                    case "unlisted":
+                                        editPlaylistPrivacyStatusDropdown.Current.Value = PrivacyStatus.Unlisted;
+                                        break;
+                                    case "private":
+                                        editPlaylistPrivacyStatusDropdown.Current.Value = PrivacyStatus.Private;
+                                        break;
+                                }
+
+                                showOverlayContainer(editPlaylistOverlay);
+
+                                updatePlaylistButton.Action = async () =>
+                                {
+                                    await Task.Run(async () =>
+                                    {
+                                        Schedule(async () =>
+                                        {
+                                            hideOverlays();
+                                        });
+
+                                        await api.UpdatePlaylistInfo(data.Id, editPlaylistTitleBox.Current.Value, editPlaylistPrivacyStatusDropdown.Current.Value);
+
+                                        await Task.Delay(1000);
+
+                                        Schedule(async () =>
+                                        {
+                                            fetchMyPlaylists();
+                                        });
+                                    });
+                                };
+                            });
+                        },
+                    };
+
+                    Schedule(() =>
+                    {
+                        playlistItemView.Data = playlist;
+                        myPlaylistItemsView.Add(playlistItemView);
+                        playlistItemView.UpdateData();
+                    });
+                }
+            });
+        }
+
         private void saveVideoToPlaylist(string videoId)
         {
             if (string.IsNullOrEmpty(videoId))
@@ -4436,6 +4609,12 @@ namespace NekoPlayer.App.Screens
             });
             */
 
+            if ((overlayContent == commentsContainer) && (commentContainer.Children.Count == 0))
+            {
+                Sample sample = audio.Samples.Get(broWhat[Random.Shared.Next(0, broWhat.Length)]);
+                sample.Play();
+            }
+
             if (overlayContent is SideOverlayContainer)
             {
                 isAnyOverlayOpen.Value = true;
@@ -4530,7 +4709,6 @@ namespace NekoPlayer.App.Screens
 
                     trickcal_is_good_game.ClickAction = async _ =>
                     {
-                        ClearPlaylistItems();
                         await SetVideoSource(item.Id.VideoId);
                     };
 
@@ -4734,7 +4912,6 @@ namespace NekoPlayer.App.Screens
 
             loadBtn.ClickAction = async _ =>
             {
-                ClearPlaylistItems();
                 await SetVideoSource(videoIdBox.Text);
             };
 
@@ -6003,6 +6180,7 @@ namespace NekoPlayer.App.Screens
             }
 
             this.videoId = YoutubeExplode.Videos.VideoId.Parse(videoId);
+            ClearPlaylistItems();
             pausedTime = clearCache ? currentVideoSource.VideoProgress.Value : 0;
             Schedule(() => currentVideoSource?.Expire());
             CommentsSort.UnbindEvents();

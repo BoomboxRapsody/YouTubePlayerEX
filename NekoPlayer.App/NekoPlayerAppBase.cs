@@ -4,6 +4,7 @@
 #nullable disable
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -294,7 +295,7 @@ namespace NekoPlayer.App
         {
             try
             {
-                Logger.Log($"------------------------------------------------\nNekoPlayer by MayoDev Studios\n------------------------------------------------\nApp version is: {Version}\nApp version hash is: {VersionHash}\n------------------------------------------------\ngood luck ^^\n------------------------------------------------");
+                Logger.Log($"------------------------------------------------\nNekoPlayer by MayoDev Studios\n------------------------------------------------\nApp version is: {Version}\nApp version hash is: {VersionHash}\nCultureInfo.CurrentCulture name is {CultureInfo.CurrentCulture.Name}\n------------------------------------------------\ngood luck ^^\n------------------------------------------------");
                 RestartRequired.Value = false;
                 UpdateManagerVersionText.Value = Version;
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -691,6 +692,23 @@ namespace NekoPlayer.App
             AddFont(Resources, @"Fonts/UIFonts/Torus-Alternate/Torus-Alternate-SemiBold");
 
             Logger.Log($"Font family loaded: Torus");
+
+            AddFont(Resources, @"Fonts/CaptionFonts/Rubik/Rubik-Black");
+            AddFont(Resources, @"Fonts/CaptionFonts/Rubik/Rubik-BlackItalic");
+            AddFont(Resources, @"Fonts/CaptionFonts/Rubik/Rubik-Bold");
+            AddFont(Resources, @"Fonts/CaptionFonts/Rubik/Rubik-BoldItalic");
+            AddFont(Resources, @"Fonts/CaptionFonts/Rubik/Rubik-ExtraBold");
+            AddFont(Resources, @"Fonts/CaptionFonts/Rubik/Rubik-ExtraBoldItalic");
+            AddFont(Resources, @"Fonts/CaptionFonts/Rubik/Rubik-Light");
+            AddFont(Resources, @"Fonts/CaptionFonts/Rubik/Rubik-LightItalic");
+            AddFont(Resources, @"Fonts/CaptionFonts/Rubik/Rubik-Medium");
+            AddFont(Resources, @"Fonts/CaptionFonts/Rubik/Rubik-MediumItalic");
+            AddFont(Resources, @"Fonts/CaptionFonts/Rubik/Rubik-Regular");
+            AddFont(Resources, @"Fonts/CaptionFonts/Rubik/Rubik-RegularItalic");
+            AddFont(Resources, @"Fonts/CaptionFonts/Rubik/Rubik-SemiBold");
+            AddFont(Resources, @"Fonts/CaptionFonts/Rubik/Rubik-SemiBoldItalic");
+
+            Logger.Log($"Font family loaded: Rubik");
 
             AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Regular");
             AddFont(Resources, @"Fonts/UIFonts/NotoSansKR/NotoSansKR-Bold");

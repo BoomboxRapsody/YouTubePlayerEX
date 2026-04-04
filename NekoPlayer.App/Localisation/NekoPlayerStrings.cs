@@ -467,9 +467,9 @@ namespace NekoPlayer.App.Localisation
         public static LocalisableString CommentAdded => new TranslatableString(getKey(@"comment_added"), "Comment added.");
 
         /// <summary>
-        /// "Write comment as {0}"
+        /// "Write comment as {0}..."
         /// </summary>
-        public static LocalisableString CommentWith(string username) => new TranslatableString(getKey(@"comment_with"), "Write comment as {0}", username);
+        public static LocalisableString CommentWith(string username) => new TranslatableString(getKey(@"comment_with"), "Write comment as {0}...", username);
 
         /// <summary>
         /// "Signed in to {0}"
@@ -1144,17 +1144,27 @@ namespace NekoPlayer.App.Localisation
         /// <summary>
         /// "Video quality ({0})"
         /// </summary>
-        public static LocalisableString VideoQualityWithLabel(string quality) => new TranslatableString(getKey(@"video_quality_with_label"), "Video quality ({0})", quality);
+        public static LocalisableString VideoQualityWithLabel(string quality) => new TranslatableString(getKey(@"video_quality_with_label"), @"Video quality ({0})", quality);
 
         /// <summary>
         /// "Audio quality ({0})"
         /// </summary>
-        public static LocalisableString AudioQualityWithLabel(string quality) => new TranslatableString(getKey(@"audio_quality_with_label"), "Audio quality ({0})", quality);
+        public static LocalisableString AudioQualityWithLabel(string quality) => new TranslatableString(getKey(@"audio_quality_with_label"), @"Audio quality ({0})", quality);
 
         /// <summary>
         /// "Jump to {0}"
         /// </summary>
-        public static LocalisableString JumpTo(string timestamp) => new TranslatableString(getKey(@"jump_to"), "Jump to {0}", timestamp);
+        public static LocalisableString JumpTo(string timestamp) => new TranslatableString(getKey(@"jump_to"), @"Jump to {0}", timestamp);
+
+        /// <summary>
+        /// "Edit playlist"
+        /// </summary>
+        public static LocalisableString EditPlaylist => new TranslatableString(getKey(@"edit_playlist"), @"Edit playlist");
+
+        /// <summary>
+        /// "Apply"
+        /// </summary>
+        public static LocalisableString Apply => new TranslatableString(getKey(@"apply"), @"Apply");
 
         private static string getKey(string key) => $@"{prefix}:{key}";
     }

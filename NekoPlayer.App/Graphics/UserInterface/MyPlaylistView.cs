@@ -40,6 +40,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         private TruncatingSpriteText playlistNameText = null!;
         private TruncatingSpriteText channelNameText = null!;
         public Action<MyPlaylistView> ClickEvent = null!;
+        public Action<Playlist> OptionsClickEvent = null!;
         private AdaptiveSpriteText privacyStatusText = null!;
 
         private Box bgLayer = null!;
@@ -151,6 +152,34 @@ namespace NekoPlayer.App.Graphics.UserInterface
                                     Position = new Vector2(0, (17 + 13)),
                                     Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "SemiBold"),
                                     Colour = overlayColourProvider.Background1,
+                                },
+                            }
+                        },
+                        new Container
+                        {
+                            RelativeSizeAxes = Axes.Both,
+                            Padding = new MarginPadding
+                            {
+                                Top = 5,
+                                Bottom = 5,
+                                Left = 200,
+                                Right = 5,
+                            },
+                            Children = new Drawable[]
+                            {
+                                new IconButton
+                                {
+                                    Enabled = { Value = true },
+                                    Origin = Anchor.TopRight,
+                                    Anchor = Anchor.TopRight,
+                                    Size = new Vector2(25, 25),
+                                    Icon = FontAwesome.Regular.Edit,
+                                    IconScale = new Vector2(0.7f),
+                                    TooltipText = NekoPlayerStrings.EditPlaylist,
+                                    Action = () =>
+                                    {
+                                        OptionsClickEvent.Invoke(playlistData);
+                                    }
                                 },
                             }
                         },
@@ -291,6 +320,8 @@ namespace NekoPlayer.App.Graphics.UserInterface
             });
         }
 
+        private Playlist playlistData;
+
         public void UpdateData()
         {
             uiLanguage.UnbindEvents();
@@ -299,7 +330,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 try
                 {
                     Channel channelData = api.GetChannel(Data.Snippet.ChannelId);
-                    Playlist playlistData = api.GetPlaylistInfo(Data.Id);
+                    playlistData = api.GetPlaylistInfo(Data.Id);
 
                     Schedule(() =>
                     {

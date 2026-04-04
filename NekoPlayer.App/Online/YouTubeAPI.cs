@@ -184,6 +184,32 @@ namespace NekoPlayer.App.Online
             request.Execute();
         }
 
+        public async Task UpdatePlaylistInfo(string playlistId, string title, PrivacyStatus privacyStatus)
+        {
+            if (!googleOAuth2.SignedIn.Value)
+                return;
+
+            string parsedPrivacyStatus = ParsePrivacyStatus(privacyStatus);
+
+            var part = "id,snippet,status";
+            var request = youtubeService.Playlists.Update(new Playlist
+            {
+                Id = playlistId,
+                Snippet = new()
+                {
+                    Title = title,
+                },
+                Status = new()
+                {
+                    PrivacyStatus = parsedPrivacyStatus,
+                }
+            }, part);
+
+            request.AccessToken = googleOAuth2.GetAccessToken();
+
+            await request.ExecuteAsync();
+        }
+
         public IList<VideoAbuseReportReasonItem>? TryToGetVideoAbuseReportReasons()
         {
             if (!googleOAuth2.SignedIn.Value)

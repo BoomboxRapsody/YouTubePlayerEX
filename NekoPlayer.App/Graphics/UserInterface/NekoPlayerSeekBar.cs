@@ -62,7 +62,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         public NekoPlayerSeekBar()
         {
             Height = SliderNubRemake.HEIGHT;
-            RangePadding = SliderNubWithText.DEFAULT_EXPANDED_SIZE / 2;
+            RangePadding = SliderNubRemake.DEFAULT_EXPANDED_SIZE / 2;
             ResetToDefault = () =>
             {
                 if (!Current.Disabled)
@@ -187,7 +187,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 RightBox.ResizeHeightTo(SliderNubRemake.HEIGHT / 2, 500, Easing.OutQuint);
             }
 
-            Nub.Glowing = !Current.Disabled && (IsHovered);
+            //Nub.Glowing = !Current.Disabled && (IsHovered);
             if (!Current.Disabled && (IsHovered))
             {
                 mainContent.FadeEdgeEffectTo(AccentColour.Darken(1).Opacity(0.5f), 40, Easing.OutQuint);
