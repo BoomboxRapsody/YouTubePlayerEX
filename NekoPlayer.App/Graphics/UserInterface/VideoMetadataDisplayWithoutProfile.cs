@@ -33,8 +33,8 @@ namespace NekoPlayer.App.Graphics.UserInterface
 {
     public partial class VideoMetadataDisplayWithoutProfile : CompositeDrawable
     {
-        private AdaptiveSpriteText videoName;
-        private AdaptiveSpriteText desc;
+        private TruncatingSpriteText videoName;
+        private TruncatingSpriteText desc;
         public Action<VideoMetadataDisplayWithoutProfile> ClickEvent;
 
         private Box bgLayer, hover;
@@ -93,14 +93,14 @@ namespace NekoPlayer.App.Graphics.UserInterface
                             },
                             Children = new Drawable[]
                             {
-                                videoName = new AdaptiveSpriteText
+                                videoName = new TruncatingSpriteText
                                 {
                                     Font = NekoPlayerApp.TorusAlternate.With(size: 20, weight: "Bold"),
                                     RelativeSizeAxes = Axes.X,
                                     Text = NekoPlayerStrings.VideoNotLoaded,
                                     Colour = Color4.White,
                                 },
-                                desc = new AdaptiveSpriteText
+                                desc = new TruncatingSpriteText
                                 {
                                     Font = NekoPlayerApp.DefaultFont.With(size: 13, weight: "SemiBold"),
                                     RelativeSizeAxes = Axes.X,

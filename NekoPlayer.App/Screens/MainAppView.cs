@@ -1860,7 +1860,7 @@ namespace NekoPlayer.App.Screens
                                                         if (string.IsNullOrEmpty(videoUrl))
                                                             return;
 
-                                                        LocalisableString prompt = NekoPlayerStrings.GPTSummarizePrompt(videoUrl);
+                                                        LocalisableString prompt = NekoPlayerExtraStrings.gpt_summarize_prompt.Replace("{0}", videoUrl);
 
                                                         host.OpenUrlExternally($"https://chat.openai.com/?q={prompt}");
                                                     },
@@ -7238,6 +7238,9 @@ namespace NekoPlayer.App.Screens
 
             [Resolved]
             private YoutubeExplode.YoutubeClient youtubeService { get; set; }
+
+            [Resolved]
+            private GoogleTranslate googleTranslate { get; set; }
 
             private Bindable<int> closedCaptionLanguageValue;
 
