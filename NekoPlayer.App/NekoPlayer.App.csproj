@@ -39,6 +39,11 @@
     <EmbeddedResource Include="BuiltInResources\Samples\**\*" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Localisation\NekoPlayerExtraStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>NekoPlayerExtraStrings.resx</DependentUpon>
+    </Compile>
     <Compile Update="Localisation\NekoPlayerTrayIconStrings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -51,6 +56,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="Localisation\NekoPlayerExtraStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NekoPlayerExtraStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Localisation\NekoPlayerTrayIconStrings.ja.resx">
       <LastGenOutput>NekoPlayerTrayIconStrings.ja.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>

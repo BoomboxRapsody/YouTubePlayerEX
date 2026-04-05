@@ -8,14 +8,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Humanizer;
 using NekoPlayer.App.Config;
-using NekoPlayer.App.Extensions;
 using NekoPlayer.App.Localisation;
 using NekoPlayer.App.Online;
+using NekoPlayer.App.Utils;
 using osu.Framework.Allocation;
-using osu.Framework.Audio.Sample;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
-using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Cursor;
 using osu.Framework.Graphics.Shapes;
@@ -24,6 +22,9 @@ using osu.Framework.Graphics.Textures;
 using osu.Framework.Input.Events;
 using osu.Framework.Localisation;
 using osuTK.Graphics;
+using PaletteNet;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace NekoPlayer.App.Graphics.UserInterface
 {
@@ -33,8 +34,10 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         private Google.Apis.YouTube.v3.Data.Channel channel;
 
+        private Container profileImageBase;
+
         private LoadingSpinner loading;
-        private Box hover;
+        private Box hover, bgLayer;
 
         [Resolved]
         private TextureStore textureStore { get; set; }
@@ -58,14 +61,23 @@ namespace NekoPlayer.App.Graphics.UserInterface
             InternalChildren = new Drawable[]
             {
                 samples,
-                new Box
+                bgLayer = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
                     Colour = Color4.Black
                 },
-                profileImage = new Sprite
+                profileImageBase = new Container
                 {
                     RelativeSizeAxes = Axes.Both,
+                    Anchor = Anchor.Centre,
+                    Origin = Anchor.Centre,
+                    Masking = true,
+                    Child = profileImage = new Sprite
+                    {
+                        RelativeSizeAxes = Axes.Both,
+                        Anchor = Anchor.Centre,
+                        Origin = Anchor.Centre,
+                    },
                 },
                 hover = new Box
                 {
@@ -96,13 +108,60 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 {
                     case ProfileImageShape.Circle:
                         this.TransformTo(nameof(CornerRadius), Height / 2, 500, Easing.OutQuint);
+                        profileImageBase.TransformTo(nameof(CornerRadius), Height / 2, 500, Easing.OutQuint);
                         break;
 
                     case ProfileImageShape.Square:
                         this.TransformTo(nameof(CornerRadius), NekoPlayerApp.UI_CORNER_RADIUS / 2, 500, Easing.OutQuint);
+                        profileImageBase.TransformTo(nameof(CornerRadius), NekoPlayerApp.UI_CORNER_RADIUS / 2, 500, Easing.OutQuint);
                         break;
                 }
             }, true);
+        }
+
+        public void GetPalette()
+        {
+            Task.Run(async () =>
+            {
+                var cachePath = app.Host.CacheStorage.GetStorageForDirectory("profile_cache").GetFullPath($"{channel.Id}.png");
+
+                using (var httpClient = new System.Net.Http.HttpClient())
+                {
+                    var imageBytes = await httpClient.GetByteArrayAsync(channel.Snippet.Thumbnails.High.Url);
+                    await System.IO.File.WriteAllBytesAsync(cachePath, imageBytes);
+                }
+
+                using Image<Rgba32> bitmap = SixLabors.ImageSharp.Image.Load<Rgba32>(app.Host.CacheStorage.GetStorageForDirectory("profile_cache").GetFullPath($"{channel.Id}.png"));
+
+                IBitmapHelper bitmapHelper = new BitmapHelper(bitmap);
+                PaletteBuilder paletteBuilder = new PaletteBuilder();
+                Palette palette = paletteBuilder.Generate(bitmapHelper);
+                int? rgbColor = palette.MutedSwatch.Rgb;
+                int? rgbTextColor = palette.MutedSwatch.TitleTextColor;
+
+                if (rgbColor != null && rgbTextColor != null)
+                {
+                    Color4 bgColor = System.Drawing.Color.FromArgb((int)rgbColor);
+                    Color4 textColor = System.Drawing.Color.FromArgb((int)rgbTextColor);
+                    Schedule(() =>
+                    {
+                        bgLayer.Alpha = 1;
+                        bgLayer.Colour = bgColor;
+                        BorderColour = bgColor;
+                    });
+                }
+            });
+        }
+
+        protected override bool OnMouseDown(MouseDownEvent e)
+        {
+            profileImageBase.ScaleTo(0.8f, 2000, Easing.OutQuint);
+            return base.OnMouseDown(e);
+        }
+
+        protected override void OnMouseUp(MouseUpEvent e)
+        {
+            profileImageBase.ScaleTo(1f, 350, Easing.OutQuint);
         }
 
         protected override bool OnHover(HoverEvent e)
@@ -188,6 +247,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         {
             Schedule(() => loading.Show());
             Texture north = await textureStore.GetAsync(channel.Snippet.Thumbnails.High.Url, cancellationToken);
+            GetPalette();
             Schedule(() => { profileImage.Texture = north; });
             Schedule(() => loading.Hide());
         }
