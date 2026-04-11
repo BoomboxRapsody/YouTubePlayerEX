@@ -155,27 +155,37 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         protected override bool OnMouseDown(MouseDownEvent e)
         {
-            profileImageBase.ScaleTo(0.8f, 2000, Easing.OutQuint);
+            if (Enabled.Value)
+                profileImageBase.ScaleTo(0.8f, 2000, Easing.OutQuint);
+
             return base.OnMouseDown(e);
         }
 
         protected override void OnMouseUp(MouseUpEvent e)
         {
-            profileImageBase.ScaleTo(1f, 350, Easing.OutQuint);
+            if (Enabled.Value)
+                profileImageBase.ScaleTo(1f, 350, Easing.OutQuint);
         }
 
         protected override bool OnHover(HoverEvent e)
         {
-            hover.FadeTo(0.1f, 500, Easing.OutQuint);
-            this.TransformTo(nameof(BorderThickness), 2f, 250, Easing.OutQuint);
+            if (Enabled.Value)
+            {
+                hover.FadeTo(0.1f, 500, Easing.OutQuint);
+                this.TransformTo(nameof(BorderThickness), 2f, 250, Easing.OutQuint);
+            }
             return base.OnHover(e);
         }
 
         protected override void OnHoverLost(HoverLostEvent e)
         {
             base.OnHoverLost(e);
-            this.TransformTo(nameof(BorderThickness), 0f, 250, Easing.OutQuint);
-            hover.FadeOut(500, Easing.OutQuint);
+
+            if (Enabled.Value)
+            {
+                this.TransformTo(nameof(BorderThickness), 0f, 250, Easing.OutQuint);
+                hover.FadeOut(500, Easing.OutQuint);
+            }
         }
 
         protected override void Dispose(bool isDisposing)
@@ -189,9 +199,11 @@ namespace NekoPlayer.App.Graphics.UserInterface
         [Resolved]
         private NekoPlayerConfigManager appConfig { get; set; }
 
+        public Bindable<bool> Enabled { get; set; } = new BindableBool(true);
+
         protected override bool OnClick(ClickEvent e)
         {
-            if (channel != null)
+            if (channel != null && Enabled.Value)
                 app.Host.OpenUrlExternally($"https://www.youtube.com/channel/{channel.Id}");
 
             return base.OnClick(e);
@@ -200,7 +212,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
         protected override void LoadComplete()
         {
             base.LoadComplete();
-            (samples as HoverClickSounds).Enabled.Value = true;
+            (samples as HoverClickSounds).Enabled.Value = Enabled.Value;
         }
 
         public void UpdateProfileImage(string channelId)

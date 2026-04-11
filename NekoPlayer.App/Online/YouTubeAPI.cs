@@ -346,7 +346,7 @@ namespace NekoPlayer.App.Online
             var part = "snippet,replies";
             var request = youtubeService.CommentThreads.List(part);
 
-            request.MaxResults = 20; // <------ why 20? dues to quota limits
+            request.MaxResults = 200; // <------ why 200? dues to quota limits
             request.VideoId = videoId;
             request.Order = orderEnum;
 
@@ -365,7 +365,7 @@ namespace NekoPlayer.App.Online
             var part = "snippet";
             var request = youtubeService.Search.List(part);
 
-            request.MaxResults = 20; // <------ why 20? dues to quota limits
+            request.MaxResults = 200; // <------ why 200? dues to quota limits
             request.Q = query;
 
             if (googleOAuth2.SignedIn.Value == true)
