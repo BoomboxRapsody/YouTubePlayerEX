@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
+// Copyright (c) 2026 BoomboxRapsody <boomboxrapsody@gmail.com>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
 #nullable enable
@@ -416,12 +416,12 @@ namespace NekoPlayer.App.Graphics.UserInterface
                 if (selectionWidth != null)
                 {
                     this.MoveTo(new Vector2(position.X, position.Y), 60, Easing.Out);
-                    this.ResizeWidthTo(selectionWidth.Value + CaretWidth / 2, caret_move_time, Easing.Out);
+                    this.ResizeWidthTo(selectionWidth.Value + (CaretWidth / 2), caret_move_time, Easing.Out);
                     this.FadeColour(SelectionColour, 200, Easing.Out);
                 }
                 else
                 {
-                    this.MoveTo(new Vector2(position.X - CaretWidth / 2, position.Y), 60, Easing.Out);
+                    this.MoveTo(new Vector2(position.X - (CaretWidth / 2), position.Y), 60, Easing.Out);
                     this.ResizeWidthTo(CaretWidth, caret_move_time, Easing.Out);
                     this.FadeColour(Color4.White, 200, Easing.Out);
                 }
