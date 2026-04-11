@@ -47,9 +47,9 @@ namespace NekoPlayer.App.Localisation
         public static LocalisableString NoVideoIdError => new TranslatableString(getKey(@"error_noVideoId"), "Video ID must not be empty!");
 
         /// <summary>
-        /// "{0} • {1} subscribers • Click to view channel via external web browser."
+        /// "{0} • {1} subscribers"
         /// </summary>
-        public static LocalisableString ProfileImageTooltip(string username, string subs) => new TranslatableString(getKey(@"profile_image_tooltip"), "{0} • {1} subscribers • Click to view channel via external web browser.", username, subs);
+        public static LocalisableString ProfileImageTooltip(string username, string subs) => new TranslatableString(getKey(@"profile_image_tooltip"), "{0} • {1} subscribers", username, subs);
 
         /// <summary>
         /// "Settings"
