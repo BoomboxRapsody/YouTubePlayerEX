@@ -1166,6 +1166,36 @@ namespace NekoPlayer.App.Localisation
         /// </summary>
         public static LocalisableString Apply => new TranslatableString(getKey(@"apply"), @"Apply");
 
+        /// <summary>
+        /// "Download video"
+        /// </summary>
+        public static LocalisableString DownloadVideo => new TranslatableString(getKey(@"download_video"), @"Download video");
+
+        /// <summary>
+        /// "Download"
+        /// </summary>
+        public static LocalisableString Download => new TranslatableString(getKey(@"download"), @"Download");
+
+        /// <summary>
+        /// "Downloading video stream: {0}"
+        /// </summary>
+        public static LocalisableString DownloadingVideoStream(string value) => new TranslatableString(getKey(@"downloading_video_stream"), @"Downloading video stream: {0}", value);
+
+        /// <summary>
+        /// "Downloading audio stream: {0}"
+        /// </summary>
+        public static LocalisableString DownloadingAudioStream(string value) => new TranslatableString(getKey(@"downloading_audio_stream"), @"Downloading audio stream: {0}", value);
+
+        /// <summary>
+        /// "Merging streams..."
+        /// </summary>
+        public static LocalisableString MergingStreams => new TranslatableString(getKey(@"merging_stream"), @"Merging streams...");
+
+        /// <summary>
+        /// "The download has been completed."
+        /// </summary>
+        public static LocalisableString DownloadCompleted => new TranslatableString(getKey(@"download_completed"), @"The download has been completed.");
+
         private static string getKey(string key) => $@"{prefix}:{key}";
     }
 }

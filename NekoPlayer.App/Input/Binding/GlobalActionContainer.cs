@@ -99,6 +99,7 @@ namespace NekoPlayer.App.Input.Binding
             new KeyBinding(new[] { InputKey.Alt, InputKey.S }, GlobalAction.SaveVideoToPlaylist),
             new KeyBinding(new[] { InputKey.Alt, InputKey.R }, GlobalAction.ToggleRepeatVideo),
             new KeyBinding(new[] { InputKey.Tab }, GlobalAction.OpenMenu),
+            new KeyBinding(new[] { InputKey.Alt, InputKey.D }, GlobalAction.DownloadVideo),
         };
     }
 
@@ -158,5 +159,6 @@ namespace NekoPlayer.App.Input.Binding
         SaveVideoToPlaylist,
         ToggleRepeatVideo,
         OpenMenu,
+        DownloadVideo,
     }
 }
