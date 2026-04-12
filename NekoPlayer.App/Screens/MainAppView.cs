@@ -6873,8 +6873,8 @@ namespace NekoPlayer.App.Screens
                     return;
                 }
 
-                IProgress<double> audioDownloadProgress = new Progress<double>((percent) => Schedule(() => videoLoadingProgress.Text = $"Downloading audio cache: {(percent * 100):N0}%"));
-                IProgress<double> videoDownloadProgress = new Progress<double>((percent) => Schedule(() => videoLoadingProgress.Text = $"Downloading video cache: {(percent * 100):N0}%"));
+                IProgress<double> audioDownloadProgress = new Progress<double>((percent) => Schedule(() => videoLoadingProgress.Text = NekoPlayerStrings.DownloadingAudioStream($"{(percent * 100):N0}%")));
+                IProgress<double> videoDownloadProgress = new Progress<double>((percent) => Schedule(() => videoLoadingProgress.Text = NekoPlayerStrings.DownloadingVideoStream($"Downloading video cache: {(percent * 100):N0}%")));
 
                 spinnerShow = Scheduler.AddDelayed(spinner.Show, 0);
 
