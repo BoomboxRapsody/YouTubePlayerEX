@@ -432,8 +432,8 @@ namespace NekoPlayer.App.Screens
             if (host.Renderer is IWindowsRenderer windowsRenderer)
                 fullscreenCapability.BindTo(windowsRenderer.FullscreenCapability);
 
-            overlayShowSample = sampleStore.Get(@"overlay-pop-in");
-            overlayHideSample = sampleStore.Get(@"overlay-pop-out");
+            overlayShowSample = sampleStore.Get(@"New_Fix/overlay-pop-in");
+            overlayHideSample = sampleStore.Get(@"New_Fix/overlay-pop-out");
             InternalChildren = new Drawable[]
             {
                 idleTracker = new AppIdleTracker(3000),
