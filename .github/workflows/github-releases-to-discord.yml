@@ -15,6 +15,6 @@ jobs:
           color: "2105893"
           username: "NekoPlayer Release Changelog"
           avatar_url: "https://cdn.discordapp.com/app-assets/1474920449442840586/1474920597589852422.png"
-          content: "||@everyone-verified||"
+          content: "||@everyone||"
           footer_title: "Changelog"
           reduce_headings: true
