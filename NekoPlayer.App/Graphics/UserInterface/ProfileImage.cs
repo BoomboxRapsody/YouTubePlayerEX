@@ -36,7 +36,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
         private Container profileImageBase;
 
-        private LoadingSpinner loading;
+        private NekoPlayerLoadingSpinner loading;
         private Box hover, bgLayer;
 
         [Resolved]
@@ -86,7 +86,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                     Blending = BlendingParameters.Additive,
                     Alpha = 0,
                 },
-                loading = new LoadingLayer(true, false, false)
+                loading = new NekoPlayerLoadingSpinner(size)
             };
         }
 
@@ -101,22 +101,6 @@ namespace NekoPlayer.App.Graphics.UserInterface
 
             profileImageShape = appConfig.GetBindable<ProfileImageShape>(NekoPlayerSetting.ProfileImageShape);
             translationSource = appConfig.GetBindable<VideoMetadataTranslateSource>(NekoPlayerSetting.VideoMetadataTranslateSource);
-
-            profileImageShape.BindValueChanged(shape =>
-            {
-                switch (shape.NewValue)
-                {
-                    case ProfileImageShape.Circle:
-                        this.TransformTo(nameof(CornerRadius), Height / 2, 500, Easing.OutQuint);
-                        profileImageBase.TransformTo(nameof(CornerRadius), Height / 2, 500, Easing.OutQuint);
-                        break;
-
-                    case ProfileImageShape.Square:
-                        this.TransformTo(nameof(CornerRadius), NekoPlayerApp.UI_CORNER_RADIUS / 2, 500, Easing.OutQuint);
-                        profileImageBase.TransformTo(nameof(CornerRadius), NekoPlayerApp.UI_CORNER_RADIUS / 2, 500, Easing.OutQuint);
-                        break;
-                }
-            }, true);
         }
 
         public void GetPalette()
@@ -262,6 +246,21 @@ namespace NekoPlayer.App.Graphics.UserInterface
             GetPalette();
             Schedule(() => { profileImage.Texture = north; });
             Schedule(() => loading.Hide());
+            profileImageShape.BindValueChanged(shape =>
+            {
+                switch (shape.NewValue)
+                {
+                    case ProfileImageShape.Circle:
+                        this.TransformTo(nameof(CornerRadius), Height / 2, 500, Easing.OutQuint);
+                        profileImageBase.TransformTo(nameof(CornerRadius), Height / 2, 500, Easing.OutQuint);
+                        break;
+
+                    case ProfileImageShape.Square:
+                        this.TransformTo(nameof(CornerRadius), NekoPlayerApp.UI_CORNER_RADIUS / 2, 500, Easing.OutQuint);
+                        profileImageBase.TransformTo(nameof(CornerRadius), NekoPlayerApp.UI_CORNER_RADIUS / 2, 500, Easing.OutQuint);
+                        break;
+                }
+            }, true);
         }
     }
 }

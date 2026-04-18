@@ -28,9 +28,9 @@ namespace NekoPlayer.App.Graphics.UserInterface
         /// <summary>
         /// Constuct a new loading spinner.
         /// </summary>
-        public NekoPlayerLoadingSpinner()
+        public NekoPlayerLoadingSpinner(float size = 70)
         {
-            Size = new Vector2(70);
+            Size = new Vector2(size);
 
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
