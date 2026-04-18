@@ -2055,6 +2055,10 @@ namespace NekoPlayer.App.Screens
                                             {
                                                 Origin = Anchor.Centre,
                                                 Anchor = Anchor.Centre,
+                                                Margin = new MarginPadding
+                                                {
+                                                    Left = 8,
+                                                },
                                                 Icon = FontAwesome.Solid.PaperPlane,
                                                 Width = 50,
                                                 Height = 45,
