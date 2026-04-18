@@ -91,6 +91,9 @@
     <None Update="libbassloud.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="material3expressive_loadingindicator.mp4">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="runtimes\linux-x64\native\libbassloud.so">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

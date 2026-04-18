@@ -6,17 +6,23 @@
 using System;
 using System.Threading.Tasks;
 using Google.Apis.YouTube.v3.Data;
+using NekoPlayer.App.Config;
+using NekoPlayer.App.Graphics.Sprites;
+using NekoPlayer.App.Online;
+using NekoPlayer.App.Utils;
 using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Configuration;
+using osu.Framework.Extensions.Color4Extensions;
 using osu.Framework.Graphics;
+using osu.Framework.Graphics.Colour;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
 using osu.Framework.Input.Events;
 using osuTK.Graphics;
-using NekoPlayer.App.Config;
-using NekoPlayer.App.Graphics.Sprites;
-using NekoPlayer.App.Online;
+using PaletteNet;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace NekoPlayer.App.Graphics.UserInterface
 {
@@ -106,7 +112,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
             };
         }
 
-        private Video videoData;
+        private Channel channelData;
 
         protected override bool OnClick(ClickEvent e)
         {
@@ -139,9 +145,45 @@ namespace NekoPlayer.App.Graphics.UserInterface
             (samples as HoverClickSounds).Enabled.Value = (ClickEvent != null);
         }
 
+        public void GetPalette()
+        {
+            Task.Run(async () =>
+            {
+                var cachePath = app.Host.CacheStorage.GetStorageForDirectory("profile_cache").GetFullPath($"{channelData.Id}.png");
+
+                using (var httpClient = new System.Net.Http.HttpClient())
+                {
+                    var imageBytes = await httpClient.GetByteArrayAsync(channelData.Snippet.Thumbnails.High.Url);
+                    await System.IO.File.WriteAllBytesAsync(cachePath, imageBytes);
+                }
+
+                using Image<Rgba32> bitmap = SixLabors.ImageSharp.Image.Load<Rgba32>(app.Host.CacheStorage.GetStorageForDirectory("profile_cache").GetFullPath($"{channelData.Id}.png"));
+
+                IBitmapHelper bitmapHelper = new BitmapHelper(bitmap);
+                PaletteBuilder paletteBuilder = new PaletteBuilder();
+                Palette palette = paletteBuilder.Generate(bitmapHelper);
+                int? rgbColor = palette.MutedSwatch.Rgb;
+                int? rgbTextColor = palette.MutedSwatch.TitleTextColor;
+
+                if (rgbColor != null && rgbTextColor != null)
+                {
+                    Color4 bgColor = System.Drawing.Color.FromArgb((int)rgbColor);
+                    Color4 textColor = System.Drawing.Color.FromArgb((int)rgbTextColor);
+                    Schedule(() =>
+                    {
+                        bgLayer.Alpha = 1;
+                        bgLayer.Colour = ColourInfo.GradientHorizontal(bgColor, bgColor.Darken(1f));
+                        videoName.Colour = (textColor);
+                        desc.Colour = (textColor);
+                    });
+                }
+            });
+        }
+
         public void UpdateUser(Channel channel)
         {
             uiLanguage.UnbindEvents();
+            channelData = channel;
             Task.Run(async () =>
             {
                 Schedule(() =>
@@ -149,6 +191,7 @@ namespace NekoPlayer.App.Graphics.UserInterface
                     videoName.Text = api.GetLocalizedChannelTitle(channel);
                     desc.Text = channel.Snippet.CustomUrl;
                     profileImage.UpdateProfileImage(channel.Id);
+                    GetPalette();
                 });
             });
 

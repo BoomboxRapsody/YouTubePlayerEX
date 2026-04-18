@@ -25,7 +25,7 @@ namespace NekoPlayer.App.Screens
         private NekoPlayerScreen loadableScreen;
         private ShaderPrecompiler precompiler;
 
-        private LoadingSpinner spinner;
+        private NekoPlayerLoadingSpinner spinner;
         private ScheduledDelegate spinnerShow;
 
         protected virtual NekoPlayerScreen CreateLoadableScreen() => new MainAppView();
@@ -40,11 +40,10 @@ namespace NekoPlayer.App.Screens
 
             LoadComponentAsync(loadableScreen = CreateLoadableScreen());
 
-            LoadComponentAsync(spinner = new LoadingSpinner(true, false)
+            LoadComponentAsync(spinner = new NekoPlayerLoadingSpinner
             {
-                Anchor = Anchor.BottomRight,
-                Origin = Anchor.BottomRight,
-                Margin = new MarginPadding(40),
+                Anchor = Anchor.Centre,
+                Origin = Anchor.Centre,
             }, _ =>
             {
                 AddInternal(spinner);

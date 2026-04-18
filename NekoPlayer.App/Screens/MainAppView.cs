@@ -86,7 +86,7 @@ namespace NekoPlayer.App.Screens
         private ControlBarButton prevVideoButton, nextVideoButton;
         private EnhancedFocusedTextBox videoIdBox, playlistIdBox, searchTextBox;
         private EnhancedFocusedTextBoxWithProfileImage commentTextBox;
-        private LoadingSpinner spinner;
+        private NekoPlayerLoadingSpinner spinner;
         private ScheduledDelegate spinnerShow;
         private AdaptiveAlertContainer alert;
         private IdleTracker idleTracker;
@@ -498,7 +498,7 @@ namespace NekoPlayer.App.Screens
                     RelativeSizeAxes = Axes.Both,
                     Children = new Drawable[]
                     {
-                        spinner = new LoadingSpinner(true, true)
+                        spinner = new NekoPlayerLoadingSpinner
                         {
                             Anchor = Anchor.Centre,
                             Origin = Anchor.Centre,
@@ -6626,7 +6626,7 @@ namespace NekoPlayer.App.Screens
                         Schedule(() =>
                         {
                             game.RequestUpdateWindowTitle($"{api.GetLocalizedChannelTitle(api.GetChannel(videoData.Snippet.ChannelId))} - {api.GetLocalizedVideoTitle(videoData)}");
-                            videoDescription.Text = api.GetLocalizedVideoDescription(videoData);
+                            Schedule(() => GetLocalizedVideoDescriptionRemake(videoData));
                             videoInfoDetails.Text = NekoPlayerStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), uploadDate.ToString());
                         });
                     });
