@@ -6626,7 +6626,7 @@ namespace NekoPlayer.App.Screens
                         Schedule(() =>
                         {
                             game.RequestUpdateWindowTitle($"{api.GetLocalizedChannelTitle(api.GetChannel(videoData.Snippet.ChannelId))} - {api.GetLocalizedVideoTitle(videoData)}");
-                            videoDescription.Text = api.GetLocalizedVideoDescription(videoData);
+                            Schedule(() => GetLocalizedVideoDescriptionRemake(videoData));
                             videoInfoDetails.Text = NekoPlayerStrings.VideoMetadataDescWithoutChannelName(Convert.ToInt32(videoData.Statistics.ViewCount).ToStandardFormattedString(0), uploadDate.ToString());
                         });
                     });
